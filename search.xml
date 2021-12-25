@@ -2,11 +2,11 @@
 <search>
   <entry>
     <title>单链路网络架构实验</title>
-    <url>/vlan-trunk/%E9%9D%99%E6%80%81%E8%B7%AF%E7%94%B1/%E5%8D%95%E9%93%BE%E8%B7%AF%E7%BD%91%E7%BB%9C%E6%9E%B6%E6%9E%84%E5%AE%9E%E9%AA%8C/</url>
+    <url>/network/%E5%8D%95%E9%93%BE%E8%B7%AF%E7%BD%91%E7%BB%9C%E6%9E%B6%E6%9E%84%E5%AE%9E%E9%AA%8C/</url>
     <content><![CDATA[<h1 id="&#x9879;&#x76EE;&#x4E00;&#xFF1A;&#x5355;&#x94FE;&#x8DEF;&#x4F01;&#x4E1A;&#x7F51;&#x7EDC;&#x67B6;&#x6784;&#x5B9E;&#x73B0;"><a href="#&#x9879;&#x76EE;&#x4E00;&#xFF1A;&#x5355;&#x94FE;&#x8DEF;&#x4F01;&#x4E1A;&#x7F51;&#x7EDC;&#x67B6;&#x6784;&#x5B9E;&#x73B0;" class="headerlink" title="&#x9879;&#x76EE;&#x4E00;&#xFF1A;&#x5355;&#x94FE;&#x8DEF;&#x4F01;&#x4E1A;&#x7F51;&#x7EDC;&#x67B6;&#x6784;&#x5B9E;&#x73B0;"></a>&#x9879;&#x76EE;&#x4E00;&#xFF1A;&#x5355;&#x94FE;&#x8DEF;&#x4F01;&#x4E1A;&#x7F51;&#x7EDC;&#x67B6;&#x6784;&#x5B9E;&#x73B0;</h1><h2 id="1-1&#x3001;&#x9879;&#x76EE;&#x80CC;&#x666F;&#x63CF;&#x8FF0;"><a href="#1-1&#x3001;&#x9879;&#x76EE;&#x80CC;&#x666F;&#x63CF;&#x8FF0;" class="headerlink" title="1.1&#x3001;&#x9879;&#x76EE;&#x80CC;&#x666F;&#x63CF;&#x8FF0;"></a>1.1&#x3001;&#x9879;&#x76EE;&#x80CC;&#x666F;&#x63CF;&#x8FF0;</h2><p>&#x200B;    &#x7565;</p>
 <span id="more"></span>
 
-<h2 id="1-2&#x3001;&#x9879;&#x76EE;&#x62D3;&#x6251;&#x7ED3;&#x6784;"><a href="#1-2&#x3001;&#x9879;&#x76EE;&#x62D3;&#x6251;&#x7ED3;&#x6784;" class="headerlink" title="1.2&#x3001;&#x9879;&#x76EE;&#x62D3;&#x6251;&#x7ED3;&#x6784;"></a>1.2&#x3001;&#x9879;&#x76EE;&#x62D3;&#x6251;&#x7ED3;&#x6784;</h2><p><img src="/vlan-trunk/%E9%9D%99%E6%80%81%E8%B7%AF%E7%94%B1/%E5%8D%95%E9%93%BE%E8%B7%AF%E7%BD%91%E7%BB%9C%E6%9E%B6%E6%9E%84%E5%AE%9E%E9%AA%8C/%E6%8B%93%E6%89%91%E7%BB%93%E6%9E%84.PNG" alt="&#x62D3;&#x6251;&#x7ED3;&#x6784;"></p>
+<h2 id="1-2&#x3001;&#x9879;&#x76EE;&#x62D3;&#x6251;&#x7ED3;&#x6784;"><a href="#1-2&#x3001;&#x9879;&#x76EE;&#x62D3;&#x6251;&#x7ED3;&#x6784;" class="headerlink" title="1.2&#x3001;&#x9879;&#x76EE;&#x62D3;&#x6251;&#x7ED3;&#x6784;"></a>1.2&#x3001;&#x9879;&#x76EE;&#x62D3;&#x6251;&#x7ED3;&#x6784;</h2><p><img src="/network/%E5%8D%95%E9%93%BE%E8%B7%AF%E7%BD%91%E7%BB%9C%E6%9E%B6%E6%9E%84%E5%AE%9E%E9%AA%8C/%E6%8B%93%E6%89%91%E7%BB%93%E6%9E%84.PNG" alt="&#x62D3;&#x6251;&#x7ED3;&#x6784;"></p>
 <h2 id="1-3&#x3001;&#x9879;&#x76EE;&#x9700;&#x6C42;&#x4ECB;&#x7ECD;"><a href="#1-3&#x3001;&#x9879;&#x76EE;&#x9700;&#x6C42;&#x4ECB;&#x7ECD;" class="headerlink" title="1.3&#x3001;&#x9879;&#x76EE;&#x9700;&#x6C42;&#x4ECB;&#x7ECD;"></a>1.3&#x3001;&#x9879;&#x76EE;&#x9700;&#x6C42;&#x4ECB;&#x7ECD;</h2><p>&#x200B;    &#x6700;&#x603B;&#x76EE;&#x7684;&#xFF1A;PC&#x4E0E;&#x5916;&#x7F51;&#x4E92;&#x901A;&#xFF08;1.1.1.1 &#x6A21;&#x62DF;&#x5916;&#x7F51;&#xFF09;</p>
 <p>1&#x3001;&#x4EA4;&#x6362;&#x7F51;&#x7EDC;&#x9700;&#x6C42;</p>
 <p>&#x200B;     A &#x8BBE;&#x8BA1;vlan10&#x4F5C;&#x4E3A;&#x4E00;&#x4E2A;&#x4E1A;&#x52A1;vlan&#xFF0C;PC&#x5C5E;&#x4E8E;&#x8BE5;vlan</p>
@@ -30,11 +30,11 @@
 <h2 id="1-5&#x3001;&#x9879;&#x76EE;&#x603B;&#x7ED3;"><a href="#1-5&#x3001;&#x9879;&#x76EE;&#x603B;&#x7ED3;" class="headerlink" title="1.5&#x3001;&#x9879;&#x76EE;&#x603B;&#x7ED3;"></a>1.5&#x3001;&#x9879;&#x76EE;&#x603B;&#x7ED3;</h2><p>&#x200B;    &#x7565;</p>
 ]]></content>
       <categories>
-        <category>vlan trunk</category>
-        <category>静态路由</category>
+        <category>network</category>
       </categories>
       <tags>
-        <tag>network</tag>
+        <tag>vlan trunk</tag>
+        <tag>静态路由</tag>
       </tags>
   </entry>
   <entry>
@@ -43,7 +43,7 @@
     <content><![CDATA[<h1 id="&#x9879;&#x76EE;&#x4E8C;&#xFF1A;&#x53CC;&#x94FE;&#x8DEF;&#x4F01;&#x4E1A;&#x7F51;&#x7EDC;&#x67B6;&#x6784;&#x5B9E;&#x73B0;"><a href="#&#x9879;&#x76EE;&#x4E8C;&#xFF1A;&#x53CC;&#x94FE;&#x8DEF;&#x4F01;&#x4E1A;&#x7F51;&#x7EDC;&#x67B6;&#x6784;&#x5B9E;&#x73B0;" class="headerlink" title="&#x9879;&#x76EE;&#x4E8C;&#xFF1A;&#x53CC;&#x94FE;&#x8DEF;&#x4F01;&#x4E1A;&#x7F51;&#x7EDC;&#x67B6;&#x6784;&#x5B9E;&#x73B0;"></a>&#x9879;&#x76EE;&#x4E8C;&#xFF1A;&#x53CC;&#x94FE;&#x8DEF;&#x4F01;&#x4E1A;&#x7F51;&#x7EDC;&#x67B6;&#x6784;&#x5B9E;&#x73B0;</h1><h2 id="1-1&#x3001;&#x9879;&#x76EE;&#x80CC;&#x666F;&#x63CF;&#x8FF0;"><a href="#1-1&#x3001;&#x9879;&#x76EE;&#x80CC;&#x666F;&#x63CF;&#x8FF0;" class="headerlink" title="1.1&#x3001;&#x9879;&#x76EE;&#x80CC;&#x666F;&#x63CF;&#x8FF0;"></a>1.1&#x3001;&#x9879;&#x76EE;&#x80CC;&#x666F;&#x63CF;&#x8FF0;</h2><p>&#x200B;    &#x7565;</p>
 <span id="more"></span>
 
-<h2 id="1-2&#x3001;&#x9879;&#x76EE;&#x62D3;&#x6251;&#x7ED3;&#x6784;"><a href="#1-2&#x3001;&#x9879;&#x76EE;&#x62D3;&#x6251;&#x7ED3;&#x6784;" class="headerlink" title="1.2&#x3001;&#x9879;&#x76EE;&#x62D3;&#x6251;&#x7ED3;&#x6784;"></a>1.2&#x3001;&#x9879;&#x76EE;&#x62D3;&#x6251;&#x7ED3;&#x6784;</h2><p><img src="/network/%E5%8F%8C%E9%93%BE%E8%B7%AF%E7%BD%91%E7%BB%9C%E6%9E%B6%E6%9E%84%E5%AE%9E%E9%AA%8C/%E5%8F%8C%E9%93%BE%E8%B7%AF%E7%BD%91%E7%BB%9C%E6%9E%B6%E6%9E%84%E5%AE%9E%E9%AA%8C%5C%E6%8B%93%E6%89%91%E7%BB%93%E6%9E%84.PNG" alt="&#x62D3;&#x6251;&#x7ED3;&#x6784;"></p>
+<h2 id="1-2&#x3001;&#x9879;&#x76EE;&#x62D3;&#x6251;&#x7ED3;&#x6784;"><a href="#1-2&#x3001;&#x9879;&#x76EE;&#x62D3;&#x6251;&#x7ED3;&#x6784;" class="headerlink" title="1.2&#x3001;&#x9879;&#x76EE;&#x62D3;&#x6251;&#x7ED3;&#x6784;"></a>1.2&#x3001;&#x9879;&#x76EE;&#x62D3;&#x6251;&#x7ED3;&#x6784;</h2><p><img src="/network/%E5%8F%8C%E9%93%BE%E8%B7%AF%E7%BD%91%E7%BB%9C%E6%9E%B6%E6%9E%84%E5%AE%9E%E9%AA%8C/%E6%8B%93%E6%89%91%E7%BB%93%E6%9E%84.png" alt="&#x62D3;&#x6251;&#x7ED3;&#x6784;"></p>
 <h2 id="1-3&#x3001;&#x9879;&#x76EE;&#x9700;&#x6C42;&#x4ECB;&#x7ECD;"><a href="#1-3&#x3001;&#x9879;&#x76EE;&#x9700;&#x6C42;&#x4ECB;&#x7ECD;" class="headerlink" title="1.3&#x3001;&#x9879;&#x76EE;&#x9700;&#x6C42;&#x4ECB;&#x7ECD;"></a>1.3&#x3001;&#x9879;&#x76EE;&#x9700;&#x6C42;&#x4ECB;&#x7ECD;</h2><p>&#x6700;&#x540E;&#x7684;&#x76EE;&#x7684;:PC1&#x548C;PC2&#x90FD;&#x80FD;&#x591F;&#x4E0E;&#x5916;&#x7F51;&#x4E92;&#x901A;&#xFF08;1.1.1.1 &#x6A21;&#x62DF;&#x5916;&#x7F51;&#xFF09;&#xFF0C;&#x540C;&#x65F6;&#xFF0C;&#x5728;&#x6838;&#x5FC3;&#x4EA4;&#x6362;&#x673A;down&#x673A;&#x7684;&#x60C5;&#x51B5;&#x4E0B;&#xFF0C;PC1&#x548C;PC2&#x90FD;&#x80FD;&#x591F;&#x901A;&#x8FC7;&#x5907;&#x4EFD;&#x94FE;&#x8DEF;&#x6765;&#x4E0E;&#x5916;&#x7F51;&#x4E92;&#x901A;&#xFF1B;</p>
 <p>1&#x3001;&#x4EA4;&#x6362;&#x7F51;&#x7EDC;&#x9700;&#x6C42;&#xFF1A;</p>
 <p>&#x200B;    A&#x3001;&#x4EA4;&#x6362;&#x7F51;&#x7EDC;&#x4E2D;&#x9700;&#x8981;&#x914D;&#x7F6E;&#x5BF9;&#x5E94;&#x7684;&#x4E1A;&#x52A1;vlan&#xFF0C;&#x6709;vlan10&#x548C;vlan20&#xFF0C;&#x5176;&#x4E2D;PC1&#x5C5E;&#x4E8E;vlan10&#xFF0C;PC2&#x5C31;&#x5C5E;&#x4E8E;VLAN20&#xFF1B;</p>
@@ -65,7 +65,7 @@
 <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">interface Loopback1</span><br><span class="line"> ip address 1.1.1.1 255.255.255.0</span><br><span class="line"></span><br><span class="line">interface FastEthernet0/0</span><br><span class="line"> ip address 12.1.1.2 255.255.255.0</span><br><span class="line"> </span><br><span class="line">interface FastEthernet0/1</span><br><span class="line"> ip address 23.1.1.2 255.255.255.0</span><br><span class="line"> </span><br><span class="line">router rip </span><br><span class="line"> no auto-summary</span><br><span class="line"> version 2</span><br><span class="line"> network 12.1.1.0</span><br><span class="line"> network 23.1.1.0</span><br><span class="line"> network 1.1.1.0</span><br></pre></td></tr></table></figure>
 
 <p>&#x6D4B;&#x8BD5;&#x7ED3;&#x679C;&#x5982;&#x4E0B;&#x56FE;&#x6240;&#x793A;&#xFF1A;</p>
-<p><img src="/network/%E5%8F%8C%E9%93%BE%E8%B7%AF%E7%BD%91%E7%BB%9C%E6%9E%B6%E6%9E%84%E5%AE%9E%E9%AA%8C/%E5%8F%8C%E9%93%BE%E8%B7%AF%E7%BD%91%E7%BB%9C%E6%9E%B6%E6%9E%84%E5%AE%9E%E9%AA%8C%5C%E6%B5%8B%E8%AF%95%E7%BB%93%E6%9E%9C.PNG" alt="&#x6D4B;&#x8BD5;&#x7ED3;&#x679C;"></p>
+<p><img src="/network/%E5%8F%8C%E9%93%BE%E8%B7%AF%E7%BD%91%E7%BB%9C%E6%9E%B6%E6%9E%84%E5%AE%9E%E9%AA%8C/%E6%B5%8B%E8%AF%95%E7%BB%93%E6%9E%9C.png" alt="&#x6D4B;&#x8BD5;&#x7ED3;&#x679C;"></p>
 <h2 id="1-5&#x3001;&#x9879;&#x76EE;&#x603B;&#x7ED3;"><a href="#1-5&#x3001;&#x9879;&#x76EE;&#x603B;&#x7ED3;" class="headerlink" title="1.5&#x3001;&#x9879;&#x76EE;&#x603B;&#x7ED3;"></a>1.5&#x3001;&#x9879;&#x76EE;&#x603B;&#x7ED3;</h2><p>&#x200B;    &#x7565;</p>
 ]]></content>
       <categories>
@@ -73,9 +73,9 @@
       </categories>
       <tags>
         <tag>vlan trunk</tag>
+        <tag>静态路由</tag>
         <tag>stp</tag>
         <tag>vrrp hsrp</tag>
-        <tag>静态路由</tag>
       </tags>
   </entry>
   <entry>
