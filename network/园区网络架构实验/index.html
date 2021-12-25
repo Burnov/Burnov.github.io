@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-minimal.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Mist","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="&amp;#x9879;&amp;#x76EE;&amp;#x4E09;&amp;#xFF1A;&amp;#x5927;&amp;#x578B;&amp;#x56ED;&amp;#x533A;&amp;#x7F51;&amp;#x7EDC;&amp;#x67B6;&amp;#x6784;&amp;#x5B9E;&amp;#x73B0;1.1&amp;#x3001;&amp;#x9879;&amp;#x76EE;&amp;#x80CC;&amp;#x666F;&amp;#x63CF;&amp;#x8FF0;&amp;#x200B;    &amp;#x7565;">
+<meta property="og:type" content="article">
+<meta property="og:title" content="园区网络架构实验">
+<meta property="og:url" content="http://example.com/network/%E5%9B%AD%E5%8C%BA%E7%BD%91%E7%BB%9C%E6%9E%B6%E6%9E%84%E5%AE%9E%E9%AA%8C/index.html">
+<meta property="og:site_name" content="Burnov^-^博客">
+<meta property="og:description" content="&amp;#x9879;&amp;#x76EE;&amp;#x4E09;&amp;#xFF1A;&amp;#x5927;&amp;#x578B;&amp;#x56ED;&amp;#x533A;&amp;#x7F51;&amp;#x7EDC;&amp;#x67B6;&amp;#x6784;&amp;#x5B9E;&amp;#x73B0;1.1&amp;#x3001;&amp;#x9879;&amp;#x76EE;&amp;#x80CC;&amp;#x666F;&amp;#x63CF;&amp;#x8FF0;&amp;#x200B;    &amp;#x7565;">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://example.com/network/%E5%9B%AD%E5%8C%BA%E7%BD%91%E7%BB%9C%E6%9E%B6%E6%9E%84%E5%AE%9E%E9%AA%8C/%E6%8B%93%E6%89%91%E7%BB%93%E6%9E%84.PNG">
+<meta property="article:published_time" content="2021-12-25T09:30:26.000Z">
+<meta property="article:modified_time" content="2021-12-25T09:37:04.923Z">
+<meta property="article:author" content="Burnov">
+<meta property="article:tag" content="vlan trunk">
+<meta property="article:tag" content="stp">
+<meta property="article:tag" content="vrrp hsrp">
+<meta property="article:tag" content="静态路由 浮动路由">
+<meta property="article:tag" content="ospf">
+<meta property="article:tag" content="snat">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/network/%E5%9B%AD%E5%8C%BA%E7%BD%91%E7%BB%9C%E6%9E%B6%E6%9E%84%E5%AE%9E%E9%AA%8C/%E6%8B%93%E6%89%91%E7%BB%93%E6%9E%84.PNG">
+
+<link rel="canonical" href="http://example.com/network/%E5%9B%AD%E5%8C%BA%E7%BD%91%E7%BB%9C%E6%9E%B6%E6%9E%84%E5%AE%9E%E9%AA%8C/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>园区网络架构实验 | Burnov^-^博客</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="Burnov^-^博客" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Burnov^-^博客</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/network/%E5%9B%AD%E5%8C%BA%E7%BD%91%E7%BB%9C%E6%9E%B6%E6%9E%84%E5%AE%9E%E9%AA%8C/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Burnov">
+      <meta itemprop="description" content="学海无涯">
+    </span>
+    
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Burnov^-^博客">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          园区网络架构实验
+        </h1>
+    
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+    
+              <time title="创建时间：2021-12-25 17:30:26 / 修改时间：17:37:04" itemprop="dateCreated datePublished" datetime="2021-12-25T17:30:26+08:00">2021-12-25</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/network/" itemprop="url" rel="index"><span itemprop="name">network</span></a>
+                </span>
+            </span>
+    
+          
+    
+        </div>
+      </header>
+    
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+    
+      
+        <h1 id="&#x9879;&#x76EE;&#x4E09;&#xFF1A;&#x5927;&#x578B;&#x56ED;&#x533A;&#x7F51;&#x7EDC;&#x67B6;&#x6784;&#x5B9E;&#x73B0;"><a href="#&#x9879;&#x76EE;&#x4E09;&#xFF1A;&#x5927;&#x578B;&#x56ED;&#x533A;&#x7F51;&#x7EDC;&#x67B6;&#x6784;&#x5B9E;&#x73B0;" class="headerlink" title="&#x9879;&#x76EE;&#x4E09;&#xFF1A;&#x5927;&#x578B;&#x56ED;&#x533A;&#x7F51;&#x7EDC;&#x67B6;&#x6784;&#x5B9E;&#x73B0;"></a>&#x9879;&#x76EE;&#x4E09;&#xFF1A;&#x5927;&#x578B;&#x56ED;&#x533A;&#x7F51;&#x7EDC;&#x67B6;&#x6784;&#x5B9E;&#x73B0;</h1><h2 id="1-1&#x3001;&#x9879;&#x76EE;&#x80CC;&#x666F;&#x63CF;&#x8FF0;"><a href="#1-1&#x3001;&#x9879;&#x76EE;&#x80CC;&#x666F;&#x63CF;&#x8FF0;" class="headerlink" title="1.1&#x3001;&#x9879;&#x76EE;&#x80CC;&#x666F;&#x63CF;&#x8FF0;"></a>1.1&#x3001;&#x9879;&#x76EE;&#x80CC;&#x666F;&#x63CF;&#x8FF0;</h2><p>&#x200B;    &#x7565;</p>
+<span id="more"></span>
+
+<h2 id="1-2&#x3001;&#x9879;&#x76EE;&#x62D3;&#x6251;&#x7ED3;&#x6784;"><a href="#1-2&#x3001;&#x9879;&#x76EE;&#x62D3;&#x6251;&#x7ED3;&#x6784;" class="headerlink" title="1.2&#x3001;&#x9879;&#x76EE;&#x62D3;&#x6251;&#x7ED3;&#x6784;"></a>1.2&#x3001;&#x9879;&#x76EE;&#x62D3;&#x6251;&#x7ED3;&#x6784;</h2><p><img src="/network/%E5%9B%AD%E5%8C%BA%E7%BD%91%E7%BB%9C%E6%9E%B6%E6%9E%84%E5%AE%9E%E9%AA%8C/%E6%8B%93%E6%89%91%E7%BB%93%E6%9E%84.PNG" alt="&#x62D3;&#x6251;&#x7ED3;&#x6784;"></p>
+<h2 id="1-3&#x3001;&#x9879;&#x76EE;&#x9700;&#x6C42;&#x4ECB;&#x7ECD;"><a href="#1-3&#x3001;&#x9879;&#x76EE;&#x9700;&#x6C42;&#x4ECB;&#x7ECD;" class="headerlink" title="1.3&#x3001;&#x9879;&#x76EE;&#x9700;&#x6C42;&#x4ECB;&#x7ECD;"></a>1.3&#x3001;&#x9879;&#x76EE;&#x9700;&#x6C42;&#x4ECB;&#x7ECD;</h2><p>&#x6700;&#x540E;&#x7684;&#x76EE;&#x7684;:PC&#x90FD;&#x80FD;&#x591F;&#x4E0E;&#x5916;&#x7F51;&#x4E92;&#x901A;&#xFF08;1.1.1.1 &#x6A21;&#x62DF;&#x5916;&#x7F51;&#xFF09;&#xFF0C;&#x540C;&#x65F6;&#xFF0C;&#x5728;&#x6838;&#x5FC3;&#x4EA4;&#x6362;&#x673A;down&#x673A;&#x7684;&#x60C5;&#x51B5;&#x4E0B;&#xFF0C;PC&#x90FD;&#x80FD;&#x591F;&#x901A;&#x8FC7;&#x5907;&#x4EFD;&#x94FE;&#x8DEF;&#x6765;&#x4E0E;&#x5916;&#x7F51;&#x4E92;&#x901A;&#xFF1B;</p>
+<p>1&#x3001; &#x4EA4;&#x6362;&#x7F51;&#x7EDC;&#x9700;&#x6C42;</p>
+<p>&#x200B;    a)     PC&#x8981;&#x5C5E;&#x4E8E;&#x6307;&#x5B9A;vlan</p>
+<p>&#x200B;    b)     &#x4EA4;&#x6362;&#x673A;&#x4E0E;&#x4EA4;&#x6362;&#x673A;&#x4E4B;&#x95F4;&#x9700;&#x8981;&#x914D;&#x7F6E;trunk&#x94FE;&#x8DEF;&#x4E92;&#x901A;&#xFF08;&#x54EA;&#x4E9B;&#x4E8B;&#x4EA4;&#x6362;&#x673A;&#x5462;&#xFF1F;&#xFF09;</p>
+<p>&#x200B;    c)     &#x8BBE;&#x7F6E;stp&#x8BA9;&#x6C47;&#x805A;&#x5C42;&#x8BBE;&#x5907;&#x6210;&#x4E3A;root&#xFF0C;&#x4E14;&#x6C47;&#x805A;&#x5C42;&#x8BBE;&#x5907;&#x4E4B;&#x95F4;&#x76F8;&#x4E92;&#x4E3B;&#x5907;&#xFF1B;</p>
+<p>&#x200B;    d)     &#x6C47;&#x805A;&#x4EA4;&#x6362;&#x673A;&#x4E4B;&#x95F4;&#x662F;&#x591A;&#x7EBF;&#x8DEF;&#x4E92;&#x8054;&#xFF0C;&#x6211;&#x4EEC;&#x9700;&#x8981;&#x914D;&#x7F6E;port-channel&#x5B9E;&#x73B0;&#x7AEF;&#x53E3;&#x7ED1;&#x5B9A;&#xFF1B;</p>
+<p>2&#x3001; &#x8DEF;&#x7531;&#x7F51;&#x7EDC;&#x9700;&#x6C42;</p>
+<p>&#x200B;    a)     &#x6C47;&#x805A;&#x5C42;&#x9700;&#x8981;&#x901A;&#x8FC7;vrrp&#x6216;&#x5219;hsrp&#x5B9E;&#x73B0;&#x7F51;&#x5173;&#x5197;&#x4F59;</p>
+<p>&#x200B;    b)     &#x4E09;&#x5C42;&#x7F51;&#x7EDC;&#x4E2D;&#x914D;&#x7F6E;ospf&#x8DEF;&#x7531;&#x534F;&#x8BAE;&#xFF0C;&#x8BA9;&#x6838;&#x5FC3;&#x8DEF;&#x7531;&#x5668;&#x548C;&#x51FA;&#x53E3;&#x8DEF;&#x7531;&#x5668;&#x5904;&#x4E8E;&#x9AA8;&#x5E72;&#x533A;&#x57DF;&#xFF1B;&#x800C;&#x6C47;&#x805A;&#x4EA4;&#x6362;&#x673A;&#x5219;&#x5904;&#x4E8E;&#x975E;&#x9AA8;&#x5E72;&#x533A;&#x57DF;&#xFF1B;&#x8BA9;&#x4E0D;&#x540C;&#x5927;&#x697C;&#x4E4B;&#x95F4;&#x7684;PC&#x80FD;&#x591F;&#x4E92;&#x8BBF;&#xFF1B;</p>
+<p>&#x200B;    c)     &#x914D;&#x7F6E;&#x9759;&#x6001;&#x8DEF;&#x7531;&#xFF0C;&#x4EE5;&#x53CA;nat&#x5B9E;&#x73B0;&#x5730;&#x5740;&#x8F6C;&#x6362;&#xFF0C;&#x8BA9;PC&#x80FD;&#x591F;&#x8BBF;&#x95EE;1.1.1.1</p>
+<h2 id="1-4&#x3001;&#x9879;&#x76EE;&#x914D;&#x7F6E;&#x5B9E;&#x73B0;"><a href="#1-4&#x3001;&#x9879;&#x76EE;&#x914D;&#x7F6E;&#x5B9E;&#x73B0;" class="headerlink" title="1.4&#x3001;&#x9879;&#x76EE;&#x914D;&#x7F6E;&#x5B9E;&#x73B0;"></a>1.4&#x3001;&#x9879;&#x76EE;&#x914D;&#x7F6E;&#x5B9E;&#x73B0;</h2><p>PC1 &#x548C; PC2&#x7684;&#x914D;&#x7F6E;&#x5982;&#x4E0B;&#xFF1A;</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"># PC1&#x7684;&#x914D;&#x7F6E;&#x5982;&#x4E0B;</span><br><span class="line">no ip routing</span><br><span class="line"></span><br><span class="line">interface FastEthernet0/0</span><br><span class="line"> ip address 192.168.10.1 255.255.255.0</span><br><span class="line"> </span><br><span class="line">ip default-gateway 192.168.10.252</span><br><span class="line"></span><br><span class="line"># PC2&#x7684;&#x914D;&#x7F6E;&#x5982;&#x4E0B;</span><br><span class="line">no ip routing</span><br><span class="line"></span><br><span class="line">interface FastEthernet0/0</span><br><span class="line"> ip address 192.168.100.1 255.255.255.0</span><br><span class="line"></span><br><span class="line">ip default-gateway 192.168.100.252</span><br></pre></td></tr></table></figure>
+
+<p>&#x5927;&#x697C;1-access-SW1 &#x548C; &#x5927;&#x697C;1-access-SW2&#x7684;&#x914D;&#x7F6E;&#x5982;&#x4E0B;&#xFF1A;</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"># &#x5927;&#x697C;1-access-SW1&#x914D;&#x7F6E;&#x5982;&#x4E0B;</span><br><span class="line">vlan database</span><br><span class="line"> vlan 10</span><br><span class="line"> exit </span><br><span class="line"> </span><br><span class="line">interface FastEthernet1/3</span><br><span class="line"> switchport access vlan 10</span><br><span class="line"> </span><br><span class="line">interface range FastEthernet1/1 -2</span><br><span class="line"> switchport mode trunk</span><br><span class="line"> switchport trunk allow vlan all</span><br><span class="line"> </span><br><span class="line"># &#x5927;&#x697C;1-access-SW2&#x7684;&#x914D;&#x7F6E;&#x5982;&#x4E0B;</span><br><span class="line">vlan database</span><br><span class="line"> vlan 10</span><br><span class="line"> exit </span><br><span class="line"> </span><br><span class="line">interface range FastEthernet1/1 -2</span><br><span class="line"> switchport mode trunk</span><br><span class="line"> switchport trunk allow vlan all</span><br></pre></td></tr></table></figure>
+
+<p>&#x5927;&#x697C;2-access-SW1&#x7684;&#x914D;&#x7F6E;&#x5982;&#x4E0B;&#xFF1A;</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"># &#x5927;&#x697C;2-access-SW1&#x914D;&#x7F6E;&#x5982;&#x4E0B;</span><br><span class="line">vlan database</span><br><span class="line"> vlan 100</span><br><span class="line"> exit </span><br><span class="line"> </span><br><span class="line">interface FastEthernet1/2</span><br><span class="line"> switchport access vlan 100</span><br><span class="line"> </span><br><span class="line">interface range FastEthernet1/0 -1</span><br><span class="line"> switchport mode trunk</span><br><span class="line"> switchport trunk allow vlan all</span><br></pre></td></tr></table></figure>
+
+<p>&#x5927;&#x697C;1-converge-SW1 &#x548C; &#x5927;&#x697C;1-converge-SW2&#x914D;&#x7F6E;&#x5982;&#x4E0B;&#xFF1A;</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br></pre></td><td class="code"><pre><span class="line"># &#x5927;&#x697C;1-converge-SW1&#x914D;&#x7F6E;&#x5982;&#x4E0B;</span><br><span class="line">vlan database</span><br><span class="line"> vlan 10</span><br><span class="line"> exit </span><br><span class="line"></span><br><span class="line">interface range FastEthernet1/0 -2</span><br><span class="line"> switchport mode trunk</span><br><span class="line"> switchport trunk allow vlan all</span><br><span class="line"></span><br><span class="line">spanning-tree vlan 10 priority 8192</span><br><span class="line"></span><br><span class="line">interface vlan 10</span><br><span class="line"> ip address 192.168.10.254 255.255.255.0</span><br><span class="line"> standby 10 ip 192.168.10.252</span><br><span class="line"> standby 10 priority 110</span><br><span class="line"></span><br><span class="line">interface FastEthernet0/0</span><br><span class="line"> ip address 46.1.1.6 255.255.255.0</span><br><span class="line"></span><br><span class="line">router ospf 10</span><br><span class="line"> network 192.168.10.0 0.0.0.255 a 1</span><br><span class="line"> network 46.1.1.0 0.0.0.255 a 1</span><br><span class="line"></span><br><span class="line"># &#x5927;&#x697C;1-converge-SW2&#x914D;&#x7F6E;&#x5982;&#x4E0B;</span><br><span class="line">vlan database</span><br><span class="line"> vlan 10</span><br><span class="line"> exit </span><br><span class="line"></span><br><span class="line">interface range FastEthernet1/0 -2</span><br><span class="line"> switchport mode trunk</span><br><span class="line"> switchport trunk allow vlan all</span><br><span class="line"></span><br><span class="line">spanning-tree vlan 10 priority 16384</span><br><span class="line"></span><br><span class="line">interface vlan 10</span><br><span class="line"> ip address 192.168.10.253 255.255.255.0</span><br><span class="line"> standby 10 ip 192.168.10.252</span><br><span class="line"></span><br><span class="line">interface FastEthernet0/0</span><br><span class="line"> ip address 57.1.1.7 255.255.255.0</span><br><span class="line"> </span><br><span class="line">router ospf 10</span><br><span class="line"> network 192.168.10.0 0.0.0.255 a 1</span><br><span class="line"> network 57.1.1.0 0.0.0.255 a 1</span><br></pre></td></tr></table></figure>
+
+<p>&#x5927;&#x697C;2-converge-SW1 &#x548C; &#x5927;&#x697C;2-converge-SW2&#x914D;&#x7F6E;&#x5982;&#x4E0B;&#xFF1A;</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br></pre></td><td class="code"><pre><span class="line"># &#x5927;&#x697C;&#xFF12;-converge-SW1&#x914D;&#x7F6E;&#x5982;&#x4E0B;</span><br><span class="line">vlan database</span><br><span class="line"> vlan 100</span><br><span class="line"> exit </span><br><span class="line"></span><br><span class="line">interface range FastEthernet1/0 -1</span><br><span class="line"> switchport mode trunk</span><br><span class="line"> switchport trunk allow vlan all</span><br><span class="line"></span><br><span class="line">spanning-tree vlan 100 priority 8192</span><br><span class="line"></span><br><span class="line">interface vlan 100</span><br><span class="line"> ip address 192.168.100.254 255.255.255.0</span><br><span class="line"> standby 10 ip 192.168.100.252</span><br><span class="line"> standby 10 priority 110</span><br><span class="line"></span><br><span class="line">interface FastEthernet0/0</span><br><span class="line"> ip address 48.1.1.8 255.255.255.0</span><br><span class="line"></span><br><span class="line">router ospf 10</span><br><span class="line"> network 192.168.100.0 0.0.0.255 a 2</span><br><span class="line"> network 48.1.1.0 0.0.0.255 a 2</span><br><span class="line"> </span><br><span class="line">ip route 0.0.0.0 0.0.0.0 46.1.1.4</span><br><span class="line"></span><br><span class="line"># &#x5927;&#x697C;2-converge-SW2&#x914D;&#x7F6E;&#x5982;&#x4E0B;</span><br><span class="line">vlan database</span><br><span class="line"> vlan 100</span><br><span class="line"> exit </span><br><span class="line"></span><br><span class="line">interface range FastEthernet1/0 -1</span><br><span class="line"> switchport mode trunk</span><br><span class="line"> switchport trunk allow vlan all</span><br><span class="line"></span><br><span class="line">spanning-tree vlan 100 priority 16384</span><br><span class="line"></span><br><span class="line">interface vlan 10</span><br><span class="line"> ip address 192.168.100.253 255.255.255.0</span><br><span class="line"> standby 10 ip 192.168.100.252</span><br><span class="line"></span><br><span class="line">interface FastEthernet0/0</span><br><span class="line"> ip address 59.1.1.9 255.255.255.0</span><br><span class="line"> </span><br><span class="line">router ospf 10</span><br><span class="line"> network 192.168.100.0 0.0.0.255 a 1</span><br><span class="line"> network 59.1.1.0 0.0.0.255 a 1</span><br><span class="line"> </span><br><span class="line">ip route 0.0.0.0 0.0.0.0 57.1.1.5 </span><br></pre></td></tr></table></figure>
+
+<p>core-R1 &#x548C; core-R2&#x914D;&#x7F6E;&#x5982;&#x4E0B;&#xFF1A;</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line"># core-R1&#x914D;&#x7F6E;&#x5982;&#x4E0B;(&#x56FE;&#x4E2D;&#x7684;R4&#x8DEF;&#x7531;&#x5668;)</span><br><span class="line">interface Ethernet1/1</span><br><span class="line"> ip address 24.1.1.4 255.255.255.0</span><br><span class="line"> </span><br><span class="line">interface Ethernet1/0</span><br><span class="line"> ip address 45.1.1.4 255.255.255.0</span><br><span class="line"> </span><br><span class="line">interface Ethernet1/2</span><br><span class="line"> ip address 46.1.1.4 255.255.255.0</span><br><span class="line"> </span><br><span class="line">interface Ethernet1/3</span><br><span class="line"> ip address 48.1.1.4 255.255.255.0</span><br><span class="line"> </span><br><span class="line">router ospf 10</span><br><span class="line"> network 24.1.1.0 0.0.0.255 area 0</span><br><span class="line"> network 45.1.1.0 0.0.0.255 area 0</span><br><span class="line"> network 46.1.1.0 0.0.0.255 area 1</span><br><span class="line"> network 48.1.1.0 0.0.0.255 area 2</span><br><span class="line"> </span><br><span class="line">ip route 0.0.0.0 0.0.0.0 24.1.1.2</span><br><span class="line">ip route 0.0.0.0 0.0.0.0 45.1.1.5 50</span><br><span class="line"></span><br><span class="line"># core-R2&#x914D;&#x7F6E;&#x5982;&#x4E0B;(&#x56FE;&#x4E2D;&#x7684;R&#x8DEF;&#x7531;&#x5668;)</span><br><span class="line">interface Ethernet1/1</span><br><span class="line"> ip address 35.1.1.5 255.255.255.0</span><br><span class="line"> </span><br><span class="line">interface Ethernet1/0</span><br><span class="line"> ip address 45.1.1.5 255.255.255.0</span><br><span class="line"> </span><br><span class="line">interface Ethernet1/2</span><br><span class="line"> ip address 57.1.1.5 255.255.255.0</span><br><span class="line"> </span><br><span class="line">interface Ethernet1/3</span><br><span class="line"> ip address 59.1.1.5 255.255.255.0</span><br><span class="line"> </span><br><span class="line">router ospf 10</span><br><span class="line"> network 35.1.1.0 0.0.0.255 area 0</span><br><span class="line"> network 45.1.1.0 0.0.0.255 area 0</span><br><span class="line"> network 57.1.1.0 0.0.0.255 area 1</span><br><span class="line"> network 59.1.1.0 0.0.0.255 area 2</span><br><span class="line"> </span><br><span class="line">ip route 0.0.0.0 0.0.0.0 35.1.1.3</span><br><span class="line">ip route 0.0.0.0 0.0.0.0 45.1.1.4 50</span><br></pre></td></tr></table></figure>
+
+<p>to-out-R1 &#x548C; to-out-R2&#x8DEF;&#x7531;&#x5668;&#x914D;&#x7F6E;&#x5982;&#x4E0B;&#xFF1A;</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br></pre></td><td class="code"><pre><span class="line"># to-out-R1&#x7684;&#x914D;&#x7F6E;&#x5982;&#x4E0B;&#xFF1A;</span><br><span class="line">interface Ethernet1/0</span><br><span class="line"> ip address 12.1.1.2 255.255.255.0</span><br><span class="line"> ip nat outside</span><br><span class="line"> </span><br><span class="line">interface Ethernet1/1</span><br><span class="line"> ip address 24.1.1.2 255.255.255.0</span><br><span class="line"> ip nat inside</span><br><span class="line">  </span><br><span class="line">interface FastEthernet1/3</span><br><span class="line"> ip address 23.1.1.2 255.255.255.0</span><br><span class="line"> ip nat inside</span><br><span class="line"> </span><br><span class="line">router ospf 10</span><br><span class="line"> network 23.1.1.0 0.0.0.255 area 0</span><br><span class="line"> network 24.1.1.0 0.0.0.255 area 0</span><br><span class="line"></span><br><span class="line">ip route 0.0.0.0 0.0.0.0 12.1.1.1</span><br><span class="line">ip route 0.0.0.0 0.0.0.0 23.1.1.3 50</span><br><span class="line"></span><br><span class="line">access-list 1 permit 192.168.10.0 0.0.0.255 </span><br><span class="line">access-list 1 permit 192.168.100.0 0.0.0.255 </span><br><span class="line"></span><br><span class="line">ip nat inside source list 1 interface Ethernet1/0 overload</span><br><span class="line"></span><br><span class="line"># to-out-R2&#x7684;&#x914D;&#x7F6E;&#x5982;&#x4E0B;&#xFF1A;</span><br><span class="line">interface Ethernet1/0</span><br><span class="line"> ip address 13.1.1.3 255.255.255.0</span><br><span class="line"> ip nat outside</span><br><span class="line"> </span><br><span class="line">interface Ethernet1/1</span><br><span class="line"> ip address 35.1.1.3 255.255.255.0</span><br><span class="line"> ip nat inside</span><br><span class="line">  </span><br><span class="line">interface FastEthernet1/3</span><br><span class="line"> ip address 23.1.1.3 255.255.255.0</span><br><span class="line"> ip nat inside</span><br><span class="line"> </span><br><span class="line">router ospf 10</span><br><span class="line"> network 23.1.1.0 0.0.0.255 area 0</span><br><span class="line"> network 35.1.1.0 0.0.0.255 area 0</span><br><span class="line"></span><br><span class="line">ip route 0.0.0.0 0.0.0.0 13.1.1.1</span><br><span class="line">ip route 0.0.0.0 0.0.0.0 23.1.1.2 50</span><br><span class="line"></span><br><span class="line">access-list 1 permit 192.168.10.0 0.0.0.255 </span><br><span class="line">access-list 1 permit 192.168.100.0 0.0.0.255 </span><br><span class="line"></span><br><span class="line">ip nat inside source list 1 interface Ethernet1/0 overload</span><br></pre></td></tr></table></figure>
+
+<p>internet-R&#x914D;&#x7F6E;&#x5982;&#x4E0B;&#xFF1A;</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">interface Loopback1</span><br><span class="line"> ip address 1.1.1.1 255.255.255.0</span><br><span class="line"> </span><br><span class="line">interface Ethernet1/0</span><br><span class="line"> ip address 12.1.1.1 255.255.255.0</span><br><span class="line"> </span><br><span class="line">interface Ethernet1/0</span><br><span class="line"> ip address 13.1.1.1 255.255.255.0</span><br></pre></td></tr></table></figure>
+
+<p>&#x6D4B;&#x8BD5;&#x7ED3;&#x679C;&#x5982;&#x4E0B;&#x56FE;&#x6240;&#x793A;&#xFF1A;</p>
+<p>&#x200B;    &#x7565;</p>
+<h2 id="1-5&#x3001;&#x9879;&#x76EE;&#x603B;&#x7ED3;"><a href="#1-5&#x3001;&#x9879;&#x76EE;&#x603B;&#x7ED3;" class="headerlink" title="1.5&#x3001;&#x9879;&#x76EE;&#x603B;&#x7ED3;"></a>1.5&#x3001;&#x9879;&#x76EE;&#x603B;&#x7ED3;</h2><p>&#x200B;    &#x7565;</p>
+
+    </div>
+    
+    
+    
+    
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>Burnov
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="http://example.com/network/%E5%9B%AD%E5%8C%BA%E7%BD%91%E7%BB%9C%E6%9E%B6%E6%9E%84%E5%AE%9E%E9%AA%8C/" title="园区网络架构实验">http://example.com/network/园区网络架构实验/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+    
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/vlan-trunk/" rel="tag"># vlan trunk</a>
+              <a href="/tags/stp/" rel="tag"># stp</a>
+              <a href="/tags/vrrp-hsrp/" rel="tag"># vrrp hsrp</a>
+              <a href="/tags/%E9%9D%99%E6%80%81%E8%B7%AF%E7%94%B1-%E6%B5%AE%E5%8A%A8%E8%B7%AF%E7%94%B1/" rel="tag"># 静态路由 浮动路由</a>
+              <a href="/tags/ospf/" rel="tag"># ospf</a>
+              <a href="/tags/snat/" rel="tag"># snat</a>
+          </div>
+    
+        
+
+    
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/network/%E5%8F%8C%E9%93%BE%E8%B7%AF%E7%BD%91%E7%BB%9C%E6%9E%B6%E6%9E%84%E5%AE%9E%E9%AA%8C/" rel="prev" title="双链路网络架构实验">
+      <i class="fa fa-chevron-left"></i> 双链路网络架构实验
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+    <div>
+        
+        
+
+<div>
+    
+        <div style="text-align:center;color: #ccc;font-size:14px;">------ 本文结束------</div>
+    
+</div>
+        
+     </div>
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%A1%B9%E7%9B%AE%E4%B8%89%EF%BC%9A%E5%A4%A7%E5%9E%8B%E5%9B%AD%E5%8C%BA%E7%BD%91%E7%BB%9C%E6%9E%B6%E6%9E%84%E5%AE%9E%E7%8E%B0"><span class="nav-number">1.</span> <span class="nav-text">项目三：大型园区网络架构实现</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-1%E3%80%81%E9%A1%B9%E7%9B%AE%E8%83%8C%E6%99%AF%E6%8F%8F%E8%BF%B0"><span class="nav-number">1.1.</span> <span class="nav-text">1.1、项目背景描述</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-2%E3%80%81%E9%A1%B9%E7%9B%AE%E6%8B%93%E6%89%91%E7%BB%93%E6%9E%84"><span class="nav-number">1.2.</span> <span class="nav-text">1.2、项目拓扑结构</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-3%E3%80%81%E9%A1%B9%E7%9B%AE%E9%9C%80%E6%B1%82%E4%BB%8B%E7%BB%8D"><span class="nav-number">1.3.</span> <span class="nav-text">1.3、项目需求介绍</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-4%E3%80%81%E9%A1%B9%E7%9B%AE%E9%85%8D%E7%BD%AE%E5%AE%9E%E7%8E%B0"><span class="nav-number">1.4.</span> <span class="nav-text">1.4、项目配置实现</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-5%E3%80%81%E9%A1%B9%E7%9B%AE%E6%80%BB%E7%BB%93"><span class="nav-number">1.5.</span> <span class="nav-text">1.5、项目总结</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Burnov</p>
+  <div class="site-description" itemprop="description">学海无涯</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">3</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">3</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/Burnov" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;Burnov" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:xials1990@gmail.com" title="E-Mail → mailto:xials1990@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i></a>
+      </span>
+  </div>
+  <div class="cc-license motion-element" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class=""></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Burnov</span>
+</div>
+
+<!--
+  <div class="powered-by">由 <a href="https://github.com/Burnov" class="theme-link" rel="noopener" target="_blank">Burnov</a> & <a href="https://mist.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Mist</a> 强力驱动
+  </div>
+
+-->
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>
