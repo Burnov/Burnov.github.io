@@ -6,7 +6,7 @@
   <link href="http://example.com/atom.xml" rel="self"/>
   
   <link href="http://example.com/"/>
-  <updated>2021-12-25T09:37:04.923Z</updated>
+  <updated>2022-01-01T00:54:41.439Z</updated>
   <id>http://example.com/</id>
   
   <author>
@@ -15,6 +15,72 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>docker的安装</title>
+    <link href="http://example.com/%E4%BA%91%E5%8E%9F%E7%94%9F/02_docker%E5%AE%89%E8%A3%85/"/>
+    <id>http://example.com/%E4%BA%91%E5%8E%9F%E7%94%9F/02_docker%E5%AE%89%E8%A3%85/</id>
+    <published>2021-12-31T09:01:56.000Z</published>
+    <updated>2022-01-01T00:54:41.439Z</updated>
+    
+    
+    <summary type="html">&lt;h1 id=&quot;docker&amp;#x7684;&amp;#x7F51;&amp;#x7EDC;&amp;#x5B89;&amp;#x88C5;&quot;&gt;&lt;a href=&quot;#docker&amp;#x7684;&amp;#x7F51;&amp;#x7EDC;&amp;#x5B89;&amp;#x88C5;&quot; class=&quot;headerlink&quot; title=&quot;docker&amp;#x7684;&amp;#x7F51;&amp;#x7EDC;&amp;#x5B89;&amp;#x88C5;&quot;&gt;&lt;/a&gt;docker&amp;#x7684;&amp;#x7F51;&amp;#x7EDC;&amp;#x5B89;&amp;#x88C5;&lt;/h1&gt;&lt;h2 id=&quot;&amp;#x7B2C;&amp;#x4E00;&amp;#x6B65;&amp;#x3001;&amp;#x627E;&amp;#x5230;&amp;#x963F;&amp;#x91CC;&amp;#x4E91;&amp;#x7684;Docker-ce&amp;#x4E0B;&amp;#x8F7D;&amp;#x6E90;&quot;&gt;&lt;a href=&quot;#&amp;#x7B2C;&amp;#x4E00;&amp;#x6B65;&amp;#x3001;&amp;#x627E;&amp;#x5230;&amp;#x963F;&amp;#x91CC;&amp;#x4E91;&amp;#x7684;Docker-ce&amp;#x4E0B;&amp;#x8F7D;&amp;#x6E90;&quot; class=&quot;headerlink&quot; title=&quot;&amp;#x7B2C;&amp;#x4E00;&amp;#x6B65;&amp;#x3001;&amp;#x627E;&amp;#x5230;&amp;#x963F;&amp;#x91CC;&amp;#x4E91;&amp;#x7684;Docker-ce&amp;#x4E0B;&amp;#x8F7D;&amp;#x6E90;&quot;&gt;&lt;/a&gt;&amp;#x7B2C;&amp;#x4E00;&amp;#x6B65;&amp;#x3001;&amp;#x627E;&amp;#x5230;&amp;#x963F;&amp;#x91CC;&amp;#x4E91;&amp;#x7684;Docker-ce&amp;#x4E0B;&amp;#x8F7D;&amp;#x6E90;&lt;/h2&gt;&lt;p&gt;&lt;img src=&quot;/%E4%BA%91%E5%8E%9F%E7%94%9F/02_docker%E5%AE%89%E8%A3%85/image-20211227102829010.png&quot; alt=&quot;image-20211227102829010&quot;&gt;&lt;/p&gt;</summary>
+    
+    
+    
+    <category term="云原生" scheme="http://example.com/categories/%E4%BA%91%E5%8E%9F%E7%94%9F/"/>
+    
+    
+    <category term="容器" scheme="http://example.com/tags/%E5%AE%B9%E5%99%A8/"/>
+    
+    <category term="docker" scheme="http://example.com/tags/docker/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>docker的常用命令介绍</title>
+    <link href="http://example.com/%E4%BA%91%E5%8E%9F%E7%94%9F/03_docker%E7%9A%84%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/"/>
+    <id>http://example.com/%E4%BA%91%E5%8E%9F%E7%94%9F/03_docker%E7%9A%84%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/</id>
+    <published>2021-12-31T09:01:56.000Z</published>
+    <updated>2022-01-01T00:54:39.673Z</updated>
+    
+    
+    <summary type="html">&lt;h2 id=&quot;&amp;#x955C;&amp;#x50CF;&amp;#x7BA1;&amp;#x7406;&quot;&gt;&lt;a href=&quot;#&amp;#x955C;&amp;#x50CF;&amp;#x7BA1;&amp;#x7406;&quot; class=&quot;headerlink&quot; title=&quot;&amp;#x955C;&amp;#x50CF;&amp;#x7BA1;&amp;#x7406;&quot;&gt;&lt;/a&gt;&amp;#x955C;&amp;#x50CF;&amp;#x7BA1;&amp;#x7406;&lt;/h2&gt;&lt;h3 id=&quot;pull-&amp;#x62C9;&amp;#x53D6;&amp;#x955C;&amp;#x50CF;&quot;&gt;&lt;a href=&quot;#pull-&amp;#x62C9;&amp;#x53D6;&amp;#x955C;&amp;#x50CF;&quot; class=&quot;headerlink&quot; title=&quot;pull-&amp;#x62C9;&amp;#x53D6;&amp;#x955C;&amp;#x50CF;&quot;&gt;&lt;/a&gt;pull-&amp;#x62C9;&amp;#x53D6;&amp;#x955C;&amp;#x50CF;&lt;/h3&gt;&lt;figure class=&quot;highlight shell&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;meta&quot;&gt;#&lt;/span&gt;&lt;span class=&quot;bash&quot;&gt; &amp;#x62C9;&amp;#x53D6;&amp;#x955C;&amp;#x50CF;&amp;#x5230;&amp;#x672C;&amp;#x5730;&amp;#xFF0C;&amp;#x9ED8;&amp;#x8BA4;&amp;#x4E3A;&amp;#x516C;&amp;#x7F51;&amp;#x4ED3;&amp;#x5E93;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;docker pull centos:centos7.9.2009&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;</summary>
+    
+    
+    
+    <category term="云原生" scheme="http://example.com/categories/%E4%BA%91%E5%8E%9F%E7%94%9F/"/>
+    
+    
+    <category term="容器" scheme="http://example.com/tags/%E5%AE%B9%E5%99%A8/"/>
+    
+    <category term="docker" scheme="http://example.com/tags/docker/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>harbor的单机部署</title>
+    <link href="http://example.com/%E4%BA%91%E5%8E%9F%E7%94%9F/04_harbor%E7%9A%84%E5%8D%95%E6%9C%BA%E9%83%A8%E7%BD%B2/"/>
+    <id>http://example.com/%E4%BA%91%E5%8E%9F%E7%94%9F/04_harbor%E7%9A%84%E5%8D%95%E6%9C%BA%E9%83%A8%E7%BD%B2/</id>
+    <published>2021-12-31T09:01:56.000Z</published>
+    <updated>2022-01-01T00:54:37.685Z</updated>
+    
+    
+    <summary type="html">&lt;h2 id=&quot;docker&amp;#x4E0E;docker-compose&amp;#x7684;&amp;#x5B89;&amp;#x88C5;&quot;&gt;&lt;a href=&quot;#docker&amp;#x4E0E;docker-compose&amp;#x7684;&amp;#x5B89;&amp;#x88C5;&quot; class=&quot;headerlink&quot; title=&quot;docker&amp;#x4E0E;docker-compose&amp;#x7684;&amp;#x5B89;&amp;#x88C5;&quot;&gt;&lt;/a&gt;docker&amp;#x4E0E;docker-compose&amp;#x7684;&amp;#x5B89;&amp;#x88C5;&lt;/h2&gt;&lt;p&gt;docker&amp;#x7684;&amp;#x5B89;&amp;#x88C5;&amp;#x8FD9;&amp;#x91CC;&amp;#x4E0D;&amp;#x518D;&amp;#x8D58;&amp;#x8FF0;&amp;#xFF1B;&amp;#x6211;&amp;#x4EEC;&amp;#x4E3B;&amp;#x8981;&amp;#x770B;&amp;#x4E00;&amp;#x4E0B;compose&amp;#x7684;&amp;#x5B89;&amp;#x88C5;&amp;#xFF1B;&amp;#xFF08;docker-compose&amp;#x662F;docker&amp;#x9879;&amp;#x76EE;&amp;#x7684;&amp;#x5355;&amp;#x673A;&amp;#x7F16;&amp;#x6392;&amp;#x5DE5;&amp;#x5177;&amp;#xFF0C;&amp;#x56E0;&amp;#x4E3A;harbor&amp;#x7684;&amp;#x542F;&amp;#x52A8;&amp;#x662F;&amp;#x57FA;&amp;#x4E8E;&amp;#x5404;&amp;#x79CD;&amp;#x5BB9;&amp;#x5668;&amp;#x7684;&amp;#xFF0C;&amp;#x6240;&amp;#x4EE5;&amp;#x6211;&amp;#x4EEC;&amp;#x9700;&amp;#x8981;&amp;#x5BF9;&amp;#x8FD9;&amp;#x4E9B;&amp;#x5BB9;&amp;#x5668;&amp;#x8FDB;&amp;#x884C;&amp;#x5355;&amp;#x673A;&amp;#x7F16;&amp;#x6392;&amp;#x542F;&amp;#x52A8;&amp;#x4E0E;&amp;#x7BA1;&amp;#x7406;&amp;#xFF09;&lt;/p&gt;
+&lt;p&gt;&amp;#x9996;&amp;#x5148;&amp;#xFF0C;&amp;#x5728;github&amp;#x7684;&amp;#x5B98;&amp;#x7F51;&amp;#x4E0A;&amp;#x9762;&amp;#x627E;&amp;#x5230;compose&amp;#x7684;&amp;#x9879;&amp;#x76EE;&amp;#xFF1B;&lt;/p&gt;</summary>
+    
+    
+    
+    <category term="云原生" scheme="http://example.com/categories/%E4%BA%91%E5%8E%9F%E7%94%9F/"/>
+    
+    
+    <category term="容器" scheme="http://example.com/tags/%E5%AE%B9%E5%99%A8/"/>
+    
+    <category term="docker" scheme="http://example.com/tags/docker/"/>
+    
+    <category term="harbor仓库" scheme="http://example.com/tags/harbor%E4%BB%93%E5%BA%93/"/>
+    
+  </entry>
   
   <entry>
     <title>园区网络架构实验</title>
@@ -67,72 +133,6 @@
     <category term="stp" scheme="http://example.com/tags/stp/"/>
     
     <category term="vrrp hsrp" scheme="http://example.com/tags/vrrp-hsrp/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>docker的安装</title>
-    <link href="http://example.com/%E4%BA%91%E5%8E%9F%E7%94%9F/02_docker%E5%AE%89%E8%A3%85/"/>
-    <id>http://example.com/%E4%BA%91%E5%8E%9F%E7%94%9F/02_docker%E5%AE%89%E8%A3%85/</id>
-    <published>2021-12-25T09:01:56.000Z</published>
-    <updated>2021-12-31T02:05:07.087Z</updated>
-    
-    
-    <summary type="html">&lt;h1 id=&quot;docker&amp;#x7684;&amp;#x7F51;&amp;#x7EDC;&amp;#x5B89;&amp;#x88C5;&quot;&gt;&lt;a href=&quot;#docker&amp;#x7684;&amp;#x7F51;&amp;#x7EDC;&amp;#x5B89;&amp;#x88C5;&quot; class=&quot;headerlink&quot; title=&quot;docker&amp;#x7684;&amp;#x7F51;&amp;#x7EDC;&amp;#x5B89;&amp;#x88C5;&quot;&gt;&lt;/a&gt;docker&amp;#x7684;&amp;#x7F51;&amp;#x7EDC;&amp;#x5B89;&amp;#x88C5;&lt;/h1&gt;&lt;h2 id=&quot;&amp;#x7B2C;&amp;#x4E00;&amp;#x6B65;&amp;#x3001;&amp;#x627E;&amp;#x5230;&amp;#x963F;&amp;#x91CC;&amp;#x4E91;&amp;#x7684;Docker-ce&amp;#x4E0B;&amp;#x8F7D;&amp;#x6E90;&quot;&gt;&lt;a href=&quot;#&amp;#x7B2C;&amp;#x4E00;&amp;#x6B65;&amp;#x3001;&amp;#x627E;&amp;#x5230;&amp;#x963F;&amp;#x91CC;&amp;#x4E91;&amp;#x7684;Docker-ce&amp;#x4E0B;&amp;#x8F7D;&amp;#x6E90;&quot; class=&quot;headerlink&quot; title=&quot;&amp;#x7B2C;&amp;#x4E00;&amp;#x6B65;&amp;#x3001;&amp;#x627E;&amp;#x5230;&amp;#x963F;&amp;#x91CC;&amp;#x4E91;&amp;#x7684;Docker-ce&amp;#x4E0B;&amp;#x8F7D;&amp;#x6E90;&quot;&gt;&lt;/a&gt;&amp;#x7B2C;&amp;#x4E00;&amp;#x6B65;&amp;#x3001;&amp;#x627E;&amp;#x5230;&amp;#x963F;&amp;#x91CC;&amp;#x4E91;&amp;#x7684;Docker-ce&amp;#x4E0B;&amp;#x8F7D;&amp;#x6E90;&lt;/h2&gt;&lt;p&gt;&lt;img src=&quot;/%E4%BA%91%E5%8E%9F%E7%94%9F/02_docker%E5%AE%89%E8%A3%85/image-20211227102829010.png&quot; alt=&quot;image-20211227102829010&quot;&gt;&lt;/p&gt;</summary>
-    
-    
-    
-    <category term="云原生" scheme="http://example.com/categories/%E4%BA%91%E5%8E%9F%E7%94%9F/"/>
-    
-    
-    <category term="容器" scheme="http://example.com/tags/%E5%AE%B9%E5%99%A8/"/>
-    
-    <category term="docker" scheme="http://example.com/tags/docker/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>docker的常用命令介绍</title>
-    <link href="http://example.com/%E4%BA%91%E5%8E%9F%E7%94%9F/03_docker%E7%9A%84%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/"/>
-    <id>http://example.com/%E4%BA%91%E5%8E%9F%E7%94%9F/03_docker%E7%9A%84%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/</id>
-    <published>2021-12-25T09:01:56.000Z</published>
-    <updated>2021-12-31T15:33:23.785Z</updated>
-    
-    
-    <summary type="html">&lt;h2 id=&quot;&amp;#x955C;&amp;#x50CF;&amp;#x7BA1;&amp;#x7406;&quot;&gt;&lt;a href=&quot;#&amp;#x955C;&amp;#x50CF;&amp;#x7BA1;&amp;#x7406;&quot; class=&quot;headerlink&quot; title=&quot;&amp;#x955C;&amp;#x50CF;&amp;#x7BA1;&amp;#x7406;&quot;&gt;&lt;/a&gt;&amp;#x955C;&amp;#x50CF;&amp;#x7BA1;&amp;#x7406;&lt;/h2&gt;&lt;h3 id=&quot;pull-&amp;#x62C9;&amp;#x53D6;&amp;#x955C;&amp;#x50CF;&quot;&gt;&lt;a href=&quot;#pull-&amp;#x62C9;&amp;#x53D6;&amp;#x955C;&amp;#x50CF;&quot; class=&quot;headerlink&quot; title=&quot;pull-&amp;#x62C9;&amp;#x53D6;&amp;#x955C;&amp;#x50CF;&quot;&gt;&lt;/a&gt;pull-&amp;#x62C9;&amp;#x53D6;&amp;#x955C;&amp;#x50CF;&lt;/h3&gt;&lt;figure class=&quot;highlight shell&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;meta&quot;&gt;#&lt;/span&gt;&lt;span class=&quot;bash&quot;&gt; &amp;#x62C9;&amp;#x53D6;&amp;#x955C;&amp;#x50CF;&amp;#x5230;&amp;#x672C;&amp;#x5730;&amp;#xFF0C;&amp;#x9ED8;&amp;#x8BA4;&amp;#x4E3A;&amp;#x516C;&amp;#x7F51;&amp;#x4ED3;&amp;#x5E93;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;docker pull centos:centos7.9.2009&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;</summary>
-    
-    
-    
-    <category term="云原生" scheme="http://example.com/categories/%E4%BA%91%E5%8E%9F%E7%94%9F/"/>
-    
-    
-    <category term="容器" scheme="http://example.com/tags/%E5%AE%B9%E5%99%A8/"/>
-    
-    <category term="docker" scheme="http://example.com/tags/docker/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>harbor的单机部署</title>
-    <link href="http://example.com/%E4%BA%91%E5%8E%9F%E7%94%9F/04_harbor%E7%9A%84%E5%8D%95%E6%9C%BA%E9%83%A8%E7%BD%B2/"/>
-    <id>http://example.com/%E4%BA%91%E5%8E%9F%E7%94%9F/04_harbor%E7%9A%84%E5%8D%95%E6%9C%BA%E9%83%A8%E7%BD%B2/</id>
-    <published>2021-12-25T09:01:56.000Z</published>
-    <updated>2021-12-31T15:32:59.784Z</updated>
-    
-    
-    <summary type="html">&lt;h2 id=&quot;docker&amp;#x4E0E;docker-compose&amp;#x7684;&amp;#x5B89;&amp;#x88C5;&quot;&gt;&lt;a href=&quot;#docker&amp;#x4E0E;docker-compose&amp;#x7684;&amp;#x5B89;&amp;#x88C5;&quot; class=&quot;headerlink&quot; title=&quot;docker&amp;#x4E0E;docker-compose&amp;#x7684;&amp;#x5B89;&amp;#x88C5;&quot;&gt;&lt;/a&gt;docker&amp;#x4E0E;docker-compose&amp;#x7684;&amp;#x5B89;&amp;#x88C5;&lt;/h2&gt;&lt;p&gt;docker&amp;#x7684;&amp;#x5B89;&amp;#x88C5;&amp;#x8FD9;&amp;#x91CC;&amp;#x4E0D;&amp;#x518D;&amp;#x8D58;&amp;#x8FF0;&amp;#xFF1B;&amp;#x6211;&amp;#x4EEC;&amp;#x4E3B;&amp;#x8981;&amp;#x770B;&amp;#x4E00;&amp;#x4E0B;compose&amp;#x7684;&amp;#x5B89;&amp;#x88C5;&amp;#xFF1B;&amp;#xFF08;docker-compose&amp;#x662F;docker&amp;#x9879;&amp;#x76EE;&amp;#x7684;&amp;#x5355;&amp;#x673A;&amp;#x7F16;&amp;#x6392;&amp;#x5DE5;&amp;#x5177;&amp;#xFF0C;&amp;#x56E0;&amp;#x4E3A;harbor&amp;#x7684;&amp;#x542F;&amp;#x52A8;&amp;#x662F;&amp;#x57FA;&amp;#x4E8E;&amp;#x5404;&amp;#x79CD;&amp;#x5BB9;&amp;#x5668;&amp;#x7684;&amp;#xFF0C;&amp;#x6240;&amp;#x4EE5;&amp;#x6211;&amp;#x4EEC;&amp;#x9700;&amp;#x8981;&amp;#x5BF9;&amp;#x8FD9;&amp;#x4E9B;&amp;#x5BB9;&amp;#x5668;&amp;#x8FDB;&amp;#x884C;&amp;#x5355;&amp;#x673A;&amp;#x7F16;&amp;#x6392;&amp;#x542F;&amp;#x52A8;&amp;#x4E0E;&amp;#x7BA1;&amp;#x7406;&amp;#xFF09;&lt;/p&gt;
-&lt;p&gt;&amp;#x9996;&amp;#x5148;&amp;#xFF0C;&amp;#x5728;github&amp;#x7684;&amp;#x5B98;&amp;#x7F51;&amp;#x4E0A;&amp;#x9762;&amp;#x627E;&amp;#x5230;compose&amp;#x7684;&amp;#x9879;&amp;#x76EE;&amp;#xFF1B;&lt;/p&gt;</summary>
-    
-    
-    
-    <category term="云原生" scheme="http://example.com/categories/%E4%BA%91%E5%8E%9F%E7%94%9F/"/>
-    
-    
-    <category term="容器" scheme="http://example.com/tags/%E5%AE%B9%E5%99%A8/"/>
-    
-    <category term="docker" scheme="http://example.com/tags/docker/"/>
-    
-    <category term="harbor仓库" scheme="http://example.com/tags/harbor%E4%BB%93%E5%BA%93/"/>
     
   </entry>
   
