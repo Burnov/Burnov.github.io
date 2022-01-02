@@ -7,6 +7,8 @@
 <p>&#x8BA1;&#x7B97;&#x673A;&#x8BED;&#x8A00;&#xFF1A;&#x4EBA;&#x4E0E;&#x8BA1;&#x7B97;&#x673A;&#x4E4B;&#x95F4;&#x8FDB;&#x884C;&#x4FE1;&#x606F;&#x4EA4;&#x6D41;&#x7684;&#x6C9F;&#x901A;&#x7684;&#x4E00;&#x79CD;&#x7279;&#x6B8A;&#x8BED;&#x8A00;</p>
 <p>java&#x8BED;&#x8A00;&#xFF1A;&#x7531;&#x7F8E;&#x56FD;sun&#xFF08;stanford university network&#xFF09;&#x516C;&#x53F8;&#x518D;1995&#x5E74;&#x63A8;&#x51FA;&#x7684;&#x8BA1;&#x7B97;&#x673A;&#x8BED;&#x8A00;</p>
 <p>java&#x4E4B;&#x7236;&#xFF1A;&#x8A79;&#x59C6;&#x65AF;&#x9AD8;&#x65AF;&#x6797;</p>
+<span id="more"></span>
+
 <p><img src="/%E5%BC%80%E5%8F%91%E8%AF%AD%E8%A8%80/java/01_java%E5%9F%BA%E7%A1%80_java%E4%BB%8B%E7%BB%8D/image-20220101114216801.png" alt="image-20220101114216801"></p>
 <p>Java SE&#xFF1A;&#x6807;&#x51C6;&#x7248;&#x672C;&#xFF0C;&#x7528;&#x4E8E;&#x684C;&#x9762;&#x5E94;&#x7528;&#x5F00;&#x53D1;&#xFF0C;&#x662F;&#x5176;&#x4ED6;&#x4E24;&#x4E2A;&#x7248;&#x672C;&#x7684;&#x7684;&#x57FA;&#x7840;&#xFF1B;</p>
 <p>&#x200B;    &#x684C;&#x9762;&#x5E94;&#x7528;&#xFF1A;&#x7528;&#x6237;&#x53EA;&#x7528;&#x6253;&#x5F00;&#x5E94;&#x7528;&#x7A0B;&#x5E8F;&#xFF0C;&#x7A0B;&#x5E8F;&#x754C;&#x9762;&#x4F1A;&#x544A;&#x77E5;&#x7528;&#x6237;&#x5728;&#x6700;&#x77ED;&#x7684;&#x65F6;&#x95F4;&#x6765;&#x719F;&#x6089;&#x8F6F;&#x4EF6;&#x7684;&#x5E94;&#x7528;&#x3002;&#x540C;&#x65F6;&#x4E3B;&#x52A8;&#x5E26;&#x9886;&#x7528;&#x6237;&#x5B8C;&#x6210;&#x4ED6;&#x4EEC;&#x7684;&#x5DE5;&#x4F5C;&#x5E76;&#x5F97;&#x5230;&#x6700;&#x597D;&#x7684;&#x4F53;&#x9A8C;&#xFF1B;&#xFF08;&#x7ED9;Java EE&#x6253;&#x4E0B;&#x57FA;&#x7840;&#xFF09;</p>
@@ -119,6 +121,8 @@
     <content><![CDATA[<h1 id="&#x5E38;&#x7528;&#x7684;dos&#x547D;&#x4EE4;"><a href="#&#x5E38;&#x7528;&#x7684;dos&#x547D;&#x4EE4;" class="headerlink" title="&#x5E38;&#x7528;&#x7684;dos&#x547D;&#x4EE4;"></a>&#x5E38;&#x7528;&#x7684;dos&#x547D;&#x4EE4;</h1><p>dos&#x547D;&#x4EE4;&#x63D0;&#x793A;&#x7B26;&#xFF1A;&#x6211;&#x4EEC;&#x9700;&#x8981;&#x4F7F;&#x7528;java.exe&#x3001;javac.exe&#x7684;&#x8F6F;&#x4EF6;&#x7A0B;&#x5E8F;&#xFF0C;&#x4ED6;&#x548C;&#x6211;&#x4EEC;&#x666E;&#x901A;&#x7684;&#x8F6F;&#x4EF6;&#x7A0B;&#x5E8F;&#x4E0D;&#x540C;&#xFF0C;&#x4ED6;&#x4EEC;&#x9700;&#x8981;&#x5728;Windows&#x7684;dos&#x754C;&#x9762;&#x4E0B;&#x9762;&#x6267;&#x884C;&#xFF0C;&#x6240;&#x4EE5;&#x6211;&#x4EEC;&#x5148;&#x9700;&#x8981;&#x4ECB;&#x7ECD;&#x4EE5;&#x4E0B;dos&#x754C;&#x9762;&#xFF1B;</p>
 <p>&#x5F00;&#x542F;dos&#x547D;&#x4EE4;&#x63D0;&#x793A;&#x7B26;&#x754C;&#x9762;&#xFF1A;</p>
 <p>&#x7B2C;&#x4E00;&#x6B65;&#x3001;win+R&#x952E;&#x542F;&#x52A8;&#x201C;&#x8FD0;&#x884C;&#x201D;&#x5BF9;&#x8BDD;&#x6846;</p>
+<span id="more"></span>
+
 <p>&#x7B2C;&#x4E8C;&#x6B65;&#x3001;&#x8F93;&#x5165;cmd&#xFF0C;&#x56DE;&#x8F66;</p>
 <p><img src="/%E5%BC%80%E5%8F%91%E8%AF%AD%E8%A8%80/java/02_java%E5%9F%BA%E7%A1%80_%E7%AC%AC%E4%B8%80%E4%B8%AAjava%E7%A8%8B%E5%BA%8F/image-20220101124642966.png" alt="CMD&#x754C;&#x9762;"></p>
 <p>&#x5E38;&#x89C1;&#x7684;dos&#x547D;&#x4EE4;&#xFF1A;</p>
@@ -356,6 +360,8 @@
 <li>&#x6587;&#x6863;&#x6CE8;&#x91CA;&#xFF1A;/** &#x6CE8;&#x91CA;&#x4FE1;&#x606F; **/  </li>
 </ul>
 <p>&#x76EE;&#x524D;&#x8FD8;&#x7528;&#x4E0D;&#x4E0A;&#x6587;&#x6863;&#x6CE8;&#x91CA;&#x4FE1;&#x606F;&#x7684;&#x5185;&#x5BB9;&#xFF1B;</p>
+<span id="more"></span>
+
 <h1 id="&#x5173;&#x952E;&#x5B57;"><a href="#&#x5173;&#x952E;&#x5B57;" class="headerlink" title="&#x5173;&#x952E;&#x5B57;"></a>&#x5173;&#x952E;&#x5B57;</h1><p>&#x88AB;Java&#x8D4B;&#x4E88;&#x4E86;&#x7279;&#x5B9A;&#x610F;&#x4E49;&#x7684;&#x82F1;&#x6587;&#x5355;&#x8BCD;&#xFF0C;&#x5C31;&#x662F;&#x6211;&#x4EEC;Java&#x7A0B;&#x5E8F;&#x4E2D;&#x7684;&#x5173;&#x952E;&#x5B57;&#xFF1B;&#x4F8B;&#x5982;&#x4E4B;&#x524D;&#x5728;halloworld&#x7A0B;&#x5E8F;&#x4E2D;&#x4F7F;&#x7528;&#x5230;&#x7684;public&#x3001;class&#x90FD;&#x662F;&#x5C5E;&#x4E8E;&#x5173;&#x952E;&#x5B57;&#xFF0C;&#x5B83;&#x4EEC;&#x90FD;&#x6709;&#x81EA;&#x5DF1;&#x7279;&#x5B9A;&#x7684;&#x542B;&#x4E49;&#xFF1B;</p>
 <ul>
 <li>public &#x2013; &#x9650;&#x5236;&#x7C7B;&#x540D;&#x9700;&#x8981;&#x548C;&#x6587;&#x4EF6;&#x540D;&#x4E00;&#x81F4;&#xFF1B;</li>
