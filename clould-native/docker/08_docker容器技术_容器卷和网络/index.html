@@ -1,0 +1,635 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-minimal.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Mist","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="docker&amp;#x5BB9;&amp;#x5668;&amp;#x7684;&amp;#x5377;&amp;#x8BE6;&amp;#x89E3;docker&amp;#x7684;&amp;#x6570;&amp;#x636E;&amp;#x5377;&amp;#x57FA;&amp;#x672C;&amp;#x6982;&amp;#x5FF5;&amp;#x5982;&amp;#x679C;&amp;#x6B63;&amp;#x5728;&amp;#x8FD0;&amp;#x884C;&amp;#x4E2D;&amp;#x7684;&amp;#x5BB9;&amp;#x5">
+<meta property="og:type" content="article">
+<meta property="og:title" content="容器的卷和网络">
+<meta property="og:url" content="http://example.com/clould-native/docker/08_docker%E5%AE%B9%E5%99%A8%E6%8A%80%E6%9C%AF_%E5%AE%B9%E5%99%A8%E5%8D%B7%E5%92%8C%E7%BD%91%E7%BB%9C/index.html">
+<meta property="og:site_name" content="Burnov^-^Blog">
+<meta property="og:description" content="docker&amp;#x5BB9;&amp;#x5668;&amp;#x7684;&amp;#x5377;&amp;#x8BE6;&amp;#x89E3;docker&amp;#x7684;&amp;#x6570;&amp;#x636E;&amp;#x5377;&amp;#x57FA;&amp;#x672C;&amp;#x6982;&amp;#x5FF5;&amp;#x5982;&amp;#x679C;&amp;#x6B63;&amp;#x5728;&amp;#x8FD0;&amp;#x884C;&amp;#x4E2D;&amp;#x7684;&amp;#x5BB9;&amp;#x5">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://example.com/clould-native/docker/08_docker%E5%AE%B9%E5%99%A8%E6%8A%80%E6%9C%AF_%E5%AE%B9%E5%99%A8%E5%8D%B7%E5%92%8C%E7%BD%91%E7%BB%9C/image-20220104095503099.png">
+<meta property="og:image" content="http://example.com/clould-native/docker/08_docker%E5%AE%B9%E5%99%A8%E6%8A%80%E6%9C%AF_%E5%AE%B9%E5%99%A8%E5%8D%B7%E5%92%8C%E7%BD%91%E7%BB%9C/image-20220104095948693.png">
+<meta property="og:image" content="http://example.com/clould-native/docker/08_docker%E5%AE%B9%E5%99%A8%E6%8A%80%E6%9C%AF_%E5%AE%B9%E5%99%A8%E5%8D%B7%E5%92%8C%E7%BD%91%E7%BB%9C/image-20220104100110189.png">
+<meta property="og:image" content="http://example.com/clould-native/docker/08_docker%E5%AE%B9%E5%99%A8%E6%8A%80%E6%9C%AF_%E5%AE%B9%E5%99%A8%E5%8D%B7%E5%92%8C%E7%BD%91%E7%BB%9C/image-20220104100321711.png">
+<meta property="og:image" content="http://example.com/clould-native/docker/08_docker%E5%AE%B9%E5%99%A8%E6%8A%80%E6%9C%AF_%E5%AE%B9%E5%99%A8%E5%8D%B7%E5%92%8C%E7%BD%91%E7%BB%9C/image-20220104101613978.png">
+<meta property="og:image" content="http://example.com/clould-native/docker/08_docker%E5%AE%B9%E5%99%A8%E6%8A%80%E6%9C%AF_%E5%AE%B9%E5%99%A8%E5%8D%B7%E5%92%8C%E7%BD%91%E7%BB%9C/image-20220104130326206.png">
+<meta property="og:image" content="http://example.com/clould-native/docker/08_docker%E5%AE%B9%E5%99%A8%E6%8A%80%E6%9C%AF_%E5%AE%B9%E5%99%A8%E5%8D%B7%E5%92%8C%E7%BD%91%E7%BB%9C/image-20220104130719054.png">
+<meta property="og:image" content="http://example.com/clould-native/docker/08_docker%E5%AE%B9%E5%99%A8%E6%8A%80%E6%9C%AF_%E5%AE%B9%E5%99%A8%E5%8D%B7%E5%92%8C%E7%BD%91%E7%BB%9C/image-20220104201101348.png">
+<meta property="article:published_time" content="2022-01-04T12:17:00.000Z">
+<meta property="article:modified_time" content="2022-01-04T12:24:51.693Z">
+<meta property="article:author" content="Burnov">
+<meta property="article:tag" content="container">
+<meta property="article:tag" content="docker">
+<meta property="article:tag" content="network and volume">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/clould-native/docker/08_docker%E5%AE%B9%E5%99%A8%E6%8A%80%E6%9C%AF_%E5%AE%B9%E5%99%A8%E5%8D%B7%E5%92%8C%E7%BD%91%E7%BB%9C/image-20220104095503099.png">
+
+<link rel="canonical" href="http://example.com/clould-native/docker/08_docker%E5%AE%B9%E5%99%A8%E6%8A%80%E6%9C%AF_%E5%AE%B9%E5%99%A8%E5%8D%B7%E5%92%8C%E7%BD%91%E7%BB%9C/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>容器的卷和网络 | Burnov^-^Blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="Burnov^-^Blog" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Burnov^-^Blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="Searching..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://example.com/clould-native/docker/08_docker%E5%AE%B9%E5%99%A8%E6%8A%80%E6%9C%AF_%E5%AE%B9%E5%99%A8%E5%8D%B7%E5%92%8C%E7%BD%91%E7%BB%9C/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="Burnov">
+      <meta itemprop="description" content="No end for Learning">
+    </span>
+    
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Burnov^-^Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          容器的卷和网络
+        </h1>
+    
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+              
+    
+              <time title="Created: 2022-01-04 20:17:00 / Modified: 20:24:51" itemprop="dateCreated datePublished" datetime="2022-01-04T20:17:00+08:00">2022-01-04</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/clould-native/" itemprop="url" rel="index"><span itemprop="name">clould native</span></a>
+                </span>
+                  , 
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/clould-native/docker/" itemprop="url" rel="index"><span itemprop="name">docker</span></a>
+                </span>
+            </span>
+    
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Valine: </span>
+    
+    <a title="valine" href="/clould-native/docker/08_docker%E5%AE%B9%E5%99%A8%E6%8A%80%E6%9C%AF_%E5%AE%B9%E5%99%A8%E5%8D%B7%E5%92%8C%E7%BD%91%E7%BB%9C/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/clould-native/docker/08_docker%E5%AE%B9%E5%99%A8%E6%8A%80%E6%9C%AF_%E5%AE%B9%E5%99%A8%E5%8D%B7%E5%92%8C%E7%BD%91%E7%BB%9C/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+    
+        </div>
+      </header>
+    
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+    
+      
+        <h1 id="docker&#x5BB9;&#x5668;&#x7684;&#x5377;&#x8BE6;&#x89E3;"><a href="#docker&#x5BB9;&#x5668;&#x7684;&#x5377;&#x8BE6;&#x89E3;" class="headerlink" title="docker&#x5BB9;&#x5668;&#x7684;&#x5377;&#x8BE6;&#x89E3;"></a>docker&#x5BB9;&#x5668;&#x7684;&#x5377;&#x8BE6;&#x89E3;</h1><h2 id="docker&#x7684;&#x6570;&#x636E;&#x5377;&#x57FA;&#x672C;&#x6982;&#x5FF5;"><a href="#docker&#x7684;&#x6570;&#x636E;&#x5377;&#x57FA;&#x672C;&#x6982;&#x5FF5;" class="headerlink" title="docker&#x7684;&#x6570;&#x636E;&#x5377;&#x57FA;&#x672C;&#x6982;&#x5FF5;"></a>docker&#x7684;&#x6570;&#x636E;&#x5377;&#x57FA;&#x672C;&#x6982;&#x5FF5;</h2><p>&#x5982;&#x679C;&#x6B63;&#x5728;&#x8FD0;&#x884C;&#x4E2D;&#x7684;&#x5BB9;&#x5668;&#x4EA7;&#x751F;&#x4E86;&#x65B0;&#x7684;&#x6570;&#x636E;&#x6216;&#x8005;&#x4FEE;&#x6539;&#x4E86;&#x73B0;&#x6709;&#x7684;&#x4E00;&#x4E2A;&#x5DF2;&#x7ECF;&#x5B58;&#x5728;&#x7684;&#x6587;&#x4EF6;&#x5185;&#x5BB9;&#xFF0C;&#x90A3;&#x4E48;&#x65B0;&#x4EA7;&#x751F;&#x7684;&#x6570;&#x636E;&#x5C06;&#x4F1A;&#x88AB;&#x590D;&#x5236;&#x5230;&#x8BFB;&#x5199;&#x5C42;&#x8FDB;&#x884C;&#x6301;&#x4E45;&#x5316;&#x4FDD;&#x5B58;&#xFF0C;&#x8FD9;&#x4E2A;&#x8BFB;&#x5199;&#x5C42;&#x4E5F;&#x5C31;&#x662F;&#x5BB9;&#x5668;&#x7684;&#x5DE5;&#x4F5C;&#x76EE;&#x5F55;&#xFF0C;&#x6B64;&#x5373;&#x201C;&#x5199;&#x5B9E;&#x590D;&#x5236;&#xFF08;COW&#xFF09;copy on write&#x201D;&#x673A;&#x5236;&#xFF1B;</p>
+<p>&#x5982;&#x4E0B;&#x56FE;&#x662F;&#x5C06;&#x5BF9;&#x6839;&#x7684;&#x6570;&#x636E;&#x5199;&#x5165;&#x5230;&#x5BB9;&#x5668;&#x7684;&#x53EF;&#x5199;&#x6210;&#xFF0C;&#x4F46;&#x662F;&#x628A;/data&#x4E2D;&#x7684;&#x6570;&#x636E;&#x5199;&#x5165;&#x5230;&#x4E00;&#x4E2A;&#x53E6;&#x5916;&#x7684;volume&#x4E2D;&#x7528;&#x4E8E;&#x6570;&#x636E;&#x6301;&#x4E45;&#x5316;&#xFF1B;</p>
+<p><img src="/clould-native/docker/08_docker%E5%AE%B9%E5%99%A8%E6%8A%80%E6%9C%AF_%E5%AE%B9%E5%99%A8%E5%8D%B7%E5%92%8C%E7%BD%91%E7%BB%9C/image-20220104095503099.png" alt="docker&#x7684;&#x6570;&#x636E;&#x5377;"></p>
+<span id="more"></span>
+
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> &#x542F;&#x52A8;&#x4E00;&#x4E2A;&#x5BB9;&#x5668;</span></span><br><span class="line">docker run -it -rm harbor.test.com/web/my_nginx:2022-01-03_xx-xx</span><br><span class="line"><span class="meta"></span></span><br><span class="line"><span class="meta">#</span><span class="bash"> &#x518D;&#x5BB9;&#x5668;&#x4E2D;&#x4FEE;&#x6539;&#x4E00;&#x4E9B;&#x6570;&#x636E;</span></span><br><span class="line">cd /opt/</span><br><span class="line">echo &quot;123&quot; &gt; nginx.log  # &#x751F;&#x6210;&#x5BF9;&#x5E94;&#x7684;&#x6570;&#x636E;</span><br><span class="line"><span class="meta"></span></span><br><span class="line"><span class="meta">#</span><span class="bash"> &#x518D;&#x5BBF;&#x4E3B;&#x673A;&#x4E0A;&#x627E;&#x8BE5;&#x6587;&#x4EF6;&#x5185;&#x5BB9;</span></span><br><span class="line">find /var/lib/docker -name nginx.log  # &#x8FD9;&#x8FD8;&#x80FD;&#x591F;&#x627E;&#x5230;</span><br><span class="line"><span class="meta"></span></span><br><span class="line"><span class="meta">#</span><span class="bash"> &#x4F46;&#x662F;&#x9000;&#x51FA;&#x5BB9;&#x5668;&#x540E;&#xFF0C;&#x6570;&#x636E;&#x5C31;&#x4F1A;&#x88AB;&#x5220;&#x9664;&#x4E86;&#xFF1B;</span></span><br><span class="line">exit  # &#x9000;&#x51FA;&#x5BB9;&#x5668;</span><br></pre></td></tr></table></figure>
+
+
+
+<p>&#x4E3A;&#x4E86;&#x907F;&#x514D;&#x6570;&#x636E;&#x4E22;&#x5931;&#xFF0C;&#x56E0;&#x6B64;&#xFF0C;&#x4E1A;&#x52A1;&#x6570;&#x636E;&#x901A;&#x5E38;&#x9700;&#x8981;&#x6302;&#x8F7D;&#x518D;&#x5916;&#x9762;&#x6301;&#x4E45;&#x5B58;&#x50A8;&#x7A7A;&#x95F4;&#x4E0A;&#xFF0C;&#x5982;&#x4E0B;&#x56FE;&#x6240;&#x793A;&#xFF1A;</p>
+<p><img src="/clould-native/docker/08_docker%E5%AE%B9%E5%99%A8%E6%8A%80%E6%9C%AF_%E5%AE%B9%E5%99%A8%E5%8D%B7%E5%92%8C%E7%BD%91%E7%BB%9C/image-20220104095948693.png" alt="&#x5BB9;&#x5668;&#x5B58;&#x50A8;&#x67B6;&#x6784;"></p>
+<p>&#x591A;&#x4E2A;&#x5BB9;&#x5668;&#x4F7F;&#x7528;&#x5171;&#x4EAB;&#x7684;&#x7F51;&#x7EDC;&#x5B58;&#x50A8;&#xFF0C;&#x662F;&#x6570;&#x636E;&#x6301;&#x4E45;&#x5316;&#x5B58;&#x50A8;&#x65B9;&#x5F0F;&#x7684;&#x5E38;&#x89C1;&#x89E3;&#x51B3;&#x65B9;&#x6848;&#xFF1A;</p>
+<p><img src="/clould-native/docker/08_docker%E5%AE%B9%E5%99%A8%E6%8A%80%E6%9C%AF_%E5%AE%B9%E5%99%A8%E5%8D%B7%E5%92%8C%E7%BD%91%E7%BB%9C/image-20220104100110189.png" alt="&#x6570;&#x636E;&#x5B58;&#x50A8;&#x67B6;&#x6784;"></p>
+<p>&#x524D;&#x9762;&#x6240;&#x6709;&#x7684;&#x5BB9;&#x5668;&#x90FD;&#x4F1A;&#x6302;&#x8F7D;&#x4E00;&#x4E2A;&#x5171;&#x4EAB;&#x5B58;&#x50A8;&#x7A7A;&#x95F4;&#xFF0C;&#x8FD9;&#x6837;&#x5C31;&#x80FD;&#x89E3;&#x51B3;&#x6570;&#x636E;&#x5B58;&#x50A8;&#x7684;&#x95EE;&#x9898;&#xFF1B;</p>
+<p>k8s&#x7684;&#x67B6;&#x6784;&#x5B9E;&#x73B0;&#x6301;&#x4E45;&#x5316;&#x5B58;&#x50A8;&#x5219;&#x66F4;&#x4E3A;&#x9EBB;&#x70E6;&#xFF0C;&#x4F46;&#x662F;&#x539F;&#x7406;&#x5927;&#x81F4;&#x76F8;&#x540C;&#x3002;&#x5B83;&#x4F7F;&#x7528;&#x4E00;&#x4E2A;CSI&#x63A5;&#x53E3;&#x6765;&#x5BF9;&#x63A5;&#x5176;&#x4ED6;&#x7B2C;&#x4E09;&#x65B9;&#x5B58;&#x50A8;&#x89E3;&#x51B3;&#x65B9;&#x6848;&#xFF0C;&#x8FD9;&#x6837;&#x5C31;&#x4E0D;&#x4F1A;&#x663E;&#x793A;&#x6570;&#x636E;&#x7684;&#x5B58;&#x50A8;&#x7CFB;&#x7EDF;&#x5E73;&#x53F0;&#x6838;&#x8BBE;&#x5907;&#x4E86;&#xFF1B;</p>
+<p><img src="/clould-native/docker/08_docker%E5%AE%B9%E5%99%A8%E6%8A%80%E6%9C%AF_%E5%AE%B9%E5%99%A8%E5%8D%B7%E5%92%8C%E7%BD%91%E7%BB%9C/image-20220104100321711.png" alt="k8s&#x6301;&#x4E45;&#x5316;&#x5B58;&#x50A8;&#x89E3;&#x51B3;&#x65B9;&#x6848;"></p>
+<p>&#x6211;&#x4EEC;&#x56DE;&#x5230;docker&#x5BB9;&#x5668;&#x6280;&#x672F;&#xFF0C;&#x6211;&#x4EEC;&#x901A;&#x8FC7;docker inspect&#x53EF;&#x4EE5;&#x770B;&#x5230;&#x5BF9;&#x5E94;&#x7684;&#x5BB9;&#x5668;&#x5B58;&#x50A8;&#x65B9;&#x6848;&#xFF0C;&#x5982;&#x4E0B;&#x56FE;&#x6240;&#x793A;&#xFF1A;</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker inspect ae1182</span><br></pre></td></tr></table></figure>
+
+<p><img src="/clould-native/docker/08_docker%E5%AE%B9%E5%99%A8%E6%8A%80%E6%9C%AF_%E5%AE%B9%E5%99%A8%E5%8D%B7%E5%92%8C%E7%BD%91%E7%BB%9C/image-20220104101613978.png" alt="inspect&#x5377;&#x4FE1;&#x606F;"></p>
+<ul>
+<li>LowerDir &#x2013; image&#x955C;&#x50CF;&#x5C42;&#xFF08;&#x955C;&#x50CF;&#x672C;&#x8EAB;&#x662F;&#x53EA;&#x8BFB;&#x7684;&#xFF09;</li>
+<li>UpperDir &#x2013; &#x5BB9;&#x5668;&#x7684;&#x4E0A;&#x5C42;&#xFF08;&#x8BFB;&#x5199;&#x5C42;&#xFF09;</li>
+<li>MergedDir &#x2013; &#x5BB9;&#x5668;&#x7684;&#x6587;&#x4EF6;&#x7CFB;&#x7EDF;&#xFF0C;&#x4F7F;&#x7528;Union FS&#xFF08;&#x8054;&#x5408;&#x6587;&#x4EF6;&#x7CFB;&#x7EDF;&#xFF09;&#x5C06;lowerdir&#x548C;upperdir&#x5408;&#x5E76;&#x7ED9;&#x5BB9;&#x5668;&#x4F7F;&#x7528;&#xFF1B;</li>
+<li>workDir &#x2013; &#x5BB9;&#x5668;&#x518D;&#x5BBF;&#x4E3B;&#x7684;&#x5DE5;&#x4F5C;&#x76EE;&#x5F55;</li>
+</ul>
+<h2 id="&#x9ED8;&#x8BA4;&#x5BB9;&#x5668;&#x6570;&#x636E;&#x5B58;&#x50A8;&#x7684;&#x9A8C;&#x8BC1;"><a href="#&#x9ED8;&#x8BA4;&#x5BB9;&#x5668;&#x6570;&#x636E;&#x5B58;&#x50A8;&#x7684;&#x9A8C;&#x8BC1;" class="headerlink" title="&#x9ED8;&#x8BA4;&#x5BB9;&#x5668;&#x6570;&#x636E;&#x5B58;&#x50A8;&#x7684;&#x9A8C;&#x8BC1;"></a>&#x9ED8;&#x8BA4;&#x5BB9;&#x5668;&#x6570;&#x636E;&#x5B58;&#x50A8;&#x7684;&#x9A8C;&#x8BC1;</h2><p>&#x4E3A;&#x4E86;&#x9A8C;&#x8BC1;&#x5BB9;&#x5668;&#x4E2D;&#x7684;&#x6570;&#x636E;&#x5B58;&#x50A8;&#x60C5;&#x51B5;&#xFF0C;&#x6211;&#x4EEC;&#x53EF;&#x4EE5;&#x5728;&#x5BB9;&#x5668;&#x4E2D;&#x751F;&#x6210;&#x6570;&#x636E;&#x4EE5;&#x540E;&#xFF0C;&#x6307;&#x5B9A;hash&#x503C;&#xFF0C;&#x53BB;&#x67E5;&#x627E;&#x6570;&#x636E;&#xFF1A;</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> &#x8FDB;&#x5165;&#x5BB9;&#x5668;</span></span><br><span class="line">docker exec -it ae11828b5f2f bash</span><br><span class="line"><span class="meta"></span></span><br><span class="line"><span class="meta">#</span><span class="bash"> &#x521B;&#x5EFA;&#x6587;&#x4EF6;</span></span><br><span class="line">root@ae11828b5f2f:/# dd if=/dev/zero of=file bs=1M count=100</span><br><span class="line">100+0 records in</span><br><span class="line">100+0 records out</span><br><span class="line">104857600 bytes (105 MB, 100 MiB) copied, 0.0823141 s, 1.3 GB/s</span><br><span class="line"><span class="meta">#</span><span class="bash"> &#x5BF9;file&#x6587;&#x4EF6;&#x8FDB;&#x884C;md5 <span class="built_in">hash</span></span></span><br><span class="line">root@ae11828b5f2f:/# md5sum file</span><br><span class="line">2f282b84e7e608d5852449ed940bfc51  file</span><br><span class="line"><span class="meta"></span></span><br><span class="line"><span class="meta">#</span><span class="bash"> &#x5728;&#x5BBF;&#x4E3B;&#x673A;&#x4E2D;&#x627E;&#x5230;&#x8FD9;&#x4E2A;&#x6587;&#x4EF6;&#x518D;&#x6B21;&#x8FDB;&#x884C;<span class="built_in">hash</span></span></span><br><span class="line">root@ubuntu20:~# md5sum /var/lib/docker/overlay2/31a8cd9786790c0d3814db3ef0dd95fe8c5c387f5e32991f073b0cc92579935d/merged/file</span><br><span class="line">2f282b84e7e608d5852449ed940bfc51  /var/lib/docker/overlay2/31a8cd9786790c0d3814db3ef0dd95fe8c5c387f5e32991f073b0cc92579935d/merged/fil</span><br><span class="line"><span class="meta">#</span><span class="bash"> <span class="built_in">hash</span>&#x503C;&#x76F8;&#x540C;&#xFF0C;&#x53EF;&#x77E5;&#xFF0C;&#x8FD9;&#x4E24;&#x4E2A;&#x662F;&#x76F8;&#x540C;&#x7684;&#x6587;&#x4EF6;</span></span><br></pre></td></tr></table></figure>
+
+<p>&#x8981;&#x77E5;&#x9053;&#x8FD9;&#x4E2A;&#x6570;&#x636E;&#x53EA;&#x662F;&#x4E34;&#x65F6;&#x4FDD;&#x5B58;&#xFF0C;&#x5982;&#x679C;&#x5BB9;&#x5668;&#x6302;&#x4E86;&#xFF0C;&#x8FD9;&#x4E2A;&#x6570;&#x636E;&#x5C31;&#x4F1A;&#x88AB;&#x5220;&#x9664;&#xFF1B;</p>
+<h2 id="&#x6570;&#x636E;&#x5377;&#xFF08;data-volume&#xFF09;&#x57FA;&#x672C;&#x6982;&#x5FF5;"><a href="#&#x6570;&#x636E;&#x5377;&#xFF08;data-volume&#xFF09;&#x57FA;&#x672C;&#x6982;&#x5FF5;" class="headerlink" title="&#x6570;&#x636E;&#x5377;&#xFF08;data volume&#xFF09;&#x57FA;&#x672C;&#x6982;&#x5FF5;"></a>&#x6570;&#x636E;&#x5377;&#xFF08;data volume&#xFF09;&#x57FA;&#x672C;&#x6982;&#x5FF5;</h2><p>&#x6570;&#x636E;&#x5377;&#x662F;&#x5BBF;&#x4E3B;&#x673A;&#x4E0A;&#x7684;&#x76EE;&#x5F55;&#x6216;&#x8005;&#x662F;&#x6587;&#x4EF6;&#xFF0C;&#x53EF;&#x4EE5;&#x88AB;&#x76F4;&#x63A5;mount&#x5230;&#x5BB9;&#x5668;&#x5F53;&#x4E2D;&#x4F7F;&#x7528;&#xFF0C;&#x5B9E;&#x9645;&#x751F;&#x4EA7;&#x73AF;&#x5883;&#x4E2D;&#xFF0C;&#x9700;&#x8981;&#x9488;&#x5BF9;&#x4E0D;&#x540C;&#x7684;&#x7C7B;&#x578B;&#x7684;&#x670D;&#x52A1;&#xFF0C;&#x4E0D;&#x540C;&#x7C7B;&#x578B;&#x7684;&#x6570;&#x636E;&#x5B58;&#x50A8;&#x8981;&#x6C42;&#x505A;&#x76F8;&#x5E94;&#x7684;&#x89C4;&#x5212;&#xFF0C;&#x6700;&#x7EC8;&#x4FDD;&#x8BC1;&#x670D;&#x52A1;&#x7684;&#x53EF;&#x6269;&#x5C55;&#x6027;&#xFF0C;&#x7A33;&#x5B9A;&#x6027;&#x4EE5;&#x53CA;&#x6570;&#x636E;&#x7684;&#x5B89;&#x88C5;&#x6027;&#xFF1B;</p>
+<h2 id="&#x81EA;&#x5B9A;&#x4E49;&#x6570;&#x636E;&#x5377;&#x6302;&#x8F7D;"><a href="#&#x81EA;&#x5B9A;&#x4E49;&#x6570;&#x636E;&#x5377;&#x6302;&#x8F7D;" class="headerlink" title="&#x81EA;&#x5B9A;&#x4E49;&#x6570;&#x636E;&#x5377;&#x6302;&#x8F7D;"></a>&#x81EA;&#x5B9A;&#x4E49;&#x6570;&#x636E;&#x5377;&#x6302;&#x8F7D;</h2><p>&#x4E00;&#x822C;&#x60C5;&#x51B5;&#x4E0B;&#xFF0C;&#x6211;&#x4EEC;&#x53EF;&#x4EE5;&#x81EA;&#x5B9A;&#x4E49;</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> &#x521B;&#x5EFA;&#x76EE;&#x5F55;&#x5E76;&#x5199;&#x5165;html&#x6587;&#x4EF6;</span></span><br><span class="line">mkdir -p /data/testapp</span><br><span class="line">echo &quot;testapp page&quot; &gt; /data/testapp/index.html</span><br><span class="line"><span class="meta"></span></span><br><span class="line"><span class="meta">#</span><span class="bash"> &#x62C9;&#x53D6;&#x955C;&#x50CF;</span></span><br><span class="line">docker pull tomcat:8.5.73</span><br><span class="line"><span class="meta"></span></span><br><span class="line"><span class="meta">#</span><span class="bash"> &#x591A;&#x5BB9;&#x5668;&#x6302;&#x8F7D;&#xFF0C;&#x5E76;&#x9A8C;&#x8BC1;&#x6570;&#x636E;&#x7684;&#x4E00;&#x81F4;&#x6027;&#xFF1B;</span></span><br><span class="line">docker run -it -d --name web1 -v /data/testapp:/usr/local/tomcat/webapps/testapp -p 8080:8080 tomcat:8.5.73</span><br><span class="line">docker run -it -d --name web2 -v /data/testapp:/usr/local/tomcat/webapps/testapp -p 8081:8080 tomcat:8.5.73</span><br><span class="line"><span class="meta"></span></span><br><span class="line"><span class="meta">#</span><span class="bash"> &#x5728;&#x914D;&#x7F6E;&#x6587;&#x4EF6;&#x6302;&#x8F7D;&#x4E4B;&#x524D;&#xFF0C;&#x6211;&#x4EEC;&#x5148;&#x62F7;&#x8D1D;server.xml&#x7684;&#x914D;&#x7F6E;&#x6587;&#x4EF6;&#xFF0C;&#x5C06;&#x5176;&#x81EA;&#x52A8;&#x89E3;&#x538B;&#x4E8E;&#x90E8;&#x7F72;&#x7684;&#x529F;&#x80FD;&#x5173;&#x95ED;</span></span><br><span class="line">vim server.xml</span><br><span class="line">&lt;Host name=&quot;localhost&quot; appBase=&quot;webapps&quot; unpackWARs=&quot;false&quot; autoDeploy=&quot;false&quot;&gt;  # &#x5173;&#x95ED;&#x81EA;&#x52A8;&#x89E3;&#x538B;&#x4E8E;&#x6302;&#x8F7D;&#x529F;&#x80FD;&#xFF1B;</span><br><span class="line"><span class="meta"></span></span><br><span class="line"><span class="meta">#</span><span class="bash"> &#x5B9A;&#x4E49;&#x53EA;&#x8BFB;&#x6743;&#x9650;</span></span><br><span class="line">docker run -it -d --name web3 -v /data/testapp:/usr/local/tomcat/webapps/testapp -v /data/tomcat/conf/server.xml:/usr/local/tomcat/conf/server.xml:ro -p 8082:8080 tomcat:8.5.73</span><br><span class="line">docker run -it -d --name web4 -v /data/testapp:/usr/local/tomcat/webapps/testapp -v /data/tomcat/conf/server.xml:/usr/local/tomcat/conf/server.xml:ro -p 8083:8080 tomcat:8.5.73</span><br></pre></td></tr></table></figure>
+
+<p>&#x5728;web3&#x548C;web4&#x4E0A;&#x9762;&#xFF0C;&#x6211;&#x4EEC;&#x5C31;&#x53EF;&#x4EE5;&#x5C06;&#x914D;&#x7F6E;&#x6587;&#x4EF6;&#x6302;&#x8F7D;&#x5728;&#x5BB9;&#x5668;&#x4E2D;&#xFF0C;&#x8BA9;&#x5BB9;&#x5668;&#x542F;&#x52A8;&#x7684;&#x65F6;&#x5019;&#x53BB;&#x8BFB;&#x53D6;&#xFF0C;&#x4E14;&#x94FE;&#x63A5;&#x5230;&#x5BB9;&#x5668;&#x7684;&#x5176;&#x4ED6;&#x673A;&#x5668;&#x662F;&#x65E0;&#x6CD5;&#x4FEE;&#x6539;&#x6211;&#x672C;&#x5730;&#x6302;&#x8F7D;&#x914D;&#x7F6E;&#x6587;&#x4EF6;&#x7684;&#xFF01;</p>
+<h2 id="&#x78C1;&#x76D8;&#x6302;&#x8F7D;&#x793A;&#x4F8B;1&#xFF1A;&#x6570;&#x636E;&#x6307;&#x5B9A;&#x672C;&#x5730;&#x5B58;&#x50A8;&#x6302;&#x8F7D;"><a href="#&#x78C1;&#x76D8;&#x6302;&#x8F7D;&#x793A;&#x4F8B;1&#xFF1A;&#x6570;&#x636E;&#x6307;&#x5B9A;&#x672C;&#x5730;&#x5B58;&#x50A8;&#x6302;&#x8F7D;" class="headerlink" title="&#x78C1;&#x76D8;&#x6302;&#x8F7D;&#x793A;&#x4F8B;1&#xFF1A;&#x6570;&#x636E;&#x6307;&#x5B9A;&#x672C;&#x5730;&#x5B58;&#x50A8;&#x6302;&#x8F7D;"></a>&#x78C1;&#x76D8;&#x6302;&#x8F7D;&#x793A;&#x4F8B;1&#xFF1A;&#x6570;&#x636E;&#x6307;&#x5B9A;&#x672C;&#x5730;&#x5B58;&#x50A8;&#x6302;&#x8F7D;</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">docker pull mysql:5.6.38</span><br><span class="line"><span class="meta"></span></span><br><span class="line"><span class="meta">#</span><span class="bash"> &#x542F;&#x52A8;&#x4E00;&#x4E2A;&#x5BB9;&#x5668;&#x6302;&#x8F7D;&#x672C;&#x5730;&#x78C1;&#x76D8;</span></span><br><span class="line">docker run -it -p 3306:3306 -v /data/mysql:/var/lib/mysql -e MYSQL_ROOT_PASSWORD=12345678 mysql:5.6.38</span><br><span class="line"><span class="meta">#</span><span class="bash"> &#x8FD9;&#x91CC;&#x672C;&#x5730;&#x7684;/data/mysql&#x6700;&#x597D;&#x662F;&#x72EC;&#x7ACB;&#x7684;&#x786C;&#x4EF6;&#x78C1;&#x76D8;&#x683C;&#x5F0F;&#x5316;&#x51FA;&#x6765;&#x7684;&#x7A7A;&#x95F4;</span></span><br><span class="line"><span class="meta"></span></span><br><span class="line"><span class="meta">#</span><span class="bash"> &#x7136;&#x540E;&#x6211;&#x4EEC;&#x518D;&#x672C;&#x5730;&#x5B89;&#x88C5;mysql&#x5BA2;&#x6237;&#x7AEF;&#x5DE5;&#x5177;</span></span><br><span class="line">apt updata </span><br><span class="line">apt install mysql-client</span><br><span class="line"><span class="meta"></span></span><br><span class="line"><span class="meta">#</span><span class="bash"> &#x767B;&#x5F55;&#x5BB9;&#x5668;&#x4E2D;&#x7684;mysql&#x6570;&#x636E;&#x5E93;&#xFF0C;&#x6DFB;&#x52A0;&#x4E00;&#x4E2A;&#x6570;&#x636E;&#x5E93;</span></span><br><span class="line">mysql -uroot -p123456 -h 127.0.0.1</span><br><span class="line"><span class="meta">mysql&gt;</span><span class="bash"> create database <span class="built_in">test</span>  <span class="comment"># &#x521B;&#x5EFA;test&#x6570;&#x636E;&#x5E93;</span></span></span><br><span class="line"><span class="meta"></span></span><br><span class="line"><span class="meta">#</span><span class="bash"> &#x5220;&#x9664;&#x5BB9;&#x5668;&#x540E;&#xFF0C;&#x518D;&#x65B0;&#x542F;&#x52A8;&#x5BB9;&#x5668;</span></span><br><span class="line">docker rm -fv xxxx # &#x5220;&#x9664;&#x539F;&#x6709;&#x5BB9;&#x5668;</span><br><span class="line">docker run -it -p 3306:3306 -v /data/mysql:/var/lib/mysql -e MYSQL_ROOT_PASSWORD=123456 mysql:5.6.38  # &#x518D;&#x65B0;&#x542F;&#x52A8;&#x5BB9;&#x5668;</span><br><span class="line"><span class="meta"></span></span><br><span class="line"><span class="meta">#</span><span class="bash"> &#x8FD9;&#x91CC;&#x542F;&#x52A8;&#x5BB9;&#x5668;&#x5C31;&#x4E0D;&#x518D;&#x662F;&#x4E4B;&#x524D;&#x7684;&#x5BB9;&#x5668;&#x4E86;&#xFF0C;&#x6211;&#x4EEC;&#x518D;&#x6B21;&#x67E5;&#x770B;&#x5185;&#x90E8;<span class="built_in">test</span>&#x6570;&#x636E;&#x5E93;&#x662F;&#x5426;&#x5B58;&#x5728;</span></span><br><span class="line">mysql -uroot -p123456 -h 127.0.0.1</span><br><span class="line"><span class="meta">mysql&gt;</span><span class="bash"> show database;  <span class="comment"># &#x8FD9;&#x91CC;&#x53EF;&#x4EE5;&#x770B;&#x5230;&#x4E4B;&#x524D;&#x521B;&#x5EFA;&#x7684;test&#x6570;&#x636E;&#x5E93;&#x4F9D;&#x7136;&#x5B58;&#x5728;&#xFF1B;</span></span></span><br></pre></td></tr></table></figure>
+
+<h2 id="&#x78C1;&#x76D8;&#x6302;&#x8F7D;&#x793A;&#x4F8B;2&#xFF1A;&#x65E5;&#x5FD7;&#x6587;&#x4EF6;&#x7684;&#x6302;&#x8F7D;"><a href="#&#x78C1;&#x76D8;&#x6302;&#x8F7D;&#x793A;&#x4F8B;2&#xFF1A;&#x65E5;&#x5FD7;&#x6587;&#x4EF6;&#x7684;&#x6302;&#x8F7D;" class="headerlink" title="&#x78C1;&#x76D8;&#x6302;&#x8F7D;&#x793A;&#x4F8B;2&#xFF1A;&#x65E5;&#x5FD7;&#x6587;&#x4EF6;&#x7684;&#x6302;&#x8F7D;"></a>&#x78C1;&#x76D8;&#x6302;&#x8F7D;&#x793A;&#x4F8B;2&#xFF1A;&#x65E5;&#x5FD7;&#x6587;&#x4EF6;&#x7684;&#x6302;&#x8F7D;</h2><p>&#x53E6;&#x5916;&#xFF0C;&#x5982;&#x679C;&#x60F3;&#x5C06;&#x5BB9;&#x5668;&#x4E2D;&#x7684;&#x65E5;&#x5FD7;&#x6587;&#x4EF6;&#x76F4;&#x63A5;&#x6302;&#x8F7D;&#x5728;&#x672C;&#x5730;&#xFF0C;&#x53EF;&#x4EE5;&#x5982;&#x4E0B;&#x64CD;&#x4F5C;&#xFF1A;</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">docker run -it -p 80:80 -v /data/logs:/apps/nginx/logs harbor.test.com/web/my_nginx:2020-01-03_15-16</span><br><span class="line"><span class="meta"></span></span><br><span class="line"><span class="meta">#</span><span class="bash"> &#x518D;&#x5728;&#x6D4F;&#x89C8;&#x5668;&#x4E2D;&#x6D4B;&#x8BD5;&#x8BBF;&#x95EE;&#xFF1B;</span></span><br><span class="line">cat /data/logs  # &#x5728;&#x672C;&#x5730;/data/logs&#x76EE;&#x5F55;&#x4E0B;&#x53EF;&#x4EE5;&#x67E5;&#x770B;&#x65E5;&#x5FD7;&#x4FE1;&#x606F;&#x4E86;</span><br></pre></td></tr></table></figure>
+
+<h2 id="&#x5176;&#x4ED6;&#x78C1;&#x76D8;&#x6302;&#x8F7D;&#x65B9;&#x5F0F;"><a href="#&#x5176;&#x4ED6;&#x78C1;&#x76D8;&#x6302;&#x8F7D;&#x65B9;&#x5F0F;" class="headerlink" title="&#x5176;&#x4ED6;&#x78C1;&#x76D8;&#x6302;&#x8F7D;&#x65B9;&#x5F0F;"></a>&#x5176;&#x4ED6;&#x78C1;&#x76D8;&#x6302;&#x8F7D;&#x65B9;&#x5F0F;</h2><p>1&#x3001;&#x4F3C;&#x4E4E;&#x7528;docker volume&#x547D;&#x4EE4;&#x6765;&#x751F;&#x6210;&#x5171;&#x4EAB;&#x5B58;&#x50A8;&#x7A7A;&#x95F4;</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> &#x521B;&#x5EFA;&#x5171;&#x4EAB;&#x5B58;&#x50A8;</span></span><br><span class="line">docker volume create test-volume</span><br><span class="line"><span class="meta"></span></span><br><span class="line"><span class="meta">#</span><span class="bash"> &#x67E5;&#x770B;volume&#x751F;&#x6210;&#x7684;&#x60C5;&#x51B5;</span></span><br><span class="line">docker volume ls</span><br><span class="line"><span class="meta"></span></span><br><span class="line"><span class="meta">#</span><span class="bash"> &#x5728;/var/lib/docker/volumes/&#x76EE;&#x5F55;&#x4E0B;&#x9762;&#x5C31;&#x4F1A;&#x6709;&#x8BE5;volume&#x7684;&#x76EE;&#x5F55;</span></span><br><span class="line">ls /var/lib/docder/volumes</span><br><span class="line"><span class="meta"></span></span><br><span class="line"><span class="meta">#</span><span class="bash"> &#x6302;&#x8F7D;&#x8BE5;&#x78C1;&#x76D8;&#x7A7A;&#x95F4;</span></span><br><span class="line">docker run -it -v test-volume:/var/lib/mysql -p 3306:3306 -e MYSQL_ROOT_PASSWORD=12345678 mysql:5.6.38</span><br></pre></td></tr></table></figure>
+
+<p>&#x8FD9;&#x79CD;&#x76F8;&#x5F53;&#x4E8E;&#x5148;&#x901A;&#x8FC7;volume&#x547D;&#x4EE4;&#x6765;&#x751F;&#x6210;&#x5377;&#x6587;&#x4EF6;&#xFF0C;&#x7136;&#x540E;&#x518D;&#x6302;&#x8F7D;&#x518D;&#x6307;&#x5B9A;&#x7684;&#x5BB9;&#x5668;&#x4E0A;&#xFF1B;</p>
+<p>2&#x3001;&#x5171;&#x4EAB;&#x5377;&#x5BB9;&#x5668;&#x7A7A;&#x95F4;</p>
+<p>&#x6570;&#x636E;&#x636E;&#x5BB9;&#x5668;&#x529F;&#x80FD;&#x662F;&#x53EF;&#x4EE5;&#x8BA9;&#x6570;&#x636E;&#x5728;&#x591A;&#x4E2A;docker&#x5BB9;&#x5668;&#x4E4B;&#x95F4;&#x5171;&#x4EAB;&#xFF0C;&#x5373;&#x53EF;&#x4EE5;&#x8BA9;B&#x5BB9;&#x5668;&#x8BBF;&#x95EE;A&#x5BB9;&#x5668;&#x7684;&#x5185;&#x5BB9;&#xFF0C;&#x7136;&#x800C;&#x5BB9;&#x5668;C&#x4E5F;&#x53EF;&#x4EE5;&#x8BBF;&#x95EE;A&#x5BB9;&#x5668;&#x7684;&#x5185;&#x5BB9;&#xFF0C;&#x5373;&#x5148;&#x8981;&#x521B;&#x5EFA;&#x4E00;&#x4E2A;&#x5DE5;&#x4F5C;&#x5728;&#x540E;&#x53F0;&#x7684;&#x5BB9;&#x5668;&#x4F5C;&#x4E3A;Server&#x7AEF;&#xFF0C;&#x7528;&#x4E8E;&#x5377;&#x63D0;&#x4F9B;&#xFF0C;&#x8FD9;&#x4E2A;&#x5377;&#x53EF;&#x4EE5;&#x4E3A;&#x5176;&#x4ED6;&#x5BB9;&#x5668;&#x63D0;&#x4F9B;&#x6570;&#x636E;&#x5B58;&#x50A8;&#x670D;&#x52A1;&#xFF0C;&#x5176;&#x4ED6;&#x4F7F;&#x7528;&#x6B64;&#x5377;&#x7684;&#x5BB9;&#x5668;&#x4F5C;&#x4E3A;client&#x7AEF;&#x6765;&#x4F7F;&#x7528;&#xFF1B;</p>
+<p><img src="/clould-native/docker/08_docker%E5%AE%B9%E5%99%A8%E6%8A%80%E6%9C%AF_%E5%AE%B9%E5%99%A8%E5%8D%B7%E5%92%8C%E7%BD%91%E7%BB%9C/image-20220104130326206.png" alt="&#x5171;&#x4EAB;&#x5BB9;&#x5668;&#x5377;&#x7A7A;&#x95F4;"></p>
+<p>&#x793A;&#x4F8B;&#x5982;&#x4E0B;&#xFF1A;</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> &#x5148;&#x542F;&#x52A8;&#x4E00;&#x4E2A;server&#x7AEF;&#x7684;&#x5BB9;&#x5668;</span></span><br><span class="line">docker run -it -d --name volume-server -v /data/testapp:/usr/local/tomcat/webapps/testapp -v /data/tomcat/conf/server.xml:/usr/local/tomcat/conf/server.xml tomcat:8.5.73</span><br><span class="line"><span class="meta"></span></span><br><span class="line"><span class="meta">#</span><span class="bash"> &#x542F;&#x52A8;client&#x7AEF;</span></span><br><span class="line">docker run -d --name web1 -p 8801:8080 --volumes-from volume-server tomcat:8.5.73</span><br><span class="line">docker run -d --name web2 -p 8802:8080 --volumes-from volume-server tomcat:8.5.73</span><br><span class="line"><span class="meta">#</span><span class="bash"> &#x5171;&#x4EAB;volume-server&#x7684;&#x5377;&#x7A7A;&#x95F4;</span></span><br></pre></td></tr></table></figure>
+
+<p>&#x8FD9;&#x79CD;&#x4F7F;&#x7528;&#x65B9;&#x5F0F;&#x5176;&#x5B9E;&#x5728;&#x516C;&#x53F8;&#x8FD8;&#x662F;&#x975E;&#x5E38;&#x5C11;&#x89C1;&#x4E86;</p>
+<h1 id="docker&#x5BB9;&#x5668;&#x7684;&#x7F51;&#x7EDC;&#x8BE6;&#x89E3;"><a href="#docker&#x5BB9;&#x5668;&#x7684;&#x7F51;&#x7EDC;&#x8BE6;&#x89E3;" class="headerlink" title="docker&#x5BB9;&#x5668;&#x7684;&#x7F51;&#x7EDC;&#x8BE6;&#x89E3;"></a>docker&#x5BB9;&#x5668;&#x7684;&#x7F51;&#x7EDC;&#x8BE6;&#x89E3;</h1><h2 id="docker&#x7684;&#x57FA;&#x672C;&#x7F51;&#x7EDC;&#x67B6;&#x6784;"><a href="#docker&#x7684;&#x57FA;&#x672C;&#x7F51;&#x7EDC;&#x67B6;&#x6784;" class="headerlink" title="docker&#x7684;&#x57FA;&#x672C;&#x7F51;&#x7EDC;&#x67B6;&#x6784;"></a>docker&#x7684;&#x57FA;&#x672C;&#x7F51;&#x7EDC;&#x67B6;&#x6784;</h2><p><img src="/clould-native/docker/08_docker%E5%AE%B9%E5%99%A8%E6%8A%80%E6%9C%AF_%E5%AE%B9%E5%99%A8%E5%8D%B7%E5%92%8C%E7%BD%91%E7%BB%9C/image-20220104130719054.png" alt="docker&#x7684;&#x57FA;&#x672C;&#x7F51;&#x7EDC;&#x67B6;&#x6784;"></p>
+<p>docker&#x5BB9;&#x5668;&#x7F51;&#x7EDC;&#x7684;&#x57FA;&#x672C;&#x67B6;&#x6784;&#x5982;&#x4E0A;&#x56FE;&#x6240;&#x793A;&#xFF1B;&#x65E0;&#x8BBA;&#x662F;&#x591A;&#x5C11;&#x4E2A;&#x5BB9;&#x5668;&#xFF0C;&#x6BCF;&#x4E2A;&#x5BB9;&#x5668;&#x4E2D;&#x90FD;&#x53EA;&#x6709;&#x4E00;&#x4E2A;eth0&#x7F51;&#x5361;&#xFF0C;&#x4E14;&#x8FD9;&#x4E2A;&#x7F51;&#x5361;&#x7684;&#x5BF9;&#x7AEF;&#x901A;&#x8FC7;veth&#x6865;&#x63A5;&#x5728;docker0&#x7684;&#x7F51;&#x6865;&#x4E0A;&#xFF0C;&#x5982;&#x679C;&#x662F;&#x5185;&#x90E8;&#x5BB9;&#x5668;&#x4E4B;&#x95F4;&#x7684;&#x4E92;&#x901A;&#xFF0C;&#x4ED6;&#x4EEC;&#x5219;&#x901A;&#x8FC7;&#x4E8C;&#x5C42;MAC&#x5730;&#x5740;&#x8FDB;&#x884C;&#x6570;&#x636E;&#x4EA4;&#x4E92;&#x3002;&#x4F46;&#x662F;&#x5982;&#x679C;&#x4E00;&#x65E6;&#x8981;&#x5B9E;&#x73B0;&#x4E09;&#x5C42;&#x4E92;&#x901A;&#xFF0C;&#x5219;&#x9700;&#x8981;&#x901A;&#x8FC7;eth0&#x7684;&#x7F51;&#x5173;&#x8FDB;&#x884C;&#x8DEF;&#x7531;&#x6570;&#x636E;&#x8F6C;&#x53D1;&#xFF1B;</p>
+<p><strong>&#x56E0;&#x6B64;&#xFF0C;&#x5BB9;&#x5668;&#x7684;&#x5BBF;&#x4E3B;&#x673A;&#x4E00;&#x5B9A;&#x8981;&#x5F00;&#x542F;&#x8DEF;&#x7531;&#x8F6C;&#x53D1;&#x529F;&#x80FD;&#xFF01;&#xFF01;&#xFF01;&#x8FD9;&#x4E2A;&#x975E;&#x5E38;&#x91CD;&#x8981;&#xFF1B;</strong></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">sysctl -w net.ipv4.ip_forward = 1</span><br><span class="line"><span class="meta">#</span><span class="bash"> &#x6216;&#x8005;</span></span><br><span class="line">echo 1 &gt; /proc/sys/net/ipv4/ip_forword</span><br></pre></td></tr></table></figure>
+
+<h2 id="docker&#x7F51;&#x7EDC;&#x7C7B;&#x578B;"><a href="#docker&#x7F51;&#x7EDC;&#x7C7B;&#x578B;" class="headerlink" title="docker&#x7F51;&#x7EDC;&#x7C7B;&#x578B;"></a>docker&#x7F51;&#x7EDC;&#x7C7B;&#x578B;</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">docker network --help  # &#x5F00;&#x542F;docker network&#x547D;&#x4EE4;&#x5E2E;&#x52A9;</span><br><span class="line">docker network ls</span><br><span class="line"><span class="meta">#</span><span class="bash"> &#x8FD9;&#x91CC;&#x6211;&#x4EEC;&#x53EF;&#x4EE5;&#x67E5;&#x770B;&#x5230;&#x4E09;&#x79CD;&#x7F51;&#x7EDC;&#x7C7B;&#x578B;</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>bridge &#x2013; &#x6865;&#x63A5;&#x7F51;&#x7EDC;</li>
+<li>host &#x2013; &#x4EC5;&#x4E3B;&#x673A;&#x7F51;&#x7EDC;</li>
+<li>null &#x2013; &#x5C01;&#x95ED;&#x7F51;&#x7EDC;</li>
+</ul>
+<h3 id="bridge&#x6A21;&#x578B;"><a href="#bridge&#x6A21;&#x578B;" class="headerlink" title="bridge&#x6A21;&#x578B;"></a>bridge&#x6A21;&#x578B;</h3><p>&#x901A;&#x8FC7;&#x547D;&#x4EE4;inspect&#x53EF;&#x4EE5;&#x67E5;&#x770B;&#x7F51;&#x7EDC;&#x7C7B;&#x578B;&#xFF1A;</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker network inspect bridge </span><br></pre></td></tr></table></figure>
+
+<p>&#x5728;&#x6865;&#x63A5;&#x6A21;&#x5F0F;&#x4E0B;&#x9762;&#x6211;&#x4EEC;&#x9ED8;&#x8BA4;&#x4F1A;&#x83B7;&#x53D6;&#x4E00;&#x4E2A;docker0&#x7F51;&#x6865;&#xFF0C;&#x5B83;&#x9ED8;&#x8BA4;&#x4E3A;&#x5BB9;&#x5668;&#x5206;&#x914D;172.17.0.0/24&#x7F51;&#x6BB5;&#x7684;&#x5730;&#x5740;&#xFF1B;&#x9ED8;&#x8BA4;&#x5BB9;&#x5668;&#x542F;&#x52A8;&#x90FD;&#x662F;&#x4F7F;&#x7528;&#x6865;&#x63A5;&#x7F51;&#x7EDC;&#xFF0C;&#x4F1A;&#x81EA;&#x52A8;&#x83B7;&#x53D6;&#x4E00;&#x4E2A;72.17.0.0/24&#x7F51;&#x6BB5;&#x7684;&#x5730;&#x5740;&#xFF1B;</p>
+<p>&#x6211;&#x4EEC;&#x4E5F;&#x53EF;&#x4EE5;&#x5728;&#x542F;&#x52A8;&#x5BB9;&#x5668;&#x7684;&#x65F6;&#x5019;&#x6307;&#x5B9A;&#x7F51;&#x7EDC;&#x7C7B;&#x578B;&#xFF0C;&#x547D;&#x4EE4;&#x5982;&#x4E0B;&#xFF1A;</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">docker run -it -p 8810:80 --net=bridge centos:7.9.2009  # &#x9ED8;&#x8BA4;&#x7684;&#x7F51;&#x7EDC;&#x7C7B;&#x578B;&#x5C31;&#x662F;&#x6865;&#x63A5;&#x6A21;&#x578B;</span><br><span class="line"><span class="meta">#</span><span class="bash"> &#x56E0;&#x6B64;&#xFF0C;&#x53EF;&#x4EE5;&#x901A;&#x8FC7; --net=null &#x6216;&#x8005; --net=host &#x6765;&#x4FEE;&#x6539;&#x7F51;&#x7EDC;&#x7C7B;&#x578B;</span></span><br></pre></td></tr></table></figure>
+
+<p>&#x800C;&#x6865;&#x63A5;&#x6A21;&#x578B;&#x662F;&#x53EF;&#x4EE5;&#x6B63;&#x5E38;&#x4E0A;&#x7F51;&#x7684;&#xFF0C;&#x5B83;&#x901A;&#x8FC7;&#x7684;&#x662F;&#x4E00;&#x4E2A;snat&#x6620;&#x5C04;&#x7684;&#x529F;&#x80FD;&#xFF0C;&#x800C;&#x8FD9;&#x4E2A;&#x529F;&#x80FD;&#x662F;&#x7531;iptables&#x6765;&#x63D0;&#x4F9B;&#x7684;&#xFF1B;&#x6240;&#x4EE5;&#xFF0C;<strong>&#x5728;&#x516C;&#x53F8;&#x4E2D;&#x4E00;&#x5B9A;&#x4E0D;&#x80FD;&#x8F7B;&#x6613;&#x8F93;&#x5165;iptable -F&#x6765;&#x6E05;&#x7A7A;&#x4E3B;&#x673A;&#x7684;Iptables&#x89C4;&#x5219;&#xFF0C;&#x5426;&#x5219;&#x4F1A;&#x5BFC;&#x81F4;&#x6240;&#x6709;&#x7684;&#x670D;&#x52A1;&#x90FD;&#x4E0D;&#x53EF;&#x8BBF;&#x95EE;&#x7684;&#xFF01;&#xFF01;&#xFF01;</strong></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">iptables -t nat -vnL  # &#x67E5;&#x770B;&#x9632;&#x62A4;&#x5899;&#x89C4;&#x5219;</span><br></pre></td></tr></table></figure>
+
+<h3 id="host&#x6A21;&#x578B;"><a href="#host&#x6A21;&#x578B;" class="headerlink" title="host&#x6A21;&#x578B;"></a>host&#x6A21;&#x578B;</h3><p>host&#x6A21;&#x578B;&#xFF0C;&#x4F7F;&#x7528;&#x7684;&#x53C2;&#x6570;&#x4E3A; &#x2013;net=host&#xFF1B;</p>
+<p>&#x542F;&#x52A8;&#x5BB9;&#x5668;&#x7684;&#x65F6;&#x5019;&#x6307;&#x5B9A;&#x4F7F;&#x7528;host&#x6A21;&#x578B;&#x7684;&#x5316;&#xFF0C;&#x90A3;&#x4E48;&#x65B0;&#x521B;&#x5EFA;&#x7684;&#x5BB9;&#x5668;&#x4E0D;&#x4F1A;&#x521B;&#x5EFA;&#x81EA;&#x5DF1;&#x7684;&#x865A;&#x62DF;&#x7F51;&#x5361;&#xFF0C;&#x800C;&#x662F;&#x76F4;&#x63A5;&#x4F7F;&#x7528;&#x5BBF;&#x4E3B;&#x673A;&#x7684;&#x7F51;&#x5361;&#x548C;IP&#x5730;&#x5740;&#xFF0C;&#x56E0;&#x6B64;&#x5728;&#x5BB9;&#x5668;&#x91CC;&#x9762;&#x67E5;&#x770B;&#x5230;&#x7684;IP&#x5730;&#x5740;&#x4FE1;&#x606F;&#x548C;&#x5BBF;&#x4E3B;&#x76F8;&#x540C;&#xFF0C;&#x8BBF;&#x95EE;&#x5BB9;&#x5668;&#x7684;&#x4F3C;&#x4E4E;&#x540E;&#x4E5F;&#x662F;&#x76F4;&#x63A5;&#x4F7F;&#x7528;&#x5BBF;&#x4E3B;&#x673A;IP+&#x5BB9;&#x5668;&#x7684;&#x7AEF;&#x53E3;&#x5373;&#x53EF;&#x3002;&#x4E0D;&#x8FC7;&#x5BB9;&#x5668;&#x7684;&#x5176;&#x4ED6;&#x8D44;&#x6E90;&#x5FC5;&#x987B;&#x6587;&#x4EF6;&#x7CFB;&#x7EDF;&#x3001;&#x7CFB;&#x7EDF;&#x8FDB;&#x7A0B;&#x7B49;&#x8FD8;&#x662F;&#x548C;&#x5BBF;&#x4E3B;&#x673A;&#x4FDD;&#x6301;&#x9694;&#x79BB;</p>
+<p>&#x6B64;&#x6A21;&#x578B;&#x7684;&#x7F51;&#x7EDC;&#x6027;&#x80FD;&#x6700;&#x597D;&#xFF0C;&#x4F46;&#x662F;&#x4E2A;&#x5BB9;&#x5668;&#x4E4B;&#x95F4;&#x7684;&#x7AEF;&#x53E3;&#x4E0D;&#x80FD;&#x76F8;&#x540C;&#xFF0C;&#x9002;&#x7528;&#x4E8E;&#x8FD0;&#x884C;&#x5BB9;&#x5668;&#x7AEF;&#x53E3;&#x6BD4;&#x8F83;&#x56FA;&#x5B9A;&#x7684;&#x4E1A;&#x52A1;&#xFF1B;</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> &#x542F;&#x52A8;&#x5BB9;&#x5668;&#xFF0C;&#x5E76;&#x6307;&#x5B9A;&#x7F51;&#x7EDC;&#x6A21;&#x578B;</span></span><br><span class="line">docker run -d --name net_host --net=host centos:7.9.2009</span><br></pre></td></tr></table></figure>
+
+<p>host&#x6A21;&#x5F0F;&#x4E0D;&#x652F;&#x6301;&#x7AEF;&#x53E3;&#x6620;&#x5C04;&#xFF0C;&#x5F53;&#x6307;&#x5B9A;&#x7AEF;&#x53E3;&#x6620;&#x5C04;&#x7684;&#x65F6;&#x5019;&#x4F1A;&#x63D0;&#x793A;&#x5982;&#x4E0B;&#x8B66;&#x544A;&#x4FE1;&#x606F;&#xFF0C;&#x4F7F;&#x7528;&#x4E3B;&#x673A;&#x7F51;&#x7EDC;&#x6A21;&#x5F0F;&#x65F6;&#xFF0C;&#x5C06;&#x4E22;&#x5F03;&#x5DF2;&#x6307;&#x5B9A;&#x7684;&#x90FD;&#x90A3;&#x53E3;&#xFF1A;</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">docker run -it -d --name net_host -p 80:80 --net=host centos:7.9.2209</span><br><span class="line"><span class="meta"></span></span><br><span class="line"><span class="meta">#</span><span class="bash"> &#x62A5;&#x9519;&#x5982;&#x4E0B;</span></span><br><span class="line">docker: Error response from daemon: Conflict. The container name &apos;/net_host&apos; is already in use by container &apos;xxxxxxxxxxxxxxxxxxxxxx&apos;. You have to remove (or rename) that container to be able to reuse that name.</span><br></pre></td></tr></table></figure>
+
+<h3 id="null&#x6A21;&#x578B;"><a href="#null&#x6A21;&#x578B;" class="headerlink" title="null&#x6A21;&#x578B;"></a>null&#x6A21;&#x578B;</h3><p>null&#x6A21;&#x578B;&#x5219;&#x6BD4;&#x8F83;&#x5BB9;&#x6613;&#x7406;&#x89E3;&#x4E86;&#xFF0C;&#x5F53;&#x5BB9;&#x5668;&#x9700;&#x8981;&#x72EC;&#x7ACB;&#x8FD0;&#x884C;&#x800C;&#x4E0D;&#x4E8E;&#x5916;&#x754C;&#x4EA4;&#x4E92;&#x7684;&#x65F6;&#x5019;&#x5219;&#x91C7;&#x7528;&#x8FD9;&#x79CD;&#x7F51;&#x7EDC;&#x6A21;&#x578B;&#xFF1B;&#x5728;&#x771F;&#x6B63;&#x7684;&#x751F;&#x4EA7;&#x4E1A;&#x52A1;&#x4E2D;&#x4F7F;&#x7528;&#x8F83;&#x5C11;&#xFF1B;</p>
+<h3 id="container&#x6A21;&#x578B;"><a href="#container&#x6A21;&#x578B;" class="headerlink" title="container&#x6A21;&#x578B;"></a>container&#x6A21;&#x578B;</h3><p>container&#x6A21;&#x578B;&#x4F7F;&#x7528;&#x53C2;&#x6570; &#x2013;net=container &#x540D;&#x79F0;&#x6216;ID&#x6307;&#x5B9A;&#xFF1B;&#x548C;&#x5377;&#x4E00;&#x6837;&#xFF0C;&#x53EF;&#x4EE5;&#x4F7F;&#x7528;server&#x7AEF;&#x76F8;&#x540C;&#x7684;&#x6302;&#x8F7D;&#x5377;&#xFF1B;&#x8FD9;&#x91CC;&#x6307;&#x5B9A;server&#x7AEF;&#x7684;&#x7F51;&#x7EDC;&#x6A21;&#x578B;&#xFF0C;&#x5BA2;&#x6237;&#x7AEF;&#x53EA;&#x8981;&#x5173;&#x8054;&#x4E86;container&#x7AEF;&#x7684;&#x7F51;&#x7EDC;&#x6A21;&#x578B;&#xFF0C;&#x5219;&#x6211;&#x4EEC;&#x53EF;&#x4EE5;&#x91C7;&#x7528;&#x76F8;&#x540C;&#x7684;&#x7F51;&#x7EDC;&#xFF1B;</p>
+<p>&#x4F7F;&#x7528;&#x6B64;&#x6A21;&#x578B;&#x521B;&#x5EFA;&#x7684;&#x5BB9;&#x5668;&#x9700;&#x8981;&#x4E4B;&#x5730;&#x90A3;&#x4E2A;&#x548C;&#x4E00;&#x4E2A;&#x5DF2;&#x7ECF;&#x5B58;&#x5728;&#x7684;&#x5BB9;&#x5668;&#x5171;&#x4EAB;&#x4E00;&#x4E2A;&#x7F51;&#x7EDC;&#xFF0C;&#x800C;&#x4E0D;&#x662F;&#x548C;&#x5BBF;&#x4E3B;&#x673A;&#x5171;&#x4EAB;&#x7F51;&#x7EDC;&#xFF0C;&#x65B0;&#x5EFA;&#x7684;&#x5BB9;&#x5668;&#x4E0D;&#x4F1A;&#x521B;&#x5EFA;&#x81EA;&#x5DF1;&#x7684;&#x7F51;&#x5361;&#x4E5F;&#x4E0D;&#x4F1A;&#x914D;&#x7F6E;&#x81EA;&#x5DF1;&#x7684;IP&#xFF0C;&#x4E8C;&#x5341;&#x548C;&#x4E00;&#x4E2A;&#x5DF2;&#x7ECF;&#x5B58;&#x5728;&#x7684;&#x88AB;&#x6307;&#x5B9A;&#x7684;&#x5BB9;&#x5668;IP&#x548C;&#x7AEF;&#x53E3;&#x8303;&#x56F4;&#xFF0C;&#x56E0;&#x6B64;&#x8FD9;&#x4E2A;&#x5BB9;&#x5668;&#x7684;&#x7AEF;&#x53E3;&#x4E0D;&#x80FD;&#x548C;&#x88AB;&#x6307;&#x5B9A;&#x7684;&#x7AEF;&#x53E3;&#x51B2;&#x7A81;&#xFF0C;&#x9664;&#x4E86;&#x7F51;&#x7EDC;&#x4E4B;&#x5916;&#x7684;&#x6587;&#x4EF6;&#x7CFB;&#x7EDF;&#x3001;&#x8FDB;&#x7A0B;&#x4FE1;&#x606F;&#x7B49;&#x4ECD;&#x7136;&#x4FDD;&#x6301;&#x76F8;&#x4E92;&#x9694;&#x79BB;&#xFF0C;&#x4E24;&#x4E2A;&#x5BB9;&#x5668;&#x8FDB;&#x7A0B;&#x53EF;&#x4EE5;&#x901A;&#x8FC7;IO&#x7F51;&#x5361;&#x53CA;&#x5BB9;&#x5668;IP&#x8FDB;&#x884C;&#x901A;&#x4FE1;&#xFF1B;</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> &#x6307;&#x5B9A;&#x4E00;&#x4E2A;&#x7F51;&#x7EDC;&#x5BB9;&#x5668;&#x670D;&#x52A1;&#x7AEF;</span></span><br><span class="line">docker run -it -d --name nginx-web1 -p 80:80 --net=bridge nginx:1.20.2</span><br><span class="line"><span class="meta"></span></span><br><span class="line"><span class="meta">#</span><span class="bash"> &#x6307;&#x5B9A;&#x5BA2;&#x6237;&#x7AEF;&#x5BB9;&#x5668;&#x5173;&#x8054;&#x4E3B;&#x673A;&#x5BB9;&#x5668;&#x7AEF;</span> </span><br><span class="line">docker run -it -d --name php-server --net=container:nginx-web1 php:7.3.33-fpm</span><br></pre></td></tr></table></figure>
+
+<h2 id="&#x7F51;&#x7EDC;&#x603B;&#x7ED3;"><a href="#&#x7F51;&#x7EDC;&#x603B;&#x7ED3;" class="headerlink" title="&#x7F51;&#x7EDC;&#x603B;&#x7ED3;"></a>&#x7F51;&#x7EDC;&#x603B;&#x7ED3;</h2><p><img src="/clould-native/docker/08_docker%E5%AE%B9%E5%99%A8%E6%8A%80%E6%9C%AF_%E5%AE%B9%E5%99%A8%E5%8D%B7%E5%92%8C%E7%BD%91%E7%BB%9C/image-20220104201101348.png" alt="docker&#x7F51;&#x7EDC;&#x6846;&#x67B6;&#x56FE;"></p>
+<ul>
+<li>&#x5BB9;&#x5668;&#x7F51;&#x7EDC;&#x9700;&#x8981;&#x5F00;&#x542F;&#x8DEF;&#x7531;&#x8F6C;&#x53D1;&#x529F;&#x80FD; &#x2013; net.ipv4.ip_forward</li>
+<li>&#x5BB9;&#x5668;&#x7F51;&#x7EDC;&#x603B;&#x5171;&#x6709;&#x56DB;&#x79CD;&#x6A21;&#x578B;<ul>
+<li>bridge &#x2013; &#x6865;&#x63A5;&#x6A21;&#x578B;&#xFF0C;nat&#x8F6C;&#x6362;</li>
+<li>host &#x2013; &#x4E3B;&#x673A;&#x6A21;&#x578B;&#xFF0C;&#x76F4;&#x63A5;&#x83B7;&#x53D6;&#x4E3B;&#x673A;&#x529F;&#x80FD;</li>
+<li>null &#x2013; &#x65E0;&#x7F51;&#x7EDC; </li>
+<li>container &#x2013; &#x5BB9;&#x5668;cs&#x7AEF;&#x6A21;&#x578B;&#xFF0C;c&#x7AEF;&#x590D;&#x5236;s&#x7AEF;&#x7F51;&#x7EDC;</li>
+</ul>
+</li>
+</ul>
+
+    </div>
+    
+    
+    
+    
+    
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/container/" rel="tag"># container</a>
+              <a href="/tags/docker/" rel="tag"># docker</a>
+              <a href="/tags/network-and-volume/" rel="tag"># network and volume</a>
+          </div>
+    
+        
+
+    
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/clould-native/docker/06_docker%E5%AE%B9%E5%99%A8%E6%8A%80%E6%9C%AF_dockerfile%E7%9A%84%E9%95%9C%E5%83%8F%E6%9E%84%E5%BB%BA%E8%AF%A6%E8%A7%A3/" rel="prev" title="dockerfile详解">
+      <i class="fa fa-chevron-left"></i> dockerfile详解
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+    <div>
+        
+        
+
+<div>
+    
+        <div style="text-align:center;color: #ccc;font-size:14px;">------ 版权声明：本文属于原创文章------</div>
+    	<div style="text-align:center;color: #FF0000;font-size:14px;">转载请注明：Burnov.github.io原创文章+本文链接，谢谢合作！！</i></div>
+    
+</div>
+
+
+        
+     </div>
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#docker%E5%AE%B9%E5%99%A8%E7%9A%84%E5%8D%B7%E8%AF%A6%E8%A7%A3"><span class="nav-number">1.</span> <span class="nav-text">docker容器的卷详解</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#docker%E7%9A%84%E6%95%B0%E6%8D%AE%E5%8D%B7%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5"><span class="nav-number">1.1.</span> <span class="nav-text">docker的数据卷基本概念</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%BB%98%E8%AE%A4%E5%AE%B9%E5%99%A8%E6%95%B0%E6%8D%AE%E5%AD%98%E5%82%A8%E7%9A%84%E9%AA%8C%E8%AF%81"><span class="nav-number">1.2.</span> <span class="nav-text">默认容器数据存储的验证</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E5%8D%B7%EF%BC%88data-volume%EF%BC%89%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5"><span class="nav-number">1.3.</span> <span class="nav-text">数据卷（data volume）基本概念</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%87%AA%E5%AE%9A%E4%B9%89%E6%95%B0%E6%8D%AE%E5%8D%B7%E6%8C%82%E8%BD%BD"><span class="nav-number">1.4.</span> <span class="nav-text">自定义数据卷挂载</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%A3%81%E7%9B%98%E6%8C%82%E8%BD%BD%E7%A4%BA%E4%BE%8B1%EF%BC%9A%E6%95%B0%E6%8D%AE%E6%8C%87%E5%AE%9A%E6%9C%AC%E5%9C%B0%E5%AD%98%E5%82%A8%E6%8C%82%E8%BD%BD"><span class="nav-number">1.5.</span> <span class="nav-text">磁盘挂载示例1：数据指定本地存储挂载</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%A3%81%E7%9B%98%E6%8C%82%E8%BD%BD%E7%A4%BA%E4%BE%8B2%EF%BC%9A%E6%97%A5%E5%BF%97%E6%96%87%E4%BB%B6%E7%9A%84%E6%8C%82%E8%BD%BD"><span class="nav-number">1.6.</span> <span class="nav-text">磁盘挂载示例2：日志文件的挂载</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%85%B6%E4%BB%96%E7%A3%81%E7%9B%98%E6%8C%82%E8%BD%BD%E6%96%B9%E5%BC%8F"><span class="nav-number">1.7.</span> <span class="nav-text">其他磁盘挂载方式</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#docker%E5%AE%B9%E5%99%A8%E7%9A%84%E7%BD%91%E7%BB%9C%E8%AF%A6%E8%A7%A3"><span class="nav-number">2.</span> <span class="nav-text">docker容器的网络详解</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#docker%E7%9A%84%E5%9F%BA%E6%9C%AC%E7%BD%91%E7%BB%9C%E6%9E%B6%E6%9E%84"><span class="nav-number">2.1.</span> <span class="nav-text">docker的基本网络架构</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#docker%E7%BD%91%E7%BB%9C%E7%B1%BB%E5%9E%8B"><span class="nav-number">2.2.</span> <span class="nav-text">docker网络类型</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#bridge%E6%A8%A1%E5%9E%8B"><span class="nav-number">2.2.1.</span> <span class="nav-text">bridge模型</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#host%E6%A8%A1%E5%9E%8B"><span class="nav-number">2.2.2.</span> <span class="nav-text">host模型</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#null%E6%A8%A1%E5%9E%8B"><span class="nav-number">2.2.3.</span> <span class="nav-text">null模型</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#container%E6%A8%A1%E5%9E%8B"><span class="nav-number">2.2.4.</span> <span class="nav-text">container模型</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BD%91%E7%BB%9C%E6%80%BB%E7%BB%93"><span class="nav-number">2.3.</span> <span class="nav-text">网络总结</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Burnov"
+      src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">Burnov</p>
+  <div class="site-description" itemprop="description">No end for Learning</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">12</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">14</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/Burnov" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;Burnov" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:xials1990@gmail.com" title="E-Mail → mailto:xials1990@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://www.zhihu.com/people/xia-liang-shi-78" title="Skype → https:&#x2F;&#x2F;www.zhihu.com&#x2F;people&#x2F;xia-liang-shi-78" rel="noopener" target="_blank"><i class="fab fa-skype fa-fw"></i></a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class=""></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Burnov</span>
+</div>
+
+<!--
+  <div class="powered-by">Powered by <a href="https://github.com/Burnov" class="theme-link" rel="noopener" target="_blank">Burnov</a> & <a href="https://mist.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Mist</a>
+  </div>
+
+-->
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : false,
+      appId      : 'wIjFqGmEUzY7fpTNVHpKA0eH-gzGzoHsz',
+      appKey     : 'KdXueGM1xFH8pBVSO5SkFRKI',
+      placeholder: "Just go go",
+      avatar     : 'mm',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : false,
+      lang       : '' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : false,
+      serverURLs : ''
+    });
+  }, window.Valine);
+});
+</script>
+
+</body>
+</html>

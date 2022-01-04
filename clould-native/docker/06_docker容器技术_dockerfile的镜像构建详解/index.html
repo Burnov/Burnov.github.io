@@ -1,0 +1,700 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-minimal.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Mist","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="dockerfile&amp;#x6784;&amp;#x5EFA;&amp;#x955C;&amp;#x50CF;&amp;#x539F;&amp;#x7406;&amp;#x4ECB;&amp;#x7ECD;dockerfile&amp;#x7684;&amp;#x8BE6;&amp;#x7EC6;&amp;#x4ECB;&amp;#x7ECD;&amp;#x5730;&amp;#x5740; 1https:&#x2F;&#x2F;docs.docker.com&#x2F;engine&#x2F;reference&#x2F;builder&#x2F;">
+<meta property="og:type" content="article">
+<meta property="og:title" content="dockerfile详解">
+<meta property="og:url" content="http://example.com/clould-native/docker/06_docker%E5%AE%B9%E5%99%A8%E6%8A%80%E6%9C%AF_dockerfile%E7%9A%84%E9%95%9C%E5%83%8F%E6%9E%84%E5%BB%BA%E8%AF%A6%E8%A7%A3/index.html">
+<meta property="og:site_name" content="Burnov^-^Blog">
+<meta property="og:description" content="dockerfile&amp;#x6784;&amp;#x5EFA;&amp;#x955C;&amp;#x50CF;&amp;#x539F;&amp;#x7406;&amp;#x4ECB;&amp;#x7ECD;dockerfile&amp;#x7684;&amp;#x8BE6;&amp;#x7EC6;&amp;#x4ECB;&amp;#x7ECD;&amp;#x5730;&amp;#x5740; 1https:&#x2F;&#x2F;docs.docker.com&#x2F;engine&#x2F;reference&#x2F;builder&#x2F;">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://example.com/clould-native/docker/06_docker%E5%AE%B9%E5%99%A8%E6%8A%80%E6%9C%AF_dockerfile%E7%9A%84%E9%95%9C%E5%83%8F%E6%9E%84%E5%BB%BA%E8%AF%A6%E8%A7%A3/image-20220103112146634.png">
+<meta property="og:image" content="http://example.com/clould-native/docker/06_docker%E5%AE%B9%E5%99%A8%E6%8A%80%E6%9C%AF_dockerfile%E7%9A%84%E9%95%9C%E5%83%8F%E6%9E%84%E5%BB%BA%E8%AF%A6%E8%A7%A3/image-20220103120219739.png">
+<meta property="og:image" content="http://example.com/clould-native/docker/06_docker%E5%AE%B9%E5%99%A8%E6%8A%80%E6%9C%AF_dockerfile%E7%9A%84%E9%95%9C%E5%83%8F%E6%9E%84%E5%BB%BA%E8%AF%A6%E8%A7%A3/image-20220103124343104.png">
+<meta property="og:image" content="http://example.com/clould-native/docker/06_docker%E5%AE%B9%E5%99%A8%E6%8A%80%E6%9C%AF_dockerfile%E7%9A%84%E9%95%9C%E5%83%8F%E6%9E%84%E5%BB%BA%E8%AF%A6%E8%A7%A3/image-20220103124718915.png">
+<meta property="og:image" content="http://example.com/clould-native/docker/06_docker%E5%AE%B9%E5%99%A8%E6%8A%80%E6%9C%AF_dockerfile%E7%9A%84%E9%95%9C%E5%83%8F%E6%9E%84%E5%BB%BA%E8%AF%A6%E8%A7%A3/image-20220103131323453.png">
+<meta property="og:image" content="http://example.com/clould-native/docker/06_docker%E5%AE%B9%E5%99%A8%E6%8A%80%E6%9C%AF_dockerfile%E7%9A%84%E9%95%9C%E5%83%8F%E6%9E%84%E5%BB%BA%E8%AF%A6%E8%A7%A3/image-20220103134629468.png">
+<meta property="og:image" content="http://example.com/clould-native/docker/06_docker%E5%AE%B9%E5%99%A8%E6%8A%80%E6%9C%AF_dockerfile%E7%9A%84%E9%95%9C%E5%83%8F%E6%9E%84%E5%BB%BA%E8%AF%A6%E8%A7%A3/image-20220103135338182.png">
+<meta property="og:image" content="http://example.com/clould-native/docker/06_docker%E5%AE%B9%E5%99%A8%E6%8A%80%E6%9C%AF_dockerfile%E7%9A%84%E9%95%9C%E5%83%8F%E6%9E%84%E5%BB%BA%E8%AF%A6%E8%A7%A3/image-20220103141754665.png">
+<meta property="og:image" content="http://example.com/clould-native/docker/06_docker%E5%AE%B9%E5%99%A8%E6%8A%80%E6%9C%AF_dockerfile%E7%9A%84%E9%95%9C%E5%83%8F%E6%9E%84%E5%BB%BA%E8%AF%A6%E8%A7%A3/image-20220103151734454.png">
+<meta property="og:image" content="http://example.com/clould-native/docker/06_docker%E5%AE%B9%E5%99%A8%E6%8A%80%E6%9C%AF_dockerfile%E7%9A%84%E9%95%9C%E5%83%8F%E6%9E%84%E5%BB%BA%E8%AF%A6%E8%A7%A3/image-20220103151928183.png">
+<meta property="og:image" content="http://example.com/clould-native/docker/06_docker%E5%AE%B9%E5%99%A8%E6%8A%80%E6%9C%AF_dockerfile%E7%9A%84%E9%95%9C%E5%83%8F%E6%9E%84%E5%BB%BA%E8%AF%A6%E8%A7%A3/image-20220103160313732.png">
+<meta property="og:image" content="http://example.com/clould-native/docker/06_docker%E5%AE%B9%E5%99%A8%E6%8A%80%E6%9C%AF_dockerfile%E7%9A%84%E9%95%9C%E5%83%8F%E6%9E%84%E5%BB%BA%E8%AF%A6%E8%A7%A3/image-20220103224941672.png">
+<meta property="og:image" content="http://example.com/clould-native/docker/06_docker%E5%AE%B9%E5%99%A8%E6%8A%80%E6%9C%AF_dockerfile%E7%9A%84%E9%95%9C%E5%83%8F%E6%9E%84%E5%BB%BA%E8%AF%A6%E8%A7%A3/image-20220103225216210.png">
+<meta property="og:image" content="http://example.com/clould-native/docker/06_docker%E5%AE%B9%E5%99%A8%E6%8A%80%E6%9C%AF_dockerfile%E7%9A%84%E9%95%9C%E5%83%8F%E6%9E%84%E5%BB%BA%E8%AF%A6%E8%A7%A3/image-20220103225414605.png">
+<meta property="og:image" content="http://example.com/clould-native/docker/06_docker%E5%AE%B9%E5%99%A8%E6%8A%80%E6%9C%AF_dockerfile%E7%9A%84%E9%95%9C%E5%83%8F%E6%9E%84%E5%BB%BA%E8%AF%A6%E8%A7%A3/image-20220103225645871.png">
+<meta property="og:image" content="http://example.com/clould-native/docker/06_docker%E5%AE%B9%E5%99%A8%E6%8A%80%E6%9C%AF_dockerfile%E7%9A%84%E9%95%9C%E5%83%8F%E6%9E%84%E5%BB%BA%E8%AF%A6%E8%A7%A3/image-20220103225901714.png">
+<meta property="og:image" content="http://example.com/clould-native/docker/06_docker%E5%AE%B9%E5%99%A8%E6%8A%80%E6%9C%AF_dockerfile%E7%9A%84%E9%95%9C%E5%83%8F%E6%9E%84%E5%BB%BA%E8%AF%A6%E8%A7%A3/image-20220103230101313.png">
+<meta property="og:image" content="http://example.com/clould-native/docker/06_docker%E5%AE%B9%E5%99%A8%E6%8A%80%E6%9C%AF_dockerfile%E7%9A%84%E9%95%9C%E5%83%8F%E6%9E%84%E5%BB%BA%E8%AF%A6%E8%A7%A3/image-20220103230336454.png">
+<meta property="og:image" content="http://example.com/clould-native/docker/06_docker%E5%AE%B9%E5%99%A8%E6%8A%80%E6%9C%AF_dockerfile%E7%9A%84%E9%95%9C%E5%83%8F%E6%9E%84%E5%BB%BA%E8%AF%A6%E8%A7%A3/image-20220103230447683.png">
+<meta property="article:published_time" content="2022-01-04T12:16:30.000Z">
+<meta property="article:modified_time" content="2022-01-04T12:23:13.522Z">
+<meta property="article:author" content="Burnov">
+<meta property="article:tag" content="container">
+<meta property="article:tag" content="docker">
+<meta property="article:tag" content="dockerfile">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/clould-native/docker/06_docker%E5%AE%B9%E5%99%A8%E6%8A%80%E6%9C%AF_dockerfile%E7%9A%84%E9%95%9C%E5%83%8F%E6%9E%84%E5%BB%BA%E8%AF%A6%E8%A7%A3/image-20220103112146634.png">
+
+<link rel="canonical" href="http://example.com/clould-native/docker/06_docker%E5%AE%B9%E5%99%A8%E6%8A%80%E6%9C%AF_dockerfile%E7%9A%84%E9%95%9C%E5%83%8F%E6%9E%84%E5%BB%BA%E8%AF%A6%E8%A7%A3/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>dockerfile详解 | Burnov^-^Blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="Burnov^-^Blog" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Burnov^-^Blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="Searching..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://example.com/clould-native/docker/06_docker%E5%AE%B9%E5%99%A8%E6%8A%80%E6%9C%AF_dockerfile%E7%9A%84%E9%95%9C%E5%83%8F%E6%9E%84%E5%BB%BA%E8%AF%A6%E8%A7%A3/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="Burnov">
+      <meta itemprop="description" content="No end for Learning">
+    </span>
+    
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Burnov^-^Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          dockerfile详解
+        </h1>
+    
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+              
+    
+              <time title="Created: 2022-01-04 20:16:30 / Modified: 20:23:13" itemprop="dateCreated datePublished" datetime="2022-01-04T20:16:30+08:00">2022-01-04</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/clould-native/" itemprop="url" rel="index"><span itemprop="name">clould native</span></a>
+                </span>
+                  , 
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/clould-native/docker/" itemprop="url" rel="index"><span itemprop="name">docker</span></a>
+                </span>
+            </span>
+    
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Valine: </span>
+    
+    <a title="valine" href="/clould-native/docker/06_docker%E5%AE%B9%E5%99%A8%E6%8A%80%E6%9C%AF_dockerfile%E7%9A%84%E9%95%9C%E5%83%8F%E6%9E%84%E5%BB%BA%E8%AF%A6%E8%A7%A3/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/clould-native/docker/06_docker%E5%AE%B9%E5%99%A8%E6%8A%80%E6%9C%AF_dockerfile%E7%9A%84%E9%95%9C%E5%83%8F%E6%9E%84%E5%BB%BA%E8%AF%A6%E8%A7%A3/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+    
+        </div>
+      </header>
+    
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+    
+      
+        <h1 id="dockerfile&#x6784;&#x5EFA;&#x955C;&#x50CF;&#x539F;&#x7406;&#x4ECB;&#x7ECD;"><a href="#dockerfile&#x6784;&#x5EFA;&#x955C;&#x50CF;&#x539F;&#x7406;&#x4ECB;&#x7ECD;" class="headerlink" title="dockerfile&#x6784;&#x5EFA;&#x955C;&#x50CF;&#x539F;&#x7406;&#x4ECB;&#x7ECD;"></a>dockerfile&#x6784;&#x5EFA;&#x955C;&#x50CF;&#x539F;&#x7406;&#x4ECB;&#x7ECD;</h1><p>dockerfile&#x7684;&#x8BE6;&#x7EC6;&#x4ECB;&#x7ECD;&#x5730;&#x5740;</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">https://docs.docker.com/engine/reference/builder/</span><br></pre></td></tr></table></figure>
+
+<p><img src="/clould-native/docker/06_docker%E5%AE%B9%E5%99%A8%E6%8A%80%E6%9C%AF_dockerfile%E7%9A%84%E9%95%9C%E5%83%8F%E6%9E%84%E5%BB%BA%E8%AF%A6%E8%A7%A3/image-20220103112146634.png" alt="docker build"></p>
+<span id="more"></span>
+
+<p>&#x6211;&#x4EEC;&#x901A;&#x8FC7;docker build&#x547D;&#x4EE4;&#x53EF;&#x4EE5;&#x4F7F;&#x7528;Dockerfile&#x6587;&#x4EF6;&#x6784;&#x5EFA;&#x81EA;&#x5DF1;&#x7684;image&#x955C;&#x50CF;&#x3002;&#x5728;&#x751F;&#x4EA7;&#x73AF;&#x5883;&#x4E2D;&#xFF0C;&#x672C;&#x516C;&#x53F8;&#x7684;&#x4E1A;&#x52A1;&#x955C;&#x50CF;&#x624D;&#x662F;&#x516C;&#x53F8;&#x7684;&#x6838;&#x5FC3;&#x5185;&#x5BB9;&#xFF1B;&#x56E0;&#x6B64;&#xFF0C;&#x57FA;&#x4E8E;dockefile&#x53BB;&#x6784;&#x5EFA;&#x516C;&#x53F8;&#x81EA;&#x5DF1;&#x5185;&#x90E8;&#x7684;&#x4E1A;&#x52A1;&#x955C;&#x50CF;&#x5C24;&#x5176;&#x91CD;&#x8981;&#xFF1B;</p>
+<p>&#x4E00;&#x822C;&#x60C5;&#x51B5;&#x4E0B;&#xFF0C;&#x6211;&#x4EEC;&#x4F1A;&#x901A;&#x8FC7;dockerfile&#x7ED3;&#x5408;Linux&#x5185;&#x7F6E;shell&#x811A;&#x672C;&#x4E00;&#x8D77;&#x6765;&#x6784;&#x5EFA;&#x955C;&#x50CF;&#x6587;&#x4EF6;&#xFF0C;&#x5177;&#x4F53;&#x5199;&#x6CD5;&#x770B;&#x4E1A;&#x52A1;&#x9700;&#x6C42;&#xFF1B;&#x7136;&#x540E;&#x8FD0;&#x7EF4;&#x4EBA;&#x5458;&#x9700;&#x8981;&#x5B9E;&#x73B0;&#x5BF9;&#x955C;&#x50CF;&#x8FDB;&#x884C;&#x6253;&#x5305;&#x3001;&#x5206;&#x53D1;&#x3001;&#x90E8;&#x7F72;&#x7B49;&#x64CD;&#x4F5C;&#xFF1B;</p>
+<p>&#x5728;&#x955C;&#x50CF;&#x7BA1;&#x7406;&#x65B9;&#x9762;&#x4E00;&#x822C;&#x60C5;&#x51B5;&#x4E0B;&#x516C;&#x53F8;&#x4F1A;&#x642D;&#x5EFA;&#x81EA;&#x5DF1;&#x7684;k8s&#x7BA1;&#x7406;&#x5E73;&#x53F0;&#xFF0C;&#x6216;&#x8005;&#x53BB;&#x4E91;&#x5382;&#x5BB6;&#x8D2D;&#x4E70;k8s&#x7BA1;&#x7406;&#x5E73;&#x53F0;&#xFF0C;&#x4F46;&#x662F;&#x81EA;&#x5DF1;&#x642D;&#x5EFA;&#x7684;&#x5C45;&#x591A;&#xFF0C;&#x56E0;&#x4E3A;&#x53EF;&#x4EE5;&#x5B9A;&#x5236;&#x81EA;&#x5DF1;&#x516C;&#x53F8;&#x7684;&#x529F;&#x80FD;&#x9700;&#x6C42;&#xFF0C;&#x800C;&#x5382;&#x5BB6;&#x63D0;&#x4F9B;&#x7684;k8s&#x5E73;&#x53F0;&#x5219;&#x6709;&#x5F88;&#x591A;&#x7684;&#x9650;&#x5236;&#xFF0C;&#x4E0D;&#x591F;&#x7075;&#x6D3B;&#xFF1B;</p>
+<h2 id="&#x955C;&#x50CF;&#x4ECB;&#x7ECD;"><a href="#&#x955C;&#x50CF;&#x4ECB;&#x7ECD;" class="headerlink" title="&#x955C;&#x50CF;&#x4ECB;&#x7ECD;"></a>&#x955C;&#x50CF;&#x4ECB;&#x7ECD;</h2><p>1&#x3001;docker&#x955C;&#x50CF;&#x57FA;&#x4E8E;union file system&#x5C06;&#x591A;&#x4E2A;&#x76EE;&#x5F55;&#x5408;&#x5E76;&#x6302;&#x8F7D;&#x5230;&#x4E00;&#x4E2A;&#x76EE;&#x5F55;&#x7ED9;&#x5BB9;&#x5668;&#x4F7F;&#x7528;&#xFF1B;</p>
+<p>&#x200B;    &#x6839;&#x636E;&#x955C;&#x50CF;&#x7684;&#x5206;&#x5C42;&#x7ED3;&#x6784;&#xFF0C;&#x57FA;&#x4E8E;overlay2&#x7684;&#x539F;&#x7406;&#xFF0C;&#x5982;&#x679C;&#x4E0D;&#x540C;&#x7684;&#x5BB9;&#x5668;&#x4F7F;&#x7528;&#x4E86;&#x5E95;&#x5C42;&#x76F8;&#x540C;&#x7684;&#x7236;&#x955C;&#x50CF;&#xFF0C;&#x5219;&#x901A;&#x8FC7;hash&#x503C;&#x6765;&#x5224;&#x65AD;&#x5176;&#x5E95;&#x5C42;&#x955C;&#x50CF;&#x662F;&#x5426;&#x76F8;&#x540C;&#x3002;&#x5982;&#x679C;&#x76F8;&#x540C;&#xFF0C;&#x80FD;&#x591F;&#x516C;&#x7528;&#xFF0C;&#x800C;&#x4E0D;&#x4F1A;&#x521B;&#x5EFA;&#x65B0;&#x7684;&#x5E95;&#x5C42;&#x955C;&#x50CF;&#x6587;&#x4EF6;&#xFF1B;</p>
+<p>2&#x3001;&#x6700;&#x5E95;&#x5C42;&#x7684;&#x662F;bootfs&#xFF0C;&#x955C;&#x50CF;&#x6CA1;&#x6709;&#x5185;&#x6838;&#xFF0C;&#x4F7F;&#x7528;&#x7684;&#x662F;&#x5BBF;&#x4E3B;&#x673A;&#x7684;bootfs&#xFF1B;</p>
+<p>&#x200B;    &#x955C;&#x50CF;&#x4E0D;&#x5305;&#x542B;&#x5185;&#x6838;&#xFF0C;&#x955C;&#x50CF;&#x91CC;&#x9762;&#x4E5F;&#x662F;&#x6CA1;&#x6709;bootfs&#x6587;&#x4EF6;&#x7684;&#xFF0C;&#x4F46;&#x662F;&#x53C8;rootfs&#x7684;&#x6839;&#x6587;&#x4EF6;&#x7CFB;&#x7EDF;&#xFF1B;</p>
+<p>3&#x3001;&#x4E00;&#x4E2A;&#x955C;&#x50CF;&#x662F;&#x6709;&#x4E00;&#x5C42;&#x6216;&#x8005;&#x591A;&#x5C42;&#x5408;&#x5E76;&#x800C;&#x6210;&#xFF0C;&#x6BCF;&#x4E00;&#x5C42;&#x79F0;&#x4E3A;&#x662F;&#x4E00;&#x4E2A;layer&#xFF1B;</p>
+<p>&#x200B;    &#x955C;&#x50CF;&#x539F;&#x7406;&#x53EB;&#x505A;&#x201C;&#x5206;&#x5C42;&#x6784;&#x5EFA;&#xFF0C;&#x8054;&#x5408;&#x6302;&#x8F7D;&#x201D;&#xFF0C;&#x57FA;&#x4E8E;&#x8FD9;&#x4E2A;&#x539F;&#x7406;&#xFF0C;&#x6BCF;&#x4E00;&#x4E2A;&#x64CD;&#x4F5C;&#x90FD;&#x4F1A;&#x88AB;&#x5206;&#x914D;&#x4E3A;&#x4E00;&#x4E2A;&#x201C;&#x5C42;&#x201D;&#x3002;&#x800C;&#x955C;&#x50CF;&#x5C31;&#x662F;&#x57FA;&#x4E8E;&#x8FD9;&#x4E9B;&#x201C;&#x5C42;&#x201D;&#x8054;&#x5408;&#x8D77;&#x6765;&#x7684;&#x4E00;&#x4E2A;&#x6587;&#x4EF6;&#x5185;&#x5BB9;&#xFF1B;</p>
+<p>4&#x3001;&#x955C;&#x50CF;&#x53EF;&#x4EE5;&#x57FA;&#x4E8E;&#x5176;&#x4ED6;&#x955C;&#x50CF;&#x8FDB;&#x884C;&#x91CD;&#x65B0;&#x6784;&#x5EFA;&#xFF0C;&#x88AB;&#x5F15;&#x7528;&#x7684;&#x955C;&#x50CF;&#x88AB;&#x79F0;&#x4E3A;&#x7236;&#x955C;&#x50CF;&#xFF1B;</p>
+<p>&#x200B;    &#x4E00;&#x822C;&#x6211;&#x4EEC;&#x81EA;&#x5DF1;&#x7684;&#x4E1A;&#x52A1;&#x955C;&#x50CF;&#x53EF;&#x4EE5;&#x901A;&#x8FC7;&#x4E0B;&#x8F7D;&#x5B98;&#x65B9;&#x955C;&#x50CF;&#x540E;&#x4FEE;&#x6539;&#x5F97;&#x5230;&#x6211;&#x4EEC;&#x81EA;&#x5DF1;&#x9700;&#x8981;&#x7684;&#x955C;&#x50CF;&#x6587;&#x4EF6;&#xFF1B;</p>
+<p>5&#x3001;&#x4E00;&#x4E2A;&#x955C;&#x50CF;&#x53EF;&#x4EE5;&#x540C;&#x65F6;&#x88AB;&#x521B;&#x5EFA;&#x4E3A;&#x591A;&#x4E2A;&#x5BB9;&#x5668;&#xFF1B;</p>
+<p>6&#x3001;&#x955C;&#x50CF;&#x662F;&#x53EA;&#x8BFB;&#x7684;&#xFF0C;&#x4EFB;&#x4F55;&#x7684;&#x66F4;&#x6539;&#x90FD;&#x4E0D;&#x4F1A;&#x76F4;&#x63A5;&#x4FEE;&#x6539;&#x955C;&#x50CF;&#xFF1B;</p>
+<p>&#x200B;    &#x771F;&#x6B63;&#x8FDB;&#x884C;&#x6570;&#x636E;&#x4FEE;&#x6539;&#x7684;&#x65F6;&#x5019;&#x662F;&#x5728;&#x6700;&#x4E0A;&#x5C42;&#x7684;&#x53EF;&#x5199;&#x5C42;&#xFF08;Writeable Container&#xFF09;&#x8FDB;&#x884C;&#x6570;&#x636E;&#x4FEE;&#x6539;&#x7684;&#xFF0C;&#x4E0D;&#x4F1A;&#x4FEE;&#x6539;&#x4EFB;&#x4F55;&#x955C;&#x50CF;&#x76F8;&#x5173;&#x7684;&#x6570;&#x636E;&#x5185;&#x5BB9;&#xFF1B;</p>
+<p><img src="/clould-native/docker/06_docker%E5%AE%B9%E5%99%A8%E6%8A%80%E6%9C%AF_dockerfile%E7%9A%84%E9%95%9C%E5%83%8F%E6%9E%84%E5%BB%BA%E8%AF%A6%E8%A7%A3/image-20220103120219739.png" alt="&#x955C;&#x50CF;&#x5206;&#x5C42;&#x7ED3;&#x6784;"></p>
+<h2 id="&#x5BB9;&#x5668;&#x542F;&#x52A8;&#x7684;&#x5F15;&#x5BFC;&#x8FC7;&#x7A0B;"><a href="#&#x5BB9;&#x5668;&#x542F;&#x52A8;&#x7684;&#x5F15;&#x5BFC;&#x8FC7;&#x7A0B;" class="headerlink" title="&#x5BB9;&#x5668;&#x542F;&#x52A8;&#x7684;&#x5F15;&#x5BFC;&#x8FC7;&#x7A0B;"></a>&#x5BB9;&#x5668;&#x542F;&#x52A8;&#x7684;&#x5F15;&#x5BFC;&#x8FC7;&#x7A0B;</h2><p><img src="/clould-native/docker/06_docker%E5%AE%B9%E5%99%A8%E6%8A%80%E6%9C%AF_dockerfile%E7%9A%84%E9%95%9C%E5%83%8F%E6%9E%84%E5%BB%BA%E8%AF%A6%E8%A7%A3/image-20220103124343104.png" alt="&#x5BB9;&#x5668;&#x7684;&#x5F15;&#x5BFC;&#x8FC7;&#x7A0B;"></p>
+<p>&#x5728;&#x5F15;&#x5BFC;&#x5BB9;&#x5668;&#x542F;&#x52A8;&#x7684;&#x65F6;&#x5019;&#x5E95;&#x5C42;Kernel&#x5185;&#x6838;&#x63D0;&#x4F9B;&#x865A;&#x62DF;&#x5316;&#x8D44;&#x6E90;&#x9694;&#x79BB;&#x529F;&#x80FD;&#xFF0C;&#x5BB9;&#x5668;&#x6CA1;&#x6709;&#x5185;&#x6838;&#xFF0C;&#x81EA;&#x7136;&#x4E5F;&#x6CA1;&#x6709;bootfs&#x3002;&#x56E0;&#x6B64;&#xFF0C;&#x5BB9;&#x5668;&#x4E0A;&#x53EA;&#x9700;&#x8981;&#x6302;&#x8F7D;rootfs&#x4F5C;&#x4E3A;&#x6839;&#x76EE;&#x5F55;&#x5373;&#x53EF;&#xFF1B;&#x6240;&#x4EE5;&#xFF0C;&#x5BB9;&#x5668;&#x7684;&#x542F;&#x52A8;&#x8FC7;&#x7A0B;&#x53EA;&#x7528;&#x5F15;&#x5BFC;rootfs&#x542F;&#x52A8;&#x5373;&#x53EF;&#xFF1B;</p>
+<h2 id="dockerfile&#x4E0E;&#x955C;&#x50CF;&#x5173;&#x7CFB;"><a href="#dockerfile&#x4E0E;&#x955C;&#x50CF;&#x5173;&#x7CFB;" class="headerlink" title="dockerfile&#x4E0E;&#x955C;&#x50CF;&#x5173;&#x7CFB;"></a>dockerfile&#x4E0E;&#x955C;&#x50CF;&#x5173;&#x7CFB;</h2><p>dockerfile -&gt; image -&gt; container1/container2&#x2026;</p>
+<p>&#x57FA;&#x4E8E;dockerfile&#x6784;&#x5EFA;&#x516C;&#x53F8;&#x5185;&#x90E8;&#x7684;&#x643A;&#x5E26;&#x4E1A;&#x52A1;&#x7684;image&#x955C;&#x50CF;&#xFF0C;&#x8BA9;&#x540E;&#x901A;&#x8FC7;&#x955C;&#x50CF;&#x53BB;&#x542F;&#x52A8;&#x5BB9;&#x5668;&#xFF1B;&#x4E14;&#x4E00;&#x4E2A;&#x955C;&#x50CF;&#x6587;&#x4EF6;&#x53EF;&#x4EE5;&#x542F;&#x52A8;&#x591A;&#x4E2A;&#x5BB9;&#x5668;&#xFF1B;</p>
+<h2 id="docker&#x7684;app&#x5E94;&#x7528;&#x7A0B;&#x5E8F;&#x5185;&#x90E8;&#x5F00;&#x53D1;&#x6D41;&#x7A0B;&#x4ECB;&#x7ECD;"><a href="#docker&#x7684;app&#x5E94;&#x7528;&#x7A0B;&#x5E8F;&#x5185;&#x90E8;&#x5F00;&#x53D1;&#x6D41;&#x7A0B;&#x4ECB;&#x7ECD;" class="headerlink" title="docker&#x7684;app&#x5E94;&#x7528;&#x7A0B;&#x5E8F;&#x5185;&#x90E8;&#x5F00;&#x53D1;&#x6D41;&#x7A0B;&#x4ECB;&#x7ECD;"></a>docker&#x7684;app&#x5E94;&#x7528;&#x7A0B;&#x5E8F;&#x5185;&#x90E8;&#x5F00;&#x53D1;&#x6D41;&#x7A0B;&#x4ECB;&#x7ECD;</h2><p><img src="/clould-native/docker/06_docker%E5%AE%B9%E5%99%A8%E6%8A%80%E6%9C%AF_dockerfile%E7%9A%84%E9%95%9C%E5%83%8F%E6%9E%84%E5%BB%BA%E8%AF%A6%E8%A7%A3/image-20220103124718915.png" alt="&#x57FA;&#x4E8E;&#x5BB9;&#x5668;&#x7684;&#x4E1A;&#x52A1;&#x90E8;&#x7F72;&#x8FC7;&#x7A0B;"></p>
+<p>&#x5982;&#x4E0A;&#x56FE;&#x6240;&#x793A;&#xFF1A;</p>
+<p>1&#x3001;&#x5F00;&#x53D1;&#x4EBA;&#x5458;&#x5199;&#x597D;&#x4E1A;&#x52A1;&#x4EE3;&#x7801;&#xFF0C;&#x4EE5;&#x53CA;&#x76F8;&#x5E94;&#x7684;app&#x7A0B;&#x5E8F;&#xFF1B;</p>
+<p>2&#x3001;&#x5C06;&#x4E1A;&#x52A1;&#x4EE3;&#x7801;&#x6302;&#x8F7D;&#x5173;&#x8054;&#x5230;dockerfile&#x4E2D;&#x6765;&#xFF1B;&#x4E00;&#x822C;dockerfile&#x7684;&#x7F16;&#x5199;&#x9700;&#x8981;&#x7531;&#x8FD0;&#x7EF4;&#x4EBA;&#x5458;&#x6765;&#x5B8C;&#x6210;&#xFF0C;&#x4F46;&#x662F;&#x8FD9;&#x6837;&#x7684;&#x8BDD;&#xFF0C;&#x5C31;&#x5BF9;&#x8FD0;&#x7EF4;&#x4EBA;&#x5458;&#x5BF9;&#x4E1A;&#x52A1;&#x4E86;&#x89E3;&#x63D0;&#x51FA;&#x4E86;&#x4E00;&#x5B9A;&#x7684;&#x8981;&#x6C42;&#xFF1B;</p>
+<p>3&#x3001;&#x57FA;&#x4E8E;dockerfile&#x6784;&#x5EFA;&#x81EA;&#x5DF1;&#x7684;&#x955C;&#x50CF;&#x6587;&#x4EF6;&#xFF1B;&#x57FA;&#x7840;&#x955C;&#x50CF;&#x4E00;&#x822C;&#x6765;&#x81EA;&#x4E8E;&#x516C;&#x53F8;&#x7684;&#x5185;&#x90E8;&#x4ED3;&#x5E93;&#xFF0C;&#x7136;&#x540E;&#x57FA;&#x4E8E;&#x8FD9;&#x4E9B;&#x57FA;&#x7840;&#x955C;&#x50CF;&#x6765;&#x914D;&#x7F6E;&#x516C;&#x53F8;&#x7684;&#x4E1A;&#x52A1;&#x955C;&#x50CF;&#xFF1B;&#x914D;&#x7F6E;&#x597D;&#x7684;&#x4E1A;&#x52A1;&#x955C;&#x50CF;&#xFF0C;&#x4E5F;&#x53EF;&#x4EE5;&#x4FDD;&#x5B58;&#x5230;&#x516C;&#x53F8;&#x5185;&#x90E8;&#x7684;&#x4ED3;&#x5E93;&#x4E2D;&#x6765;&#xFF1B;</p>
+<p>4&#x3001;&#x7F16;&#x5199;yml&#x6587;&#x4EF6;&#xFF0C;&#x4EE5;&#x53CA;&#x670D;&#x52A1;&#x7684;&#x542F;&#x52A8;&#x811A;&#x672C;&#x6587;&#x4EF6;&#xFF1B;&#x5176;&#x5B9E;&#x5C31;&#x662F;docker-compose&#x5B9A;&#x4E49;&#x7684;&#x5BB9;&#x5668;&#x7F16;&#x6392;&#x542F;&#x52A8;&#x811A;&#x672C;&#xFF1B;</p>
+<p>5&#x3001;&#x8FD0;&#x884C;docker-compose&#x5373;&#x53EF;&#xFF1B;&#x8FD9;&#x6837;&#x6240;&#x6709;&#x6307;&#x5B9A;&#x7684;&#x4E1A;&#x52A1;&#x5BB9;&#x5668;&#x4F9D;&#x6B21;&#x542F;&#x52A8;&#xFF1B;</p>
+<p>6&#x3001;&#x901A;&#x8FC7;docker-compose&#x7F16;&#x5199;&#x5B8C;&#x6210;&#x4EE5;&#x540E;&#xFF0C;&#x6211;&#x4EEC;&#x53EF;&#x4EE5;&#x901A;&#x8FC7;PC&#x8FDB;&#x884C;&#x8BBF;&#x95EE;&#x6D4B;&#x8BD5;&#xFF1B;&#x6B64;&#x65F6;&#x6211;&#x4EEC;&#x5C31;&#x80FD;&#x591F;&#x6B63;&#x5E38;&#x8BBF;&#x95EE;&#x5230;&#x6211;&#x4EEC;&#x7684;&#x4E1A;&#x52A1;&#x6570;&#x636E;&#x4E86;&#xFF1B;</p>
+<p>7&#x3001;&#x63A8;&#x9001;&#x7248;&#x672C;&#xFF0C;&#x7EE7;&#x7EED;&#x65B0;&#x7684;&#x7248;&#x672C;&#x5347;&#x7EA7;&#xFF0C;&#x8FD9;&#x91CC;&#x6211;&#x4EEC;&#x901A;&#x8FC7;&#x7070;&#x5EA6;&#x90E8;&#x7F72;&#xFF0C;&#x53EF;&#x4EE5;&#x7EE7;&#x7EED;&#x5BF9;&#x65B0;&#x7684;&#x4E1A;&#x52A1;&#x7248;&#x672C;&#x8FDB;&#x884C;&#x4E0B;&#x4E00;&#x8F6E;&#x7684;&#x5F00;&#x53D1;&#x90E8;&#x7F72;&#x4E86;&#xFF1B;&#x5728;&#x8FD9;&#x4E2A;&#x8FC7;&#x7A0B;&#x4E2D;&#x4F1A;&#x5173;&#x8054;&#x5230;&#x672C;&#x5730;&#x7684;gitlab&#x6765;&#x8FDB;&#x884C;&#x4EE3;&#x7801;&#x7684;&#x7EDF;&#x4E00;&#x7BA1;&#x7406;&#xFF1B;</p>
+<p>&#x5BF9;&#x4E8E;&#x6211;&#x4EEC;&#x7ECF;&#x5E38;&#x4F7F;&#x7528;&#x7684;&#x57FA;&#x7840;&#x955C;&#x50CF;&#xFF0C;&#x4E00;&#x822C;&#x4E3A;centos&#x3001;debian&#x3001;Ubuntu&#x3001;alpine&#xFF0C;&#x57FA;&#x7840;&#x955C;&#x50CF;&#x7684;&#x9009;&#x62E9;&#x4E3B;&#x8981;&#x53D6;&#x51B3;&#x4E8E;&#x7528;&#x6237;&#x7684;&#x719F;&#x6089;&#x7A0B;&#x5EA6;&#xFF0C;&#x8D8A;&#x662F;&#x719F;&#x6089;&#x5C31;&#x53EF;&#x4EE5;&#x9009;&#x62E9;&#x8FD9;&#x79CD;&#x5E95;&#x5C42;&#x955C;&#x50CF;&#xFF1B;&#x57FA;&#x7840;&#x955C;&#x50CF;&#x4E2D;&#x4E0D;&#x5EFA;&#x8BAE;&#x6DFB;&#x52A0;&#x8FC7;&#x591A;&#x7684;&#x8C03;&#x8BD5;&#x5DE5;&#x5177;&#xFF0C;&#x5982;&#x679C;&#x8C03;&#x8BD5;&#x5DE5;&#x5177;&#x8FC7;&#x591A;&#xFF0C;&#x5219;&#x955C;&#x50CF;&#x5927;&#x5C0F;&#x53C8;&#x4F1A;&#x589E;&#x5927;&#xFF0C;&#x8FD9;&#x6837;&#x6D88;&#x8017;&#x7684;&#x786C;&#x4EF6;&#x8D44;&#x6E90;&#x5C31;&#x4F1A;&#x589E;&#x591A;&#xFF1B;</p>
+<blockquote>
+<p>&#x4E1A;&#x52A1;&#x5347;&#x7EA7;&#xFF1A;&#x4E0D;&#x5230;&#x4E07;&#x4E0D;&#x5F97;&#x5DF2;&#xFF0C;&#x4E0D;&#x8981;&#x5347;&#x7EA7;&#x4E1A;&#x52A1;&#xFF1B;</p>
+</blockquote>
+<h1 id="dockerfile&#x6307;&#x4EE4;&#x8BE6;&#x89E3;"><a href="#dockerfile&#x6307;&#x4EE4;&#x8BE6;&#x89E3;" class="headerlink" title="dockerfile&#x6307;&#x4EE4;&#x8BE6;&#x89E3;"></a>dockerfile&#x6307;&#x4EE4;&#x8BE6;&#x89E3;</h1><h2 id="dockerfile&#x6A21;&#x677F;"><a href="#dockerfile&#x6A21;&#x677F;" class="headerlink" title="dockerfile&#x6A21;&#x677F;"></a>dockerfile&#x6A21;&#x677F;</h2><p>&#x6211;&#x4EEC;&#x8FD9;&#x91CC;&#x5148;&#x63D0;&#x4F9B;&#x4E00;&#x4E2A;dockerfile&#x6A21;&#x677F;&#x6587;&#x4EF6;&#xFF0C;&#x8FD9;&#x6837;&#x6211;&#x4EEC;&#x53EF;&#x4EE5;&#x57FA;&#x4E8E;&#x6A21;&#x677F;&#x6587;&#x4EF6;&#x5B66;&#x4E60;dockerfile&#x7684;&#x7F16;&#x5199;&#x8FC7;&#x7A0B;&#xFF1B;</p>
+<p>&#x9996;&#x5148;&#xFF0C;&#x6211;&#x4EEC;&#x53EF;&#x4EE5;&#x5728;dockerhub.com&#x7684;&#x5B98;&#x65B9;&#x7F51;&#x5740;&#x4E0A;&#x9762;&#x627E;&#x5230;&#x5B98;&#x65B9;&#x63D0;&#x4F9B;&#x7684;nginx&#xFF0C;dockerfile&#x6587;&#x4EF6;&#xFF0C;&#x5730;&#x5740;&#x5982;&#x4E0B;&#xFF1A;</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">https://hub.docker.com/_/nginx</span><br></pre></td></tr></table></figure>
+
+<p><img src="/clould-native/docker/06_docker%E5%AE%B9%E5%99%A8%E6%8A%80%E6%9C%AF_dockerfile%E7%9A%84%E9%95%9C%E5%83%8F%E6%9E%84%E5%BB%BA%E8%AF%A6%E8%A7%A3/image-20220103131323453.png" alt="&#x5B98;&#x65B9;&#x63D0;&#x4F9B;&#x7684;dockerfile"></p>
+<p>&#x5728;&#x8FD9;&#x4E2A;&#x5730;&#x5740;&#x4E0B;&#xFF0C;&#x6211;&#x4EEC;&#x53EF;&#x4EE5;&#x5B66;&#x4E60;&#x5B98;&#x65B9;&#x7F16;&#x5199;&#x7684;dockerfile&#x6587;&#x4EF6;&#xFF1B;</p>
+<h2 id="&#x5E38;&#x89C1;&#x7684;dockerfile&#x547D;&#x4EE4;&#x4ECB;&#x7ECD;"><a href="#&#x5E38;&#x89C1;&#x7684;dockerfile&#x547D;&#x4EE4;&#x4ECB;&#x7ECD;" class="headerlink" title="&#x5E38;&#x89C1;&#x7684;dockerfile&#x547D;&#x4EE4;&#x4ECB;&#x7ECD;"></a>&#x5E38;&#x89C1;&#x7684;dockerfile&#x547D;&#x4EE4;&#x4ECB;&#x7ECD;</h2><figure class="highlight dockerfile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># &#x5728;&#x6574;&#x4E2A;dockerfile&#x6587;&#x4EF6;&#x4E2D;&#x9664;&#x4E86;&#x6CE8;&#x91CA;&#x4E4B;&#x5916;&#x7684;&#x7B2C;&#x4E00;&#x884C;&#xFF0C;&#x8981;&#x662F;FROM&#xFF0C;FROM&#x8868;&#x793A;&#x5F53;&#x524D;&#x955C;&#x50CF;&#x7528;&#x4E8E;&#x6307;&#x5B9A;&#x7684;&#x7236;&#x955C;&#x50CF;</span></span><br><span class="line"><span class="keyword">FROM</span> centos:<span class="number">7.8</span>.<span class="number">1810</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># &#x7528;&#x4E8E;&#x6DFB;&#x52A0;&#x5BBF;&#x4E3B;&#x673A;&#x672C;&#x5730;&#x7684;&#x6587;&#x4EF6;&#x3001;&#x76EE;&#x5F55;&#x3001;&#x538B;&#x7F29;&#x7B49;&#x8D44;&#x6E90;&#x5230;&#x955C;&#x50CF;&#x91CC;&#x9762;&#x53BB;&#xFF0C;&#x4F1A;&#x81EA;&#x52A8;&#x89E3;&#x538B;tar.gz&#x683C;&#x5F0F;&#x7684;&#x538B;&#x7F29;&#x5305;&#xFF0C;&#x4F46;&#x4E0D;&#x4F1A;&#x81EA;&#x52A8;&#x89E3;&#x538B;zip&#x5305;&#x3002;&#x56E0;&#x4E3A;zip&#x62A5;&#x6587;&#x9700;&#x8981;&#x5355;&#x72EC;&#x5B89;&#x88C5;unzip&#x89E3;&#x538B;&#x5DE5;&#x5177;&#xFF0C;&#x800C;&#x4E0D;&#x80FD;&#x76F4;&#x63A5;&#x8C03;&#x7528;tar&#x8FDB;&#x884C;&#x89E3;&#x538B;&#xFF1B;</span></span><br><span class="line"><span class="keyword">ADD</span><span class="bash"> [--chown=&lt;user&gt;:&lt;group&gt;] &lt;src&gt;...&lt;dest&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># &#x955C;&#x50CF;&#x7EF4;&#x62A4;&#x8005;&#x4FE1;&#x606F;&#x63D0;&#x4F9B;</span></span><br><span class="line"><span class="keyword">MAINTAINER</span>  <span class="comment"># &#x8FD9;&#x79CD;&#x65B9;&#x5F0F;&#x5DF2;&#x7ECF;&#x4E0D;&#x592A;&#x63A8;&#x8350;&#x4E86;</span></span><br><span class="line"><span class="keyword">LABEL</span><span class="bash"> <span class="string">&quot;key&quot;</span> = <span class="string">&quot;value&quot;</span>  <span class="comment"># &#x8BBE;&#x7F6E;&#x955C;&#x50CF;&#x5C5E;&#x6027;&#x6807;&#x7B7E;&#xFF0C;&#x4E00;&#x822C;&#x7528;&#x4F5C;&#x955C;&#x50CF;&#x7EF4;&#x62A4;&#x8005;&#x4FE1;&#x606F;&#x7684;&#x63D0;&#x4F9B;&#xFF1B;</span></span></span><br><span class="line"></span><br><span class="line"><span class="comment"># &#x7528;&#x4E8E;&#x63D0;&#x5A1C;&#x4F73;&#x4E3B;&#x673A;&#x672C;&#x5730;&#x989D;&#x6587;&#x4EF6;&#x3001;&#x76EE;&#x5F55;&#x3001;&#x538B;&#x7F29;&#x7B49;&#x8D44;&#x6E90;&#x5230;&#x955C;&#x50CF;&#x91CC;&#x9762;&#x53BB;&#xFF0C;&#x4E0D;&#x4F1A;&#x89E3;&#x538B;&#x4EFB;&#x4F55;&#x538B;&#x7F29;&#x5305;&#xFF1B;</span></span><br><span class="line"><span class="keyword">COPY</span><span class="bash"> COPY[--chown=&lt;user&gt;:&lt;group&gt;] &lt;src&gt;...&lt;dest&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># &#x8BBE;&#x7F6E;&#x5BB9;&#x5668;&#x7684;&#x73AF;&#x5883;&#x53D8;&#x91CF;</span></span><br><span class="line"><span class="keyword">ENV</span> MY_NAME=<span class="string">&quot;xxx&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># &#x6307;&#x5B9A;&#x8FD0;&#x884C;&#x64CD;&#x4F5C;&#x7684;&#x7528;&#x6237;</span></span><br><span class="line"><span class="keyword">USER</span> &lt;<span class="keyword">user</span>&gt;[:&lt;group&gt;] or <span class="keyword">USER</span> &lt;UID&gt;[:&lt;GID&gt;]</span><br><span class="line"></span><br><span class="line"><span class="comment"># &#x6267;&#x884C;shell&#x547D;&#x4EE4;&#xFF0C;&#x4F46;&#x662F;&#x662F;&#x4E00;&#x5B9A;&#x8981;&#x4EE5;&#x975E;&#x4EA4;&#x4E92;&#x6A21;&#x5F0F;&#x65B9;&#x5F0F;&#x6765;&#x6267;&#x884C;&#x7684;&#xFF0C;dockerfile&#x4E0D;&#x652F;&#x6301;&#x4EA4;&#x4E92;&#x6A21;&#x5F0F;&#x4E0B;&#x7684;&#x547D;&#x4EE4;&#x6267;&#x884C;&#x65B9;&#x5F0F;</span></span><br><span class="line"><span class="keyword">RUN</span><span class="bash"> yum install vim unzip -y &amp;&amp; <span class="built_in">cd</span> /etc/nginx  <span class="comment"># &#x591A;&#x4E2A;&#x547D;&#x4EE4;&#x7684;&#x8BDD;&#x901A;&#x8FC7;&amp;&amp;&#x94FE;&#x63A5;&#x5728;&#x4E00;&#x8D77;</span></span></span><br><span class="line"></span><br><span class="line"><span class="comment"># &#x5B9A;&#x4E49;volume</span></span><br><span class="line"><span class="keyword">VOLUME</span><span class="bash"> VOLUME[<span class="string">&quot;/data/data1&quot;</span>,]<span class="string">&quot;/data/data2&quot;</span></span></span><br><span class="line"></span><br><span class="line"><span class="comment"># &#x6307;&#x5B9A;&#x5DE5;&#x4F5C;&#x76EE;&#x5F55;</span></span><br><span class="line"><span class="keyword">WORKDIR</span><span class="bash"> /data/data1</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># &#x7533;&#x660E;&#x8981;&#x628A;&#x5BB9;&#x5668;&#x7684;&#x67D0;&#x4E9B;&#x7AEF;&#x53E3;&#x6620;&#x5C04;&#x5230;&#x5BBF;&#x4E3B;&#x673A;&#x4E0A;</span></span><br><span class="line"><span class="keyword">EXPOSE</span> &lt;port&gt; [&lt;port&gt;/&lt;protocol&gt;...]</span><br><span class="line"></span><br><span class="line"><span class="comment"># CMD&#x4EE5;&#x4E0B;&#x4E09;&#x79CD;&#x65B9;&#x5F0F;&#x5B9A;&#x4E49;&#x955C;&#x50CF;&#x542F;&#x52A8;&#x4E3A;&#x4E00;&#x4E2A;&#x5BB9;&#x5668;&#x65F6;&#x5019;&#x6240;&#x6267;&#x884C;&#x7684;&#x9ED8;&#x8BA4;&#x547D;&#x4EE4;&#x6216;&#x8005;&#x811A;&#x672C;</span></span><br><span class="line"><span class="keyword">CMD</span><span class="bash"> [<span class="string">&quot;executable&quot;</span>,<span class="string">&quot;param1&quot;</span>,<span class="string">&quot;param2&quot;</span>]  <span class="comment"># &#x63A8;&#x8350;&#x4F7F;&#x7528;&#x8FD9;&#x79CD;&#x65B9;&#x5F0F;&#x6765;&#x8FD0;&#x884C;&#x7A0B;&#x5E8F;</span></span></span><br><span class="line"><span class="keyword">CMD</span><span class="bash"> [<span class="string">&quot;param1&quot;</span>,<span class="string">&quot;param2&quot;</span>]  <span class="comment"># &#x4F5C;&#x4E3A;ENTRYPOINT&#x7684;&#x9ED8;&#x8BA4;&#x53C2;&#x6570;&#x6765;&#x4F7F;&#x7528;</span></span></span><br><span class="line"><span class="keyword">CMD</span><span class="bash"> <span class="built_in">command</span> param1 param2  <span class="comment"># &#x57FA;&#x4E8E;shell&#x547D;&#x4EE4;&#x7684;&#x5199;&#x6CD5;</span></span></span><br><span class="line"></span><br><span class="line"><span class="comment"># &#x548C;CMD&#x76F8;&#x540C;&#xFF0C;&#x4E5F;&#x662F;&#x7528;&#x6765;&#x5728;&#x6700;&#x540E;docker run&#x7684;&#x65F6;&#x5019;&#x6267;&#x884C;&#x7684;&#x547D;&#x4EE4;</span></span><br><span class="line"><span class="keyword">ENTRYPOINT</span><span class="bash"> [<span class="string">&quot;executable&quot;</span>,<span class="string">&quot;param1&quot;</span>...]  <span class="comment"># &#x53EF;&#x4EE5;&#x63A5;&#x6536;CMD&#x4F20;&#x5165;&#x7684;&#x53C2;&#x6570;&#xFF0C;&#x4E5F;&#x5C31;&#x662F;&#x4E0A;&#x9762;&#x7B2C;&#x4E8C;&#x79CD;&#x7528;&#x6CD5;&#xFF1B;</span></span></span><br></pre></td></tr></table></figure>
+
+<h2 id="&#x81EA;&#x5DF1;&#x7F16;&#x5199;&#x7684;nginx-dockerfile&#x6587;&#x4EF6;"><a href="#&#x81EA;&#x5DF1;&#x7F16;&#x5199;&#x7684;nginx-dockerfile&#x6587;&#x4EF6;" class="headerlink" title="&#x81EA;&#x5DF1;&#x7F16;&#x5199;&#x7684;nginx dockerfile&#x6587;&#x4EF6;"></a>&#x81EA;&#x5DF1;&#x7F16;&#x5199;&#x7684;nginx dockerfile&#x6587;&#x4EF6;</h2><p>&#x5728;&#x7F16;&#x5199;dockerfile&#x7684;&#x65F6;&#x5019;&#xFF0C;&#x6211;&#x4EEC;&#x9700;&#x8981;&#x521B;&#x5EFA;&#x6307;&#x5B9A;&#x76EE;&#x5F55;&#xFF1A;</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">mkdir -p my_nginx/</span><br><span class="line">touch my_nginx/Dockerfile  # &#x6CE8;&#x610F;&#xFF0C;dockerfile&#x7684;&#x540D;&#x79F0;&#x5FC5;&#x987B;&#x53EB;&#x505A;&#x201C;Dockerfile&#x201D;&#x662F;&#x4E0D;&#x80FD;&#x4FEE;&#x6539;&#x7684;</span><br></pre></td></tr></table></figure>
+
+<p>&#x6211;&#x4EEC;&#x8FD9;&#x91CC;&#x63D0;&#x4F9B;&#x4E00;&#x4E2A;&#x81EA;&#x5DF1;&#x7F16;&#x5199;&#x7684;dockerfile&#x6587;&#x4EF6;&#xFF0C;&#x7528;&#x4E8E;&#x5B66;&#x4E60;dockerfile&#x7684;&#x7F16;&#x5199;&#xFF0C;&#x5982;&#x4E0B;&#x6240;&#x793A;&#xFF1A;</p>
+<h3 id="1&#x3001;&#x6DFB;&#x52A0;&#x5BB9;&#x5668;&#x7684;&#x57FA;&#x672C;&#x4FE1;&#x606F;"><a href="#1&#x3001;&#x6DFB;&#x52A0;&#x5BB9;&#x5668;&#x7684;&#x57FA;&#x672C;&#x4FE1;&#x606F;" class="headerlink" title="1&#x3001;&#x6DFB;&#x52A0;&#x5BB9;&#x5668;&#x7684;&#x57FA;&#x672C;&#x4FE1;&#x606F;"></a>1&#x3001;&#x6DFB;&#x52A0;&#x5BB9;&#x5668;&#x7684;&#x57FA;&#x672C;&#x4FE1;&#x606F;</h3><figure class="highlight dockerfile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># &#x6307;&#x5B9A;&#x521D;&#x59CB;&#x955C;&#x50CF;</span></span><br><span class="line"><span class="keyword">FROM</span> ubuntu:<span class="number">20.04</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># &#x6307;&#x5B9A;dockerfile&#x7EF4;&#x62A4;&#x4EBA;&#x5458;&#x4FE1;&#x606F;</span></span><br><span class="line"><span class="keyword">LABEL</span><span class="bash"> <span class="string">&quot;maintainer&quot;</span> = <span class="string">&quot;xxx 11111111@xx.com&quot;</span></span></span><br></pre></td></tr></table></figure>
+
+<p>&#x7F16;&#x5199;&#x597D;dockerfile&#x4EE5;&#x540E;&#xFF0C;&#x6211;&#x4EEC;&#x9700;&#x8981;&#x901A;&#x8FC7;docker build&#x6784;&#x5EFA;&#x955C;&#x50CF;&#xFF0C;&#x4F46;&#x662F;&#x56E0;&#x4E3A;&#x7248;&#x672C;&#x4F17;&#x591A;&#xFF0C;&#x6240;&#x4EE5;&#x6211;&#x4EEC;&#x6700;&#x597D;&#x4EE5;&#x811A;&#x672C;&#x8FD0;&#x884C;&#x7684;&#x65B9;&#x5F0F;&#x6765;&#x914D;&#x7F6E;&#x672C;&#x5730;&#x955C;&#x50CF;&#xFF0C;&#x8FD9;&#x6837;&#x53EF;&#x4EE5;&#x77E5;&#x9053;&#x6211;&#x4EEC;&#x8FD0;&#x884C;&#x5230;&#x90A3;&#x4E2A;&#x7248;&#x672C;&#x4E86;&#xFF1B;</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> &#x6784;&#x5EFA;&#x955C;&#x50CF;&#x7684;&#x547D;&#x4EE4;&#x5982;&#x4E0B;</span></span><br><span class="line">docker build -t nginx:v1.1.1 .  # &#x5728;Dockerfile&#x6240;&#x5728;&#x76EE;&#x5F55;&#x8FD0;&#x884C;&#x8BE5;&#x547D;&#x4EE4;</span><br><span class="line"><span class="meta">#</span><span class="bash"> -t -- &#x6307;&#x5B9A;&#x955C;&#x50CF;&#x540D;&#x79F0;&#x548C;tag</span></span><br></pre></td></tr></table></figure>
+
+<p>&#x56E0;&#x4E3A;&#x662F;&#x7B2C;&#x4E00;&#x6B21;&#x6784;&#x5EFA;&#x81EA;&#x5DF1;&#x7684;&#x955C;&#x50CF;&#xFF0C;&#x57FA;&#x7840;&#x955C;&#x50CF;&#x9700;&#x8981;&#x53BB;&#x5230;&#x5B98;&#x65B9;&#x7F51;&#x7AD9;&#x4E0B;&#x5728;&#xFF0C;&#x6240;&#x4EE5;&#x6BD4;&#x8F83;&#x6162;&#xFF1B;</p>
+<p><img src="/clould-native/docker/06_docker%E5%AE%B9%E5%99%A8%E6%8A%80%E6%9C%AF_dockerfile%E7%9A%84%E9%95%9C%E5%83%8F%E6%9E%84%E5%BB%BA%E8%AF%A6%E8%A7%A3/image-20220103134629468.png" alt="image-20220103134629468"></p>
+<p>&#x5B9A;&#x4E49;&#x6784;&#x5EFA;&#x811A;&#x672C;&#xFF1A;</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> &#x521B;&#x5EFA;&#x5BB9;&#x5668;&#x6784;&#x5EFA;&#x811A;&#x672C;&#x7A0B;&#x5E8F;</span></span><br><span class="line">vim dockerfile-command</span><br><span class="line"><span class="meta"></span></span><br><span class="line"><span class="meta">#</span><span class="bash">!/bin/bash</span></span><br><span class="line">TAG=$1</span><br><span class="line">docker build -t harbor.test.com/web/my_nginx:{$TAG} .  # &#x8FD9;&#x91CC;&#x7684;&#x70B9;&#x4E0D;&#x80FD;&#x5C11;&#xFF0C;&#x8981;&#x627E;&#x5230;Dockerfile&#x6587;&#x4EF6;&#x624D;&#x884C;&#xFF1B;</span><br><span class="line"><span class="meta"></span></span><br><span class="line"><span class="meta">#</span><span class="bash"> &#x6267;&#x884C;&#x811A;&#x672C;&#x6784;&#x5EFA;&#x955C;&#x50CF;</span></span><br><span class="line"></span><br><span class="line">bash ./dockerfile-command 2022-01-03_13-49  # &#x6211;&#x4EEC;&#x4E00;&#x822C;&#x4EE5;&#x65F6;&#x95F4;&#x4F5C;&#x4E3A;tag&#xFF0C;&#x8FD9;&#x6837;&#x5C31;&#x80FD;&#x51C6;&#x786E;&#x7684;&#x77E5;&#x9053;&#x955C;&#x50CF;&#x6784;&#x5EFA;&#x7684;&#x65F6;&#x95F4;&#x4E86;&#xFF1B;</span><br><span class="line">docker images  # &#x663E;&#x793A;&#x5982;&#x4E0B;</span><br></pre></td></tr></table></figure>
+
+<p><img src="/clould-native/docker/06_docker%E5%AE%B9%E5%99%A8%E6%8A%80%E6%9C%AF_dockerfile%E7%9A%84%E9%95%9C%E5%83%8F%E6%9E%84%E5%BB%BA%E8%AF%A6%E8%A7%A3/image-20220103135338182.png" alt="image-20220103135338182"></p>
+<p>&#x8FD9;&#x6837;&#x5C31;&#x53EF;&#x4EE5;&#x5F88;&#x6E05;&#x695A;&#x7684;&#x770B;&#x5230;&#x5BB9;&#x5668;&#x662F;&#x57FA;&#x4E8E;&#x90A3;&#x4E2A;&#x4ED3;&#x5E93;&#x3001;&#x90A3;&#x4E2A;&#x9879;&#x76EE;&#x3001;&#x4EE5;&#x53CA;&#x5BB9;&#x5668;&#x7684;&#x540D;&#x79F0;&#x548C;&#x6784;&#x5EFA;&#x7684;&#x65F6;&#x95F4;</p>
+<h3 id="2&#x3001;&#x6DFB;&#x52A0;&#x672C;&#x5730;&#x66F4;&#x65B0;&#x6E90;&#x5230;&#x5BB9;&#x5668;&#x4E2D;"><a href="#2&#x3001;&#x6DFB;&#x52A0;&#x672C;&#x5730;&#x66F4;&#x65B0;&#x6E90;&#x5230;&#x5BB9;&#x5668;&#x4E2D;" class="headerlink" title="2&#x3001;&#x6DFB;&#x52A0;&#x672C;&#x5730;&#x66F4;&#x65B0;&#x6E90;&#x5230;&#x5BB9;&#x5668;&#x4E2D;"></a>2&#x3001;&#x6DFB;&#x52A0;&#x672C;&#x5730;&#x66F4;&#x65B0;&#x6E90;&#x5230;&#x5BB9;&#x5668;&#x4E2D;</h3><figure class="highlight dockerfile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># &#x6307;&#x5B9A;&#x521D;&#x59CB;&#x955C;&#x50CF;</span></span><br><span class="line"><span class="keyword">FROM</span> ubuntu:<span class="number">20.04</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># &#x6307;&#x5B9A;dockerfile&#x7EF4;&#x62A4;&#x4EBA;&#x5458;&#x4FE1;&#x606F;</span></span><br><span class="line"><span class="keyword">LABEL</span><span class="bash"> <span class="string">&quot;maintainer&quot;</span> = <span class="string">&quot;xxx 11111111@xx.com&quot;</span></span></span><br><span class="line"></span><br><span class="line"><span class="comment"># COPY&#x547D;&#x4EE4;&#x5C06;&#x672C;&#x5730;&#x7684;sources.list&#x66F4;&#x65B0;&#x6E90;&#x590D;&#x5236;&#x5230;&#x5BB9;&#x5668;&#x4E2D;&#x53BB;</span></span><br><span class="line"><span class="keyword">COPY</span><span class="bash"> sources.list /etc/apt/sources.list</span></span><br><span class="line"><span class="comment"># &#x6CE8;&#x610F;&#xFF0C;&#x8FD9;&#x91CC;&#x9996;&#x5148;&#x5728;Dockerfile&#x7684;&#x540C;&#x7EA7;&#x76EE;&#x5F55;&#x4E0B;&#x53C8;&#x66F4;&#x65B0;&#x597D;&#x7684;sources.list&#x6587;&#x4EF6;</span></span><br></pre></td></tr></table></figure>
+
+<p>&#x6784;&#x5EFA;&#x955C;&#x50CF;</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">bash ./dockerfile-command 2022-01-03_14-04</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>&#x6CE8;&#x610F;&#xFF1A;&#x8FD9;&#x91CC;&#x6307;&#x5B9A;&#x7684;sources.list&#x6587;&#x4EF6;&#x4E2D;&#x6700;&#x597D;&#x662F;http&#x534F;&#x8BAE;&#x7684;&#x4E0B;&#x8F7D;&#x6E90;&#x5730;&#x5740;&#xFF1B;</p>
+</blockquote>
+<h3 id="3&#x3001;nginx&#x7684;&#x73AF;&#x5883;&#x5B89;&#x88C5;"><a href="#3&#x3001;nginx&#x7684;&#x73AF;&#x5883;&#x5B89;&#x88C5;" class="headerlink" title="3&#x3001;nginx&#x7684;&#x73AF;&#x5883;&#x5B89;&#x88C5;"></a>3&#x3001;nginx&#x7684;&#x73AF;&#x5883;&#x5B89;&#x88C5;</h3><figure class="highlight dockerfile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># &#x6307;&#x5B9A;&#x521D;&#x59CB;&#x955C;&#x50CF;</span></span><br><span class="line"><span class="keyword">FROM</span> ubuntu:<span class="number">20.04</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># &#x6307;&#x5B9A;dockerfile&#x7EF4;&#x62A4;&#x4EBA;&#x5458;&#x4FE1;&#x606F;</span></span><br><span class="line"><span class="keyword">LABEL</span><span class="bash"> <span class="string">&quot;maintainer&quot;</span> = <span class="string">&quot;xxx 11111111@xx.com&quot;</span></span></span><br><span class="line"></span><br><span class="line"><span class="comment"># COPY&#x547D;&#x4EE4;&#x5C06;&#x672C;&#x5730;&#x7684;sources.list&#x66F4;&#x65B0;&#x6E90;&#x590D;&#x5236;&#x5230;&#x5BB9;&#x5668;&#x4E2D;&#x53BB;</span></span><br><span class="line"><span class="keyword">COPY</span><span class="bash"> sources.list /etc/apt/sources.list</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># &#x5B89;&#x88C5;&#x597D;nginx&#x7A0B;&#x5E8F;&#x76F8;&#x5173;&#x7684;&#x73AF;&#x5883;&#x53C2;&#x6570;</span></span><br><span class="line"><span class="keyword">RUN</span><span class="bash"> apt update \</span></span><br><span class="line"><span class="bash">	&amp;&amp; apt install -y iproute2 ntpdate tcpdump telnet traceroute nfs-kernel-server nfs-common lrzsz tree openssl libssl-dev libpcre3 libpcre3-dev zlib1g-dev gcc openssh-server iotop unzip zip make vim \</span></span><br><span class="line"><span class="bash">    &amp;&amp; mkdir -p /data/nginx</span></span><br></pre></td></tr></table></figure>
+
+<p>&#x6784;&#x5EFA;&#x955C;&#x50CF;</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">bash ./dockerfile-command 2022-01-03_14-13</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>&#x9762;&#x8BD5;&#x9898;&#xFF1A;&#x4E4B;&#x524D;&#x516C;&#x53F8;&#x5B89;&#x88C5;&#x4E86;nginx&#xFF0C;&#x8981;&#x4F60;&#x91CD;&#x88C5;&#x4EE5;&#x4E0B;nginx&#x3002;&#x4F46;&#x662F;&#x4E0D;&#x77E5;&#x9053;&#x4E4B;&#x524D;&#x5B89;&#x88C5;nginx&#x7684;&#x65F6;&#x5019;&#x5F00;&#x542F;&#x7684;&#x53C2;&#x6570;&#xFF0C;&#x4F60;&#x8981;&#x600E;&#x4E48;&#x529E;&#x5462;&#xFF1F;</p>
+<p>&#x901A;&#x8FC7;nginx -V&#x6765;&#x83B7;&#x53D6;&#x4E4B;&#x524D;&#x5B89;&#x88C5;nginx&#x65F6;&#x5019;&#x5F00;&#x542F;&#x7684;&#x76F8;&#x5173;&#x53C2;&#x6570;&#xFF1B;</p>
+<p><img src="/clould-native/docker/06_docker%E5%AE%B9%E5%99%A8%E6%8A%80%E6%9C%AF_dockerfile%E7%9A%84%E9%95%9C%E5%83%8F%E6%9E%84%E5%BB%BA%E8%AF%A6%E8%A7%A3/image-20220103141754665.png" alt="nginx -V&#x663E;&#x793A;&#x5185;&#x5BB9;&#x5982;&#x4E0B;"></p>
+</blockquote>
+<h3 id="4&#x3001;&#x4E0A;&#x4F20;&#x672C;&#x5730;nginx-tar-gz&#x6587;&#x4EF6;&#x5230;&#x955C;&#x50CF;&#x4E2D;&#x53BB;"><a href="#4&#x3001;&#x4E0A;&#x4F20;&#x672C;&#x5730;nginx-tar-gz&#x6587;&#x4EF6;&#x5230;&#x955C;&#x50CF;&#x4E2D;&#x53BB;" class="headerlink" title="4&#x3001;&#x4E0A;&#x4F20;&#x672C;&#x5730;nginx.tar.gz&#x6587;&#x4EF6;&#x5230;&#x955C;&#x50CF;&#x4E2D;&#x53BB;"></a>4&#x3001;&#x4E0A;&#x4F20;&#x672C;&#x5730;nginx.tar.gz&#x6587;&#x4EF6;&#x5230;&#x955C;&#x50CF;&#x4E2D;&#x53BB;</h3><p>&#x9996;&#x5148;&#xFF0C;&#x6211;&#x4EEC;&#x9700;&#x8981;&#x53BB;&#x5230;nginx.org&#x7684;&#x5B98;&#x7F51;&#x4E0B;&#x8F7D;&#x5BF9;&#x5E94;&#x7684;nginx&#x5B89;&#x88C5;&#x62A5;&#x6587;</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> &#x5728;Dockerfile&#x6307;&#x5B9A;&#x76EE;&#x5F55;&#x4E0B;&#xFF0C;&#x4E0B;&#x8F7D;&#x8BE5;&#x538B;&#x7F29;&#x6587;&#x4EF6;</span></span><br><span class="line">wget http://nginx.org/download/nginx-1.20.2.tar.gz</span><br></pre></td></tr></table></figure>
+
+<p>&#x7F16;&#x5199;dockerfile&#x5982;&#x4E0B;&#xFF1A;</p>
+<figure class="highlight dockerfile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># &#x6307;&#x5B9A;&#x521D;&#x59CB;&#x955C;&#x50CF;</span></span><br><span class="line"><span class="keyword">FROM</span> ubuntu:<span class="number">20.04</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># &#x6307;&#x5B9A;dockerfile&#x7EF4;&#x62A4;&#x4EBA;&#x5458;&#x4FE1;&#x606F;</span></span><br><span class="line"><span class="keyword">LABEL</span><span class="bash"> <span class="string">&quot;maintainer&quot;</span> = <span class="string">&quot;xxx 11111111@xx.com&quot;</span></span></span><br><span class="line"></span><br><span class="line"><span class="comment"># COPY&#x547D;&#x4EE4;&#x5C06;&#x672C;&#x5730;&#x7684;sources.list&#x66F4;&#x65B0;&#x6E90;&#x590D;&#x5236;&#x5230;&#x5BB9;&#x5668;&#x4E2D;&#x53BB;</span></span><br><span class="line"><span class="keyword">COPY</span><span class="bash"> sources.list /etc/apt/sources.list</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># &#x5B89;&#x88C5;&#x597D;nginx&#x7A0B;&#x5E8F;&#x76F8;&#x5173;&#x7684;&#x73AF;&#x5883;&#x53C2;&#x6570;</span></span><br><span class="line"><span class="keyword">RUN</span><span class="bash"> apt update \</span></span><br><span class="line"><span class="bash">	&amp;&amp; apt install -y iproute2 ntpdate tcpdump telnet traceroute nfs-kernel-server nfs-common lrzsz tree openssl libssl-dev libpcre3 libpcre3-dev zlib1g-dev gcc openssh-server iotop unzip zip make vim \</span></span><br><span class="line"><span class="bash">    &amp;&amp; mkdir -p /data/nginx</span></span><br><span class="line">    </span><br><span class="line"><span class="comment"># &#x590D;&#x5236;nginx.tar.gz&#x6587;&#x4EF6;&#x5230;&#x5BB9;&#x5668;&#x4E2D;&#x53BB;&#xFF0C;&#x8FD9;&#x91CC;&#x4F7F;&#x7528;&#x7684;&#x662F;ADD&#x547D;&#x4EE4;&#xFF0C;&#x662F;&#x53EF;&#x4EE5;&#x81EA;&#x52A8;&#x89E3;&#x538B;&#x7684;&#xFF1B;</span></span><br><span class="line"><span class="keyword">ADD</span><span class="bash"> nginx-1.20.2.tar.gz /usr/<span class="built_in">local</span>/src</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># &#x7136;&#x540E;&#x5BF9;&#x8BE5;&#x6587;&#x4EF6;&#x8FDB;&#x884C;&#x5B89;&#x88C5;</span></span><br><span class="line"><span class="keyword">RUN</span><span class="bash"> <span class="built_in">cd</span> /usr/<span class="built_in">local</span>/src/nginx-1.20.2 \</span></span><br><span class="line"><span class="bash">	&amp;&amp; ./configure --prefix=/apps/nginx \</span></span><br><span class="line"><span class="bash">	&amp;&amp; make \</span></span><br><span class="line"><span class="bash">	&amp;&amp; make install \ </span></span><br><span class="line">	&amp;&amp; ln -sv /apps/nginx/sbin/nginx /usr/bin \</span><br><span class="line">	&amp;&amp; rm -rf /usr/local/src/nginx-<span class="number">1.20</span>.<span class="number">2</span></span><br></pre></td></tr></table></figure>
+
+<p>&#x6784;&#x5EFA;&#x955C;&#x50CF;</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">bash ./dockerfile-command 2022-01-03_14-27</span><br></pre></td></tr></table></figure>
+
+<p>&#x8FD9;&#x6837;nginx&#x5C31;&#x5B89;&#x88C5;&#x6210;&#x529F;&#x4E86;&#xFF1B;</p>
+<h3 id="5&#x3001;&#x62F7;&#x8D1D;&#x672C;&#x5730;nginx-conf&#x6587;&#x4EF6;&#x548C;&#x9759;&#x6001;&#x9875;&#x9762;&#x6587;&#x4EF6;&#x5230;&#x5BB9;&#x5668;&#x4E2D;&#x53BB;"><a href="#5&#x3001;&#x62F7;&#x8D1D;&#x672C;&#x5730;nginx-conf&#x6587;&#x4EF6;&#x548C;&#x9759;&#x6001;&#x9875;&#x9762;&#x6587;&#x4EF6;&#x5230;&#x5BB9;&#x5668;&#x4E2D;&#x53BB;" class="headerlink" title="5&#x3001;&#x62F7;&#x8D1D;&#x672C;&#x5730;nginx.conf&#x6587;&#x4EF6;&#x548C;&#x9759;&#x6001;&#x9875;&#x9762;&#x6587;&#x4EF6;&#x5230;&#x5BB9;&#x5668;&#x4E2D;&#x53BB;"></a>5&#x3001;&#x62F7;&#x8D1D;&#x672C;&#x5730;nginx.conf&#x6587;&#x4EF6;&#x548C;&#x9759;&#x6001;&#x9875;&#x9762;&#x6587;&#x4EF6;&#x5230;&#x5BB9;&#x5668;&#x4E2D;&#x53BB;</h3><p>&#x4E00;&#x822C;&#x60C5;&#x51B5;&#x4E0B;&#xFF0C;&#x6211;&#x4EEC;&#x90FD;&#x53C8;&#x81EA;&#x5DF1;&#x7684;nginx.conf&#x6587;&#x4EF6;&#xFF0C;&#x5728;nginx&#x7A0B;&#x5E8F;&#x5728;&#x5BB9;&#x5668;&#x4E2D;&#x90E8;&#x7F72;&#x597D;&#x4EE5;&#x540E;&#xFF0C;&#x6211;&#x4EEC;&#x9700;&#x8981;&#x5C06;&#x672C;&#x5730;nginx.conf&#x6587;&#x4EF6;&#x62F7;&#x8D1D;&#x5230;&#x5BB9;&#x5668;&#x4E2D;&#x53BB;&#xFF1B;&#x5728;&#x62F7;&#x8D1D;&#x6587;&#x4EF6;&#x4E4B;&#x524D;&#xFF0C;&#x6211;&#x4EEC;&#x9996;&#x5148;&#x9700;&#x8981;&#x51C6;&#x5907;nginx&#x7684;&#x914D;&#x7F6E;&#x6587;&#x4EF6;&#xFF1A;</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">docker run -it harbor.test.com/web/my_nginx:2022-01-03_14-27</span><br><span class="line"><span class="meta"></span></span><br><span class="line"><span class="meta">#</span><span class="bash"> &#x62F7;&#x8D1D;&#x5BB9;&#x5668;&#x4E2D;&#x6587;&#x4EF6;&#x5230;&#x5F53;&#x524D;&#x76EE;&#x5F55;&#x4E0B;&#xFF08;&#x4E5F;&#x5C31;&#x662F;&#x548C;Dockerfile&#x5904;&#x4E8E;&#x540C;&#x4E00;&#x4E2A;&#x76EE;&#x5F55;&#xFF09;</span></span><br><span class="line">docker cp c15f4593a43a:/apps/nginx/conf/nginx.conf ./</span><br><span class="line"><span class="meta"></span></span><br><span class="line"><span class="meta">#</span><span class="bash"> &#x7136;&#x540E;&#x4FEE;&#x6539;nginx.conf&#x7684;&#x76F8;&#x5173;&#x914D;&#x7F6E;</span></span><br><span class="line">vim nginx.conf</span><br><span class="line"><span class="meta">#</span><span class="bash"> &#x4FEE;&#x6539;&#x9ED8;&#x8BA4;&#x76D1;&#x542C;&#x7AEF;&#x53E3;</span></span><br><span class="line">listen 8080;</span><br><span class="line">root /data/nginx/html;</span><br><span class="line"><span class="meta"></span></span><br><span class="line"><span class="meta">#</span><span class="bash"> &#x7136;&#x540E;&#x7F16;&#x5199;&#x4E00;&#x4E2A;&#x7B80;&#x5355;&#x7684;&#x9759;&#x6001;&#x9875;&#x9762;&#x6587;&#x4EF6;&#x5E76;&#x6253;&#x5305;</span></span><br><span class="line">vim index.html</span><br><span class="line">&lt;b&gt;my_nginx&#x9875;&#x9762; appv1&lt;/b&gt;</span><br><span class="line"><span class="meta"></span></span><br><span class="line"><span class="meta">#</span><span class="bash"> &#x6253;&#x5305;</span></span><br><span class="line">tar czvf static.tar.gz index.html</span><br></pre></td></tr></table></figure>
+
+<p>&#x7F16;&#x5199;dockerfile&#xFF0C;&#x5982;&#x4E0B;</p>
+<figure class="highlight dockerfile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># &#x6307;&#x5B9A;&#x521D;&#x59CB;&#x955C;&#x50CF;</span></span><br><span class="line"><span class="keyword">FROM</span> ubuntu:<span class="number">20.04</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># &#x6307;&#x5B9A;dockerfile&#x7EF4;&#x62A4;&#x4EBA;&#x5458;&#x4FE1;&#x606F;</span></span><br><span class="line"><span class="keyword">LABEL</span><span class="bash"> <span class="string">&quot;maintainer&quot;</span> = <span class="string">&quot;xxx 11111111@xx.com&quot;</span></span></span><br><span class="line"></span><br><span class="line"><span class="comment"># COPY&#x547D;&#x4EE4;&#x5C06;&#x672C;&#x5730;&#x7684;sources.list&#x66F4;&#x65B0;&#x6E90;&#x590D;&#x5236;&#x5230;&#x5BB9;&#x5668;&#x4E2D;&#x53BB;</span></span><br><span class="line"><span class="keyword">COPY</span><span class="bash"> sources.list /etc/apt/sources.list</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># &#x5B89;&#x88C5;&#x597D;nginx&#x7A0B;&#x5E8F;&#x76F8;&#x5173;&#x7684;&#x73AF;&#x5883;&#x53C2;&#x6570;</span></span><br><span class="line"><span class="keyword">RUN</span><span class="bash"> apt update \</span></span><br><span class="line"><span class="bash">	&amp;&amp; apt install -y iproute2 ntpdate tcpdump telnet traceroute nfs-kernel-server nfs-common lrzsz tree openssl libssl-dev libpcre3 libpcre3-dev zlib1g-dev gcc openssh-server iotop unzip zip make vim \</span></span><br><span class="line"><span class="bash">    &amp;&amp; mkdir -p /data/nginx</span></span><br><span class="line">    </span><br><span class="line"><span class="comment"># &#x590D;&#x5236;nginx.tar.gz&#x6587;&#x4EF6;&#x5230;&#x5BB9;&#x5668;&#x4E2D;&#x53BB;&#xFF0C;&#x8FD9;&#x91CC;&#x4F7F;&#x7528;&#x7684;&#x662F;ADD&#x547D;&#x4EE4;&#xFF0C;&#x662F;&#x53EF;&#x4EE5;&#x81EA;&#x52A8;&#x89E3;&#x538B;&#x7684;&#xFF1B;</span></span><br><span class="line"><span class="keyword">ADD</span><span class="bash"> nginx-1.20.2.tar.gz /usr/<span class="built_in">local</span>/src</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># &#x7136;&#x540E;&#x5BF9;&#x8BE5;&#x6587;&#x4EF6;&#x8FDB;&#x884C;&#x5B89;&#x88C5;</span></span><br><span class="line"><span class="keyword">RUN</span><span class="bash"> <span class="built_in">cd</span> /usr/<span class="built_in">local</span>/src/nginx-1.20.2 \</span></span><br><span class="line"><span class="bash">	&amp;&amp; ./configure --prefix=/apps/nginx \</span></span><br><span class="line"><span class="bash">	&amp;&amp; make \</span></span><br><span class="line"><span class="bash">	&amp;&amp; make install \ </span></span><br><span class="line">	&amp;&amp; ln -sv /apps/nginx/sbin/nginx /usr/bin \</span><br><span class="line">	&amp;&amp; rm -rf /usr/local/src/nginx-<span class="number">1.20</span>.<span class="number">2</span></span><br><span class="line">	</span><br><span class="line"><span class="comment"># &#x62F7;&#x8D1D;&#x672C;&#x5730;&#x7684;nginx.conf&#x6587;&#x4EF6;&#x548C;static&#x955C;&#x50CF;&#x6587;&#x4EF6;&#x5230;&#x5BB9;&#x5668;&#x4E2D;</span></span><br><span class="line"><span class="keyword">ADD</span><span class="bash"> nginx.conf /apps/nginx/conf/nginx.conf</span></span><br><span class="line"><span class="keyword">ADD</span><span class="bash"> static.tar.gz /data/nginx/html</span></span><br></pre></td></tr></table></figure>
+
+<p>&#x6784;&#x5EFA;&#x955C;&#x50CF;</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">bash ./dockerfile-command 2022-01-03_14-59</span><br></pre></td></tr></table></figure>
+
+<p>&#x8FD9;&#x6837;&#x5C31;&#x5B9E;&#x73B0;&#x4E86;&#x914D;&#x7F6E;&#x6587;&#x4EF6;&#x4E8E;&#x9759;&#x6001;&#x9875;&#x9762;&#x7684;&#x4E0A;&#x4F20;;</p>
+<h3 id="6&#x3001;&#x5BB9;&#x5668;&#x4E2D;&#x7684;&#x65E5;&#x5FD7;&#x5904;&#x7406;"><a href="#6&#x3001;&#x5BB9;&#x5668;&#x4E2D;&#x7684;&#x65E5;&#x5FD7;&#x5904;&#x7406;" class="headerlink" title="6&#x3001;&#x5BB9;&#x5668;&#x4E2D;&#x7684;&#x65E5;&#x5FD7;&#x5904;&#x7406;"></a>6&#x3001;&#x5BB9;&#x5668;&#x4E2D;&#x7684;&#x65E5;&#x5FD7;&#x5904;&#x7406;</h3><p>&#x4E00;&#x822C;&#x60C5;&#x51B5;&#x4E0B;&#xFF0C;&#x8BBF;&#x95EE;&#x7684;&#x65E5;&#x5FD7;&#x4FE1;&#x606F;&#x53EA;&#x5B58;&#x50A8;&#x5728;&#x5BB9;&#x5668;&#x7684;log&#x65E5;&#x5FD7;&#x6587;&#x4EF6;&#x4E2D;&#xFF0C;&#x4F46;&#x662F;&#x5BB9;&#x5668;&#x8FD0;&#x884C;&#x7684;&#x65F6;&#x5019;&#xFF0C;&#x6211;&#x4EEC;&#x9700;&#x8981;&#x8BA9;&#x5BB9;&#x5668;&#x4E2D;&#x7684;&#x670D;&#x52A1;&#x8BBF;&#x95EE;&#x65E5;&#x5FD7;&#x5728;&#x5BBF;&#x4E3B;&#x673A;&#x4E0A;&#x9762;&#x663E;&#x793A;&#xFF0C;dockerfile&#x914D;&#x7F6E;&#x5982;&#x4E0B;&#xFF1A;</p>
+<figure class="highlight dockerfile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># &#x6307;&#x5B9A;&#x521D;&#x59CB;&#x955C;&#x50CF;</span></span><br><span class="line"><span class="keyword">FROM</span> ubuntu:<span class="number">20.04</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># &#x6307;&#x5B9A;dockerfile&#x7EF4;&#x62A4;&#x4EBA;&#x5458;&#x4FE1;&#x606F;</span></span><br><span class="line"><span class="keyword">LABEL</span><span class="bash"> <span class="string">&quot;maintainer&quot;</span> = <span class="string">&quot;xxx 11111111@xx.com&quot;</span></span></span><br><span class="line"></span><br><span class="line"><span class="comment"># COPY&#x547D;&#x4EE4;&#x5C06;&#x672C;&#x5730;&#x7684;sources.list&#x66F4;&#x65B0;&#x6E90;&#x590D;&#x5236;&#x5230;&#x5BB9;&#x5668;&#x4E2D;&#x53BB;</span></span><br><span class="line"><span class="keyword">COPY</span><span class="bash"> sources.list /etc/apt/sources.list</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># &#x5B89;&#x88C5;&#x597D;nginx&#x7A0B;&#x5E8F;&#x76F8;&#x5173;&#x7684;&#x73AF;&#x5883;&#x53C2;&#x6570;</span></span><br><span class="line"><span class="keyword">RUN</span><span class="bash"> apt update \</span></span><br><span class="line"><span class="bash">	&amp;&amp; apt install -y iproute2 ntpdate tcpdump telnet traceroute nfs-kernel-server nfs-common lrzsz tree openssl libssl-dev libpcre3 libpcre3-dev zlib1g-dev gcc openssh-server iotop unzip zip make vim \</span></span><br><span class="line"><span class="bash">    &amp;&amp; mkdir -p /data/nginx</span></span><br><span class="line">    </span><br><span class="line"><span class="comment"># &#x590D;&#x5236;nginx.tar.gz&#x6587;&#x4EF6;&#x5230;&#x5BB9;&#x5668;&#x4E2D;&#x53BB;&#xFF0C;&#x8FD9;&#x91CC;&#x4F7F;&#x7528;&#x7684;&#x662F;ADD&#x547D;&#x4EE4;&#xFF0C;&#x662F;&#x53EF;&#x4EE5;&#x81EA;&#x52A8;&#x89E3;&#x538B;&#x7684;&#xFF1B;</span></span><br><span class="line"><span class="keyword">ADD</span><span class="bash"> nginx-1.20.2.tar.gz /usr/<span class="built_in">local</span>/src</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># &#x7136;&#x540E;&#x5BF9;&#x8BE5;&#x6587;&#x4EF6;&#x8FDB;&#x884C;&#x5B89;&#x88C5;</span></span><br><span class="line"><span class="keyword">RUN</span><span class="bash"> <span class="built_in">cd</span> /usr/<span class="built_in">local</span>/src/nginx-1.20.2 \</span></span><br><span class="line"><span class="bash">	&amp;&amp; ./configure --prefix=/apps/nginx \</span></span><br><span class="line"><span class="bash">	&amp;&amp; make \</span></span><br><span class="line"><span class="bash">	&amp;&amp; make install \ </span></span><br><span class="line">	&amp;&amp; ln -sv /apps/nginx/sbin/nginx /usr/bin \</span><br><span class="line">	&amp;&amp; rm -rf /usr/local/src/nginx-<span class="number">1.20</span>.<span class="number">2</span></span><br><span class="line">	</span><br><span class="line"><span class="comment"># &#x62F7;&#x8D1D;&#x672C;&#x5730;&#x7684;nginx.conf&#x6587;&#x4EF6;&#x548C;static&#x955C;&#x50CF;&#x6587;&#x4EF6;&#x5230;&#x5BB9;&#x5668;&#x4E2D;</span></span><br><span class="line"><span class="keyword">ADD</span><span class="bash"> nginx.conf /apps/nginx/conf/nginx.conf</span></span><br><span class="line"><span class="keyword">ADD</span><span class="bash"> static.tar.gz /data/nginx/html</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># &#x914D;&#x7F6E;&#x65E5;&#x5FD7;&#x4FE1;&#x606F;</span></span><br><span class="line"><span class="keyword">RUN</span><span class="bash"> ln -sv /dev/stdout /apps/nginx/logs/access.log</span></span><br><span class="line"><span class="keyword">RUN</span><span class="bash"> ln -sv /dev/stderr /apps/nginx/logs/error.log</span></span><br></pre></td></tr></table></figure>
+
+<p>&#x8FD9;&#x6837;&#xFF0C;&#x6211;&#x4EEC;&#x5C06;&#x65E5;&#x5FD7;&#x4FE1;&#x606F;&#x4ECE;&#x6807;&#x51C6;&#x8F93;&#x5165;&#x548C;&#x9519;&#x8BEF;&#x8F93;&#x5165;&#x90FD;&#x5728;&#x672C;&#x5730;&#x505A;&#x4E86;&#x94FE;&#x63A5;&#x3002;&#x5F53;&#x6B63;&#x5E38;&#x8BBF;&#x95EE;&#x6216;&#x8005;&#x51FA;&#x73B0;&#x9519;&#x8BEF;&#x8BBF;&#x95EE;&#x7684;&#x65F6;&#x5019;&#xFF0C;&#x6211;&#x4EEC;&#x7684;&#x65E5;&#x5FD7;&#x5C31;&#x4F1A;&#x5728;&#x5BBF;&#x4E3B;&#x673A;&#x4E0A;&#x8FDB;&#x884C;&#x663E;&#x793A;&#xFF1B;</p>
+<p>&#x5F53;&#x7136;&#xFF0C;&#x5982;&#x679C;&#x53C8;&#x81EA;&#x5DF1;&#x7684;&#x65E5;&#x5FD7;&#x670D;&#x52A1;&#x5668;&#xFF0C;&#x5219;&#x53EF;&#x4EE5;&#x914D;&#x7F6E;&#x5BB9;&#x5668;&#xFF0C;&#x5BF9;&#x5BB9;&#x5668;&#x65E5;&#x5FD7;&#x8FDB;&#x884C;&#x6536;&#x96C6;&#xFF0C;&#x8FD9;&#x91CC;&#x6211;&#x4EEC;&#x4E0D;&#x518D;&#x8BE6;&#x7EC6;&#x8BF4;&#x660E;&#xFF1B;</p>
+<p>&#x6784;&#x5EFA;&#x955C;&#x50CF;</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">bash ./dockerfile-command 2022-01-03_15-07</span><br></pre></td></tr></table></figure>
+
+<h3 id="7&#x3001;&#x6DFB;&#x52A0;&#x7528;&#x6237;&#x6743;&#x9650;"><a href="#7&#x3001;&#x6DFB;&#x52A0;&#x7528;&#x6237;&#x6743;&#x9650;" class="headerlink" title="7&#x3001;&#x6DFB;&#x52A0;&#x7528;&#x6237;&#x6743;&#x9650;"></a>7&#x3001;&#x6DFB;&#x52A0;&#x7528;&#x6237;&#x6743;&#x9650;</h3><p>nginx&#x7A0B;&#x5E8F;&#x9700;&#x8981;&#x4F7F;&#x7528;nginx&#x7528;&#x6237;&#x6765;&#x8FD0;&#x884C;&#xFF0C;&#x914D;&#x7F6E;&#x5982;&#x4E0B;</p>
+<figure class="highlight dockerfile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># &#x6307;&#x5B9A;&#x521D;&#x59CB;&#x955C;&#x50CF;</span></span><br><span class="line"><span class="keyword">FROM</span> ubuntu:<span class="number">20.04</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># &#x6307;&#x5B9A;dockerfile&#x7EF4;&#x62A4;&#x4EBA;&#x5458;&#x4FE1;&#x606F;</span></span><br><span class="line"><span class="keyword">LABEL</span><span class="bash"> <span class="string">&quot;maintainer&quot;</span> = <span class="string">&quot;xxx 11111111@xx.com&quot;</span></span></span><br><span class="line"></span><br><span class="line"><span class="comment"># COPY&#x547D;&#x4EE4;&#x5C06;&#x672C;&#x5730;&#x7684;sources.list&#x66F4;&#x65B0;&#x6E90;&#x590D;&#x5236;&#x5230;&#x5BB9;&#x5668;&#x4E2D;&#x53BB;</span></span><br><span class="line"><span class="keyword">COPY</span><span class="bash"> sources.list /etc/apt/sources.list</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># &#x5B89;&#x88C5;&#x597D;nginx&#x7A0B;&#x5E8F;&#x76F8;&#x5173;&#x7684;&#x73AF;&#x5883;&#x53C2;&#x6570;</span></span><br><span class="line"><span class="keyword">RUN</span><span class="bash"> apt update \</span></span><br><span class="line"><span class="bash">	&amp;&amp; apt install -y iproute2 ntpdate tcpdump telnet traceroute nfs-kernel-server nfs-common lrzsz tree openssl libssl-dev libpcre3 libpcre3-dev zlib1g-dev gcc openssh-server iotop unzip zip make vim \</span></span><br><span class="line"><span class="bash">    &amp;&amp; mkdir -p /data/nginx</span></span><br><span class="line">    </span><br><span class="line"><span class="comment"># &#x590D;&#x5236;nginx.tar.gz&#x6587;&#x4EF6;&#x5230;&#x5BB9;&#x5668;&#x4E2D;&#x53BB;&#xFF0C;&#x8FD9;&#x91CC;&#x4F7F;&#x7528;&#x7684;&#x662F;ADD&#x547D;&#x4EE4;&#xFF0C;&#x662F;&#x53EF;&#x4EE5;&#x81EA;&#x52A8;&#x89E3;&#x538B;&#x7684;&#xFF1B;</span></span><br><span class="line"><span class="keyword">ADD</span><span class="bash"> nginx-1.20.2.tar.gz /usr/<span class="built_in">local</span>/src</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># &#x7136;&#x540E;&#x5BF9;&#x8BE5;&#x6587;&#x4EF6;&#x8FDB;&#x884C;&#x5B89;&#x88C5;</span></span><br><span class="line"><span class="keyword">RUN</span><span class="bash"> <span class="built_in">cd</span> /usr/<span class="built_in">local</span>/src/nginx-1.20.2 \</span></span><br><span class="line"><span class="bash">	&amp;&amp; ./configure --prefix=/apps/nginx \</span></span><br><span class="line"><span class="bash">	&amp;&amp; make \</span></span><br><span class="line"><span class="bash">	&amp;&amp; make install \ </span></span><br><span class="line">	&amp;&amp; ln -sv /apps/nginx/sbin/nginx /usr/bin \</span><br><span class="line">	&amp;&amp; rm -rf /usr/local/src/nginx-<span class="number">1.20</span>.<span class="number">2</span></span><br><span class="line">	</span><br><span class="line"><span class="comment"># &#x62F7;&#x8D1D;&#x672C;&#x5730;&#x7684;nginx.conf&#x6587;&#x4EF6;&#x548C;static&#x955C;&#x50CF;&#x6587;&#x4EF6;&#x5230;&#x5BB9;&#x5668;&#x4E2D;</span></span><br><span class="line"><span class="keyword">ADD</span><span class="bash"> nginx.conf /apps/nginx/conf/nginx.conf</span></span><br><span class="line"><span class="keyword">ADD</span><span class="bash"> static.tar.gz /data/nginx/html</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># &#x914D;&#x7F6E;&#x65E5;&#x5FD7;&#x4FE1;&#x606F;</span></span><br><span class="line"><span class="keyword">RUN</span><span class="bash"> ln -sv /dev/stdout /apps/nginx/logs/access.log</span></span><br><span class="line"><span class="keyword">RUN</span><span class="bash"> ln -sv /dev/stderr /apps/nginx/logs/error.log</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># &#x914D;&#x7F6E;&#x7528;&#x6237;&#x6743;&#x9650;</span></span><br><span class="line"><span class="keyword">RUN</span><span class="bash"> groupadd -g 2022 nginx \</span></span><br><span class="line"><span class="bash">	&amp;&amp; useradd -g nginx -s /usr/sbin/nologin -u 2022 nginx \</span></span><br><span class="line"><span class="bash">	&amp;&amp; chown -R nginx.nginx /apps/nginx /data/nginx</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="8&#x3001;&#x66B4;&#x9732;&#x7AEF;&#x53E3;"><a href="#8&#x3001;&#x66B4;&#x9732;&#x7AEF;&#x53E3;" class="headerlink" title="8&#x3001;&#x66B4;&#x9732;&#x7AEF;&#x53E3;"></a>8&#x3001;&#x66B4;&#x9732;&#x7AEF;&#x53E3;</h3><p>&#x9ED8;&#x8BA4;&#x955C;&#x50CF;&#x5F00;&#x542F;&#x7684;&#x65F6;&#x5019;&#xFF0C;&#x6211;&#x4EEC;&#x53EF;&#x4EE5;&#x6307;&#x5B9A;&#x66B4;&#x9732;&#x7684;&#x7AEF;&#x53E3;&#xFF0C;&#x914D;&#x7F6E;&#x5982;&#x4E0B;&#xFF1A;</p>
+<figure class="highlight dockerfile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># &#x6307;&#x5B9A;&#x521D;&#x59CB;&#x955C;&#x50CF;</span></span><br><span class="line"><span class="keyword">FROM</span> ubuntu:<span class="number">20.04</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># &#x6307;&#x5B9A;dockerfile&#x7EF4;&#x62A4;&#x4EBA;&#x5458;&#x4FE1;&#x606F;</span></span><br><span class="line"><span class="keyword">LABEL</span><span class="bash"> <span class="string">&quot;maintainer&quot;</span> = <span class="string">&quot;xxx 11111111@xx.com&quot;</span></span></span><br><span class="line"></span><br><span class="line"><span class="comment"># COPY&#x547D;&#x4EE4;&#x5C06;&#x672C;&#x5730;&#x7684;sources.list&#x66F4;&#x65B0;&#x6E90;&#x590D;&#x5236;&#x5230;&#x5BB9;&#x5668;&#x4E2D;&#x53BB;</span></span><br><span class="line"><span class="keyword">COPY</span><span class="bash"> sources.list /etc/apt/sources.list</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># &#x5B89;&#x88C5;&#x597D;nginx&#x7A0B;&#x5E8F;&#x76F8;&#x5173;&#x7684;&#x73AF;&#x5883;&#x53C2;&#x6570;</span></span><br><span class="line"><span class="keyword">RUN</span><span class="bash"> apt update \</span></span><br><span class="line"><span class="bash">	&amp;&amp; apt install -y iproute2 ntpdate tcpdump telnet traceroute nfs-kernel-server nfs-common lrzsz tree openssl libssl-dev libpcre3 libpcre3-dev zlib1g-dev gcc openssh-server iotop unzip zip make vim \</span></span><br><span class="line"><span class="bash">    &amp;&amp; mkdir -p /data/nginx</span></span><br><span class="line">    </span><br><span class="line"><span class="comment"># &#x590D;&#x5236;nginx.tar.gz&#x6587;&#x4EF6;&#x5230;&#x5BB9;&#x5668;&#x4E2D;&#x53BB;&#xFF0C;&#x8FD9;&#x91CC;&#x4F7F;&#x7528;&#x7684;&#x662F;ADD&#x547D;&#x4EE4;&#xFF0C;&#x662F;&#x53EF;&#x4EE5;&#x81EA;&#x52A8;&#x89E3;&#x538B;&#x7684;&#xFF1B;</span></span><br><span class="line"><span class="keyword">ADD</span><span class="bash"> nginx-1.20.2.tar.gz /usr/<span class="built_in">local</span>/src</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># &#x7136;&#x540E;&#x5BF9;&#x8BE5;&#x6587;&#x4EF6;&#x8FDB;&#x884C;&#x5B89;&#x88C5;</span></span><br><span class="line"><span class="keyword">RUN</span><span class="bash"> <span class="built_in">cd</span> /usr/<span class="built_in">local</span>/src/nginx-1.20.2 \</span></span><br><span class="line"><span class="bash">	&amp;&amp; ./configure --prefix=/apps/nginx \</span></span><br><span class="line"><span class="bash">	&amp;&amp; make \</span></span><br><span class="line"><span class="bash">	&amp;&amp; make install \ </span></span><br><span class="line">	&amp;&amp; ln -sv /apps/nginx/sbin/nginx /usr/bin \</span><br><span class="line">	&amp;&amp; rm -rf /usr/local/src/nginx-<span class="number">1.20</span>.<span class="number">2</span></span><br><span class="line">	</span><br><span class="line"><span class="comment"># &#x62F7;&#x8D1D;&#x672C;&#x5730;&#x7684;nginx.conf&#x6587;&#x4EF6;&#x548C;static&#x955C;&#x50CF;&#x6587;&#x4EF6;&#x5230;&#x5BB9;&#x5668;&#x4E2D;</span></span><br><span class="line"><span class="keyword">ADD</span><span class="bash"> nginx.conf /apps/nginx/conf/nginx.conf</span></span><br><span class="line"><span class="keyword">ADD</span><span class="bash"> static.tar.gz /data/nginx/html</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># &#x914D;&#x7F6E;&#x65E5;&#x5FD7;&#x4FE1;&#x606F;</span></span><br><span class="line"><span class="keyword">RUN</span><span class="bash"> ln -sv /dev/stdout /apps/nginx/logs/access.log</span></span><br><span class="line"><span class="keyword">RUN</span><span class="bash"> ln -sv /dev/stderr /apps/nginx/logs/error.log</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># &#x914D;&#x7F6E;&#x7528;&#x6237;&#x6743;&#x9650;</span></span><br><span class="line"><span class="keyword">RUN</span><span class="bash"> groupadd -g 2022 nginx \</span></span><br><span class="line"><span class="bash">	&amp;&amp; useradd -g nginx -s /usr/sbin/nologin -u 2022 nginx \</span></span><br><span class="line"><span class="bash">	&amp;&amp; chown -R nginx.nginx /apps/nginx /data/nginx</span></span><br><span class="line">	</span><br><span class="line"><span class="comment"># &#x914D;&#x7F6E;&#x9ED8;&#x8BA4;&#x66B4;&#x9732;&#x7AEF;&#x53E3;&#xFF0C;&#x56E0;&#x4E3A;&#x914D;&#x7F6E;&#x6587;&#x4EF6;&#x4E2D;&#x6211;&#x4EEC;&#x9ED8;&#x8BA4;&#x4FEE;&#x6539;&#x4E86;&#x6307;&#x5B9A;&#x7AEF;&#x53E3;&#xFF0C;&#x6240;&#x4EE5;&#x6211;&#x4EEC;&#x9ED8;&#x8BA4;&#x66B4;&#x9732;8080&#x7AEF;&#x53E3;</span></span><br><span class="line"><span class="keyword">EXPOSE</span> <span class="number">80</span> <span class="number">443</span> <span class="number">8080</span></span><br></pre></td></tr></table></figure>
+
+<p>&#x5728;docker run -P&#x7684;&#x65F6;&#x5019;&#xFF0C;&#x9ED8;&#x8BA4;&#x66B4;&#x9732;&#x7684;&#x7AEF;&#x53E3;&#x5C31;&#x4F1A;&#x88AB;&#x8BBF;&#x95EE;&#x5230;&#xFF1B;</p>
+<h3 id="9&#x3001;&#x6307;&#x5B9A;&#x8FD0;&#x884C;&#x547D;&#x4EE4;"><a href="#9&#x3001;&#x6307;&#x5B9A;&#x8FD0;&#x884C;&#x547D;&#x4EE4;" class="headerlink" title="9&#x3001;&#x6307;&#x5B9A;&#x8FD0;&#x884C;&#x547D;&#x4EE4;"></a>9&#x3001;&#x6307;&#x5B9A;&#x8FD0;&#x884C;&#x547D;&#x4EE4;</h3><p>&#x6700;&#x540E;&#xFF0C;&#x6211;&#x4EEC;&#x9700;&#x8981;&#x6307;&#x5B9A;&#x5728;docker run&#x7684;&#x65F6;&#x5019;&#x9ED8;&#x8BA4;&#x542F;&#x52A8;&#x7684;&#x6307;&#x4EE4;&#xFF0C;&#x4E00;&#x822C;&#x901A;&#x8FC7;CMD&#x6765;&#x6307;&#x5B9A;&#xFF0C;&#x5982;&#x679C;&#x6709;&#x591A;&#x4E2A;CMD&#x5219;&#x53EA;&#x8FD0;&#x884C;&#x6700;&#x540E;&#x4E00;&#x4E2A;&#xFF1B;&#x6DFB;&#x52A0;&#x542F;&#x52A8;&#x670D;&#x52A1;&#x547D;&#x4EE4;&#x5982;&#x4E0B;&#xFF1A;</p>
+<figure class="highlight dockerfile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># &#x6307;&#x5B9A;&#x521D;&#x59CB;&#x955C;&#x50CF;</span></span><br><span class="line"><span class="keyword">FROM</span> ubuntu:<span class="number">20.04</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># &#x6307;&#x5B9A;dockerfile&#x7EF4;&#x62A4;&#x4EBA;&#x5458;&#x4FE1;&#x606F;</span></span><br><span class="line"><span class="keyword">LABEL</span><span class="bash"> <span class="string">&quot;maintainer&quot;</span> = <span class="string">&quot;xxx 11111111@xx.com&quot;</span></span></span><br><span class="line"></span><br><span class="line"><span class="comment"># COPY&#x547D;&#x4EE4;&#x5C06;&#x672C;&#x5730;&#x7684;sources.list&#x66F4;&#x65B0;&#x6E90;&#x590D;&#x5236;&#x5230;&#x5BB9;&#x5668;&#x4E2D;&#x53BB;</span></span><br><span class="line"><span class="keyword">COPY</span><span class="bash"> sources.list /etc/apt/sources.list</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># &#x5B89;&#x88C5;&#x597D;nginx&#x7A0B;&#x5E8F;&#x76F8;&#x5173;&#x7684;&#x73AF;&#x5883;&#x53C2;&#x6570;</span></span><br><span class="line"><span class="keyword">RUN</span><span class="bash"> apt update \</span></span><br><span class="line"><span class="bash">	&amp;&amp; apt install -y iproute2 ntpdate tcpdump telnet traceroute nfs-kernel-server nfs-common lrzsz tree openssl libssl-dev libpcre3 libpcre3-dev zlib1g-dev gcc openssh-server iotop unzip zip make vim \</span></span><br><span class="line"><span class="bash">    &amp;&amp; mkdir -p /data/nginx</span></span><br><span class="line">    </span><br><span class="line"><span class="comment"># &#x590D;&#x5236;nginx.tar.gz&#x6587;&#x4EF6;&#x5230;&#x5BB9;&#x5668;&#x4E2D;&#x53BB;&#xFF0C;&#x8FD9;&#x91CC;&#x4F7F;&#x7528;&#x7684;&#x662F;ADD&#x547D;&#x4EE4;&#xFF0C;&#x662F;&#x53EF;&#x4EE5;&#x81EA;&#x52A8;&#x89E3;&#x538B;&#x7684;&#xFF1B;</span></span><br><span class="line"><span class="keyword">ADD</span><span class="bash"> nginx-1.20.2.tar.gz /usr/<span class="built_in">local</span>/src</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># &#x7136;&#x540E;&#x5BF9;&#x8BE5;&#x6587;&#x4EF6;&#x8FDB;&#x884C;&#x5B89;&#x88C5;</span></span><br><span class="line"><span class="keyword">RUN</span><span class="bash"> <span class="built_in">cd</span> /usr/<span class="built_in">local</span>/src/nginx-1.20.2 \</span></span><br><span class="line"><span class="bash">	&amp;&amp; ./configure --prefix=/apps/nginx \</span></span><br><span class="line"><span class="bash">	&amp;&amp; make \</span></span><br><span class="line"><span class="bash">	&amp;&amp; make install \ </span></span><br><span class="line">	&amp;&amp; ln -sv /apps/nginx/sbin/nginx /usr/bin \</span><br><span class="line">	&amp;&amp; rm -rf /usr/local/src/nginx-<span class="number">1.20</span>.<span class="number">2</span></span><br><span class="line">	</span><br><span class="line"><span class="comment"># &#x62F7;&#x8D1D;&#x672C;&#x5730;&#x7684;nginx.conf&#x6587;&#x4EF6;&#x548C;static&#x955C;&#x50CF;&#x6587;&#x4EF6;&#x5230;&#x5BB9;&#x5668;&#x4E2D;</span></span><br><span class="line"><span class="keyword">ADD</span><span class="bash"> nginx.conf /apps/nginx/conf/nginx.conf</span></span><br><span class="line"><span class="keyword">ADD</span><span class="bash"> static.tar.gz /data/nginx/html</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># &#x914D;&#x7F6E;&#x65E5;&#x5FD7;&#x4FE1;&#x606F;</span></span><br><span class="line"><span class="keyword">RUN</span><span class="bash"> ln -sv /dev/stdout /apps/nginx/logs/access.log</span></span><br><span class="line"><span class="keyword">RUN</span><span class="bash"> ln -sv /dev/stderr /apps/nginx/logs/error.log</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># &#x914D;&#x7F6E;&#x7528;&#x6237;&#x6743;&#x9650;</span></span><br><span class="line"><span class="keyword">RUN</span><span class="bash"> groupadd -g 2022 nginx \</span></span><br><span class="line"><span class="bash">	&amp;&amp; useradd -g nginx -s /usr/sbin/nologin -u 2022 nginx \</span></span><br><span class="line"><span class="bash">	&amp;&amp; chown -R nginx.nginx /apps/nginx /data/nginx</span></span><br><span class="line">	</span><br><span class="line"><span class="comment"># &#x914D;&#x7F6E;&#x9ED8;&#x8BA4;&#x66B4;&#x9732;&#x7AEF;&#x53E3;&#xFF0C;&#x56E0;&#x4E3A;&#x914D;&#x7F6E;&#x6587;&#x4EF6;&#x4E2D;&#x6211;&#x4EEC;&#x9ED8;&#x8BA4;&#x4FEE;&#x6539;&#x4E86;&#x6307;&#x5B9A;&#x7AEF;&#x53E3;&#xFF0C;&#x6240;&#x4EE5;&#x6211;&#x4EEC;&#x9ED8;&#x8BA4;&#x66B4;&#x9732;8080&#x7AEF;&#x53E3;</span></span><br><span class="line"><span class="keyword">EXPOSE</span> <span class="number">80</span> <span class="number">443</span> <span class="number">8080</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># &#x542F;&#x52A8;&#x670D;&#x52A1;</span></span><br><span class="line"><span class="keyword">CMD</span><span class="bash"> [<span class="string">&quot;/apps/nginx/sbin/nginx&quot;</span>,<span class="string">&quot;-g&quot;</span>,<span class="string">&quot;daemon off;&quot;</span>]</span></span><br></pre></td></tr></table></figure>
+
+<p>&#x6700;&#x540E;&#x7EDF;&#x4E00;&#x6784;&#x5EFA;&#x4E00;&#x4E2A;&#x955C;&#x50CF;&#x6587;&#x4EF6;&#xFF1A;</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">bash ./dockerfile-command 2022-01-03_15-15</span><br></pre></td></tr></table></figure>
+
+<p>&#x67E5;&#x770B;&#x6784;&#x5EFA;&#x7684;&#x955C;&#x50CF;&#x6587;&#x4EF6;</p>
+<p><img src="/clould-native/docker/06_docker%E5%AE%B9%E5%99%A8%E6%8A%80%E6%9C%AF_dockerfile%E7%9A%84%E9%95%9C%E5%83%8F%E6%9E%84%E5%BB%BA%E8%AF%A6%E8%A7%A3/image-20220103151734454.png" alt="image-20220103151734454"></p>
+<p>&#x542F;&#x52A8;&#x6700;&#x540E;&#x4E00;&#x4E2A;&#x955C;&#x50CF;&#x6587;&#x4EF6;</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker run -it -P harbor.test.com/web/my_nginx  # &#x542F;&#x52A8;&#x5BB9;&#x5668;</span><br></pre></td></tr></table></figure>
+
+<p><img src="/clould-native/docker/06_docker%E5%AE%B9%E5%99%A8%E6%8A%80%E6%9C%AF_dockerfile%E7%9A%84%E9%95%9C%E5%83%8F%E6%9E%84%E5%BB%BA%E8%AF%A6%E8%A7%A3/image-20220103151928183.png" alt="image-20220103151928183"></p>
+<p>&#x8BBF;&#x95EE;&#x5BB9;&#x5668;&#xFF1A;</p>
+<p><img src="/clould-native/docker/06_docker%E5%AE%B9%E5%99%A8%E6%8A%80%E6%9C%AF_dockerfile%E7%9A%84%E9%95%9C%E5%83%8F%E6%9E%84%E5%BB%BA%E8%AF%A6%E8%A7%A3/image-20220103160313732.png" alt="image-20220103160313732"></p>
+<h2 id="&#x4E24;&#x4E2A;&#x601D;&#x8003;&#x9898;"><a href="#&#x4E24;&#x4E2A;&#x601D;&#x8003;&#x9898;" class="headerlink" title="&#x4E24;&#x4E2A;&#x601D;&#x8003;&#x9898;"></a>&#x4E24;&#x4E2A;&#x601D;&#x8003;&#x9898;</h2><h3 id="&#x5BB9;&#x5668;&#x7684;PID&#x4E8E;&#x5BBF;&#x4E3B;&#x673A;&#x7684;PID&#x7684;&#x5173;&#x7CFB;&#xFF1F;"><a href="#&#x5BB9;&#x5668;&#x7684;PID&#x4E8E;&#x5BBF;&#x4E3B;&#x673A;&#x7684;PID&#x7684;&#x5173;&#x7CFB;&#xFF1F;" class="headerlink" title="&#x5BB9;&#x5668;&#x7684;PID&#x4E8E;&#x5BBF;&#x4E3B;&#x673A;&#x7684;PID&#x7684;&#x5173;&#x7CFB;&#xFF1F;"></a>&#x5BB9;&#x5668;&#x7684;PID&#x4E8E;&#x5BBF;&#x4E3B;&#x673A;&#x7684;PID&#x7684;&#x5173;&#x7CFB;&#xFF1F;</h3><p>&#x9996;&#x5148;docker ps&#x67E5;&#x770B;&#x5BB9;&#x5668;&#x8FDB;&#x7A0B;&#xFF0C;&#x8FD9;&#x91CC;&#x83B7;&#x53D6;&#x5230;&#x4E00;&#x4E2A;PID&#x4E3A;1&#x7684;&#x8FDB;&#x7A0B;&#xFF1B;</p>
+<p><img src="/clould-native/docker/06_docker%E5%AE%B9%E5%99%A8%E6%8A%80%E6%9C%AF_dockerfile%E7%9A%84%E9%95%9C%E5%83%8F%E6%9E%84%E5%BB%BA%E8%AF%A6%E8%A7%A3/image-20220103224941672.png" alt="docker ps"></p>
+<p>&#x5BB9;&#x5668;&#x5185;&#x7684;&#x8FDB;&#x7A0B;&#x5982;&#x4E0B;&#xFF1A;</p>
+<p><img src="/clould-native/docker/06_docker%E5%AE%B9%E5%99%A8%E6%8A%80%E6%9C%AF_dockerfile%E7%9A%84%E9%95%9C%E5%83%8F%E6%9E%84%E5%BB%BA%E8%AF%A6%E8%A7%A3/image-20220103225216210.png" alt="&#x5BB9;&#x5668;&#x5185;&#x90E8;&#x8FDB;&#x7A0B;id&#x53F7;"></p>
+<p>nginx&#x6709;&#x4E00;&#x4E2A;master&#x8FDB;&#x7A0B;&#xFF0C;&#x7136;&#x540E;&#x540E;&#x9762;&#x5173;&#x8054;&#x591A;&#x4E2A;worker&#x8FDB;&#x7A0B;&#xFF1B;</p>
+<p><img src="/clould-native/docker/06_docker%E5%AE%B9%E5%99%A8%E6%8A%80%E6%9C%AF_dockerfile%E7%9A%84%E9%95%9C%E5%83%8F%E6%9E%84%E5%BB%BA%E8%AF%A6%E8%A7%A3/image-20220103225414605.png" alt="&#x5BBF;&#x4E3B;&#x673A;&#x7684;&#x8FDB;&#x7A0B;"></p>
+<p>&#x8FD9;&#x91CC;&#x663E;&#x793A;&#x4E3A; 35730 &#x4E3A;&#x5BB9;&#x5668;&#x4E2D;&#x7684;nginx&#x8FDB;&#x7A0B;&#xFF0C;&#x800C; 35699 &#x4E3A;&#x5176;&#x7236;&#x8FDB;&#x7A0B;&#xFF1B;</p>
+<p><img src="/clould-native/docker/06_docker%E5%AE%B9%E5%99%A8%E6%8A%80%E6%9C%AF_dockerfile%E7%9A%84%E9%95%9C%E5%83%8F%E6%9E%84%E5%BB%BA%E8%AF%A6%E8%A7%A3/image-20220103225645871.png" alt="nginx&#x7684;&#x7236;&#x8FDB;&#x7A0B;"></p>
+<p>&#x8FD9;&#x91CC;&#x6211;&#x4EEC;&#x53EF;&#x4EE5;&#x770B;&#x5230;35699&#x8FDB;&#x7A0B;&#x7684;&#x7236;&#x8FDB;&#x7A0B;&#x4E3A;15616&#x8FDB;&#x7A0B;&#xFF1B;&#x800C;&#x8FD9;&#x4E2A;&#x8FDB;&#x7A0B;&#x5C31;&#x662F;containerd-shim&#x8FDB;&#x7A0B;&#xFF1B;</p>
+<p><img src="/clould-native/docker/06_docker%E5%AE%B9%E5%99%A8%E6%8A%80%E6%9C%AF_dockerfile%E7%9A%84%E9%95%9C%E5%83%8F%E6%9E%84%E5%BB%BA%E8%AF%A6%E8%A7%A3/image-20220103225901714.png" alt="containerd-shim&#x7236;&#x8FDB;&#x7A0B;"></p>
+<p>&#x8FD9;&#x65F6;&#x5019;&#x770B;&#x5230;15616&#x7684;&#x7236;&#x8FDB;&#x7A0B;&#x4E3A;1&#xFF1B;</p>
+<p>&#x603B;&#x4F53;&#x770B;&#x6765;&#xFF0C;&#x8FD9;&#x6837;&#x6211;&#x4EEC;&#x5C31;&#x80FD;&#x591F;&#x77E5;&#x9053;&#x8FDB;&#x7A0B;&#x7684;&#x5173;&#x7CFB;&#xFF1B;</p>
+<p><img src="/clould-native/docker/06_docker%E5%AE%B9%E5%99%A8%E6%8A%80%E6%9C%AF_dockerfile%E7%9A%84%E9%95%9C%E5%83%8F%E6%9E%84%E5%BB%BA%E8%AF%A6%E8%A7%A3/image-20220103230101313.png" alt="pstree&#x8FDB;&#x7A0B;&#x5C55;&#x793A;"></p>
+<p>&#x8FD9;&#x91CC;&#xFF0C;&#x6211;&#x4EEC;&#x77E5;&#x9053;&#x4E86;&#x901A;&#x8FC7;containerd&#x8FDB;&#x7A0B;&#x5173;&#x8054;containerd-shim&#x8FDB;&#x7A0B;&#x7BA1;&#x7406;&#x5BB9;&#x5668;&#xFF1B;&#x800C;nginx&#x7684;&#x8FDB;&#x7A0B;&#x5728;&#x5BBF;&#x4E3B;&#x673A;&#x4E0A;&#x4F4D;35730&#xFF0C;&#x800C;&#x5BF9;&#x4E8E;&#x5BB9;&#x5668;&#x800C;&#x8A00;&#x5C31;&#x662F;pid&#x4E3A;1&#x7684;&#x8FDB;&#x7A0B;&#x4E86;&#xFF1B;</p>
+<p>&#x53E6;&#x5916;&#xFF0C;&#x6211;&#x4EEC;&#x8FD8;&#x9700;&#x8981;&#x901A;&#x8FC7;dockerd&#x8FDB;&#x7A0B;&#x6765;&#x63A5;&#x6536;&#x5BA2;&#x6237;&#x8BF7;&#x6C42;&#xFF0C;&#x7136;&#x540E;&#x901A;&#x8FC7;docker-proxy&#x6765;&#x7BA1;&#x7406;&#x5BB9;&#x5668;&#x7F51;&#x7EDC;&#xFF1B;</p>
+<p><img src="/clould-native/docker/06_docker%E5%AE%B9%E5%99%A8%E6%8A%80%E6%9C%AF_dockerfile%E7%9A%84%E9%95%9C%E5%83%8F%E6%9E%84%E5%BB%BA%E8%AF%A6%E8%A7%A3/image-20220103230336454.png" alt="dockerd&#x8FDB;&#x7A0B;"></p>
+<p>&#x56E0;&#x6B64;&#x6574;&#x4F53;&#x7F51;&#x7EDC;&#x6846;&#x67B6;&#x5982;&#x4E0B;&#xFF1A;</p>
+<p><img src="/clould-native/docker/06_docker%E5%AE%B9%E5%99%A8%E6%8A%80%E6%9C%AF_dockerfile%E7%9A%84%E9%95%9C%E5%83%8F%E6%9E%84%E5%BB%BA%E8%AF%A6%E8%A7%A3/image-20220103230447683.png" alt="&#x6574;&#x4F53;&#x7ED3;&#x6784;&#x6846;&#x67B6;"></p>
+<h3 id="&#x5BB9;&#x5668;&#x4E3A;&#x4EC0;&#x4E48;&#x8981;&#x81EA;&#x5B9A;&#x4E49;&#x5B88;&#x62A4;&#x884C;&#x7A0B;&#xFF1F;&#x53EF;&#x4E0D;&#x53EF;&#x4EE5;&#x6CA1;&#x6709;&#xFF1F;"><a href="#&#x5BB9;&#x5668;&#x4E3A;&#x4EC0;&#x4E48;&#x8981;&#x81EA;&#x5B9A;&#x4E49;&#x5B88;&#x62A4;&#x884C;&#x7A0B;&#xFF1F;&#x53EF;&#x4E0D;&#x53EF;&#x4EE5;&#x6CA1;&#x6709;&#xFF1F;" class="headerlink" title="&#x5BB9;&#x5668;&#x4E3A;&#x4EC0;&#x4E48;&#x8981;&#x81EA;&#x5B9A;&#x4E49;&#x5B88;&#x62A4;&#x884C;&#x7A0B;&#xFF1F;&#x53EF;&#x4E0D;&#x53EF;&#x4EE5;&#x6CA1;&#x6709;&#xFF1F;"></a>&#x5BB9;&#x5668;&#x4E3A;&#x4EC0;&#x4E48;&#x8981;&#x81EA;&#x5B9A;&#x4E49;&#x5B88;&#x62A4;&#x884C;&#x7A0B;&#xFF1F;&#x53EF;&#x4E0D;&#x53EF;&#x4EE5;&#x6CA1;&#x6709;&#xFF1F;</h3><p>&#x5BB9;&#x5668;&#x4E2D;&#x4E00;&#x5B9A;&#x8981;&#x6709;&#x4E00;&#x4E2A;&#x8FDB;&#x7A0B;&#x5728;&#x524D;&#x53F0;&#x6267;&#x884C;&#xFF0C;&#x7EF4;&#x62A4;&#x4F60;&#x7684;&#x5BB9;&#x5668;&#x4E0D;&#x9000;&#x51FA;&#xFF01;&#x6240;&#x4EE5;&#xFF0C;&#x5FC5;&#x987B;&#x8981;&#x81EA;&#x5B9A;&#x4E49;&#x5B88;&#x62A4;&#x8FDB;&#x7A0B;&#xFF0C;&#x5426;&#x5219;&#x5BB9;&#x5668;&#x6CA1;&#x6709;&#x529E;&#x6CD5;&#x4FDD;&#x6301;&#x8FD0;&#x884C;&#x72B6;&#x6001;&#xFF01;</p>
+
+    </div>
+    
+    
+    
+    
+    
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/container/" rel="tag"># container</a>
+              <a href="/tags/docker/" rel="tag"># docker</a>
+              <a href="/tags/dockerfile/" rel="tag"># dockerfile</a>
+          </div>
+    
+        
+
+    
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/clould-native/docker/07_docker%E5%AE%B9%E5%99%A8%E6%8A%80%E6%9C%AF_%E5%AE%B9%E5%99%A8%E8%B5%84%E6%BA%90%E9%99%90%E5%88%B6/" rel="prev" title="容器的资源限制">
+      <i class="fa fa-chevron-left"></i> 容器的资源限制
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/clould-native/docker/08_docker%E5%AE%B9%E5%99%A8%E6%8A%80%E6%9C%AF_%E5%AE%B9%E5%99%A8%E5%8D%B7%E5%92%8C%E7%BD%91%E7%BB%9C/" rel="next" title="容器的卷和网络">
+      容器的卷和网络 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+    <div>
+        
+        
+
+<div>
+    
+        <div style="text-align:center;color: #ccc;font-size:14px;">------ 版权声明：本文属于原创文章------</div>
+    	<div style="text-align:center;color: #FF0000;font-size:14px;">转载请注明：Burnov.github.io原创文章+本文链接，谢谢合作！！</i></div>
+    
+</div>
+
+
+        
+     </div>
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#dockerfile%E6%9E%84%E5%BB%BA%E9%95%9C%E5%83%8F%E5%8E%9F%E7%90%86%E4%BB%8B%E7%BB%8D"><span class="nav-number">1.</span> <span class="nav-text">dockerfile构建镜像原理介绍</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%95%9C%E5%83%8F%E4%BB%8B%E7%BB%8D"><span class="nav-number">1.1.</span> <span class="nav-text">镜像介绍</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%B9%E5%99%A8%E5%90%AF%E5%8A%A8%E7%9A%84%E5%BC%95%E5%AF%BC%E8%BF%87%E7%A8%8B"><span class="nav-number">1.2.</span> <span class="nav-text">容器启动的引导过程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#dockerfile%E4%B8%8E%E9%95%9C%E5%83%8F%E5%85%B3%E7%B3%BB"><span class="nav-number">1.3.</span> <span class="nav-text">dockerfile与镜像关系</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#docker%E7%9A%84app%E5%BA%94%E7%94%A8%E7%A8%8B%E5%BA%8F%E5%86%85%E9%83%A8%E5%BC%80%E5%8F%91%E6%B5%81%E7%A8%8B%E4%BB%8B%E7%BB%8D"><span class="nav-number">1.4.</span> <span class="nav-text">docker的app应用程序内部开发流程介绍</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#dockerfile%E6%8C%87%E4%BB%A4%E8%AF%A6%E8%A7%A3"><span class="nav-number">2.</span> <span class="nav-text">dockerfile指令详解</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#dockerfile%E6%A8%A1%E6%9D%BF"><span class="nav-number">2.1.</span> <span class="nav-text">dockerfile模板</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B8%B8%E8%A7%81%E7%9A%84dockerfile%E5%91%BD%E4%BB%A4%E4%BB%8B%E7%BB%8D"><span class="nav-number">2.2.</span> <span class="nav-text">常见的dockerfile命令介绍</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%87%AA%E5%B7%B1%E7%BC%96%E5%86%99%E7%9A%84nginx-dockerfile%E6%96%87%E4%BB%B6"><span class="nav-number">2.3.</span> <span class="nav-text">自己编写的nginx dockerfile文件</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1%E3%80%81%E6%B7%BB%E5%8A%A0%E5%AE%B9%E5%99%A8%E7%9A%84%E5%9F%BA%E6%9C%AC%E4%BF%A1%E6%81%AF"><span class="nav-number">2.3.1.</span> <span class="nav-text">1、添加容器的基本信息</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2%E3%80%81%E6%B7%BB%E5%8A%A0%E6%9C%AC%E5%9C%B0%E6%9B%B4%E6%96%B0%E6%BA%90%E5%88%B0%E5%AE%B9%E5%99%A8%E4%B8%AD"><span class="nav-number">2.3.2.</span> <span class="nav-text">2、添加本地更新源到容器中</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3%E3%80%81nginx%E7%9A%84%E7%8E%AF%E5%A2%83%E5%AE%89%E8%A3%85"><span class="nav-number">2.3.3.</span> <span class="nav-text">3、nginx的环境安装</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4%E3%80%81%E4%B8%8A%E4%BC%A0%E6%9C%AC%E5%9C%B0nginx-tar-gz%E6%96%87%E4%BB%B6%E5%88%B0%E9%95%9C%E5%83%8F%E4%B8%AD%E5%8E%BB"><span class="nav-number">2.3.4.</span> <span class="nav-text">4、上传本地nginx.tar.gz文件到镜像中去</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5%E3%80%81%E6%8B%B7%E8%B4%9D%E6%9C%AC%E5%9C%B0nginx-conf%E6%96%87%E4%BB%B6%E5%92%8C%E9%9D%99%E6%80%81%E9%A1%B5%E9%9D%A2%E6%96%87%E4%BB%B6%E5%88%B0%E5%AE%B9%E5%99%A8%E4%B8%AD%E5%8E%BB"><span class="nav-number">2.3.5.</span> <span class="nav-text">5、拷贝本地nginx.conf文件和静态页面文件到容器中去</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6%E3%80%81%E5%AE%B9%E5%99%A8%E4%B8%AD%E7%9A%84%E6%97%A5%E5%BF%97%E5%A4%84%E7%90%86"><span class="nav-number">2.3.6.</span> <span class="nav-text">6、容器中的日志处理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#7%E3%80%81%E6%B7%BB%E5%8A%A0%E7%94%A8%E6%88%B7%E6%9D%83%E9%99%90"><span class="nav-number">2.3.7.</span> <span class="nav-text">7、添加用户权限</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#8%E3%80%81%E6%9A%B4%E9%9C%B2%E7%AB%AF%E5%8F%A3"><span class="nav-number">2.3.8.</span> <span class="nav-text">8、暴露端口</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#9%E3%80%81%E6%8C%87%E5%AE%9A%E8%BF%90%E8%A1%8C%E5%91%BD%E4%BB%A4"><span class="nav-number">2.3.9.</span> <span class="nav-text">9、指定运行命令</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%A4%E4%B8%AA%E6%80%9D%E8%80%83%E9%A2%98"><span class="nav-number">2.4.</span> <span class="nav-text">两个思考题</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%B9%E5%99%A8%E7%9A%84PID%E4%BA%8E%E5%AE%BF%E4%B8%BB%E6%9C%BA%E7%9A%84PID%E7%9A%84%E5%85%B3%E7%B3%BB%EF%BC%9F"><span class="nav-number">2.4.1.</span> <span class="nav-text">容器的PID于宿主机的PID的关系？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%B9%E5%99%A8%E4%B8%BA%E4%BB%80%E4%B9%88%E8%A6%81%E8%87%AA%E5%AE%9A%E4%B9%89%E5%AE%88%E6%8A%A4%E8%A1%8C%E7%A8%8B%EF%BC%9F%E5%8F%AF%E4%B8%8D%E5%8F%AF%E4%BB%A5%E6%B2%A1%E6%9C%89%EF%BC%9F"><span class="nav-number">2.4.2.</span> <span class="nav-text">容器为什么要自定义守护行程？可不可以没有？</span></a></li></ol></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Burnov"
+      src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">Burnov</p>
+  <div class="site-description" itemprop="description">No end for Learning</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">12</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">14</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/Burnov" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;Burnov" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:xials1990@gmail.com" title="E-Mail → mailto:xials1990@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://www.zhihu.com/people/xia-liang-shi-78" title="Skype → https:&#x2F;&#x2F;www.zhihu.com&#x2F;people&#x2F;xia-liang-shi-78" rel="noopener" target="_blank"><i class="fab fa-skype fa-fw"></i></a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class=""></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Burnov</span>
+</div>
+
+<!--
+  <div class="powered-by">Powered by <a href="https://github.com/Burnov" class="theme-link" rel="noopener" target="_blank">Burnov</a> & <a href="https://mist.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Mist</a>
+  </div>
+
+-->
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : false,
+      appId      : 'wIjFqGmEUzY7fpTNVHpKA0eH-gzGzoHsz',
+      appKey     : 'KdXueGM1xFH8pBVSO5SkFRKI',
+      placeholder: "Just go go",
+      avatar     : 'mm',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : false,
+      lang       : '' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : false,
+      serverURLs : ''
+    });
+  }, window.Valine);
+});
+</script>
+
+</body>
+</html>
