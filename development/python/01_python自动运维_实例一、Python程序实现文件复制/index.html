@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-minimal.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Mist","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="&amp;#x9700;&amp;#x6C42;&amp;#x8BF7;&amp;#x7F16;&amp;#x5199;Python&amp;#x7A0B;&amp;#x5E8F;&amp;#xFF0C;&amp;#x5B9E;&amp;#x73B0;&amp;#x5982;&amp;#x4E0B;&amp;#x529F;&amp;#x80FD;&amp;#x2236; &amp;#x7A0B;&amp;#x5E8F;&amp;#x540D;file_cp.sh  &amp;#x7A0B;&amp;#x5E8F;&amp;#x9650;&amp;#x5B9A;pytho">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Python程序实现文件复制">
+<meta property="og:url" content="http://example.com/development/python/01_python%E8%87%AA%E5%8A%A8%E8%BF%90%E7%BB%B4_%E5%AE%9E%E4%BE%8B%E4%B8%80%E3%80%81Python%E7%A8%8B%E5%BA%8F%E5%AE%9E%E7%8E%B0%E6%96%87%E4%BB%B6%E5%A4%8D%E5%88%B6/index.html">
+<meta property="og:site_name" content="Burnov^-^Blog">
+<meta property="og:description" content="&amp;#x9700;&amp;#x6C42;&amp;#x8BF7;&amp;#x7F16;&amp;#x5199;Python&amp;#x7A0B;&amp;#x5E8F;&amp;#xFF0C;&amp;#x5B9E;&amp;#x73B0;&amp;#x5982;&amp;#x4E0B;&amp;#x529F;&amp;#x80FD;&amp;#x2236; &amp;#x7A0B;&amp;#x5E8F;&amp;#x540D;file_cp.sh  &amp;#x7A0B;&amp;#x5E8F;&amp;#x9650;&amp;#x5B9A;pytho">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2022-01-07T08:51:00.000Z">
+<meta property="article:modified_time" content="2022-01-07T08:51:52.018Z">
+<meta property="article:author" content="Burnov">
+<meta property="article:tag" content="Python Automatic Operations">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://example.com/development/python/01_python%E8%87%AA%E5%8A%A8%E8%BF%90%E7%BB%B4_%E5%AE%9E%E4%BE%8B%E4%B8%80%E3%80%81Python%E7%A8%8B%E5%BA%8F%E5%AE%9E%E7%8E%B0%E6%96%87%E4%BB%B6%E5%A4%8D%E5%88%B6/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>Python程序实现文件复制 | Burnov^-^Blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="Burnov^-^Blog" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Burnov^-^Blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="Searching..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://example.com/development/python/01_python%E8%87%AA%E5%8A%A8%E8%BF%90%E7%BB%B4_%E5%AE%9E%E4%BE%8B%E4%B8%80%E3%80%81Python%E7%A8%8B%E5%BA%8F%E5%AE%9E%E7%8E%B0%E6%96%87%E4%BB%B6%E5%A4%8D%E5%88%B6/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="Burnov">
+      <meta itemprop="description" content="No end for Learning">
+    </span>
+    
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Burnov^-^Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Python程序实现文件复制
+        </h1>
+    
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+              
+    
+              <time title="Created: 2022-01-07 16:51:00 / Modified: 16:51:52" itemprop="dateCreated datePublished" datetime="2022-01-07T16:51:00+08:00">2022-01-07</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/development/" itemprop="url" rel="index"><span itemprop="name">development</span></a>
+                </span>
+                  , 
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/development/python/" itemprop="url" rel="index"><span itemprop="name">python</span></a>
+                </span>
+            </span>
+    
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Valine: </span>
+    
+    <a title="valine" href="/development/python/01_python%E8%87%AA%E5%8A%A8%E8%BF%90%E7%BB%B4_%E5%AE%9E%E4%BE%8B%E4%B8%80%E3%80%81Python%E7%A8%8B%E5%BA%8F%E5%AE%9E%E7%8E%B0%E6%96%87%E4%BB%B6%E5%A4%8D%E5%88%B6/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/development/python/01_python%E8%87%AA%E5%8A%A8%E8%BF%90%E7%BB%B4_%E5%AE%9E%E4%BE%8B%E4%B8%80%E3%80%81Python%E7%A8%8B%E5%BA%8F%E5%AE%9E%E7%8E%B0%E6%96%87%E4%BB%B6%E5%A4%8D%E5%88%B6/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+    
+        </div>
+      </header>
+    
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+    
+      
+        <h1 id="&#x9700;&#x6C42;"><a href="#&#x9700;&#x6C42;" class="headerlink" title="&#x9700;&#x6C42;"></a>&#x9700;&#x6C42;</h1><p>&#x8BF7;&#x7F16;&#x5199;Python&#x7A0B;&#x5E8F;&#xFF0C;&#x5B9E;&#x73B0;&#x5982;&#x4E0B;&#x529F;&#x80FD;&#x2236;</p>
+<p>&#x7A0B;&#x5E8F;&#x540D;file_cp.sh </p>
+<p>&#x7A0B;&#x5E8F;&#x9650;&#x5B9A;python&#x7248;&#x672C;&gt;=3.9 </p>
+<p>&#x8FD0;&#x884C;&#x547D;&#x4EE4;&#x2236;</p>
+<span id="more"></span>
+
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python3 file_cp.sh src_dir dst_dir file_list.txt</span><br></pre></td></tr></table></figure>
+
+<p>src_dir&#x76EE;&#x5F55;&#x91CC;&#x6709;&#x5927;&#x91CF;&#x7684;&#x6587;&#x4EF6;&#xFF0C;fle_list.txt&#x5217;&#x51FA;&#x4E86;&#x4E00;&#x5C0F;&#x90E8;&#x5206;&#x6587;&#x4EF6;&#x6216;&#x76EE;&#x5F55;&#x7684;&#x5730;&#x5740;&#xFF0C;&#x5C06;fle_list.txt&#x4E2D;&#x51FA;&#x73B0;&#x7684;&#x6587;&#x4EF6;&#x6216;&#x6587;&#x4EF6;&#x5939;&#x4ECE;&#x76EE;&#x5F55;src_dir&#x62F7;&#x8D1D;&#x5230;&#x76EE;&#x5F55;dst_dir&#xFF0C;&#x4FDD;&#x6301;&#x539F;&#x6709;&#x7684;&#x76F8;&#x5BF9;&#x76EE;&#x5F55;&#x7ED3;&#x6784;&#x3002;</p>
+<p>&#x53C2;&#x6570;&#x4E3E;&#x4F8B;&#x2236;</p>
+<p>src_dir: /mnt/d/test_src</p>
+<p>dst_dst: /root/test_dst</p>
+<p>file_list.txt:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">p2p/base/turn_port. cc.bak p2p/base/turn_port. h.bak</span><br><span class="line">p2p/client/basic_port_allocator. cc.bak p2p/client/basic_port__allocator.h.bak p2p/client/turn_port_factory.cc.bak pc/peer__connection. cc.bak rtc_base/logging. cc.bak</span><br><span class="line">rtc_base/numerics/exp_filter. h.bak sdk/android/api/org/</span><br><span class="line">sdk/android/src/java/org/webrtc/HardwareVideoEncoder.java.bak sdk/android/src/java/org/webrtc/MediaCodecUtils.java.bak sdk/android/src/java/org/webrtc/audio/webRtcAudioTrack.java.bak sdk/android/src/jni/video_encoder_wrapper.cc.bak sdk/objc/components/video_codec/nalu_rewriter.h.bak sdk/objc/native/src/objc_video_encoder_factory.mm.bak video/adaptation/encode_usage_resource.cc.bak</span><br></pre></td></tr></table></figure>
+
+<p>&#x6CE8;&#x610F;&#xFF1A;&#x5176;&#x4E2D;sdk/android/api/org&#x662F;&#x76EE;&#x5F55;&#xFF1B;</p>
+<h1 id="&#x4EE3;&#x7801;&#x5B9E;&#x73B0;"><a href="#&#x4EE3;&#x7801;&#x5B9E;&#x73B0;" class="headerlink" title="&#x4EE3;&#x7801;&#x5B9E;&#x73B0;"></a>&#x4EE3;&#x7801;&#x5B9E;&#x73B0;</h1><p>&#x8FD9;&#x91CC;&#x901A;&#x8FC7;os&#x6A21;&#x5757;&#x3001;shutil shell&#x547D;&#x4EE4;&#x5DE5;&#x5177;&#x6A21;&#x5757;&#x3001;&#x4EE5;&#x53CA;sys&#x7CFB;&#x7EDF;&#x6A21;&#x5757;&#x4E00;&#x8D77;&#x5B8C;&#x6210;&#x8BE5;&#x529F;&#x80FD;&#xFF1A;</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> os</span><br><span class="line"><span class="keyword">import</span> shutil</span><br><span class="line"><span class="keyword">import</span> sys</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">search_by_name</span>(<span class="params">src_dir,file_list,dst_dir</span>):</span></span><br><span class="line">    <span class="comment"># &#x5224;&#x65AD;&#x6587;&#x4EF6;&#x662F;&#x5426;&#x5B58;&#x5728;</span></span><br><span class="line">    <span class="keyword">if</span>(os.path.exists(file_list) == <span class="literal">False</span>):</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&quot;file_list not exist!&quot;</span>)</span><br><span class="line">        <span class="keyword">return</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># &#x4EE5;&#x5217;&#x8868;&#x7684;&#x5F62;&#x5F0F;&#x628A;&#x6240;&#x6709;&#x6587;&#x4EF6;&#x53D6;&#x51FA;&#x6765;</span></span><br><span class="line">    <span class="keyword">with</span> <span class="built_in">open</span>(file_list,<span class="string">&quot;r&quot;</span>) <span class="keyword">as</span> f:</span><br><span class="line">        <span class="comment"># &#x8FD9;&#x91CC;&#x7684;lines&#x503C;&#x53D6;&#x5F97;&#x662F;&#x4E00;&#x4E2A;&#x5217;&#x8868;</span></span><br><span class="line">        lines = f.readlines()</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;&#x7B2C;&#x4E8C;&#x6B65;&#xFF1A;&quot;</span>,lines)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># &#x590D;&#x5236;&#x6587;&#x4EF6;&#x4E2A;&#x6570;&#x8BA1;&#x6570;</span></span><br><span class="line">    file_count = <span class="number">0</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># &#x4F9D;&#x6B21;&#x53D6;&#x51FA;&#x6BCF;&#x4E2A;&#x9700;&#x8981;&#x590D;&#x5236;&#x7684;&#x6587;&#x4EF6;</span></span><br><span class="line">    <span class="built_in">print</span>(<span class="built_in">len</span>(lines))</span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="built_in">len</span>(lines)):</span><br><span class="line">        <span class="comment"># &#x53BB;&#x6389;&#x5217;&#x8868;&#x524D;&#x540E;&#x7684;&#x7A7A;&#x767D;&#x5B57;&#x7B26;&#xFF08;&#x5305;&#x62EC;\n&#xFF09;</span></span><br><span class="line">        file = lines[i].split()</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&quot;&#x7B2C;&#x4E09;&#x6B65;&#xFF1A;&quot;</span>,file,<span class="built_in">type</span>(file))</span><br><span class="line">        file_full_name = src_dir + <span class="string">&quot;\\&quot;</span> + file[<span class="number">0</span>]</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&quot;&#x7B2C;&#x56DB;&#x6B65;&#xFF1A;&quot;</span>,file_full_name)</span><br><span class="line"></span><br><span class="line">        <span class="comment"># &#x5224;&#x65AD;&#x6587;&#x4EF6;&#x662F;&#x5426;&#x5728;&#x6587;&#x4EF6;&#x4E2D;</span></span><br><span class="line">        <span class="keyword">if</span>(os.path.exists(file_full_name) == <span class="literal">False</span>):</span><br><span class="line">            <span class="built_in">print</span>(file_full_name + <span class="string">&quot; not exist&#xFF01;&quot;</span>)</span><br><span class="line">            <span class="keyword">continue</span></span><br><span class="line"></span><br><span class="line">        <span class="comment"># &#x590D;&#x5236;&#x6587;&#x4EF6;&#x524D;&#x5224;&#x65AD;&#x76EE;&#x5F55;&#x662F;&#x5426;&#x5B58;&#x5728;</span></span><br><span class="line">        new_full_name = dst_dir + <span class="string">&quot;\\&quot;</span> + file[<span class="number">0</span>]</span><br><span class="line">        <span class="comment"># &#x83B7;&#x53D6;&#x9700;&#x8981;&#x590D;&#x5236;&#x8FC7;&#x53BB;&#x7684;&#x8DEF;&#x5F84;&#x662F;&#x5426;&#x5B58;&#x5728;&#xFF0C;&#x5982;&#x679C;&#x4E0D;&#x5B58;&#x5728;&#x5C31;&#x521B;&#x5EFA;&#x8FD9;&#x4E2A;&#x8DEF;&#x5F84;&#xFF1B;</span></span><br><span class="line">        new_full_name_path = os.path.dirname(new_full_name)</span><br><span class="line">        <span class="keyword">if</span>(os.path.exists(new_full_name_path) == <span class="literal">False</span>):</span><br><span class="line">            os.mkdir(new_full_name_path)</span><br><span class="line">            <span class="built_in">print</span>(<span class="string">&quot;&#x76EE;&#x5F55;&#x521B;&#x5EFA;&#x6210;&#x529F;&#xFF01;&quot;</span>)</span><br><span class="line"></span><br><span class="line">        <span class="comment"># &#x6700;&#x540E;&#x590D;&#x5236;&#x6587;&#x4EF6;</span></span><br><span class="line">        shutil.copy(file_full_name,dst_dir + <span class="string">&quot;\\&quot;</span> + file[<span class="number">0</span>])</span><br><span class="line">        file_count += <span class="number">1</span></span><br><span class="line">    <span class="built_in">print</span>(file_count)</span><br><span class="line"></span><br><span class="line"><span class="comment"># &#x4E3B;&#x903B;&#x8F91;&#x51FD;&#x6570;</span></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&quot;__main__&quot;</span>:</span><br><span class="line">    <span class="comment"># &#x8BF7;&#x8F93;&#x5165;&#x5168;&#x8DEF;&#x5F84;</span></span><br><span class="line">    src_dir = sys.argv[<span class="number">1</span>]</span><br><span class="line">    dst_dir = sys.argv[<span class="number">2</span>]</span><br><span class="line">    file_list = sys.argv[<span class="number">3</span>]</span><br><span class="line">    search_by_name(src_dir,file_list,dst_dir)</span><br></pre></td></tr></table></figure>
+
+
+
+
+    </div>
+    
+    
+    
+    
+    
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Python-Automatic-Operations/" rel="tag"># Python Automatic Operations</a>
+          </div>
+    
+        
+
+    
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/clould-native/docker/08_docker%E5%AE%B9%E5%99%A8%E6%8A%80%E6%9C%AF_%E5%AE%B9%E5%99%A8%E5%8D%B7%E5%92%8C%E7%BD%91%E7%BB%9C/" rel="prev" title="容器的卷和网络">
+      <i class="fa fa-chevron-left"></i> 容器的卷和网络
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+    <div>
+        
+        
+
+<div>
+    
+        <div style="text-align:center;color: #ccc;font-size:14px;">------ 版权声明：本文属于原创文章------</div>
+    	<div style="text-align:center;color: #FF0000;font-size:14px;">转载请注明：Burnov.github.io原创文章+本文链接，谢谢合作！！</i></div>
+    
+</div>
+
+
+        
+     </div>
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%9C%80%E6%B1%82"><span class="nav-number">1.</span> <span class="nav-text">需求</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BB%A3%E7%A0%81%E5%AE%9E%E7%8E%B0"><span class="nav-number">2.</span> <span class="nav-text">代码实现</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Burnov"
+      src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">Burnov</p>
+  <div class="site-description" itemprop="description">No end for Learning</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">13</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">15</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/Burnov" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;Burnov" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:xials1990@gmail.com" title="E-Mail → mailto:xials1990@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://www.zhihu.com/people/xia-liang-shi-78" title="Skype → https:&#x2F;&#x2F;www.zhihu.com&#x2F;people&#x2F;xia-liang-shi-78" rel="noopener" target="_blank"><i class="fab fa-skype fa-fw"></i></a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class=""></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Burnov</span>
+</div>
+
+<!--
+  <div class="powered-by">Powered by <a href="https://github.com/Burnov" class="theme-link" rel="noopener" target="_blank">Burnov</a> & <a href="https://mist.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Mist</a>
+  </div>
+
+-->
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : false,
+      appId      : 'wIjFqGmEUzY7fpTNVHpKA0eH-gzGzoHsz',
+      appKey     : 'KdXueGM1xFH8pBVSO5SkFRKI',
+      placeholder: "Just go go",
+      avatar     : 'mm',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : false,
+      lang       : '' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : false,
+      serverURLs : ''
+    });
+  }, window.Valine);
+});
+</script>
+
+</body>
+</html>

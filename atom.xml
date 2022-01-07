@@ -6,7 +6,7 @@
   <link href="http://example.com/atom.xml" rel="self"/>
   
   <link href="http://example.com/"/>
-  <updated>2022-01-04T12:24:51.693Z</updated>
+  <updated>2022-01-07T08:51:52.018Z</updated>
   <id>http://example.com/</id>
   
   <author>
@@ -15,6 +15,30 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>Python程序实现文件复制</title>
+    <link href="http://example.com/development/python/01_python%E8%87%AA%E5%8A%A8%E8%BF%90%E7%BB%B4_%E5%AE%9E%E4%BE%8B%E4%B8%80%E3%80%81Python%E7%A8%8B%E5%BA%8F%E5%AE%9E%E7%8E%B0%E6%96%87%E4%BB%B6%E5%A4%8D%E5%88%B6/"/>
+    <id>http://example.com/development/python/01_python%E8%87%AA%E5%8A%A8%E8%BF%90%E7%BB%B4_%E5%AE%9E%E4%BE%8B%E4%B8%80%E3%80%81Python%E7%A8%8B%E5%BA%8F%E5%AE%9E%E7%8E%B0%E6%96%87%E4%BB%B6%E5%A4%8D%E5%88%B6/</id>
+    <published>2022-01-07T08:51:00.000Z</published>
+    <updated>2022-01-07T08:51:52.018Z</updated>
+    
+    
+    <summary type="html">&lt;h1 id=&quot;&amp;#x9700;&amp;#x6C42;&quot;&gt;&lt;a href=&quot;#&amp;#x9700;&amp;#x6C42;&quot; class=&quot;headerlink&quot; title=&quot;&amp;#x9700;&amp;#x6C42;&quot;&gt;&lt;/a&gt;&amp;#x9700;&amp;#x6C42;&lt;/h1&gt;&lt;p&gt;&amp;#x8BF7;&amp;#x7F16;&amp;#x5199;Python&amp;#x7A0B;&amp;#x5E8F;&amp;#xFF0C;&amp;#x5B9E;&amp;#x73B0;&amp;#x5982;&amp;#x4E0B;&amp;#x529F;&amp;#x80FD;&amp;#x2236;&lt;/p&gt;
+&lt;p&gt;&amp;#x7A0B;&amp;#x5E8F;&amp;#x540D;file_cp.sh &lt;/p&gt;
+&lt;p&gt;&amp;#x7A0B;&amp;#x5E8F;&amp;#x9650;&amp;#x5B9A;python&amp;#x7248;&amp;#x672C;&amp;gt;=3.9 &lt;/p&gt;
+&lt;p&gt;&amp;#x8FD0;&amp;#x884C;&amp;#x547D;&amp;#x4EE4;&amp;#x2236;&lt;/p&gt;</summary>
+    
+    
+    
+    <category term="development" scheme="http://example.com/categories/development/"/>
+    
+    <category term="python" scheme="http://example.com/categories/development/python/"/>
+    
+    
+    <category term="Python Automatic Operations" scheme="http://example.com/tags/Python-Automatic-Operations/"/>
+    
+  </entry>
   
   <entry>
     <title>容器的卷和网络</title>
