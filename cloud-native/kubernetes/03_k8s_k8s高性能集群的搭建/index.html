@@ -25,35 +25,35 @@
   <meta name="description" content="k8s&amp;#x73AF;&amp;#x5883;&amp;#x5B89;&amp;#x88C5;&amp;#x73AF;&amp;#x5883;&amp;#x51C6;&amp;#x5907;   IP&amp;#x5730;&amp;#x5740; &amp;#x4E3B;&amp;#x673A;&amp;#x89D2;&amp;#x8272;    192.168.169.20 keepalived-&amp;#x4E3B;&amp;#x3001;haproxy-&amp;#x4E3B;&amp;#x3001;harbor-1&amp;">
 <meta property="og:type" content="article">
 <meta property="og:title" content="kubernetes集群安装">
-<meta property="og:url" content="http://example.com/%E4%BA%91%E5%8E%9F%E7%94%9F/kubernetes/03_k8s_k8s%E9%AB%98%E6%80%A7%E8%83%BD%E9%9B%86%E7%BE%A4%E7%9A%84%E6%90%AD%E5%BB%BA/index.html">
+<meta property="og:url" content="http://example.com/cloud-native/kubernetes/03_k8s_k8s%E9%AB%98%E6%80%A7%E8%83%BD%E9%9B%86%E7%BE%A4%E7%9A%84%E6%90%AD%E5%BB%BA/index.html">
 <meta property="og:site_name" content="Burnov^-^Blog">
 <meta property="og:description" content="k8s&amp;#x73AF;&amp;#x5883;&amp;#x5B89;&amp;#x88C5;&amp;#x73AF;&amp;#x5883;&amp;#x51C6;&amp;#x5907;   IP&amp;#x5730;&amp;#x5740; &amp;#x4E3B;&amp;#x673A;&amp;#x89D2;&amp;#x8272;    192.168.169.20 keepalived-&amp;#x4E3B;&amp;#x3001;haproxy-&amp;#x4E3B;&amp;#x3001;harbor-1&amp;">
 <meta property="og:locale" content="en_US">
-<meta property="og:image" content="http://example.com/%E4%BA%91%E5%8E%9F%E7%94%9F/kubernetes/03_k8s_k8s%E9%AB%98%E6%80%A7%E8%83%BD%E9%9B%86%E7%BE%A4%E7%9A%84%E6%90%AD%E5%BB%BA/image-20220106112550697.png">
-<meta property="og:image" content="http://example.com/%E4%BA%91%E5%8E%9F%E7%94%9F/kubernetes/03_k8s_k8s%E9%AB%98%E6%80%A7%E8%83%BD%E9%9B%86%E7%BE%A4%E7%9A%84%E6%90%AD%E5%BB%BA/image-20220106142203706.png">
-<meta property="og:image" content="http://example.com/%E4%BA%91%E5%8E%9F%E7%94%9F/kubernetes/03_k8s_k8s%E9%AB%98%E6%80%A7%E8%83%BD%E9%9B%86%E7%BE%A4%E7%9A%84%E6%90%AD%E5%BB%BA/image-20220106142401565.png">
-<meta property="og:image" content="http://example.com/%E4%BA%91%E5%8E%9F%E7%94%9F/kubernetes/03_k8s_k8s%E9%AB%98%E6%80%A7%E8%83%BD%E9%9B%86%E7%BE%A4%E7%9A%84%E6%90%AD%E5%BB%BA/image-20220106150941734.png">
-<meta property="og:image" content="http://example.com/%E4%BA%91%E5%8E%9F%E7%94%9F/kubernetes/03_k8s_k8s%E9%AB%98%E6%80%A7%E8%83%BD%E9%9B%86%E7%BE%A4%E7%9A%84%E6%90%AD%E5%BB%BA/image-20220106153616829.png">
-<meta property="og:image" content="http://example.com/%E4%BA%91%E5%8E%9F%E7%94%9F/kubernetes/03_k8s_k8s%E9%AB%98%E6%80%A7%E8%83%BD%E9%9B%86%E7%BE%A4%E7%9A%84%E6%90%AD%E5%BB%BA/image-20220106154653677.png">
-<meta property="og:image" content="http://example.com/%E4%BA%91%E5%8E%9F%E7%94%9F/kubernetes/03_k8s_k8s%E9%AB%98%E6%80%A7%E8%83%BD%E9%9B%86%E7%BE%A4%E7%9A%84%E6%90%AD%E5%BB%BA/image-20220107212204627.png">
-<meta property="og:image" content="http://example.com/%E4%BA%91%E5%8E%9F%E7%94%9F/kubernetes/03_k8s_k8s%E9%AB%98%E6%80%A7%E8%83%BD%E9%9B%86%E7%BE%A4%E7%9A%84%E6%90%AD%E5%BB%BA/image-20220107215739896.png">
-<meta property="og:image" content="http://example.com/%E4%BA%91%E5%8E%9F%E7%94%9F/kubernetes/03_k8s_k8s%E9%AB%98%E6%80%A7%E8%83%BD%E9%9B%86%E7%BE%A4%E7%9A%84%E6%90%AD%E5%BB%BA/image-20220107215857652.png">
-<meta property="og:image" content="http://example.com/%E4%BA%91%E5%8E%9F%E7%94%9F/kubernetes/03_k8s_k8s%E9%AB%98%E6%80%A7%E8%83%BD%E9%9B%86%E7%BE%A4%E7%9A%84%E6%90%AD%E5%BB%BA/image-20220107220047095.png">
-<meta property="og:image" content="http://example.com/%E4%BA%91%E5%8E%9F%E7%94%9F/kubernetes/03_k8s_k8s%E9%AB%98%E6%80%A7%E8%83%BD%E9%9B%86%E7%BE%A4%E7%9A%84%E6%90%AD%E5%BB%BA/image-20220107220456379.png">
-<meta property="og:image" content="http://example.com/%E4%BA%91%E5%8E%9F%E7%94%9F/kubernetes/03_k8s_k8s%E9%AB%98%E6%80%A7%E8%83%BD%E9%9B%86%E7%BE%A4%E7%9A%84%E6%90%AD%E5%BB%BA/image-20220107220816401.png">
-<meta property="og:image" content="http://example.com/%E4%BA%91%E5%8E%9F%E7%94%9F/kubernetes/03_k8s_k8s%E9%AB%98%E6%80%A7%E8%83%BD%E9%9B%86%E7%BE%A4%E7%9A%84%E6%90%AD%E5%BB%BA/image-20220107221005843.png">
-<meta property="og:image" content="http://example.com/%E4%BA%91%E5%8E%9F%E7%94%9F/kubernetes/03_k8s_k8s%E9%AB%98%E6%80%A7%E8%83%BD%E9%9B%86%E7%BE%A4%E7%9A%84%E6%90%AD%E5%BB%BA/image-20220107221434568.png">
-<meta property="og:image" content="http://example.com/%E4%BA%91%E5%8E%9F%E7%94%9F/kubernetes/03_k8s_k8s%E9%AB%98%E6%80%A7%E8%83%BD%E9%9B%86%E7%BE%A4%E7%9A%84%E6%90%AD%E5%BB%BA/image-20220107221635115.png">
-<meta property="og:image" content="http://example.com/%E4%BA%91%E5%8E%9F%E7%94%9F/kubernetes/03_k8s_k8s%E9%AB%98%E6%80%A7%E8%83%BD%E9%9B%86%E7%BE%A4%E7%9A%84%E6%90%AD%E5%BB%BA/image-20220107221942947.png">
-<meta property="og:image" content="http://example.com/%E4%BA%91%E5%8E%9F%E7%94%9F/kubernetes/03_k8s_k8s%E9%AB%98%E6%80%A7%E8%83%BD%E9%9B%86%E7%BE%A4%E7%9A%84%E6%90%AD%E5%BB%BA/image-20220107223131455.png">
+<meta property="og:image" content="http://example.com/cloud-native/kubernetes/03_k8s_k8s%E9%AB%98%E6%80%A7%E8%83%BD%E9%9B%86%E7%BE%A4%E7%9A%84%E6%90%AD%E5%BB%BA/image-20220106112550697.png">
+<meta property="og:image" content="http://example.com/cloud-native/kubernetes/03_k8s_k8s%E9%AB%98%E6%80%A7%E8%83%BD%E9%9B%86%E7%BE%A4%E7%9A%84%E6%90%AD%E5%BB%BA/image-20220106142203706.png">
+<meta property="og:image" content="http://example.com/cloud-native/kubernetes/03_k8s_k8s%E9%AB%98%E6%80%A7%E8%83%BD%E9%9B%86%E7%BE%A4%E7%9A%84%E6%90%AD%E5%BB%BA/image-20220106142401565.png">
+<meta property="og:image" content="http://example.com/cloud-native/kubernetes/03_k8s_k8s%E9%AB%98%E6%80%A7%E8%83%BD%E9%9B%86%E7%BE%A4%E7%9A%84%E6%90%AD%E5%BB%BA/image-20220106150941734.png">
+<meta property="og:image" content="http://example.com/cloud-native/kubernetes/03_k8s_k8s%E9%AB%98%E6%80%A7%E8%83%BD%E9%9B%86%E7%BE%A4%E7%9A%84%E6%90%AD%E5%BB%BA/image-20220106153616829.png">
+<meta property="og:image" content="http://example.com/cloud-native/kubernetes/03_k8s_k8s%E9%AB%98%E6%80%A7%E8%83%BD%E9%9B%86%E7%BE%A4%E7%9A%84%E6%90%AD%E5%BB%BA/image-20220106154653677.png">
+<meta property="og:image" content="http://example.com/cloud-native/kubernetes/03_k8s_k8s%E9%AB%98%E6%80%A7%E8%83%BD%E9%9B%86%E7%BE%A4%E7%9A%84%E6%90%AD%E5%BB%BA/image-20220107212204627.png">
+<meta property="og:image" content="http://example.com/cloud-native/kubernetes/03_k8s_k8s%E9%AB%98%E6%80%A7%E8%83%BD%E9%9B%86%E7%BE%A4%E7%9A%84%E6%90%AD%E5%BB%BA/image-20220107215739896.png">
+<meta property="og:image" content="http://example.com/cloud-native/kubernetes/03_k8s_k8s%E9%AB%98%E6%80%A7%E8%83%BD%E9%9B%86%E7%BE%A4%E7%9A%84%E6%90%AD%E5%BB%BA/image-20220107215857652.png">
+<meta property="og:image" content="http://example.com/cloud-native/kubernetes/03_k8s_k8s%E9%AB%98%E6%80%A7%E8%83%BD%E9%9B%86%E7%BE%A4%E7%9A%84%E6%90%AD%E5%BB%BA/image-20220107220047095.png">
+<meta property="og:image" content="http://example.com/cloud-native/kubernetes/03_k8s_k8s%E9%AB%98%E6%80%A7%E8%83%BD%E9%9B%86%E7%BE%A4%E7%9A%84%E6%90%AD%E5%BB%BA/image-20220107220456379.png">
+<meta property="og:image" content="http://example.com/cloud-native/kubernetes/03_k8s_k8s%E9%AB%98%E6%80%A7%E8%83%BD%E9%9B%86%E7%BE%A4%E7%9A%84%E6%90%AD%E5%BB%BA/image-20220107220816401.png">
+<meta property="og:image" content="http://example.com/cloud-native/kubernetes/03_k8s_k8s%E9%AB%98%E6%80%A7%E8%83%BD%E9%9B%86%E7%BE%A4%E7%9A%84%E6%90%AD%E5%BB%BA/image-20220107221005843.png">
+<meta property="og:image" content="http://example.com/cloud-native/kubernetes/03_k8s_k8s%E9%AB%98%E6%80%A7%E8%83%BD%E9%9B%86%E7%BE%A4%E7%9A%84%E6%90%AD%E5%BB%BA/image-20220107221434568.png">
+<meta property="og:image" content="http://example.com/cloud-native/kubernetes/03_k8s_k8s%E9%AB%98%E6%80%A7%E8%83%BD%E9%9B%86%E7%BE%A4%E7%9A%84%E6%90%AD%E5%BB%BA/image-20220107221635115.png">
+<meta property="og:image" content="http://example.com/cloud-native/kubernetes/03_k8s_k8s%E9%AB%98%E6%80%A7%E8%83%BD%E9%9B%86%E7%BE%A4%E7%9A%84%E6%90%AD%E5%BB%BA/image-20220107221942947.png">
+<meta property="og:image" content="http://example.com/cloud-native/kubernetes/03_k8s_k8s%E9%AB%98%E6%80%A7%E8%83%BD%E9%9B%86%E7%BE%A4%E7%9A%84%E6%90%AD%E5%BB%BA/image-20220107223131455.png">
 <meta property="article:published_time" content="2022-01-07T15:13:50.000Z">
-<meta property="article:modified_time" content="2022-01-07T15:16:37.657Z">
+<meta property="article:modified_time" content="2022-01-07T15:41:19.948Z">
 <meta property="article:author" content="Burnov">
 <meta property="article:tag" content="kubernetes cluster install">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="http://example.com/%E4%BA%91%E5%8E%9F%E7%94%9F/kubernetes/03_k8s_k8s%E9%AB%98%E6%80%A7%E8%83%BD%E9%9B%86%E7%BE%A4%E7%9A%84%E6%90%AD%E5%BB%BA/image-20220106112550697.png">
+<meta name="twitter:image" content="http://example.com/cloud-native/kubernetes/03_k8s_k8s%E9%AB%98%E6%80%A7%E8%83%BD%E9%9B%86%E7%BE%A4%E7%9A%84%E6%90%AD%E5%BB%BA/image-20220106112550697.png">
 
-<link rel="canonical" href="http://example.com/%E4%BA%91%E5%8E%9F%E7%94%9F/kubernetes/03_k8s_k8s%E9%AB%98%E6%80%A7%E8%83%BD%E9%9B%86%E7%BE%A4%E7%9A%84%E6%90%AD%E5%BB%BA/">
+<link rel="canonical" href="http://example.com/cloud-native/kubernetes/03_k8s_k8s%E9%AB%98%E6%80%A7%E8%83%BD%E9%9B%86%E7%BE%A4%E7%9A%84%E6%90%AD%E5%BB%BA/">
 
 
 <script id="page-configurations">
@@ -215,7 +215,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="http://example.com/%E4%BA%91%E5%8E%9F%E7%94%9F/kubernetes/03_k8s_k8s%E9%AB%98%E6%80%A7%E8%83%BD%E9%9B%86%E7%BE%A4%E7%9A%84%E6%90%AD%E5%BB%BA/">
+    <link itemprop="mainEntityOfPage" href="http://example.com/cloud-native/kubernetes/03_k8s_k8s%E9%AB%98%E6%80%A7%E8%83%BD%E9%9B%86%E7%BE%A4%E7%9A%84%E6%90%AD%E5%BB%BA/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.jpg">
@@ -239,7 +239,7 @@
               <span class="post-meta-item-text">Posted on</span>
               
     
-              <time title="Created: 2022-01-07 23:13:50 / Modified: 23:16:37" itemprop="dateCreated datePublished" datetime="2022-01-07T23:13:50+08:00">2022-01-07</time>
+              <time title="Created: 2022-01-07 23:13:50 / Modified: 23:41:19" itemprop="dateCreated datePublished" datetime="2022-01-07T23:13:50+08:00">2022-01-07</time>
             </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -247,11 +247,11 @@
               </span>
               <span class="post-meta-item-text">In</span>
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E4%BA%91%E5%8E%9F%E7%94%9F/" itemprop="url" rel="index"><span itemprop="name">云原生</span></a>
+                  <a href="/categories/cloud-native/" itemprop="url" rel="index"><span itemprop="name">cloud native</span></a>
                 </span>
                   , 
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E4%BA%91%E5%8E%9F%E7%94%9F/kubernetes/" itemprop="url" rel="index"><span itemprop="name">kubernetes</span></a>
+                  <a href="/categories/cloud-native/kubernetes/" itemprop="url" rel="index"><span itemprop="name">kubernetes</span></a>
                 </span>
             </span>
     
@@ -264,8 +264,8 @@
       </span>
       <span class="post-meta-item-text">Valine: </span>
     
-    <a title="valine" href="/%E4%BA%91%E5%8E%9F%E7%94%9F/kubernetes/03_k8s_k8s%E9%AB%98%E6%80%A7%E8%83%BD%E9%9B%86%E7%BE%A4%E7%9A%84%E6%90%AD%E5%BB%BA/#valine-comments" itemprop="discussionUrl">
-      <span class="post-comments-count valine-comment-count" data-xid="/%E4%BA%91%E5%8E%9F%E7%94%9F/kubernetes/03_k8s_k8s%E9%AB%98%E6%80%A7%E8%83%BD%E9%9B%86%E7%BE%A4%E7%9A%84%E6%90%AD%E5%BB%BA/" itemprop="commentCount"></span>
+    <a title="valine" href="/cloud-native/kubernetes/03_k8s_k8s%E9%AB%98%E6%80%A7%E8%83%BD%E9%9B%86%E7%BE%A4%E7%9A%84%E6%90%AD%E5%BB%BA/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/cloud-native/kubernetes/03_k8s_k8s%E9%AB%98%E6%80%A7%E8%83%BD%E9%9B%86%E7%BE%A4%E7%9A%84%E6%90%AD%E5%BB%BA/" itemprop="commentCount"></span>
     </a>
   </span>
   
@@ -326,7 +326,7 @@
 <p>&#x67E5;&#x770B;&#x670D;&#x52A1;&#x542F;&#x52A8;&#x60C5;&#x51B5;&#xFF1A;&#x518D;&#x4E3B;&#x670D;&#x52A1;&#x5668;&#x4E0A;&#x901A;&#x8FC7;ifconfig&#x80FD;&#x591F;&#x770B;&#x5230;&#x865A;&#x62DF;&#x7684;IP&#x5730;&#x5740;</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ifconfig</span><br></pre></td></tr></table></figure>
 
-<p><img src="/%E4%BA%91%E5%8E%9F%E7%94%9F/kubernetes/03_k8s_k8s%E9%AB%98%E6%80%A7%E8%83%BD%E9%9B%86%E7%BE%A4%E7%9A%84%E6%90%AD%E5%BB%BA/image-20220106112550697.png" alt="VIP&#x5730;&#x5740;&#x663E;&#x793A;&#x5982;&#x4E0B;"></p>
+<p><img src="/cloud-native/kubernetes/03_k8s_k8s%E9%AB%98%E6%80%A7%E8%83%BD%E9%9B%86%E7%BE%A4%E7%9A%84%E6%90%AD%E5%BB%BA/image-20220106112550697.png" alt="VIP&#x5730;&#x5740;&#x663E;&#x793A;&#x5982;&#x4E0B;"></p>
 <p>&#x8BA9;&#x540E;&#x5173;&#x95ED;&#x4E3B;&#x4E3B;&#x670D;&#x52A1;&#x5668;&#x7684;keepalived&#x670D;&#x52A1;&#xFF0C;&#x5219;&#x5907;&#x7528;&#x670D;&#x52A1;&#x5668;&#x4E0A;&#x80FD;&#x591F;&#x770B;&#x5230;&#x865A;&#x62DF;IP&#x5730;&#x5740;&#x8D77;&#x6765;&#x5373;&#x53EF;&#xFF1B;</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> &#x518D;192.168.169.20&#x4E0A;&#x5173;&#x95ED;keepalived&#x670D;&#x52A1;</span></span><br><span class="line">systemctl stop keepalived</span><br></pre></td></tr></table></figure>
 
@@ -358,15 +358,15 @@
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">192.168.169.20  harbor.test1.com</span><br><span class="line">192.168.169.21  harbor.test2.com</span><br></pre></td></tr></table></figure>
 
 <p>&#x672C;&#x5730;&#x8BBF;&#x95EE;&#x6D4B;&#x8BD5;&#x4EE5;&#x4E0B;&#xFF1A;</p>
-<p><img src="/%E4%BA%91%E5%8E%9F%E7%94%9F/kubernetes/03_k8s_k8s%E9%AB%98%E6%80%A7%E8%83%BD%E9%9B%86%E7%BE%A4%E7%9A%84%E6%90%AD%E5%BB%BA/image-20220106142203706.png" alt="harbor&#x8BBF;&#x95EE;&#x6D4B;&#x8BD5;"></p>
+<p><img src="/cloud-native/kubernetes/03_k8s_k8s%E9%AB%98%E6%80%A7%E8%83%BD%E9%9B%86%E7%BE%A4%E7%9A%84%E6%90%AD%E5%BB%BA/image-20220106142203706.png" alt="harbor&#x8BBF;&#x95EE;&#x6D4B;&#x8BD5;"></p>
 <p>&#x56E0;&#x4E3A;&#x6B64;&#x65F6;&#x5DF2;&#x7ECF;&#x9700;&#x8981;https&#x7684;&#x8BA4;&#x8BC1;&#xFF0C;&#x6240;&#x4EE5;&#x4F1A;&#x8DF3;&#x51FA;https&#x7684;&#x8BBF;&#x95EE;&#x8BA4;&#x8BC1;&#x4E0D;&#x5B89;&#x5168;&#x7684;&#x63D0;&#x793A;&#xFF1B;&#x76F4;&#x63A5;&#x767B;&#x5F55;&#x8FDB;&#x53BB;&#x5373;&#x53EF;&#xFF0C;&#x8FD9;&#x91CC;&#x6211;&#x4EEC;&#x5C31;&#x53EF;&#x4EE5;&#x8BBF;&#x95EE;&#x5230;&#x5185;&#x90E8;&#x7684;harbor&#x754C;&#x9762;&#x4E86;&#xFF1B;</p>
-<p><img src="/%E4%BA%91%E5%8E%9F%E7%94%9F/kubernetes/03_k8s_k8s%E9%AB%98%E6%80%A7%E8%83%BD%E9%9B%86%E7%BE%A4%E7%9A%84%E6%90%AD%E5%BB%BA/image-20220106142401565.png" alt="harbor&#x754C;&#x9762;"></p>
+<p><img src="/cloud-native/kubernetes/03_k8s_k8s%E9%AB%98%E6%80%A7%E8%83%BD%E9%9B%86%E7%BE%A4%E7%9A%84%E6%90%AD%E5%BB%BA/image-20220106142401565.png" alt="harbor&#x754C;&#x9762;"></p>
 <blockquote>
 <p>&#x9762;&#x8BD5;&#x9898;&#xFF1A;nginx&#x548C;&#x5BA2;&#x6237;&#x7AEF;&#x662F;&#x5982;&#x4F55;&#x5EFA;&#x7ACB;https&#x94FE;&#x63A5;&#x7684;&#xFF1F;</p>
 </blockquote>
 <p>&#x7136;&#x540E;&#x6309;&#x7167;&#x4E0A;&#x9762;&#x76F8;&#x540C;&#x7684;&#x6B65;&#x9AA4;&#xFF0C;&#x5C06;harbor.test2.com&#x914D;&#x7F6E;&#x597D;&#xFF1B;&#x8FD9;&#x6837;&#x6211;&#x4EEC;&#x5C31;&#x7531;&#x4E24;&#x4E2A;&#x76F8;&#x540C;&#x7684;harbor&#x7684;&#x4ED3;&#x5E93;&#x4E86;&#xFF1B;</p>
 <p>&#x6700;&#x540E;&#x6211;&#x4EEC;&#x5728;&#x4E3B;&#x670D;&#x52A1;&#x5668;&#x4E0A;&#x65B0;&#x5EFA;&#x4E00;&#x4E2A;&#x9879;&#x76EE;&#xFF0C;&#x53EB;&#x505A;basicimages&#x5373;&#x53EF;&#xFF1A;</p>
-<p><img src="/%E4%BA%91%E5%8E%9F%E7%94%9F/kubernetes/03_k8s_k8s%E9%AB%98%E6%80%A7%E8%83%BD%E9%9B%86%E7%BE%A4%E7%9A%84%E6%90%AD%E5%BB%BA/image-20220106150941734.png" alt="&#x65B0;&#x5EFA;&#x9879;&#x76EE;bascimage"></p>
+<p><img src="/cloud-native/kubernetes/03_k8s_k8s%E9%AB%98%E6%80%A7%E8%83%BD%E9%9B%86%E7%BE%A4%E7%9A%84%E6%90%AD%E5%BB%BA/image-20220106150941734.png" alt="&#x65B0;&#x5EFA;&#x9879;&#x76EE;bascimage"></p>
 <h2 id="K8S&#x5E73;&#x53F0;&#x7684;&#x5B89;&#x88C5;"><a href="#K8S&#x5E73;&#x53F0;&#x7684;&#x5B89;&#x88C5;" class="headerlink" title="K8S&#x5E73;&#x53F0;&#x7684;&#x5B89;&#x88C5;"></a>K8S&#x5E73;&#x53F0;&#x7684;&#x5B89;&#x88C5;</h2><h3 id="ansible&#x7684;&#x5B89;&#x88C5;"><a href="#ansible&#x7684;&#x5B89;&#x88C5;" class="headerlink" title="ansible&#x7684;&#x5B89;&#x88C5;"></a>ansible&#x7684;&#x5B89;&#x88C5;</h3><p>&#x6574;&#x4E2A;&#x96C6;&#x7FA4;&#x67B6;&#x6784;&#x6211;&#x4EEC;&#x662F;&#x57FA;&#x4E8E;kubeasz&#x7684;&#x7F16;&#x8BD1;&#x5B89;&#x88C5;k8s&#x67B6;&#x6784;&#x7684;&#x65B9;&#x5F0F;&#x6765;&#x5B9E;&#x73B0;&#x7684;&#xFF01;kubeasz&#x7F51;&#x7AD9;&#xFF1A;<a target="_blank" rel="noopener" href="https://github.com/easzlab/kubeasz">https://github.com/easzlab/kubeasz</a></p>
 <p>kubeasz&#x7684;&#x5B89;&#x88C5;&#x90E8;&#x7F72;&#x662F;&#x4F9D;&#x8D56;&#x4E8E;ansible&#x7684;&#xFF0C;&#x8FD9;&#x4E00;&#x70B9;&#x8981;&#x6E05;&#x695A;&#xFF1B;&#x8FD9;&#x91CC;&#xFF0C;&#x6211;&#x4EEC;&#x9700;&#x8981;&#x542F;&#x52A8;&#x6700;&#x540E;&#x6240;&#x6709;&#x673A;&#x5668;&#xFF0C;&#x56E0;&#x4E3A;&#xFF0C;&#x6211;&#x4EEC;&#x8FD9;&#x91CC;&#x5728;k8s&#x7684;&#x5E73;&#x53F0;&#x4E0B;&#x63D0;&#x4F9B;&#x4E86;3&#x53F0;master&#x673A;&#x5668;&#x4EE5;&#x53CA;2&#x53F0;node&#x673A;&#x5668;&#xFF1B;</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> &#x5B89;&#x88C5;ansible&#x4E4B;&#x524D;&#x5148;&#x914D;&#x7F6E;&#x514D;&#x5BC6;&#x94A5;&#x767B;&#x5F55;</span></span><br><span class="line">ssh-keygen  # &#x7136;&#x540E;&#x56DE;&#x8F66;&#x7ED3;&#x675F;&#x4EE5;&#x540E;&#xFF0C;&#x83B7;&#x53D6;&#x5230;&#x516C;&#x94A5;&#x3001;&#x79C1;&#x94A5;&#xFF1B;</span><br><span class="line"><span class="meta"></span></span><br><span class="line"><span class="meta">#</span><span class="bash"> &#x7136;&#x540E;&#x5C06;&#x516C;&#x94A5;&#x4F20;&#x8F93;&#x5230;&#x6240;&#x6709;&#x5176;&#x4ED6;&#x673A;&#x5668;&#xFF0C;&#x56E0;&#x4E3A;&#x6211;&#x4EEC;&#x90FD;&#x662F;&#x901A;&#x8FC7;&#x4E00;&#x53F0;&#x670D;&#x52A1;&#x5668;&#x914D;&#x7F6E;&#x6240;&#x6709;&#x5176;&#x4ED6;&#x673A;&#x5668;&#x7684;&#xFF1B;</span></span><br><span class="line">ssh-copy-id 192.168.169.20</span><br><span class="line">ssh-copy-id 192.168.169.21</span><br><span class="line">ssh-copy-id 192.168.169.22</span><br><span class="line">ssh-copy-id 192.168.169.23</span><br><span class="line">ssh-copy-id 192.168.169.24</span><br><span class="line"><span class="meta"></span></span><br><span class="line"><span class="meta">#</span><span class="bash"> &#x6D4B;&#x8BD5;ssh&#x7684;&#x914D;&#x7F6E;&#xFF0C;&#x518D;&#x4E3B;&#x670D;&#x52A1;&#x5668;192.168.169.20&#x4E0A;&#xFF0C;&#x67E5;&#x770B;&#x5176;&#x4ED6;&#x673A;&#x5668;&#x7684;ip&#x5730;&#x5740;&#x914D;&#x7F6E;</span></span><br><span class="line">ssh root@192.168.169.xx &quot;ifconfig&quot;  # &#x80FD;&#x6B63;&#x5E38;&#x67E5;&#x770B;&#x5176;&#x4ED6;&#x673A;&#x5668;&#x7684;IP&#x5730;&#x5740;</span><br><span class="line"></span><br><span class="line">apt install ansible -y  # &#x5B89;&#x88C5;ansible&#x7A0B;&#x5E8F;</span><br></pre></td></tr></table></figure>
@@ -375,13 +375,13 @@
 <h3 id="&#x4E0B;&#x8F7D;k8s&#x90E8;&#x7F72;&#x6587;&#x4EF6;"><a href="#&#x4E0B;&#x8F7D;k8s&#x90E8;&#x7F72;&#x6587;&#x4EF6;" class="headerlink" title="&#x4E0B;&#x8F7D;k8s&#x90E8;&#x7F72;&#x6587;&#x4EF6;"></a>&#x4E0B;&#x8F7D;k8s&#x90E8;&#x7F72;&#x6587;&#x4EF6;</h3><p>&#x6211;&#x4EEC;&#x9996;&#x5148;&#x8981;&#x914D;&#x7F6E;&#x73AF;&#x5883;&#x53D8;&#x91CF;&#x6307;&#x5B9A;k8s&#x7684;&#x5B89;&#x88C5;&#x7248;&#x672C;&#xFF0C;&#x7136;&#x540E;&#x4E0B;&#x8F7D;&#x5BF9;&#x5E94;&#x7684;kubeasz&#x5DE5;&#x5177;&#xFF0C;&#x914D;&#x7F6E;&#x5982;&#x4E0B;&#xFF1A;</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">export release=3.0.1</span><br><span class="line"><span class="meta">#</span><span class="bash"> &#x7F51;&#x7EDC;&#x4E0D;&#x597D;&#x9700;&#x8981;&#x591A;&#x5C1D;&#x8BD5;&#x4E0B;&#x8F7D;&#x4E24;&#x6B21;</span></span><br><span class="line">wget https://github.com/easzlab/kubeasz/releases/download/${release}/ezdown</span><br><span class="line">chmod a+x ./ezdown</span><br><span class="line"><span class="meta">#</span><span class="bash"> &#x4F7F;&#x7528;&#x5DE5;&#x5177;&#x811A;&#x672C;&#x4E0B;&#x8F7D;</span></span><br><span class="line">./ezdown -D</span><br><span class="line"><span class="meta">#</span><span class="bash"> &#x6B64;&#x65F6;&#x4F1A;&#x53BB;&#x4E0B;&#x8F7D;&#x5404;&#x79CD;&#x955C;&#x50CF;&#x6587;&#x4EF6;</span></span><br></pre></td></tr></table></figure>
 
-<p><img src="/%E4%BA%91%E5%8E%9F%E7%94%9F/kubernetes/03_k8s_k8s%E9%AB%98%E6%80%A7%E8%83%BD%E9%9B%86%E7%BE%A4%E7%9A%84%E6%90%AD%E5%BB%BA/image-20220106153616829.png" alt="&#x4E0B;&#x8F7D;&#x6210;&#x529F;&#x5982;&#x56FE;&#x6240;&#x793A;"></p>
+<p><img src="/cloud-native/kubernetes/03_k8s_k8s%E9%AB%98%E6%80%A7%E8%83%BD%E9%9B%86%E7%BE%A4%E7%9A%84%E6%90%AD%E5%BB%BA/image-20220106153616829.png" alt="&#x4E0B;&#x8F7D;&#x6210;&#x529F;&#x5982;&#x56FE;&#x6240;&#x793A;"></p>
 <p>&#x8FD0;&#x884C;&#x5B8C;&#x6210;&#x4EE5;&#x540E;&#xFF0C;&#x6240;&#x6709;&#x7684;&#x955C;&#x50CF;&#x4E0B;&#x8F7D;&#x5B8C;&#x6210;&#xFF1B;</p>
-<p><img src="/%E4%BA%91%E5%8E%9F%E7%94%9F/kubernetes/03_k8s_k8s%E9%AB%98%E6%80%A7%E8%83%BD%E9%9B%86%E7%BE%A4%E7%9A%84%E6%90%AD%E5%BB%BA/image-20220106154653677.png" alt="&#x955C;&#x50CF;&#x6587;&#x4EF6;&#x4E0B;&#x8F7D;&#x5B8C;&#x6210;&#x63D0;&#x793A;"></p>
+<p><img src="/cloud-native/kubernetes/03_k8s_k8s%E9%AB%98%E6%80%A7%E8%83%BD%E9%9B%86%E7%BE%A4%E7%9A%84%E6%90%AD%E5%BB%BA/image-20220106154653677.png" alt="&#x955C;&#x50CF;&#x6587;&#x4EF6;&#x4E0B;&#x8F7D;&#x5B8C;&#x6210;&#x63D0;&#x793A;"></p>
 <h3 id="&#x521B;&#x5EFA;&#x96C6;&#x7FA4;&#x5E76;&#x4F18;&#x5316;&#x914D;&#x7F6E;"><a href="#&#x521B;&#x5EFA;&#x96C6;&#x7FA4;&#x5E76;&#x4F18;&#x5316;&#x914D;&#x7F6E;" class="headerlink" title="&#x521B;&#x5EFA;&#x96C6;&#x7FA4;&#x5E76;&#x4F18;&#x5316;&#x914D;&#x7F6E;"></a>&#x521B;&#x5EFA;&#x96C6;&#x7FA4;&#x5E76;&#x4F18;&#x5316;&#x914D;&#x7F6E;</h3><p>&#x7D27;&#x63A5;&#x7740;&#x6211;&#x4EEC;&#x53EF;&#x4EE5;&#x521B;&#x5EFA;&#x96C6;&#x7FA4;&#xFF1A;</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">cd /etc/kubease/</span><br><span class="line">./ezctl new k8s-01</span><br></pre></td></tr></table></figure>
 
-<p><img src="/%E4%BA%91%E5%8E%9F%E7%94%9F/kubernetes/03_k8s_k8s%E9%AB%98%E6%80%A7%E8%83%BD%E9%9B%86%E7%BE%A4%E7%9A%84%E6%90%AD%E5%BB%BA/image-20220107212204627.png" alt="&#x521B;&#x5EFA;&#x914D;&#x7F6E;&#x6587;&#x4EF6;"></p>
+<p><img src="/cloud-native/kubernetes/03_k8s_k8s%E9%AB%98%E6%80%A7%E8%83%BD%E9%9B%86%E7%BE%A4%E7%9A%84%E6%90%AD%E5%BB%BA/image-20220107212204627.png" alt="&#x521B;&#x5EFA;&#x914D;&#x7F6E;&#x6587;&#x4EF6;"></p>
 <p>&#x4FEE;&#x6539;&#x521B;&#x5EFA;&#x7684;&#x914D;&#x7F6E;&#x6587;&#x4EF6;&#xFF1A;&#x3010;&#x8FD9;&#x4E00;&#x6B65;&#x5C31;&#x6BD4;&#x8F83;&#x9EBB;&#x70E6;&#x4E86;&#x3011;</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line">vim /etc/kubeasz/clusters/k8s-01/hosts</span><br><span class="line"><span class="meta">#</span><span class="bash"> &#x914D;&#x7F6E;etcd&#x4E3B;&#x673A;</span></span><br><span class="line">[etcd]</span><br><span class="line">192.168.169.20</span><br><span class="line">192.168.169.21</span><br><span class="line">192.168.169.22</span><br><span class="line"><span class="meta"></span></span><br><span class="line"><span class="meta">#</span><span class="bash"> &#x914D;&#x7F6E;master&#x8282;&#x70B9;</span></span><br><span class="line">[kube_master]</span><br><span class="line">192.168.169.20</span><br><span class="line">192.168.169.21</span><br><span class="line"><span class="meta"></span></span><br><span class="line"><span class="meta">#</span><span class="bash"> &#x914D;&#x7F6E;&#x8D1F;&#x8F7D;&#x5747;&#x8861;</span></span><br><span class="line">[ex_lb]</span><br><span class="line">192.168.169.21 LB_ROLE=backup EX_APISERVER_VIP=192.168.169.30 EX_APISERVER_PORT=6443</span><br><span class="line">192.168.169.20 LB_ROLE=master EX_APISERVER_VIP=192.168.169.30 EX_APISERVER_PORT=6443</span><br><span class="line"><span class="meta"></span></span><br><span class="line"><span class="meta">#</span><span class="bash"> &#x914D;&#x7F6E;&#x7F51;&#x7EDC;&#x6A21;&#x5757;</span></span><br><span class="line">CLUSTER_NETWORK=&quot;calico&quot;</span><br><span class="line"><span class="meta"></span></span><br><span class="line"><span class="meta">#</span><span class="bash"> &#x914D;&#x7F6E;service&#x6A21;&#x5757;&#x7684;&#x5730;&#x5740;</span></span><br><span class="line">SERVICE_CIDR=&quot;10.100.0.0/16&quot;</span><br><span class="line"><span class="meta"></span></span><br><span class="line"><span class="meta">#</span><span class="bash"> &#x914D;&#x7F6E;&#x96C6;&#x7FA4;&#x6A21;&#x5757;&#x5730;&#x5740;</span></span><br><span class="line">CLUSTER_CIDR=&quot;10.200.0.0/16&quot;</span><br><span class="line"><span class="meta"></span></span><br><span class="line"><span class="meta">#</span><span class="bash"> &#x6307;&#x5B9A;port&#x7AEF;&#x53E3;&#x8303;&#x56F4;</span></span><br><span class="line">NODE_PORT_RANGE=&quot;30000-40000&quot;</span><br><span class="line"><span class="meta"></span></span><br><span class="line"><span class="meta">#</span><span class="bash"> &#x6307;&#x5B9A;&#x96C6;&#x7FA4;&#x57DF;&#x540D;&#x5730;&#x5740;</span></span><br><span class="line">CLUSTER_DNS_DOMAIN=&quot;test.local&quot;</span><br><span class="line"><span class="meta"></span></span><br><span class="line"><span class="meta">#</span><span class="bash"> &#x6307;&#x5B9A;DNS&#x57DF;&#x540D;&#x670D;&#x52A1;</span></span><br><span class="line">CLUSTER_DNS_DOMAIN=&quot;test.local&quot;</span><br><span class="line"><span class="meta"></span></span><br><span class="line"><span class="meta">#</span><span class="bash"> &#x6307;&#x5B9A;&#x4E8C;&#x8FDB;&#x5236;&#x76EE;&#x5F55;</span></span><br><span class="line">bin_dir=&quot;/usr/bin&quot;</span><br><span class="line"><span class="meta">#</span><span class="bash"> &#x4FDD;&#x5B58;&#x5E76;&#x9000;&#x51FA;&#xFF0C;&#x8FD9;&#x91CC;&#x5C31;&#x5B8C;&#x6210;&#x4E86;&#x4E00;&#x4E2A;&#x6587;&#x4EF6;&#x7684;&#x914D;&#x7F6E;</span></span><br></pre></td></tr></table></figure>
 
@@ -392,31 +392,31 @@
 <h3 id="&#x5B89;&#x88C5;k8s&#x96C6;&#x7FA4;"><a href="#&#x5B89;&#x88C5;k8s&#x96C6;&#x7FA4;" class="headerlink" title="&#x5B89;&#x88C5;k8s&#x96C6;&#x7FA4;"></a>&#x5B89;&#x88C5;k8s&#x96C6;&#x7FA4;</h3><p>&#x6211;&#x4EEC;&#x53EF;&#x4EE5;&#x5206;&#x90E8;&#x5B89;&#x88C5;&#xFF0C;&#x8FD9;&#x91CC;&#x5B89;&#x88C5;&#x7684;&#x901F;&#x5EA6;&#x53D6;&#x51B3;&#x4E8E;&#x4F60;&#x7684;&#x7F51;&#x901F;&#x548C;&#x673A;&#x5668;&#x7684;&#x6027;&#x80FD;&#xFF1B;</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">cd /etc/kubeasz</span><br><span class="line">./ezctl setup k8s-01 01</span><br></pre></td></tr></table></figure>
 
-<p><img src="/%E4%BA%91%E5%8E%9F%E7%94%9F/kubernetes/03_k8s_k8s%E9%AB%98%E6%80%A7%E8%83%BD%E9%9B%86%E7%BE%A4%E7%9A%84%E6%90%AD%E5%BB%BA/image-20220107215739896.png" alt="&#x7B2C;&#x4E00;&#x6B65;"></p>
+<p><img src="/cloud-native/kubernetes/03_k8s_k8s%E9%AB%98%E6%80%A7%E8%83%BD%E9%9B%86%E7%BE%A4%E7%9A%84%E6%90%AD%E5%BB%BA/image-20220107215739896.png" alt="&#x7B2C;&#x4E00;&#x6B65;"></p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">./ezctl setup k8s-01 02</span><br><span class="line"><span class="meta">#</span><span class="bash"> etcd&#x7684;&#x914D;&#x7F6E;</span></span><br></pre></td></tr></table></figure>
 
-<p><img src="/%E4%BA%91%E5%8E%9F%E7%94%9F/kubernetes/03_k8s_k8s%E9%AB%98%E6%80%A7%E8%83%BD%E9%9B%86%E7%BE%A4%E7%9A%84%E6%90%AD%E5%BB%BA/image-20220107215857652.png" alt="&#x7B2C;&#x4E8C;&#x6B65;"></p>
+<p><img src="/cloud-native/kubernetes/03_k8s_k8s%E9%AB%98%E6%80%A7%E8%83%BD%E9%9B%86%E7%BE%A4%E7%9A%84%E6%90%AD%E5%BB%BA/image-20220107215857652.png" alt="&#x7B2C;&#x4E8C;&#x6B65;"></p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">./ezctl setup k8s-01 03</span><br><span class="line"><span class="meta">#</span><span class="bash"> &#x5B89;&#x88C5;docker&#x5E76;&#x914D;&#x7F6E;node&#x8282;&#x70B9;</span></span><br></pre></td></tr></table></figure>
 
-<p><img src="/%E4%BA%91%E5%8E%9F%E7%94%9F/kubernetes/03_k8s_k8s%E9%AB%98%E6%80%A7%E8%83%BD%E9%9B%86%E7%BE%A4%E7%9A%84%E6%90%AD%E5%BB%BA/image-20220107220047095.png" alt="&#x62A5;&#x9519;&#x4FE1;&#x606F;"></p>
+<p><img src="/cloud-native/kubernetes/03_k8s_k8s%E9%AB%98%E6%80%A7%E8%83%BD%E9%9B%86%E7%BE%A4%E7%9A%84%E6%90%AD%E5%BB%BA/image-20220107220047095.png" alt="&#x62A5;&#x9519;&#x4FE1;&#x606F;"></p>
 <p>&#x3010;&#x8FD9;&#x91CC;&#x6211;&#x5E76;&#x6CA1;&#x6709;&#x5904;&#x7406;&#xFF0C;&#x662F;&#x4E00;&#x4E2A;&#x8F6F;&#x8FDE;&#x63A5;&#x914D;&#x7F6E;&#x5931;&#x8D25;&#xFF0C;&#x5E76;&#x5FFD;&#x7565;&#x4E86;&#x8FD9;&#x4E2A;&#x64CD;&#x4F5C;&#xFF0C;&#x5176;&#x4ED6;&#x914D;&#x7F6E;&#x5747;&#x6CA1;&#x6709;&#x95EE;&#x9898;&#x3011;</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">./ezctl setup k8s-01 04</span><br><span class="line"><span class="meta">#</span><span class="bash"> &#x914D;&#x7F6E;k8s&#x7684;master&#x8282;&#x70B9;&#xFF0C;&#x5E76;&#x542F;&#x52A8;k8s-master&#x8282;&#x70B9;&#xFF0C;&#x4EE5;&#x53CA;apiserver&#x7684;&#x8282;&#x70B9;&#xFF1B;</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> &#x8FD9;&#x4E2A;&#x6B65;&#x9AA4;&#x9700;&#x8981;&#x4E00;&#x70B9;&#x65F6;&#x95F4;</span></span><br></pre></td></tr></table></figure>
 
-<p><img src="/%E4%BA%91%E5%8E%9F%E7%94%9F/kubernetes/03_k8s_k8s%E9%AB%98%E6%80%A7%E8%83%BD%E9%9B%86%E7%BE%A4%E7%9A%84%E6%90%AD%E5%BB%BA/image-20220107220456379.png" alt="&#x7B2C;&#x56DB;&#x6B65;"></p>
+<p><img src="/cloud-native/kubernetes/03_k8s_k8s%E9%AB%98%E6%80%A7%E8%83%BD%E9%9B%86%E7%BE%A4%E7%9A%84%E6%90%AD%E5%BB%BA/image-20220107220456379.png" alt="&#x7B2C;&#x56DB;&#x6B65;"></p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">./ezctl setup k8s-01 05</span><br><span class="line"><span class="meta">#</span><span class="bash"> &#x5173;&#x8054;master&#x4E0E;node&#x8282;&#x70B9;</span></span><br></pre></td></tr></table></figure>
 
-<p><img src="/%E4%BA%91%E5%8E%9F%E7%94%9F/kubernetes/03_k8s_k8s%E9%AB%98%E6%80%A7%E8%83%BD%E9%9B%86%E7%BE%A4%E7%9A%84%E6%90%AD%E5%BB%BA/image-20220107220816401.png" alt="&#x7B2C;&#x4E94;&#x6B65;"></p>
+<p><img src="/cloud-native/kubernetes/03_k8s_k8s%E9%AB%98%E6%80%A7%E8%83%BD%E9%9B%86%E7%BE%A4%E7%9A%84%E6%90%AD%E5%BB%BA/image-20220107220816401.png" alt="&#x7B2C;&#x4E94;&#x6B65;"></p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">./ezctl setup k8s-01 06</span><br><span class="line"><span class="meta">#</span><span class="bash"> &#x914D;&#x7F6E;&#x7F51;&#x7EDC;&#x6A21;&#x5757;</span></span><br></pre></td></tr></table></figure>
 
-<p><img src="/%E4%BA%91%E5%8E%9F%E7%94%9F/kubernetes/03_k8s_k8s%E9%AB%98%E6%80%A7%E8%83%BD%E9%9B%86%E7%BE%A4%E7%9A%84%E6%90%AD%E5%BB%BA/image-20220107221005843.png" alt="&#x7B2C;&#x516D;&#x6B65;&#x3001;&#x5C1D;&#x8BD5;&#x63A8;&#x9001;&#x7F51;&#x7EDC;&#x6A21;&#x5757;&#x914D;&#x7F6E;"></p>
-<p><img src="/%E4%BA%91%E5%8E%9F%E7%94%9F/kubernetes/03_k8s_k8s%E9%AB%98%E6%80%A7%E8%83%BD%E9%9B%86%E7%BE%A4%E7%9A%84%E6%90%AD%E5%BB%BA/image-20220107221434568.png" alt="&#x7B2C;&#x516D;&#x6B65;&#x3001;&#x914D;&#x7F6E;&#x5B8C;&#x6210;"></p>
+<p><img src="/cloud-native/kubernetes/03_k8s_k8s%E9%AB%98%E6%80%A7%E8%83%BD%E9%9B%86%E7%BE%A4%E7%9A%84%E6%90%AD%E5%BB%BA/image-20220107221005843.png" alt="&#x7B2C;&#x516D;&#x6B65;&#x3001;&#x5C1D;&#x8BD5;&#x63A8;&#x9001;&#x7F51;&#x7EDC;&#x6A21;&#x5757;&#x914D;&#x7F6E;"></p>
+<p><img src="/cloud-native/kubernetes/03_k8s_k8s%E9%AB%98%E6%80%A7%E8%83%BD%E9%9B%86%E7%BE%A4%E7%9A%84%E6%90%AD%E5%BB%BA/image-20220107221434568.png" alt="&#x7B2C;&#x516D;&#x6B65;&#x3001;&#x914D;&#x7F6E;&#x5B8C;&#x6210;"></p>
 <p>&#x8FD9;&#x91CC;&#xFF0C;&#x6211;&#x4EEC;&#x603B;&#x5171;&#x914D;&#x7F6E;&#x4E86;&#x516D;&#x6B65;&#xFF0C;&#x5F53;&#x7136;&#x53EF;&#x4EE5;&#x4E00;&#x8D77;&#x914D;&#x7F6E;&#xFF0C;&#x60A8;&#x53EF;&#x4EE5;&#x81EA;&#x5DF1;&#x5C1D;&#x8BD5;&#xFF1A;</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./ezctl setup k8s-01 all</span><br></pre></td></tr></table></figure>
 
 <h3 id="&#x6D4B;&#x8BD5;&#x73AF;&#x5883;"><a href="#&#x6D4B;&#x8BD5;&#x73AF;&#x5883;" class="headerlink" title="&#x6D4B;&#x8BD5;&#x73AF;&#x5883;"></a>&#x6D4B;&#x8BD5;&#x73AF;&#x5883;</h3><p>&#x67E5;&#x770B;&#x5F53;&#x524D;&#x7684;&#x7F51;&#x7EDC;&#x72B6;&#x6001;&#xFF1A;</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">calicoctl node status</span><br></pre></td></tr></table></figure>
 
-<p><img src="/%E4%BA%91%E5%8E%9F%E7%94%9F/kubernetes/03_k8s_k8s%E9%AB%98%E6%80%A7%E8%83%BD%E9%9B%86%E7%BE%A4%E7%9A%84%E6%90%AD%E5%BB%BA/image-20220107221635115.png" alt="&#x7F51;&#x7EDC;&#x72B6;&#x6001;"></p>
+<p><img src="/cloud-native/kubernetes/03_k8s_k8s%E9%AB%98%E6%80%A7%E8%83%BD%E9%9B%86%E7%BE%A4%E7%9A%84%E6%90%AD%E5%BB%BA/image-20220107221635115.png" alt="&#x7F51;&#x7EDC;&#x72B6;&#x6001;"></p>
 <p>&#x8FD9;&#x4E2A;&#x662F;&#x4E00;&#x4E2A;BGP&#x7684;&#x8DEF;&#x7531;&#x8868;&#xFF1B;</p>
 <p>&#x6216;&#x8005;&#x901A;&#x8FC7;&#x5982;&#x4E0B;&#x547D;&#x4EE4;&#x4E5F;&#x53EF;&#x4EE5;&#xFF1A;</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">kubectl get pod -A  # &#x8FD9;&#x91CC;&#x80FD;&#x591F;&#x770B;&#x5230;calico&#x7684;&#x6240;&#x6709;&#x5BB9;&#x5668;&#x90FD;&#x662F;&#x6B63;&#x5E38;running&#x7684;&#x4E5F;&#x53EF;&#x4EE5;</span><br></pre></td></tr></table></figure>
@@ -424,11 +424,11 @@
 <p>&#x67E5;&#x770B;&#x8282;&#x70B9;&#x72B6;&#x6001;&#xFF1A;</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">kubectl get node</span><br></pre></td></tr></table></figure>
 
-<p><img src="/%E4%BA%91%E5%8E%9F%E7%94%9F/kubernetes/03_k8s_k8s%E9%AB%98%E6%80%A7%E8%83%BD%E9%9B%86%E7%BE%A4%E7%9A%84%E6%90%AD%E5%BB%BA/image-20220107221942947.png" alt="&#x8282;&#x70B9;&#x72B6;&#x6001;"></p>
+<p><img src="/cloud-native/kubernetes/03_k8s_k8s%E9%AB%98%E6%80%A7%E8%83%BD%E9%9B%86%E7%BE%A4%E7%9A%84%E6%90%AD%E5%BB%BA/image-20220107221942947.png" alt="&#x8282;&#x70B9;&#x72B6;&#x6001;"></p>
 <p>&#x6700;&#x540E;&#x6211;&#x4EEC;&#x6D4B;&#x8BD5;&#x4E00;&#x4E0B;&#x8FDE;&#x901A;&#x6027;&#xFF0C;&#x6211;&#x4EEC;&#x521B;&#x5EFA;&#x4E24;&#x4E2A;&#x5BB9;&#x5668;&#xFF1A;</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">root@ke-ha-har-ma-et:/etc/kubeasz# kubectl run net-test1 --image=alpine sleep 500000</span><br><span class="line">pod/net-test1 created</span><br><span class="line">root@ke-ha-har-ma-et:/etc/kubeasz# kubectl run net-test2 --image=alpine sleep 500000</span><br><span class="line">pod/net-test2 created</span><br><span class="line"><span class="meta">#</span><span class="bash"> &#x6307;&#x5B9A;&#x4E00;&#x4E2A;&#x540E;&#x53F0;&#x8FDB;&#x7A0B;&#x201C;sleep 500000&#x201D;,&#x5426;&#x5219;&#x5BB9;&#x5668;&#x6CA1;&#x6709;&#x5B88;&#x62A4;&#x8FDB;&#x7A0B;&#x4E86;&#xFF1B;</span></span><br></pre></td></tr></table></figure>
 
-<p><img src="/%E4%BA%91%E5%8E%9F%E7%94%9F/kubernetes/03_k8s_k8s%E9%AB%98%E6%80%A7%E8%83%BD%E9%9B%86%E7%BE%A4%E7%9A%84%E6%90%AD%E5%BB%BA/image-20220107223131455.png" alt="&#x67E5;&#x770B;&#x5BB9;&#x5668;&#x8BE6;&#x7EC6;&#x4FE1;&#x606F;"></p>
+<p><img src="/cloud-native/kubernetes/03_k8s_k8s%E9%AB%98%E6%80%A7%E8%83%BD%E9%9B%86%E7%BE%A4%E7%9A%84%E6%90%AD%E5%BB%BA/image-20220107223131455.png" alt="&#x67E5;&#x770B;&#x5BB9;&#x5668;&#x8BE6;&#x7EC6;&#x4FE1;&#x606F;"></p>
 <p>&#x8FD9;&#x91CC;&#x6211;&#x4EEC;&#x53EF;&#x4EE5;&#x770B;&#x5230;&#xFF0C;&#x6211;&#x4EEC;&#x5728;192.168.169.24&#x7684;node&#x8282;&#x70B9;&#x4E0A;&#x9762;&#x8FD0;&#x884C;&#x4E86;&#x5BB9;&#x5668;net-test1&#x548C;net-test2&#x4E24;&#x4E2A;&#x8282;&#x70B9;</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> &#x6211;&#x4EEC;&#x767B;&#x9646;&#x5BB9;&#x5668;&#xFF0C;&#x76F8;&#x4E92;Ping&#x901A;&#x5373;&#x4E3A;&#x6D4B;&#x8BD5;&#x6210;&#x529F;</span></span><br><span class="line">kubectl  exec -it net-test1 sh</span><br><span class="line">/ # ping 10.200.104.2</span><br><span class="line">PING 10.200.104.2 (10.200.104.2): 56 data bytes</span><br><span class="line">64 bytes from 10.200.104.2: seq=0 ttl=63 time=0.210 ms</span><br><span class="line">/ # ping 8.8.8.8</span><br><span class="line">PING 8.8.8.8 (8.8.8.8): 56 data bytes</span><br><span class="line">64 bytes from 8.8.8.8: seq=1 ttl=127 time=52.541 ms</span><br></pre></td></tr></table></figure>
 
@@ -456,7 +456,7 @@
       <i class="fa fa-chevron-left"></i> Python程序实现文件复制
     </a></div>
       <div class="post-nav-item">
-    <a href="/%E4%BA%91%E5%8E%9F%E7%94%9F/kubernetes/02_k8s_k8s%E5%8D%95%E5%8F%B0master%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/" rel="next" title="kubernetes单台master部署">
+    <a href="/cloud-native/kubernetes/02_k8s_k8s%E5%8D%95%E5%8F%B0master%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/" rel="next" title="kubernetes单台master部署">
       kubernetes单台master部署 <i class="fa fa-chevron-right"></i>
     </a></div>
     </div>
@@ -555,13 +555,13 @@
       <div class="site-state-item site-state-categories">
             <a href="/categories/">
           
-        <span class="site-state-item-count">10</span>
+        <span class="site-state-item-count">7</span>
         <span class="site-state-item-name">categories</span></a>
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">19</span>
+        <span class="site-state-item-count">18</span>
         <span class="site-state-item-name">tags</span></a>
       </div>
   </nav>

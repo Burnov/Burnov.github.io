@@ -25,28 +25,28 @@
   <meta name="description" content="docker&amp;#x5BB9;&amp;#x5668;&amp;#x7684;&amp;#x5377;&amp;#x8BE6;&amp;#x89E3;docker&amp;#x7684;&amp;#x6570;&amp;#x636E;&amp;#x5377;&amp;#x57FA;&amp;#x672C;&amp;#x6982;&amp;#x5FF5;&amp;#x5982;&amp;#x679C;&amp;#x6B63;&amp;#x5728;&amp;#x8FD0;&amp;#x884C;&amp;#x4E2D;&amp;#x7684;&amp;#x5BB9;&amp;#x5">
 <meta property="og:type" content="article">
 <meta property="og:title" content="容器的卷和网络">
-<meta property="og:url" content="http://example.com/clould-native/docker/08_docker%E5%AE%B9%E5%99%A8%E6%8A%80%E6%9C%AF_%E5%AE%B9%E5%99%A8%E5%8D%B7%E5%92%8C%E7%BD%91%E7%BB%9C/index.html">
+<meta property="og:url" content="http://example.com/cloud-native/docker/08_docker%E5%AE%B9%E5%99%A8%E6%8A%80%E6%9C%AF_%E5%AE%B9%E5%99%A8%E5%8D%B7%E5%92%8C%E7%BD%91%E7%BB%9C/index.html">
 <meta property="og:site_name" content="Burnov^-^Blog">
 <meta property="og:description" content="docker&amp;#x5BB9;&amp;#x5668;&amp;#x7684;&amp;#x5377;&amp;#x8BE6;&amp;#x89E3;docker&amp;#x7684;&amp;#x6570;&amp;#x636E;&amp;#x5377;&amp;#x57FA;&amp;#x672C;&amp;#x6982;&amp;#x5FF5;&amp;#x5982;&amp;#x679C;&amp;#x6B63;&amp;#x5728;&amp;#x8FD0;&amp;#x884C;&amp;#x4E2D;&amp;#x7684;&amp;#x5BB9;&amp;#x5">
 <meta property="og:locale" content="en_US">
-<meta property="og:image" content="http://example.com/clould-native/docker/08_docker%E5%AE%B9%E5%99%A8%E6%8A%80%E6%9C%AF_%E5%AE%B9%E5%99%A8%E5%8D%B7%E5%92%8C%E7%BD%91%E7%BB%9C/image-20220104095503099.png">
-<meta property="og:image" content="http://example.com/clould-native/docker/08_docker%E5%AE%B9%E5%99%A8%E6%8A%80%E6%9C%AF_%E5%AE%B9%E5%99%A8%E5%8D%B7%E5%92%8C%E7%BD%91%E7%BB%9C/image-20220104095948693.png">
-<meta property="og:image" content="http://example.com/clould-native/docker/08_docker%E5%AE%B9%E5%99%A8%E6%8A%80%E6%9C%AF_%E5%AE%B9%E5%99%A8%E5%8D%B7%E5%92%8C%E7%BD%91%E7%BB%9C/image-20220104100110189.png">
-<meta property="og:image" content="http://example.com/clould-native/docker/08_docker%E5%AE%B9%E5%99%A8%E6%8A%80%E6%9C%AF_%E5%AE%B9%E5%99%A8%E5%8D%B7%E5%92%8C%E7%BD%91%E7%BB%9C/image-20220104100321711.png">
-<meta property="og:image" content="http://example.com/clould-native/docker/08_docker%E5%AE%B9%E5%99%A8%E6%8A%80%E6%9C%AF_%E5%AE%B9%E5%99%A8%E5%8D%B7%E5%92%8C%E7%BD%91%E7%BB%9C/image-20220104101613978.png">
-<meta property="og:image" content="http://example.com/clould-native/docker/08_docker%E5%AE%B9%E5%99%A8%E6%8A%80%E6%9C%AF_%E5%AE%B9%E5%99%A8%E5%8D%B7%E5%92%8C%E7%BD%91%E7%BB%9C/image-20220104130326206.png">
-<meta property="og:image" content="http://example.com/clould-native/docker/08_docker%E5%AE%B9%E5%99%A8%E6%8A%80%E6%9C%AF_%E5%AE%B9%E5%99%A8%E5%8D%B7%E5%92%8C%E7%BD%91%E7%BB%9C/image-20220104130719054.png">
-<meta property="og:image" content="http://example.com/clould-native/docker/08_docker%E5%AE%B9%E5%99%A8%E6%8A%80%E6%9C%AF_%E5%AE%B9%E5%99%A8%E5%8D%B7%E5%92%8C%E7%BD%91%E7%BB%9C/image-20220104201101348.png">
+<meta property="og:image" content="http://example.com/cloud-native/docker/08_docker%E5%AE%B9%E5%99%A8%E6%8A%80%E6%9C%AF_%E5%AE%B9%E5%99%A8%E5%8D%B7%E5%92%8C%E7%BD%91%E7%BB%9C/image-20220104095503099.png">
+<meta property="og:image" content="http://example.com/cloud-native/docker/08_docker%E5%AE%B9%E5%99%A8%E6%8A%80%E6%9C%AF_%E5%AE%B9%E5%99%A8%E5%8D%B7%E5%92%8C%E7%BD%91%E7%BB%9C/image-20220104095948693.png">
+<meta property="og:image" content="http://example.com/cloud-native/docker/08_docker%E5%AE%B9%E5%99%A8%E6%8A%80%E6%9C%AF_%E5%AE%B9%E5%99%A8%E5%8D%B7%E5%92%8C%E7%BD%91%E7%BB%9C/image-20220104100110189.png">
+<meta property="og:image" content="http://example.com/cloud-native/docker/08_docker%E5%AE%B9%E5%99%A8%E6%8A%80%E6%9C%AF_%E5%AE%B9%E5%99%A8%E5%8D%B7%E5%92%8C%E7%BD%91%E7%BB%9C/image-20220104100321711.png">
+<meta property="og:image" content="http://example.com/cloud-native/docker/08_docker%E5%AE%B9%E5%99%A8%E6%8A%80%E6%9C%AF_%E5%AE%B9%E5%99%A8%E5%8D%B7%E5%92%8C%E7%BD%91%E7%BB%9C/image-20220104101613978.png">
+<meta property="og:image" content="http://example.com/cloud-native/docker/08_docker%E5%AE%B9%E5%99%A8%E6%8A%80%E6%9C%AF_%E5%AE%B9%E5%99%A8%E5%8D%B7%E5%92%8C%E7%BD%91%E7%BB%9C/image-20220104130326206.png">
+<meta property="og:image" content="http://example.com/cloud-native/docker/08_docker%E5%AE%B9%E5%99%A8%E6%8A%80%E6%9C%AF_%E5%AE%B9%E5%99%A8%E5%8D%B7%E5%92%8C%E7%BD%91%E7%BB%9C/image-20220104130719054.png">
+<meta property="og:image" content="http://example.com/cloud-native/docker/08_docker%E5%AE%B9%E5%99%A8%E6%8A%80%E6%9C%AF_%E5%AE%B9%E5%99%A8%E5%8D%B7%E5%92%8C%E7%BD%91%E7%BB%9C/image-20220104201101348.png">
 <meta property="article:published_time" content="2022-01-04T12:17:00.000Z">
-<meta property="article:modified_time" content="2022-01-04T12:24:51.693Z">
+<meta property="article:modified_time" content="2022-01-07T15:39:31.839Z">
 <meta property="article:author" content="Burnov">
 <meta property="article:tag" content="container">
 <meta property="article:tag" content="docker">
 <meta property="article:tag" content="network and volume">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="http://example.com/clould-native/docker/08_docker%E5%AE%B9%E5%99%A8%E6%8A%80%E6%9C%AF_%E5%AE%B9%E5%99%A8%E5%8D%B7%E5%92%8C%E7%BD%91%E7%BB%9C/image-20220104095503099.png">
+<meta name="twitter:image" content="http://example.com/cloud-native/docker/08_docker%E5%AE%B9%E5%99%A8%E6%8A%80%E6%9C%AF_%E5%AE%B9%E5%99%A8%E5%8D%B7%E5%92%8C%E7%BD%91%E7%BB%9C/image-20220104095503099.png">
 
-<link rel="canonical" href="http://example.com/clould-native/docker/08_docker%E5%AE%B9%E5%99%A8%E6%8A%80%E6%9C%AF_%E5%AE%B9%E5%99%A8%E5%8D%B7%E5%92%8C%E7%BD%91%E7%BB%9C/">
+<link rel="canonical" href="http://example.com/cloud-native/docker/08_docker%E5%AE%B9%E5%99%A8%E6%8A%80%E6%9C%AF_%E5%AE%B9%E5%99%A8%E5%8D%B7%E5%92%8C%E7%BD%91%E7%BB%9C/">
 
 
 <script id="page-configurations">
@@ -208,7 +208,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="http://example.com/clould-native/docker/08_docker%E5%AE%B9%E5%99%A8%E6%8A%80%E6%9C%AF_%E5%AE%B9%E5%99%A8%E5%8D%B7%E5%92%8C%E7%BD%91%E7%BB%9C/">
+    <link itemprop="mainEntityOfPage" href="http://example.com/cloud-native/docker/08_docker%E5%AE%B9%E5%99%A8%E6%8A%80%E6%9C%AF_%E5%AE%B9%E5%99%A8%E5%8D%B7%E5%92%8C%E7%BD%91%E7%BB%9C/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.jpg">
@@ -230,21 +230,27 @@
                 <i class="far fa-calendar"></i>
               </span>
               <span class="post-meta-item-text">Posted on</span>
-              
     
-              <time title="Created: 2022-01-04 20:17:00 / Modified: 20:24:51" itemprop="dateCreated datePublished" datetime="2022-01-04T20:17:00+08:00">2022-01-04</time>
+              <time title="Created: 2022-01-04 20:17:00" itemprop="dateCreated datePublished" datetime="2022-01-04T20:17:00+08:00">2022-01-04</time>
             </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2022-01-07 23:39:31" itemprop="dateModified" datetime="2022-01-07T23:39:31+08:00">2022-01-07</time>
+              </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
                 <i class="far fa-folder"></i>
               </span>
               <span class="post-meta-item-text">In</span>
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/clould-native/" itemprop="url" rel="index"><span itemprop="name">clould native</span></a>
+                  <a href="/categories/cloud-native/" itemprop="url" rel="index"><span itemprop="name">cloud native</span></a>
                 </span>
                   , 
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/clould-native/docker/" itemprop="url" rel="index"><span itemprop="name">docker</span></a>
+                  <a href="/categories/cloud-native/docker/" itemprop="url" rel="index"><span itemprop="name">docker</span></a>
                 </span>
             </span>
     
@@ -257,8 +263,8 @@
       </span>
       <span class="post-meta-item-text">Valine: </span>
     
-    <a title="valine" href="/clould-native/docker/08_docker%E5%AE%B9%E5%99%A8%E6%8A%80%E6%9C%AF_%E5%AE%B9%E5%99%A8%E5%8D%B7%E5%92%8C%E7%BD%91%E7%BB%9C/#valine-comments" itemprop="discussionUrl">
-      <span class="post-comments-count valine-comment-count" data-xid="/clould-native/docker/08_docker%E5%AE%B9%E5%99%A8%E6%8A%80%E6%9C%AF_%E5%AE%B9%E5%99%A8%E5%8D%B7%E5%92%8C%E7%BD%91%E7%BB%9C/" itemprop="commentCount"></span>
+    <a title="valine" href="/cloud-native/docker/08_docker%E5%AE%B9%E5%99%A8%E6%8A%80%E6%9C%AF_%E5%AE%B9%E5%99%A8%E5%8D%B7%E5%92%8C%E7%BD%91%E7%BB%9C/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/cloud-native/docker/08_docker%E5%AE%B9%E5%99%A8%E6%8A%80%E6%9C%AF_%E5%AE%B9%E5%99%A8%E5%8D%B7%E5%92%8C%E7%BD%91%E7%BB%9C/" itemprop="commentCount"></span>
     </a>
   </span>
   
@@ -275,7 +281,7 @@
       
         <h1 id="docker&#x5BB9;&#x5668;&#x7684;&#x5377;&#x8BE6;&#x89E3;"><a href="#docker&#x5BB9;&#x5668;&#x7684;&#x5377;&#x8BE6;&#x89E3;" class="headerlink" title="docker&#x5BB9;&#x5668;&#x7684;&#x5377;&#x8BE6;&#x89E3;"></a>docker&#x5BB9;&#x5668;&#x7684;&#x5377;&#x8BE6;&#x89E3;</h1><h2 id="docker&#x7684;&#x6570;&#x636E;&#x5377;&#x57FA;&#x672C;&#x6982;&#x5FF5;"><a href="#docker&#x7684;&#x6570;&#x636E;&#x5377;&#x57FA;&#x672C;&#x6982;&#x5FF5;" class="headerlink" title="docker&#x7684;&#x6570;&#x636E;&#x5377;&#x57FA;&#x672C;&#x6982;&#x5FF5;"></a>docker&#x7684;&#x6570;&#x636E;&#x5377;&#x57FA;&#x672C;&#x6982;&#x5FF5;</h2><p>&#x5982;&#x679C;&#x6B63;&#x5728;&#x8FD0;&#x884C;&#x4E2D;&#x7684;&#x5BB9;&#x5668;&#x4EA7;&#x751F;&#x4E86;&#x65B0;&#x7684;&#x6570;&#x636E;&#x6216;&#x8005;&#x4FEE;&#x6539;&#x4E86;&#x73B0;&#x6709;&#x7684;&#x4E00;&#x4E2A;&#x5DF2;&#x7ECF;&#x5B58;&#x5728;&#x7684;&#x6587;&#x4EF6;&#x5185;&#x5BB9;&#xFF0C;&#x90A3;&#x4E48;&#x65B0;&#x4EA7;&#x751F;&#x7684;&#x6570;&#x636E;&#x5C06;&#x4F1A;&#x88AB;&#x590D;&#x5236;&#x5230;&#x8BFB;&#x5199;&#x5C42;&#x8FDB;&#x884C;&#x6301;&#x4E45;&#x5316;&#x4FDD;&#x5B58;&#xFF0C;&#x8FD9;&#x4E2A;&#x8BFB;&#x5199;&#x5C42;&#x4E5F;&#x5C31;&#x662F;&#x5BB9;&#x5668;&#x7684;&#x5DE5;&#x4F5C;&#x76EE;&#x5F55;&#xFF0C;&#x6B64;&#x5373;&#x201C;&#x5199;&#x5B9E;&#x590D;&#x5236;&#xFF08;COW&#xFF09;copy on write&#x201D;&#x673A;&#x5236;&#xFF1B;</p>
 <p>&#x5982;&#x4E0B;&#x56FE;&#x662F;&#x5C06;&#x5BF9;&#x6839;&#x7684;&#x6570;&#x636E;&#x5199;&#x5165;&#x5230;&#x5BB9;&#x5668;&#x7684;&#x53EF;&#x5199;&#x6210;&#xFF0C;&#x4F46;&#x662F;&#x628A;/data&#x4E2D;&#x7684;&#x6570;&#x636E;&#x5199;&#x5165;&#x5230;&#x4E00;&#x4E2A;&#x53E6;&#x5916;&#x7684;volume&#x4E2D;&#x7528;&#x4E8E;&#x6570;&#x636E;&#x6301;&#x4E45;&#x5316;&#xFF1B;</p>
-<p><img src="/clould-native/docker/08_docker%E5%AE%B9%E5%99%A8%E6%8A%80%E6%9C%AF_%E5%AE%B9%E5%99%A8%E5%8D%B7%E5%92%8C%E7%BD%91%E7%BB%9C/image-20220104095503099.png" alt="docker&#x7684;&#x6570;&#x636E;&#x5377;"></p>
+<p><img src="/cloud-native/docker/08_docker%E5%AE%B9%E5%99%A8%E6%8A%80%E6%9C%AF_%E5%AE%B9%E5%99%A8%E5%8D%B7%E5%92%8C%E7%BD%91%E7%BB%9C/image-20220104095503099.png" alt="docker&#x7684;&#x6570;&#x636E;&#x5377;"></p>
 <span id="more"></span>
 
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> &#x542F;&#x52A8;&#x4E00;&#x4E2A;&#x5BB9;&#x5668;</span></span><br><span class="line">docker run -it -rm harbor.test.com/web/my_nginx:2022-01-03_xx-xx</span><br><span class="line"><span class="meta"></span></span><br><span class="line"><span class="meta">#</span><span class="bash"> &#x518D;&#x5BB9;&#x5668;&#x4E2D;&#x4FEE;&#x6539;&#x4E00;&#x4E9B;&#x6570;&#x636E;</span></span><br><span class="line">cd /opt/</span><br><span class="line">echo &quot;123&quot; &gt; nginx.log  # &#x751F;&#x6210;&#x5BF9;&#x5E94;&#x7684;&#x6570;&#x636E;</span><br><span class="line"><span class="meta"></span></span><br><span class="line"><span class="meta">#</span><span class="bash"> &#x518D;&#x5BBF;&#x4E3B;&#x673A;&#x4E0A;&#x627E;&#x8BE5;&#x6587;&#x4EF6;&#x5185;&#x5BB9;</span></span><br><span class="line">find /var/lib/docker -name nginx.log  # &#x8FD9;&#x8FD8;&#x80FD;&#x591F;&#x627E;&#x5230;</span><br><span class="line"><span class="meta"></span></span><br><span class="line"><span class="meta">#</span><span class="bash"> &#x4F46;&#x662F;&#x9000;&#x51FA;&#x5BB9;&#x5668;&#x540E;&#xFF0C;&#x6570;&#x636E;&#x5C31;&#x4F1A;&#x88AB;&#x5220;&#x9664;&#x4E86;&#xFF1B;</span></span><br><span class="line">exit  # &#x9000;&#x51FA;&#x5BB9;&#x5668;</span><br></pre></td></tr></table></figure>
@@ -283,16 +289,16 @@
 
 
 <p>&#x4E3A;&#x4E86;&#x907F;&#x514D;&#x6570;&#x636E;&#x4E22;&#x5931;&#xFF0C;&#x56E0;&#x6B64;&#xFF0C;&#x4E1A;&#x52A1;&#x6570;&#x636E;&#x901A;&#x5E38;&#x9700;&#x8981;&#x6302;&#x8F7D;&#x518D;&#x5916;&#x9762;&#x6301;&#x4E45;&#x5B58;&#x50A8;&#x7A7A;&#x95F4;&#x4E0A;&#xFF0C;&#x5982;&#x4E0B;&#x56FE;&#x6240;&#x793A;&#xFF1A;</p>
-<p><img src="/clould-native/docker/08_docker%E5%AE%B9%E5%99%A8%E6%8A%80%E6%9C%AF_%E5%AE%B9%E5%99%A8%E5%8D%B7%E5%92%8C%E7%BD%91%E7%BB%9C/image-20220104095948693.png" alt="&#x5BB9;&#x5668;&#x5B58;&#x50A8;&#x67B6;&#x6784;"></p>
+<p><img src="/cloud-native/docker/08_docker%E5%AE%B9%E5%99%A8%E6%8A%80%E6%9C%AF_%E5%AE%B9%E5%99%A8%E5%8D%B7%E5%92%8C%E7%BD%91%E7%BB%9C/image-20220104095948693.png" alt="&#x5BB9;&#x5668;&#x5B58;&#x50A8;&#x67B6;&#x6784;"></p>
 <p>&#x591A;&#x4E2A;&#x5BB9;&#x5668;&#x4F7F;&#x7528;&#x5171;&#x4EAB;&#x7684;&#x7F51;&#x7EDC;&#x5B58;&#x50A8;&#xFF0C;&#x662F;&#x6570;&#x636E;&#x6301;&#x4E45;&#x5316;&#x5B58;&#x50A8;&#x65B9;&#x5F0F;&#x7684;&#x5E38;&#x89C1;&#x89E3;&#x51B3;&#x65B9;&#x6848;&#xFF1A;</p>
-<p><img src="/clould-native/docker/08_docker%E5%AE%B9%E5%99%A8%E6%8A%80%E6%9C%AF_%E5%AE%B9%E5%99%A8%E5%8D%B7%E5%92%8C%E7%BD%91%E7%BB%9C/image-20220104100110189.png" alt="&#x6570;&#x636E;&#x5B58;&#x50A8;&#x67B6;&#x6784;"></p>
+<p><img src="/cloud-native/docker/08_docker%E5%AE%B9%E5%99%A8%E6%8A%80%E6%9C%AF_%E5%AE%B9%E5%99%A8%E5%8D%B7%E5%92%8C%E7%BD%91%E7%BB%9C/image-20220104100110189.png" alt="&#x6570;&#x636E;&#x5B58;&#x50A8;&#x67B6;&#x6784;"></p>
 <p>&#x524D;&#x9762;&#x6240;&#x6709;&#x7684;&#x5BB9;&#x5668;&#x90FD;&#x4F1A;&#x6302;&#x8F7D;&#x4E00;&#x4E2A;&#x5171;&#x4EAB;&#x5B58;&#x50A8;&#x7A7A;&#x95F4;&#xFF0C;&#x8FD9;&#x6837;&#x5C31;&#x80FD;&#x89E3;&#x51B3;&#x6570;&#x636E;&#x5B58;&#x50A8;&#x7684;&#x95EE;&#x9898;&#xFF1B;</p>
 <p>k8s&#x7684;&#x67B6;&#x6784;&#x5B9E;&#x73B0;&#x6301;&#x4E45;&#x5316;&#x5B58;&#x50A8;&#x5219;&#x66F4;&#x4E3A;&#x9EBB;&#x70E6;&#xFF0C;&#x4F46;&#x662F;&#x539F;&#x7406;&#x5927;&#x81F4;&#x76F8;&#x540C;&#x3002;&#x5B83;&#x4F7F;&#x7528;&#x4E00;&#x4E2A;CSI&#x63A5;&#x53E3;&#x6765;&#x5BF9;&#x63A5;&#x5176;&#x4ED6;&#x7B2C;&#x4E09;&#x65B9;&#x5B58;&#x50A8;&#x89E3;&#x51B3;&#x65B9;&#x6848;&#xFF0C;&#x8FD9;&#x6837;&#x5C31;&#x4E0D;&#x4F1A;&#x663E;&#x793A;&#x6570;&#x636E;&#x7684;&#x5B58;&#x50A8;&#x7CFB;&#x7EDF;&#x5E73;&#x53F0;&#x6838;&#x8BBE;&#x5907;&#x4E86;&#xFF1B;</p>
-<p><img src="/clould-native/docker/08_docker%E5%AE%B9%E5%99%A8%E6%8A%80%E6%9C%AF_%E5%AE%B9%E5%99%A8%E5%8D%B7%E5%92%8C%E7%BD%91%E7%BB%9C/image-20220104100321711.png" alt="k8s&#x6301;&#x4E45;&#x5316;&#x5B58;&#x50A8;&#x89E3;&#x51B3;&#x65B9;&#x6848;"></p>
+<p><img src="/cloud-native/docker/08_docker%E5%AE%B9%E5%99%A8%E6%8A%80%E6%9C%AF_%E5%AE%B9%E5%99%A8%E5%8D%B7%E5%92%8C%E7%BD%91%E7%BB%9C/image-20220104100321711.png" alt="k8s&#x6301;&#x4E45;&#x5316;&#x5B58;&#x50A8;&#x89E3;&#x51B3;&#x65B9;&#x6848;"></p>
 <p>&#x6211;&#x4EEC;&#x56DE;&#x5230;docker&#x5BB9;&#x5668;&#x6280;&#x672F;&#xFF0C;&#x6211;&#x4EEC;&#x901A;&#x8FC7;docker inspect&#x53EF;&#x4EE5;&#x770B;&#x5230;&#x5BF9;&#x5E94;&#x7684;&#x5BB9;&#x5668;&#x5B58;&#x50A8;&#x65B9;&#x6848;&#xFF0C;&#x5982;&#x4E0B;&#x56FE;&#x6240;&#x793A;&#xFF1A;</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker inspect ae1182</span><br></pre></td></tr></table></figure>
 
-<p><img src="/clould-native/docker/08_docker%E5%AE%B9%E5%99%A8%E6%8A%80%E6%9C%AF_%E5%AE%B9%E5%99%A8%E5%8D%B7%E5%92%8C%E7%BD%91%E7%BB%9C/image-20220104101613978.png" alt="inspect&#x5377;&#x4FE1;&#x606F;"></p>
+<p><img src="/cloud-native/docker/08_docker%E5%AE%B9%E5%99%A8%E6%8A%80%E6%9C%AF_%E5%AE%B9%E5%99%A8%E5%8D%B7%E5%92%8C%E7%BD%91%E7%BB%9C/image-20220104101613978.png" alt="inspect&#x5377;&#x4FE1;&#x606F;"></p>
 <ul>
 <li>LowerDir &#x2013; image&#x955C;&#x50CF;&#x5C42;&#xFF08;&#x955C;&#x50CF;&#x672C;&#x8EAB;&#x662F;&#x53EA;&#x8BFB;&#x7684;&#xFF09;</li>
 <li>UpperDir &#x2013; &#x5BB9;&#x5668;&#x7684;&#x4E0A;&#x5C42;&#xFF08;&#x8BFB;&#x5199;&#x5C42;&#xFF09;</li>
@@ -319,12 +325,12 @@
 <p>&#x8FD9;&#x79CD;&#x76F8;&#x5F53;&#x4E8E;&#x5148;&#x901A;&#x8FC7;volume&#x547D;&#x4EE4;&#x6765;&#x751F;&#x6210;&#x5377;&#x6587;&#x4EF6;&#xFF0C;&#x7136;&#x540E;&#x518D;&#x6302;&#x8F7D;&#x518D;&#x6307;&#x5B9A;&#x7684;&#x5BB9;&#x5668;&#x4E0A;&#xFF1B;</p>
 <p>2&#x3001;&#x5171;&#x4EAB;&#x5377;&#x5BB9;&#x5668;&#x7A7A;&#x95F4;</p>
 <p>&#x6570;&#x636E;&#x636E;&#x5BB9;&#x5668;&#x529F;&#x80FD;&#x662F;&#x53EF;&#x4EE5;&#x8BA9;&#x6570;&#x636E;&#x5728;&#x591A;&#x4E2A;docker&#x5BB9;&#x5668;&#x4E4B;&#x95F4;&#x5171;&#x4EAB;&#xFF0C;&#x5373;&#x53EF;&#x4EE5;&#x8BA9;B&#x5BB9;&#x5668;&#x8BBF;&#x95EE;A&#x5BB9;&#x5668;&#x7684;&#x5185;&#x5BB9;&#xFF0C;&#x7136;&#x800C;&#x5BB9;&#x5668;C&#x4E5F;&#x53EF;&#x4EE5;&#x8BBF;&#x95EE;A&#x5BB9;&#x5668;&#x7684;&#x5185;&#x5BB9;&#xFF0C;&#x5373;&#x5148;&#x8981;&#x521B;&#x5EFA;&#x4E00;&#x4E2A;&#x5DE5;&#x4F5C;&#x5728;&#x540E;&#x53F0;&#x7684;&#x5BB9;&#x5668;&#x4F5C;&#x4E3A;Server&#x7AEF;&#xFF0C;&#x7528;&#x4E8E;&#x5377;&#x63D0;&#x4F9B;&#xFF0C;&#x8FD9;&#x4E2A;&#x5377;&#x53EF;&#x4EE5;&#x4E3A;&#x5176;&#x4ED6;&#x5BB9;&#x5668;&#x63D0;&#x4F9B;&#x6570;&#x636E;&#x5B58;&#x50A8;&#x670D;&#x52A1;&#xFF0C;&#x5176;&#x4ED6;&#x4F7F;&#x7528;&#x6B64;&#x5377;&#x7684;&#x5BB9;&#x5668;&#x4F5C;&#x4E3A;client&#x7AEF;&#x6765;&#x4F7F;&#x7528;&#xFF1B;</p>
-<p><img src="/clould-native/docker/08_docker%E5%AE%B9%E5%99%A8%E6%8A%80%E6%9C%AF_%E5%AE%B9%E5%99%A8%E5%8D%B7%E5%92%8C%E7%BD%91%E7%BB%9C/image-20220104130326206.png" alt="&#x5171;&#x4EAB;&#x5BB9;&#x5668;&#x5377;&#x7A7A;&#x95F4;"></p>
+<p><img src="/cloud-native/docker/08_docker%E5%AE%B9%E5%99%A8%E6%8A%80%E6%9C%AF_%E5%AE%B9%E5%99%A8%E5%8D%B7%E5%92%8C%E7%BD%91%E7%BB%9C/image-20220104130326206.png" alt="&#x5171;&#x4EAB;&#x5BB9;&#x5668;&#x5377;&#x7A7A;&#x95F4;"></p>
 <p>&#x793A;&#x4F8B;&#x5982;&#x4E0B;&#xFF1A;</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> &#x5148;&#x542F;&#x52A8;&#x4E00;&#x4E2A;server&#x7AEF;&#x7684;&#x5BB9;&#x5668;</span></span><br><span class="line">docker run -it -d --name volume-server -v /data/testapp:/usr/local/tomcat/webapps/testapp -v /data/tomcat/conf/server.xml:/usr/local/tomcat/conf/server.xml tomcat:8.5.73</span><br><span class="line"><span class="meta"></span></span><br><span class="line"><span class="meta">#</span><span class="bash"> &#x542F;&#x52A8;client&#x7AEF;</span></span><br><span class="line">docker run -d --name web1 -p 8801:8080 --volumes-from volume-server tomcat:8.5.73</span><br><span class="line">docker run -d --name web2 -p 8802:8080 --volumes-from volume-server tomcat:8.5.73</span><br><span class="line"><span class="meta">#</span><span class="bash"> &#x5171;&#x4EAB;volume-server&#x7684;&#x5377;&#x7A7A;&#x95F4;</span></span><br></pre></td></tr></table></figure>
 
 <p>&#x8FD9;&#x79CD;&#x4F7F;&#x7528;&#x65B9;&#x5F0F;&#x5176;&#x5B9E;&#x5728;&#x516C;&#x53F8;&#x8FD8;&#x662F;&#x975E;&#x5E38;&#x5C11;&#x89C1;&#x4E86;</p>
-<h1 id="docker&#x5BB9;&#x5668;&#x7684;&#x7F51;&#x7EDC;&#x8BE6;&#x89E3;"><a href="#docker&#x5BB9;&#x5668;&#x7684;&#x7F51;&#x7EDC;&#x8BE6;&#x89E3;" class="headerlink" title="docker&#x5BB9;&#x5668;&#x7684;&#x7F51;&#x7EDC;&#x8BE6;&#x89E3;"></a>docker&#x5BB9;&#x5668;&#x7684;&#x7F51;&#x7EDC;&#x8BE6;&#x89E3;</h1><h2 id="docker&#x7684;&#x57FA;&#x672C;&#x7F51;&#x7EDC;&#x67B6;&#x6784;"><a href="#docker&#x7684;&#x57FA;&#x672C;&#x7F51;&#x7EDC;&#x67B6;&#x6784;" class="headerlink" title="docker&#x7684;&#x57FA;&#x672C;&#x7F51;&#x7EDC;&#x67B6;&#x6784;"></a>docker&#x7684;&#x57FA;&#x672C;&#x7F51;&#x7EDC;&#x67B6;&#x6784;</h2><p><img src="/clould-native/docker/08_docker%E5%AE%B9%E5%99%A8%E6%8A%80%E6%9C%AF_%E5%AE%B9%E5%99%A8%E5%8D%B7%E5%92%8C%E7%BD%91%E7%BB%9C/image-20220104130719054.png" alt="docker&#x7684;&#x57FA;&#x672C;&#x7F51;&#x7EDC;&#x67B6;&#x6784;"></p>
+<h1 id="docker&#x5BB9;&#x5668;&#x7684;&#x7F51;&#x7EDC;&#x8BE6;&#x89E3;"><a href="#docker&#x5BB9;&#x5668;&#x7684;&#x7F51;&#x7EDC;&#x8BE6;&#x89E3;" class="headerlink" title="docker&#x5BB9;&#x5668;&#x7684;&#x7F51;&#x7EDC;&#x8BE6;&#x89E3;"></a>docker&#x5BB9;&#x5668;&#x7684;&#x7F51;&#x7EDC;&#x8BE6;&#x89E3;</h1><h2 id="docker&#x7684;&#x57FA;&#x672C;&#x7F51;&#x7EDC;&#x67B6;&#x6784;"><a href="#docker&#x7684;&#x57FA;&#x672C;&#x7F51;&#x7EDC;&#x67B6;&#x6784;" class="headerlink" title="docker&#x7684;&#x57FA;&#x672C;&#x7F51;&#x7EDC;&#x67B6;&#x6784;"></a>docker&#x7684;&#x57FA;&#x672C;&#x7F51;&#x7EDC;&#x67B6;&#x6784;</h2><p><img src="/cloud-native/docker/08_docker%E5%AE%B9%E5%99%A8%E6%8A%80%E6%9C%AF_%E5%AE%B9%E5%99%A8%E5%8D%B7%E5%92%8C%E7%BD%91%E7%BB%9C/image-20220104130719054.png" alt="docker&#x7684;&#x57FA;&#x672C;&#x7F51;&#x7EDC;&#x67B6;&#x6784;"></p>
 <p>docker&#x5BB9;&#x5668;&#x7F51;&#x7EDC;&#x7684;&#x57FA;&#x672C;&#x67B6;&#x6784;&#x5982;&#x4E0A;&#x56FE;&#x6240;&#x793A;&#xFF1B;&#x65E0;&#x8BBA;&#x662F;&#x591A;&#x5C11;&#x4E2A;&#x5BB9;&#x5668;&#xFF0C;&#x6BCF;&#x4E2A;&#x5BB9;&#x5668;&#x4E2D;&#x90FD;&#x53EA;&#x6709;&#x4E00;&#x4E2A;eth0&#x7F51;&#x5361;&#xFF0C;&#x4E14;&#x8FD9;&#x4E2A;&#x7F51;&#x5361;&#x7684;&#x5BF9;&#x7AEF;&#x901A;&#x8FC7;veth&#x6865;&#x63A5;&#x5728;docker0&#x7684;&#x7F51;&#x6865;&#x4E0A;&#xFF0C;&#x5982;&#x679C;&#x662F;&#x5185;&#x90E8;&#x5BB9;&#x5668;&#x4E4B;&#x95F4;&#x7684;&#x4E92;&#x901A;&#xFF0C;&#x4ED6;&#x4EEC;&#x5219;&#x901A;&#x8FC7;&#x4E8C;&#x5C42;MAC&#x5730;&#x5740;&#x8FDB;&#x884C;&#x6570;&#x636E;&#x4EA4;&#x4E92;&#x3002;&#x4F46;&#x662F;&#x5982;&#x679C;&#x4E00;&#x65E6;&#x8981;&#x5B9E;&#x73B0;&#x4E09;&#x5C42;&#x4E92;&#x901A;&#xFF0C;&#x5219;&#x9700;&#x8981;&#x901A;&#x8FC7;eth0&#x7684;&#x7F51;&#x5173;&#x8FDB;&#x884C;&#x8DEF;&#x7531;&#x6570;&#x636E;&#x8F6C;&#x53D1;&#xFF1B;</p>
 <p><strong>&#x56E0;&#x6B64;&#xFF0C;&#x5BB9;&#x5668;&#x7684;&#x5BBF;&#x4E3B;&#x673A;&#x4E00;&#x5B9A;&#x8981;&#x5F00;&#x542F;&#x8DEF;&#x7531;&#x8F6C;&#x53D1;&#x529F;&#x80FD;&#xFF01;&#xFF01;&#xFF01;&#x8FD9;&#x4E2A;&#x975E;&#x5E38;&#x91CD;&#x8981;&#xFF1B;</strong></p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">sysctl -w net.ipv4.ip_forward = 1</span><br><span class="line"><span class="meta">#</span><span class="bash"> &#x6216;&#x8005;</span></span><br><span class="line">echo 1 &gt; /proc/sys/net/ipv4/ip_forword</span><br></pre></td></tr></table></figure>
@@ -359,7 +365,7 @@
 <p>&#x4F7F;&#x7528;&#x6B64;&#x6A21;&#x578B;&#x521B;&#x5EFA;&#x7684;&#x5BB9;&#x5668;&#x9700;&#x8981;&#x4E4B;&#x5730;&#x90A3;&#x4E2A;&#x548C;&#x4E00;&#x4E2A;&#x5DF2;&#x7ECF;&#x5B58;&#x5728;&#x7684;&#x5BB9;&#x5668;&#x5171;&#x4EAB;&#x4E00;&#x4E2A;&#x7F51;&#x7EDC;&#xFF0C;&#x800C;&#x4E0D;&#x662F;&#x548C;&#x5BBF;&#x4E3B;&#x673A;&#x5171;&#x4EAB;&#x7F51;&#x7EDC;&#xFF0C;&#x65B0;&#x5EFA;&#x7684;&#x5BB9;&#x5668;&#x4E0D;&#x4F1A;&#x521B;&#x5EFA;&#x81EA;&#x5DF1;&#x7684;&#x7F51;&#x5361;&#x4E5F;&#x4E0D;&#x4F1A;&#x914D;&#x7F6E;&#x81EA;&#x5DF1;&#x7684;IP&#xFF0C;&#x4E8C;&#x5341;&#x548C;&#x4E00;&#x4E2A;&#x5DF2;&#x7ECF;&#x5B58;&#x5728;&#x7684;&#x88AB;&#x6307;&#x5B9A;&#x7684;&#x5BB9;&#x5668;IP&#x548C;&#x7AEF;&#x53E3;&#x8303;&#x56F4;&#xFF0C;&#x56E0;&#x6B64;&#x8FD9;&#x4E2A;&#x5BB9;&#x5668;&#x7684;&#x7AEF;&#x53E3;&#x4E0D;&#x80FD;&#x548C;&#x88AB;&#x6307;&#x5B9A;&#x7684;&#x7AEF;&#x53E3;&#x51B2;&#x7A81;&#xFF0C;&#x9664;&#x4E86;&#x7F51;&#x7EDC;&#x4E4B;&#x5916;&#x7684;&#x6587;&#x4EF6;&#x7CFB;&#x7EDF;&#x3001;&#x8FDB;&#x7A0B;&#x4FE1;&#x606F;&#x7B49;&#x4ECD;&#x7136;&#x4FDD;&#x6301;&#x76F8;&#x4E92;&#x9694;&#x79BB;&#xFF0C;&#x4E24;&#x4E2A;&#x5BB9;&#x5668;&#x8FDB;&#x7A0B;&#x53EF;&#x4EE5;&#x901A;&#x8FC7;IO&#x7F51;&#x5361;&#x53CA;&#x5BB9;&#x5668;IP&#x8FDB;&#x884C;&#x901A;&#x4FE1;&#xFF1B;</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> &#x6307;&#x5B9A;&#x4E00;&#x4E2A;&#x7F51;&#x7EDC;&#x5BB9;&#x5668;&#x670D;&#x52A1;&#x7AEF;</span></span><br><span class="line">docker run -it -d --name nginx-web1 -p 80:80 --net=bridge nginx:1.20.2</span><br><span class="line"><span class="meta"></span></span><br><span class="line"><span class="meta">#</span><span class="bash"> &#x6307;&#x5B9A;&#x5BA2;&#x6237;&#x7AEF;&#x5BB9;&#x5668;&#x5173;&#x8054;&#x4E3B;&#x673A;&#x5BB9;&#x5668;&#x7AEF;</span> </span><br><span class="line">docker run -it -d --name php-server --net=container:nginx-web1 php:7.3.33-fpm</span><br></pre></td></tr></table></figure>
 
-<h2 id="&#x7F51;&#x7EDC;&#x603B;&#x7ED3;"><a href="#&#x7F51;&#x7EDC;&#x603B;&#x7ED3;" class="headerlink" title="&#x7F51;&#x7EDC;&#x603B;&#x7ED3;"></a>&#x7F51;&#x7EDC;&#x603B;&#x7ED3;</h2><p><img src="/clould-native/docker/08_docker%E5%AE%B9%E5%99%A8%E6%8A%80%E6%9C%AF_%E5%AE%B9%E5%99%A8%E5%8D%B7%E5%92%8C%E7%BD%91%E7%BB%9C/image-20220104201101348.png" alt="docker&#x7F51;&#x7EDC;&#x6846;&#x67B6;&#x56FE;"></p>
+<h2 id="&#x7F51;&#x7EDC;&#x603B;&#x7ED3;"><a href="#&#x7F51;&#x7EDC;&#x603B;&#x7ED3;" class="headerlink" title="&#x7F51;&#x7EDC;&#x603B;&#x7ED3;"></a>&#x7F51;&#x7EDC;&#x603B;&#x7ED3;</h2><p><img src="/cloud-native/docker/08_docker%E5%AE%B9%E5%99%A8%E6%8A%80%E6%9C%AF_%E5%AE%B9%E5%99%A8%E5%8D%B7%E5%92%8C%E7%BD%91%E7%BB%9C/image-20220104201101348.png" alt="docker&#x7F51;&#x7EDC;&#x6846;&#x67B6;&#x56FE;"></p>
 <ul>
 <li>&#x5BB9;&#x5668;&#x7F51;&#x7EDC;&#x9700;&#x8981;&#x5F00;&#x542F;&#x8DEF;&#x7531;&#x8F6C;&#x53D1;&#x529F;&#x80FD; &#x2013; net.ipv4.ip_forward</li>
 <li>&#x5BB9;&#x5668;&#x7F51;&#x7EDC;&#x603B;&#x5171;&#x6709;&#x56DB;&#x79CD;&#x6A21;&#x578B;<ul>
@@ -390,7 +396,7 @@
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/clould-native/docker/06_docker%E5%AE%B9%E5%99%A8%E6%8A%80%E6%9C%AF_dockerfile%E7%9A%84%E9%95%9C%E5%83%8F%E6%9E%84%E5%BB%BA%E8%AF%A6%E8%A7%A3/" rel="prev" title="dockerfile详解">
+    <a href="/cloud-native/docker/06_docker%E5%AE%B9%E5%99%A8%E6%8A%80%E6%9C%AF_dockerfile%E7%9A%84%E9%95%9C%E5%83%8F%E6%9E%84%E5%BB%BA%E8%AF%A6%E8%A7%A3/" rel="prev" title="dockerfile详解">
       <i class="fa fa-chevron-left"></i> dockerfile详解
     </a></div>
       <div class="post-nav-item">
@@ -493,13 +499,13 @@
       <div class="site-state-item site-state-categories">
             <a href="/categories/">
           
-        <span class="site-state-item-count">10</span>
+        <span class="site-state-item-count">7</span>
         <span class="site-state-item-name">categories</span></a>
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">19</span>
+        <span class="site-state-item-count">18</span>
         <span class="site-state-item-name">tags</span></a>
       </div>
   </nav>
