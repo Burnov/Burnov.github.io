@@ -1,0 +1,716 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-minimal.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Mist","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="&amp;#x96C6;&amp;#x7FA4;&amp;#x4FE1;&amp;#x606F;1.&amp;#x8282;&amp;#x70B9;&amp;#x89C4;&amp;#x5212;&amp;#x200B;    &amp;#x90E8;&amp;#x7F72;k8s&amp;#x96C6;&amp;#x7FA4;&amp;#x7684;&amp;#x8282;&amp;#x70B9;&amp;#x6309;&amp;#x7167;&amp;#x7528;&amp;#x9014;&amp;#x53EF;&amp;#x4EE5;&amp;#x5212;&amp;#x5206">
+<meta property="og:type" content="article">
+<meta property="og:title" content="kubernetes单台master部署">
+<meta property="og:url" content="http://example.com/%E4%BA%91%E5%8E%9F%E7%94%9F/kubernetes/02_k8s_k8s%E5%8D%95%E5%8F%B0master%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/index.html">
+<meta property="og:site_name" content="Burnov^-^Blog">
+<meta property="og:description" content="&amp;#x96C6;&amp;#x7FA4;&amp;#x4FE1;&amp;#x606F;1.&amp;#x8282;&amp;#x70B9;&amp;#x89C4;&amp;#x5212;&amp;#x200B;    &amp;#x90E8;&amp;#x7F72;k8s&amp;#x96C6;&amp;#x7FA4;&amp;#x7684;&amp;#x8282;&amp;#x70B9;&amp;#x6309;&amp;#x7167;&amp;#x7528;&amp;#x9014;&amp;#x53EF;&amp;#x4EE5;&amp;#x5212;&amp;#x5206">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://example.com/%E4%BA%91%E5%8E%9F%E7%94%9F/kubernetes/02_k8s_k8s%E5%8D%95%E5%8F%B0master%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/image-20211127090517597.png">
+<meta property="og:image" content="http://example.com/%E4%BA%91%E5%8E%9F%E7%94%9F/kubernetes/02_k8s_k8s%E5%8D%95%E5%8F%B0master%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/image-20211127090545122.png">
+<meta property="og:image" content="http://example.com/%E4%BA%91%E5%8E%9F%E7%94%9F/kubernetes/02_k8s_k8s%E5%8D%95%E5%8F%B0master%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/image-20211129105915417.png">
+<meta property="og:image" content="http://example.com/%E4%BA%91%E5%8E%9F%E7%94%9F/kubernetes/02_k8s_k8s%E5%8D%95%E5%8F%B0master%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/image-20211129090304921.png">
+<meta property="og:image" content="http://example.com/%E4%BA%91%E5%8E%9F%E7%94%9F/kubernetes/02_k8s_k8s%E5%8D%95%E5%8F%B0master%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/image-20211127101018105.png">
+<meta property="og:image" content="http://example.com/%E4%BA%91%E5%8E%9F%E7%94%9F/kubernetes/02_k8s_k8s%E5%8D%95%E5%8F%B0master%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/image-20211129094153411.png">
+<meta property="og:image" content="http://example.com/%E4%BA%91%E5%8E%9F%E7%94%9F/kubernetes/02_k8s_k8s%E5%8D%95%E5%8F%B0master%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/image-20211129094410466.png">
+<meta property="og:image" content="http://example.com/%E4%BA%91%E5%8E%9F%E7%94%9F/kubernetes/02_k8s_k8s%E5%8D%95%E5%8F%B0master%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/image-20211127112148301.png">
+<meta property="og:image" content="http://example.com/%E4%BA%91%E5%8E%9F%E7%94%9F/kubernetes/02_k8s_k8s%E5%8D%95%E5%8F%B0master%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/image-20211127123535252.png">
+<meta property="og:image" content="http://example.com/%E4%BA%91%E5%8E%9F%E7%94%9F/kubernetes/02_k8s_k8s%E5%8D%95%E5%8F%B0master%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/image-20211127124441543.png">
+<meta property="og:image" content="http://example.com/%E4%BA%91%E5%8E%9F%E7%94%9F/kubernetes/02_k8s_k8s%E5%8D%95%E5%8F%B0master%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/image-20211129095856598.png">
+<meta property="og:image" content="http://example.com/%E4%BA%91%E5%8E%9F%E7%94%9F/kubernetes/02_k8s_k8s%E5%8D%95%E5%8F%B0master%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/image-20211129101042255.png">
+<meta property="og:image" content="http://example.com/%E4%BA%91%E5%8E%9F%E7%94%9F/kubernetes/02_k8s_k8s%E5%8D%95%E5%8F%B0master%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/image-20211129101201518.png">
+<meta property="og:image" content="http://example.com/%E4%BA%91%E5%8E%9F%E7%94%9F/kubernetes/02_k8s_k8s%E5%8D%95%E5%8F%B0master%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/image-20211214141909683.png">
+<meta property="og:image" content="http://example.com/%E4%BA%91%E5%8E%9F%E7%94%9F/kubernetes/02_k8s_k8s%E5%8D%95%E5%8F%B0master%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/image-20211127142302514.png">
+<meta property="og:image" content="http://example.com/%E4%BA%91%E5%8E%9F%E7%94%9F/kubernetes/02_k8s_k8s%E5%8D%95%E5%8F%B0master%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/image-20211127142335300.png">
+<meta property="article:published_time" content="2022-01-07T15:13:50.000Z">
+<meta property="article:modified_time" content="2022-01-07T15:16:10.311Z">
+<meta property="article:author" content="Burnov">
+<meta property="article:tag" content="kubernetes install">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/%E4%BA%91%E5%8E%9F%E7%94%9F/kubernetes/02_k8s_k8s%E5%8D%95%E5%8F%B0master%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/image-20211127090517597.png">
+
+<link rel="canonical" href="http://example.com/%E4%BA%91%E5%8E%9F%E7%94%9F/kubernetes/02_k8s_k8s%E5%8D%95%E5%8F%B0master%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>kubernetes单台master部署 | Burnov^-^Blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="Burnov^-^Blog" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Burnov^-^Blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="Searching..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://example.com/%E4%BA%91%E5%8E%9F%E7%94%9F/kubernetes/02_k8s_k8s%E5%8D%95%E5%8F%B0master%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="Burnov">
+      <meta itemprop="description" content="No end for Learning">
+    </span>
+    
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Burnov^-^Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          kubernetes单台master部署
+        </h1>
+    
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+              
+    
+              <time title="Created: 2022-01-07 23:13:50 / Modified: 23:16:10" itemprop="dateCreated datePublished" datetime="2022-01-07T23:13:50+08:00">2022-01-07</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E4%BA%91%E5%8E%9F%E7%94%9F/" itemprop="url" rel="index"><span itemprop="name">云原生</span></a>
+                </span>
+                  , 
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E4%BA%91%E5%8E%9F%E7%94%9F/kubernetes/" itemprop="url" rel="index"><span itemprop="name">kubernetes</span></a>
+                </span>
+            </span>
+    
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Valine: </span>
+    
+    <a title="valine" href="/%E4%BA%91%E5%8E%9F%E7%94%9F/kubernetes/02_k8s_k8s%E5%8D%95%E5%8F%B0master%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/%E4%BA%91%E5%8E%9F%E7%94%9F/kubernetes/02_k8s_k8s%E5%8D%95%E5%8F%B0master%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+    
+        </div>
+      </header>
+    
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+    
+      
+        <h1 id="&#x96C6;&#x7FA4;&#x4FE1;&#x606F;"><a href="#&#x96C6;&#x7FA4;&#x4FE1;&#x606F;" class="headerlink" title="&#x96C6;&#x7FA4;&#x4FE1;&#x606F;"></a>&#x96C6;&#x7FA4;&#x4FE1;&#x606F;</h1><h2 id="1-&#x8282;&#x70B9;&#x89C4;&#x5212;"><a href="#1-&#x8282;&#x70B9;&#x89C4;&#x5212;" class="headerlink" title="1.&#x8282;&#x70B9;&#x89C4;&#x5212;"></a>1.&#x8282;&#x70B9;&#x89C4;&#x5212;</h2><p>&#x200B;    &#x90E8;&#x7F72;k8s&#x96C6;&#x7FA4;&#x7684;&#x8282;&#x70B9;&#x6309;&#x7167;&#x7528;&#x9014;&#x53EF;&#x4EE5;&#x5212;&#x5206;&#x4E3A;&#x5982;&#x4E0B;2&#x7C7B;&#x89D2;&#x8272;&#x2236;</p>
+<p>&#x200B;         &#x25CF; master&#x2236;&#x96C6;&#x7FA4;&#x7684;master&#x8282;&#x70B9;&#xFF0C;&#x96C6;&#x7FA4;&#x7684;&#x521D;&#x59CB;&#x5316;&#x8282;&#x70B9;&#xFF0C;&#x57FA;&#x7840;&#x914D;&#x7F6E;&#x4E0D;&#x4F4E;&#x4E8E;2C4G</p>
+<p>&#x200B;         &#x25CF; slave&#x2236;&#x96C6;&#x7FA4;&#x7684;slave&#x8282;&#x70B9;&#xFF0C;&#x53EF;&#x4EE5;&#x591A;&#x53F0;&#xFF0C;&#x57FA;&#x7840;&#x914D;&#x7F6E;&#x4E0D;&#x4F4E;&#x4E8E;2C4G</p>
+<span id="more"></span>
+
+<p><strong>&#x672C;&#x4F8B;&#x4E3A;&#x4E86;&#x6F14;&#x793A;slave&#x8282;&#x70B9;&#x7684;&#x6DFB;&#x52A0;&#xFF0C;&#x4F1A;&#x90E8;&#x7F72;&#x4E00;&#x53F0;master+2&#x53F0;slave</strong>&#xFF0C;&#x8282;&#x70B9;&#x89C4;&#x5212;&#x5982;&#x4E0B;&#x2236;</p>
+<p><img src="/%E4%BA%91%E5%8E%9F%E7%94%9F/kubernetes/02_k8s_k8s%E5%8D%95%E5%8F%B0master%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/image-20211127090517597.png" alt="image-20211127090517597"></p>
+<h2 id="2&#x3001;&#x7EC4;&#x4EF6;&#x7248;&#x672C;"><a href="#2&#x3001;&#x7EC4;&#x4EF6;&#x7248;&#x672C;" class="headerlink" title="2&#x3001;&#x7EC4;&#x4EF6;&#x7248;&#x672C;"></a>2&#x3001;&#x7EC4;&#x4EF6;&#x7248;&#x672C;</h2><p><img src="/%E4%BA%91%E5%8E%9F%E7%94%9F/kubernetes/02_k8s_k8s%E5%8D%95%E5%8F%B0master%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/image-20211127090545122.png" alt="image-20211127090545122"></p>
+<h1 id="&#x5B89;&#x88C5;&#x524D;&#x7684;&#x51C6;&#x5907;&#x5DE5;&#x4F5C;"><a href="#&#x5B89;&#x88C5;&#x524D;&#x7684;&#x51C6;&#x5907;&#x5DE5;&#x4F5C;" class="headerlink" title="&#x5B89;&#x88C5;&#x524D;&#x7684;&#x51C6;&#x5907;&#x5DE5;&#x4F5C;"></a>&#x5B89;&#x88C5;&#x524D;&#x7684;&#x51C6;&#x5907;&#x5DE5;&#x4F5C;</h1><h2 id="1&#x3001;&#x5F00;&#x542F;&#x865A;&#x62DF;&#x673A;&#x7684;&#x865A;&#x62DF;&#x5316;&#x529F;&#x80FD;"><a href="#1&#x3001;&#x5F00;&#x542F;&#x865A;&#x62DF;&#x673A;&#x7684;&#x865A;&#x62DF;&#x5316;&#x529F;&#x80FD;" class="headerlink" title="1&#x3001;&#x5F00;&#x542F;&#x865A;&#x62DF;&#x673A;&#x7684;&#x865A;&#x62DF;&#x5316;&#x529F;&#x80FD;"></a>1&#x3001;&#x5F00;&#x542F;&#x865A;&#x62DF;&#x673A;&#x7684;&#x865A;&#x62DF;&#x5316;&#x529F;&#x80FD;</h2><p>&#x200B;    &#x6240;&#x6709;&#x7684;&#x673A;&#x5668;&#x5747;&#x9700;&#x8981;&#x5F00;&#x542F;&#x865A;&#x62DF;&#x5316;&#x529F;&#x80FD;&#xFF1B;</p>
+<p><img src="/%E4%BA%91%E5%8E%9F%E7%94%9F/kubernetes/02_k8s_k8s%E5%8D%95%E5%8F%B0master%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/image-20211129105915417.png" alt="image-20211129105915417"></p>
+<h2 id="2&#x3001;&#x8BBE;&#x7F6E;hosts&#x89E3;&#x6790;"><a href="#2&#x3001;&#x8BBE;&#x7F6E;hosts&#x89E3;&#x6790;" class="headerlink" title="2&#x3001;&#x8BBE;&#x7F6E;hosts&#x89E3;&#x6790;"></a>2&#x3001;&#x8BBE;&#x7F6E;hosts&#x89E3;&#x6790;</h2><p>1.&#x8BBE;&#x7F6E;hosts&#x89E3;&#x6790;</p>
+<p>&#x200B;    &#x64CD;&#x4F5C;&#x8282;&#x70B9;&#x2236;&#x6240;&#x6709;&#x8282;&#x70B9;&#xFF08;k8s-master&#xFF0C;k8s-slave&#xFF09;&#x5747;&#x9700;&#x6267;&#x884C;</p>
+<p>&#x200B;        &#x25CF; &#x4FEE;&#x6539;hostname</p>
+<p>&#x200B;            hostname&#x5FC5;&#x987B;&#x53EA;&#x80FD;&#x5305;&#x542B;&#x5C0F;&#x5199;&#x5B57;&#x6BCD;&#x3001;&#x6570;&#x5B57;&#x3001;&#x201D;&#x201D;&#x3001;&#x201D;.&#x201D;&#xFF0C;&#x4E14;&#x5F00;&#x5934;&#x7ED3;&#x5C3E;&#x5FC5;&#x987B;&#x662F;&#x5C0F;&#x5199;&#x5B57;&#x6BCD;&#x6216;&#x6570;&#x5B57;</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> &#x5728;master&#x8282;&#x70B9;</span></span><br><span class="line">hostnamectl set-hostname k8s-master #&#x8BBE;&#x7F6E;master&#x8282;&#x70B9;&#x7684;hostname</span><br><span class="line"><span class="meta"></span></span><br><span class="line"><span class="meta">#</span><span class="bash"> &#x5728;slave-1&#x8282;&#x70B9;</span></span><br><span class="line">hostnamectl set-hostname k8s-slave1 #&#x8BBE;&#x7F6E;slavel&#x8282;&#x70B9;&#x7684;hostname</span><br><span class="line"><span class="meta"></span></span><br><span class="line"><span class="meta">#</span><span class="bash"> &#x5728;slave-2&#x8282;&#x70B9;</span></span><br><span class="line">hostnamectl set-hostname k8s-slave2 #&#x8BBE;&#x7F6E;slave2&#x8282;&#x70B9;&#x7684;hostname</span><br></pre></td></tr></table></figure>
+
+<p>&#x200B;        &#x25CF; &#x6DFB;&#x52A0;hosts&#x89E3;&#x6790;</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">cat &gt;&gt;/etc/hosts&lt;&lt;EOF </span><br><span class="line">192.168.169.135 k8s-master </span><br><span class="line">192.168.169.132 k8s-slave1 </span><br><span class="line">192.168.169.133 k8s-slave2 </span><br><span class="line">EOF</span><br></pre></td></tr></table></figure>
+
+<h2 id="3&#x3001;&#x914D;&#x7F6E;&#x65F6;&#x95F4;&#x540C;&#x6B65;"><a href="#3&#x3001;&#x914D;&#x7F6E;&#x65F6;&#x95F4;&#x540C;&#x6B65;" class="headerlink" title="3&#x3001;&#x914D;&#x7F6E;&#x65F6;&#x95F4;&#x540C;&#x6B65;"></a>3&#x3001;&#x914D;&#x7F6E;&#x65F6;&#x95F4;&#x540C;&#x6B65;</h2><p>&#x64CD;&#x4F5C;&#x8282;&#x70B9;&#x2236; &#x6240;&#x6709;&#x7684;master&#x548C;slave&#x8282;&#x70B9;&#xFF08;k8s-master&#xFF0C;k8s-slave&#xFF09;&#x9700;&#x8981;&#x6267;&#x884C;</p>
+<p>&#x200B;    1&#x3001;&#x4FEE;&#x6539;&#x65F6;&#x533A;</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">tzselect -&gt; &#x9009;5&#xFF08;Asia&#xFF09; -&gt; &#x9009;9&#xFF08;China&#xFF09; -&gt; &#x9009;1&#xFF08;yes&#xFF09;</span><br><span class="line"><span class="meta">#</span><span class="bash"> &#x6700;&#x540E;&#x590D;&#x5236;&#x554A;</span></span><br><span class="line">TZ=&apos;Asia/Shanghai&apos;; export TZ</span><br><span class="line"><span class="meta"></span></span><br><span class="line"><span class="meta">#</span><span class="bash"> &#x67E5;&#x770B;&#x914D;&#x7F6E;&#x60C5;&#x51B5;</span></span><br><span class="line">date -R</span><br></pre></td></tr></table></figure>
+
+<p><img src="/%E4%BA%91%E5%8E%9F%E7%94%9F/kubernetes/02_k8s_k8s%E5%8D%95%E5%8F%B0master%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/image-20211129090304921.png" alt="image-20211129090304921"></p>
+<p>&#x200B;        &#x8FD9;&#x91CC;&#x663E;&#x793A;&#x5C31;&#x4E3A;&#x4E1C;&#x516B;&#x533A;&#xFF1B;    </p>
+<p>&#x200B;    2&#x3001;&#x540C;&#x6B65;&#x65F6;&#x95F4;</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">yum install -y ntpdate</span><br><span class="line"><span class="meta"></span></span><br><span class="line"><span class="meta">#</span><span class="bash"> &#x540C;&#x6B65;&#x65F6;&#x95F4;</span></span><br><span class="line">ntpdate ntp.aliyun.com</span><br></pre></td></tr></table></figure>
+
+<h2 id="4&#x3001;&#x8C03;&#x6574;&#x7CFB;&#x7EDF;&#x914D;&#x7F6E;"><a href="#4&#x3001;&#x8C03;&#x6574;&#x7CFB;&#x7EDF;&#x914D;&#x7F6E;" class="headerlink" title="4&#x3001;&#x8C03;&#x6574;&#x7CFB;&#x7EDF;&#x914D;&#x7F6E;"></a>4&#x3001;&#x8C03;&#x6574;&#x7CFB;&#x7EDF;&#x914D;&#x7F6E;</h2><p>&#x200B;    &#x64CD;&#x4F5C;&#x8282;&#x70B9;&#x2236; &#x6240;&#x6709;&#x7684;master&#x548C;slave&#x8282;&#x70B9;&#xFF08;k8s-master&#xFF0C;k8s-slave&#xFF09;&#x9700;&#x8981;&#x6267;&#x884C;</p>
+<blockquote>
+<p>&#x672C;&#x7AE0;&#x4E0B;&#x8FF0;&#x64CD;&#x4F5C;&#x5747;&#x4EE5;k8s-master&#x4E3A;&#x4F8B;&#xFF0C;&#x5176;&#x4ED6;&#x8282;&#x70B9;&#x5747;&#x662F;&#x76F8;&#x540C;&#x7684;&#x64CD;&#x4F5C;&#xFF08;ip&#x548C;hostname&#x7684;&#x503C;&#x6362;&#x6210;&#x5BF9;&#x5E94;&#x673A;&#x5668;</p>
+</blockquote>
+<p>&#x200B;    &#x25CF; &#x8BBE;&#x7F6E;&#x5B89;&#x5168;&#x7EC4;&#x5F00;&#x653E;&#x7AEF;&#x53E3;</p>
+<p>&#x200B;    &#x5982;&#x679C;&#x8282;&#x70B9;&#x95F4;&#x65E0;&#x5B89;&#x5168;&#x7EC4;&#x9650;&#x5236;&#xFF08;&#x5185;&#x7F51;&#x673A;&#x5668;&#x95F4;&#x53EF;&#x4EE5;&#x4EFB;&#x610F;&#x8BBF;&#x95EE;&#xFF09;&#xFF0C;&#x53EF;&#x4EE5;&#x5FFD;&#x7565;&#xFF0C;&#x5426;&#x5219;&#xFF0C;&#x81F3;&#x5C11;&#x4FDD;&#x8BC1;&#x5982;&#x4E0B;&#x7AEF;&#x53E3;&#x53EF;&#x901A;&#x2236;</p>
+<p>&#x200B;        k8s-master&#x8282;&#x70B9;&#x2236;TCP&#x2236;6443&#xFF0C;2379&#xFF0C;2380&#xFF0C;60080&#xFF0C;60081UDP&#x534F;&#x8BAE;&#x7AEF;&#x53E3;&#x5168;&#x90E8;&#x6253;&#x5F00;</p>
+<p>&#x200B;        k8s-slave&#x8282;&#x70B9;&#x2236; UDP&#x534F;&#x8BAE;&#x7AEF;&#x53E3;&#x5168;&#x90E8;&#x6253;&#x5F00;</p>
+<p>&#x200B;    &#x25CF; &#x8BBE;&#x7F6E;iptables</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">iptables -P FORWARD ACCEPT</span><br></pre></td></tr></table></figure>
+
+<p>&#x200B;    &#x25CF; &#x5173;&#x95ED;swap </p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">swapoff -a # &#x9632;&#x6B62;&#x5F00;&#x673A;&#x81EA;&#x52A8;&#x6302;&#x8F7D; Swap &#x5206;&#x533A;</span><br><span class="line"><span class="meta">#</span><span class="bash"> &#x8FD9;&#x4E00;&#x884C;sed&#x547D;&#x4EE4;&#x4E3A;&#x6CE8;&#x91CA;&#x6389;/etc/fstab&#x4E2D;&#x7684;swap&#x884C;&#xFF1B;</span></span><br><span class="line">sed -i &apos;/ swap / s/^\(.*\)$/#\1/g&apos; /etc/fstab</span><br></pre></td></tr></table></figure>
+
+<p>&#x200B;    &#x25CF; &#x5173;&#x95ED;selinux&#x548C;&#x9632;&#x706B;&#x5899;</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">sed -ri &apos;s#(SELINUX=).*#\1disabled#&apos; /etc/selinux/config </span><br><span class="line">setenforce 0</span><br><span class="line">systemctl disable firewalld &amp;&amp; systemctl stop firewalld</span><br></pre></td></tr></table></figure>
+
+<p>&#x200B;    &#x25CF; &#x4FEE;&#x6539;&#x5185;&#x6838;&#x53C2;&#x6570;</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">cat &lt;&lt;EOF &gt; /etc/sysctl.d/k8s.conf</span><br><span class="line">net.bridge.bridge-nf-call-ip6tables=1 </span><br><span class="line">net.bridge.bridge-nf-call-iptables =1 </span><br><span class="line">net.ipv4.ip_forward=1 </span><br><span class="line">vm.max_map_count=262144 </span><br><span class="line">EOF</span><br><span class="line">modprobe br_netfilter</span><br><span class="line">sysctl -p /etc/sysctl.d/k8s.conf</span><br></pre></td></tr></table></figure>
+
+<p>&#x200B;    &#x25CF; &#x8BBE;&#x7F6E;yum&#x6E90;</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">curl -o /etc/yum.repos.d/centos-7.repo http://mirrors.aliyun.com/repo/Centos-7.repo</span><br><span class="line">curl -o /etc/yum.repos.d/docker-ce.repo http://mirrors.aliyun.com/docker-ce/linux/centos/docker-ce.repo</span><br><span class="line">cat &lt;&lt;EOF &gt; /etc/yum.repos.d/kubernetes.repo</span><br><span class="line">[kubernetes]</span><br><span class="line">name=Kubernetes</span><br><span class="line">baseurl=http://mirrors.aliyun.com/kubernetes/yum/repos/kubernetes-el7-x86_64</span><br><span class="line">enabled=1</span><br><span class="line">gpgcheck=0 </span><br><span class="line">repo_gpgcheck=0</span><br><span class="line">gpgkey=http://mirrors.aliyun.com/kubernetes/yum/doc/yum-key.gpg</span><br><span class="line">		http://mirrors.aliyun.com/kubernetes/yum/doc/rpm-package-key.gpg</span><br><span class="line">EOF</span><br><span class="line"></span><br><span class="line">yum clean all &amp;&amp; yum makecache</span><br></pre></td></tr></table></figure>
+
+<h2 id="5&#x3001;&#x5B89;&#x88C5;dockers"><a href="#5&#x3001;&#x5B89;&#x88C5;dockers" class="headerlink" title="5&#x3001;&#x5B89;&#x88C5;dockers"></a>5&#x3001;&#x5B89;&#x88C5;dockers</h2><p>&#x200B;    &#x64CD;&#x4F5C;&#x8282;&#x70B9;&#x2236;&#x6240;&#x6709;&#x8282;&#x70B9;</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"><span class="comment"># &#x67E5;&#x770B;&#x6240;&#x6709;&#x7684;&#x53EF;&#x7528;&#x7248;&#x672C;</span></span></span><br><span class="line">yum list docker-ce --showduplicates | sort -r</span><br><span class="line"><span class="meta">#</span><span class="bash"><span class="comment"># &#x5B89;&#x88C5;&#x65E7;&#x7248;&#x672C; yum insta11 docker-ce-cli-18.09.9-3.e17 docker-ce-18.09.9-3.e17</span></span> </span><br><span class="line"><span class="meta">#</span><span class="bash"><span class="comment"># &#x5B89;&#x88C5;&#x6E90;&#x91CC;&#x6700;&#x65B0;&#x7248;&#x672C;&#xFF0C;&#x7F51;&#x7EDC;&#x4E0D;&#x884C;&#x591A;&#x5B89;&#x88C5;&#x51E0;&#x6B21;&#x5C31;&#x884C;&#x4E86;&#xFF1B;</span></span></span><br><span class="line">yum install docker-ce -y</span><br><span class="line"><span class="meta"></span></span><br><span class="line"><span class="meta">#</span><span class="bash"><span class="comment"># &#x914D;&#x7F6E;docker&#x52A0;&#x901F;</span></span></span><br><span class="line">mkdir -p /etc/docker </span><br><span class="line">vi /etc/docker/daemon.json</span><br><span class="line">{</span><br><span class="line"><span class="meta">#</span><span class="bash"> &#x8FD9;&#x91CC;&#x914D;&#x7F6E;&#x79C1;&#x6709;&#x4ED3;&#x5E93;&#x5730;&#x5740;&#x7684;&#xFF0C;&#x6211;&#x4EEC;&#x6CA1;&#x6709;&#xFF1B;</span></span><br><span class="line"><span class="meta">#</span><span class="bash">    <span class="string">&quot;insecure-registries&quot;</span>:[</span></span><br><span class="line"><span class="meta">#</span><span class="bash">    <span class="string">&quot;172.21.51.67:5000&quot;</span></span></span><br><span class="line"><span class="meta">#</span><span class="bash">    ],</span></span><br><span class="line">    &quot;registry-mirrors&quot;:[</span><br><span class="line">    &quot;https://8xpk5wnt.mirror.aliyuncs.com&quot;</span><br><span class="line">    ]</span><br><span class="line">}</span><br><span class="line"><span class="meta">#</span><span class="bash"><span class="comment"># &#x542F;&#x52A8;docker</span></span></span><br><span class="line">systemctl daemon-reload</span><br><span class="line">systemctl enable docker &amp;&amp; systemctl start docker</span><br></pre></td></tr></table></figure>
+
+<p>&#x200B;    &#x8FD9;&#x91CC;&#x9700;&#x8981;&#x627E;&#x5230;&#x81EA;&#x5DF1;&#x7684;&#x963F;&#x91CC;&#x4E91;&#x5E73;&#x53F0;&#xFF0C;&#x6DFB;&#x52A0;&#x81EA;&#x5DF1;&#x7684;&#x52A0;&#x901F;&#x5668;&#x5730;&#x5740;&#xFF1B;</p>
+<p><img src="/%E4%BA%91%E5%8E%9F%E7%94%9F/kubernetes/02_k8s_k8s%E5%8D%95%E5%8F%B0master%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/image-20211127101018105.png" alt="image-20211127101018105"></p>
+<h1 id="&#x90E8;&#x7F72;Kubernetes"><a href="#&#x90E8;&#x7F72;Kubernetes" class="headerlink" title="&#x90E8;&#x7F72;Kubernetes"></a>&#x90E8;&#x7F72;Kubernetes</h1><h2 id="1&#x3001;&#x5B89;&#x88C5;Kubeadm-kubelet&#x548C;kubectl"><a href="#1&#x3001;&#x5B89;&#x88C5;Kubeadm-kubelet&#x548C;kubectl" class="headerlink" title="1&#x3001;&#x5B89;&#x88C5;Kubeadm,kubelet&#x548C;kubectl"></a>1&#x3001;&#x5B89;&#x88C5;Kubeadm,kubelet&#x548C;kubectl</h2><p>&#x200B;    &#x64CD;&#x4F5C;&#x8282;&#x70B9;&#x2236;&#x6240;&#x6709;&#x7684;master&#x548C;slave&#x8282;&#x70B9;&#xFF08;k8s-master&#xFF0C;k8s-slave&#xFF09;&#x9700;&#x8981;&#x6267;&#x884C;</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">yum install -y kubelet-1.16.2 kubeadm-1.16.2 kubectl-1.16.2 --disableexcludes=kubernetes </span><br><span class="line"><span class="meta"></span></span><br><span class="line"><span class="meta">#</span><span class="bash"><span class="comment"># &#x67E5;&#x770B;kubeadm &#x7248;&#x672C;</span></span></span><br><span class="line">kubeadm version </span><br><span class="line"><span class="meta"></span></span><br><span class="line"><span class="meta">#</span><span class="bash"><span class="comment"># &#x8BBE;&#x7F6E;kubelet&#x5F00;&#x673A;&#x542F;&#x52A8;</span></span></span><br><span class="line">systemctl enable kubelet</span><br></pre></td></tr></table></figure>
+
+<h2 id="2&#x3001;&#x521D;&#x59CB;&#x5316;&#x914D;&#x7F6E;&#x6587;&#x4EF6;"><a href="#2&#x3001;&#x521D;&#x59CB;&#x5316;&#x914D;&#x7F6E;&#x6587;&#x4EF6;" class="headerlink" title="2&#x3001;&#x521D;&#x59CB;&#x5316;&#x914D;&#x7F6E;&#x6587;&#x4EF6;"></a>2&#x3001;&#x521D;&#x59CB;&#x5316;&#x914D;&#x7F6E;&#x6587;&#x4EF6;</h2><p>&#x200B;    &#x64CD;&#x4F5C;&#x8282;&#x70B9;&#x2236;&#x53EA;&#x5728;master&#x8282;&#x70B9;&#xFF08;k8s-master&#xFF09;&#x6267;&#x884C;</p>
+<p>&#x200B;    &#x518D;master&#x8282;&#x70B9;&#x4E0A;&#x767B;&#x5F55;&#x81EA;&#x5DF1;&#x7684;&#x963F;&#x91CC;&#x4E91;docker&#x8D26;&#x53F7;&#xFF1B;&#x9996;&#x5148;&#x9700;&#x8981;&#x5728;&#x81EA;&#x5DF1;&#x7684;&#x963F;&#x91CC;&#x4E91;&#x7BA1;&#x7406;&#x754C;&#x9762;&#x4E0A;&#x9762;&#x8BBE;&#x7F6E;&#x56FA;&#x5B9A;&#x5BC6;&#x7801;&#xFF1B;</p>
+<p><img src="/%E4%BA%91%E5%8E%9F%E7%94%9F/kubernetes/02_k8s_k8s%E5%8D%95%E5%8F%B0master%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/image-20211129094153411.png" alt="image-20211129094153411"></p>
+<p>&#x200B;    &#x7136;&#x540E;&#x4F7F;&#x7528;&#x6307;&#x5B9A;&#x8D26;&#x53F7;&#x5BC6;&#x7801;&#x767B;&#x5F55;&#x81EA;&#x5DF1;&#x7684;&#x963F;&#x91CC;&#x4E91;&#x955C;&#x50CF;&#xFF1B;</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker login --username=burno**** registry.cn-hangzhou.aliyuncs.com</span><br></pre></td></tr></table></figure>
+
+<p><img src="/%E4%BA%91%E5%8E%9F%E7%94%9F/kubernetes/02_k8s_k8s%E5%8D%95%E5%8F%B0master%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/image-20211129094410466.png" alt="image-20211129094410466"></p>
+<p>&#x200B;    &#x767B;&#x5F55;&#x6210;&#x529F;&#x754C;&#x9762;&#x4EE5;&#x540E;&#x5982;&#x4E0A;&#x56FE;&#x6240;&#x793A;&#xFF1B;</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"><span class="comment"># &#x751F;&#x6210;&#x914D;&#x7F6E;&#x6587;&#x4EF6;</span></span></span><br><span class="line">mkdir /opt/kubeinstall</span><br><span class="line">kubeadm config print init-defaults &gt; /opt/kubeinstall/kubeadm.yaml </span><br><span class="line"><span class="meta"></span></span><br><span class="line"><span class="meta">#</span><span class="bash"><span class="comment"># &#x4FEE;&#x6539;yaml&#x7684;&#x914D;&#x7F6E;&#x6587;&#x4EF6;</span></span></span><br><span class="line">vim kubeadm.yaml</span><br><span class="line">apiVersion: kubeadm.k8s.io/v1beta2</span><br><span class="line">bootstrapTokens:</span><br><span class="line">- groups:</span><br><span class="line">  - system:bootstrappers:kubeadm:default-node-token</span><br><span class="line">  token: abcdef.0123456789abcdef</span><br><span class="line">  ttl: 24h0m0s</span><br><span class="line">  usages:</span><br><span class="line">  - signing</span><br><span class="line">  - authentication</span><br><span class="line">kind: InitConfiguration</span><br><span class="line">localAPIEndpoint:</span><br><span class="line">  advertiseAddress: 192.168.169.135  # apiserver&#x5730;&#x5740;&#xFF0C;&#x8FD9;&#x4E2A;&#x5730;&#x5740;&#x8981;&#x4FEE;&#x6539;&#x6210;&#x4E3A;master&#x5730;&#x5740;&#xFF1B;</span><br><span class="line">  bindPort: 6443</span><br><span class="line">nodeRegistration:</span><br><span class="line">  criSocket: /var/run/dockershim.sock</span><br><span class="line">  name: k8s-master</span><br><span class="line">  taints:</span><br><span class="line">  - effect: NoSchedule</span><br><span class="line">    key: node-role.kubernetes.io/master</span><br><span class="line">---</span><br><span class="line">apiServer:</span><br><span class="line">  timeoutForControlPlane: 4m0s</span><br><span class="line">apiVersion: kubeadm.k8s.io/v1beta2</span><br><span class="line">certificatesDir: /etc/kubernetes/pki</span><br><span class="line">clusterName: kubernetes</span><br><span class="line">controllerManager: {}</span><br><span class="line">dns:</span><br><span class="line">  type: CoreDNS</span><br><span class="line">etcd:</span><br><span class="line">  local:</span><br><span class="line">    dataDir: /var/lib/etcd</span><br><span class="line">imageRepository: registry.cn-hangzhou.aliyuncs.com/google_containers  # &#x8FD9;&#x4E2A;&#x5730;&#x5740;&#x8981;&#x4FEE;&#x6539;&#x4E3A;&#x963F;&#x91CC;&#x4E91;&#x7684;&#x955C;&#x50CF;&#x6E90;&#x5730;&#x5740;</span><br><span class="line">kind: ClusterConfiguration</span><br><span class="line">kubernetesVersion: v1.16.2  # &#x8FD9;&#x91CC;&#x6700;&#x597D;&#x6539;&#x4E3A;1.16.2&#x7248;&#x672C;</span><br><span class="line">networking:</span><br><span class="line">  dnsDomain: cluster.local</span><br><span class="line">  serviceSubnet: 10.96.0.0/12  # &#x8FD9;&#x4E2A;&#x5730;&#x5740;&#x662F;pod&#x7F51;&#x6BB5;&#xFF0C;fannel&#x63D2;&#x4EF6;&#x9700;&#x8981;&#x4F7F;&#x7528;&#x5230;&#x8FD9;&#x4E2A;&#x5730;&#x5740;</span><br><span class="line">scheduler: {}</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>&#x5BF9;&#x4E8E;&#x4E0A;&#x9762;&#x7684;&#x8D44;&#x6E90;&#x6E05;&#x5355;&#x7684;&#x6587;&#x6863;&#x6BD4;&#x8F83;&#x6742;&#xFF0C;&#x8981;&#x60F3;&#x5B8C;&#x6574;&#x4E86;&#x89E3;&#x4E0A;&#x9762;&#x7684;&#x8D44;&#x6E90;&#x5BF9;&#x8C61;&#x5BF9;&#x5E94;&#x7684;&#x5C5E;&#x6027;&#xFF0C;&#x53EF;&#x4EE5;&#x67E5;&#x770B;&#x5BF9;&#x5E94;&#x7684; godoc &#x6587;&#x6863;&#xFF0C;&#x5730;&#x5740;&#x2236;<a target="_blank" rel="noopener" href="https://godoc.org/k8s.io/kubernetes/cmd/kubeadm/app/apis/kubeadm/v1beta2%EF%BC%8C%E3%80%82">https://godoc.org/k8s.io/kubernetes/cmd/kubeadm/app/apis/kubeadm/v1beta2&#xFF0C;&#x3002;</a></p>
+</blockquote>
+<h2 id="3&#x3001;&#x63D0;&#x524D;&#x4E0B;&#x8F7D;&#x955C;&#x50CF;"><a href="#3&#x3001;&#x63D0;&#x524D;&#x4E0B;&#x8F7D;&#x955C;&#x50CF;" class="headerlink" title="3&#x3001;&#x63D0;&#x524D;&#x4E0B;&#x8F7D;&#x955C;&#x50CF;"></a>3&#x3001;&#x63D0;&#x524D;&#x4E0B;&#x8F7D;&#x955C;&#x50CF;</h2><p>&#x200B;    &#x64CD;&#x4F5C;&#x8282;&#x70B9;&#x2236;&#x53EA;&#x5728;master&#x8282;&#x70B9;&#xFF08;k8s-master&#xFF09;&#x6267;&#x884C;</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"><span class="comment"># &#x67E5;&#x770B;&#x9700;&#x8981;&#x4F7F;&#x7528;&#x7684;&#x955C;&#x50CF;&#x5217;&#x8868;&#xFF0C;&#x82E5;&#x4E07;&#x95EE;&#x9898;&#xFF0C;&#x5C06;&#x5F97;&#x5230;&#x5982;&#x4E0B;&#x5217;&#x8868;</span></span></span><br><span class="line">kubeadm config images list --config kubeadm.yaml</span><br><span class="line">registry.aliyuncs.com/google_containers/kube-apiserver:V1.16.0</span><br><span class="line">registry.aliyuncs.com/google_containers/kube-controller-manager:v1.16.0 </span><br><span class="line">registry.aliyuncs.com/google_containers/kube-scheduler:v1.16.0 </span><br><span class="line">registry.aliyuncs.com/google_containers/kube-proxy:v1.16.0 </span><br><span class="line">registry.aliyuncs.com/google_containers/pause:3.1 </span><br><span class="line">registry.aliyuncs.com/google_containers/etcd:3.3.15-0 </span><br><span class="line">registry.aliyuncs.com/google_containers/coredns:1.6.2</span><br><span class="line"><span class="meta"></span></span><br><span class="line"><span class="meta">#</span><span class="bash"><span class="comment"># &#x63D0;&#x524D;&#x4E0B;&#x8F7D;&#x955C;&#x50CF;&#x5230;&#x672C;&#x5730;</span></span></span><br><span class="line">kubeadm config images pull --config kubeadm.yaml</span><br><span class="line">[config/images] Pulled registry.aliyuncs.com/google_containers/kube-apiserver:v1.16.0 </span><br><span class="line">[config/images] Pu1led registry.aliyuncs.com/google_containers/kube-controler-manager:V1.16.0</span><br><span class="line">[config/images] Pulled registry.aliyuncs.com/google_containers/kube-scheduler:v1.16.0</span><br><span class="line">[config/images] Puled registry.aliyuncs.com/google_containers/kube-proxy:vl.16.0 </span><br><span class="line">[config/images] Pu1led registry.aliyuncs.com/google_containers/pause:3.1 </span><br><span class="line">[config/images] Pulled registry.aliyuncs.com/google_containers/etcd:3.3.15-0 </span><br><span class="line">[config/images] Pulled registry.aliyuncs.com/google_containers/coredns:1.6.2</span><br><span class="line"><span class="meta"></span></span><br><span class="line"><span class="meta">#</span><span class="bash"><span class="comment"># &#x5982;&#x679C;&#x62C9;&#x53D6;&#x955C;&#x50CF;&#x51FA;&#x73B0;&#x9519;&#x8BEF;&#xFF0C;&#x5219;&#x591A;&#x62C9;&#x53D6;&#x51E0;&#x6B21;&#x5C31;&#x884C;&#x4E86;&#xFF1B;</span></span></span><br></pre></td></tr></table></figure>
+
+<p>&#x200B;    &#x62A5;&#x9519;&#xFF1A;</p>
+<p><img src="/%E4%BA%91%E5%8E%9F%E7%94%9F/kubernetes/02_k8s_k8s%E5%8D%95%E5%8F%B0master%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/image-20211127112148301.png" alt="image-20211127112148301"></p>
+<p>&#x200B;    &#x89E3;&#x51B3;&#xFF1A;</p>
+<p>&#x200B;        &#x65F6;&#x95F4;&#x4E0D;&#x540C;&#x6B65;&#xFF1B;&#x89E3;&#x51B3;&#x65F6;&#x95F4;&#x540C;&#x6B65;&#x95EE;&#x9898;&#x5373;&#x53EF;&#xFF1B;</p>
+<p>&#x200B;    <strong>&#x91CD;&#x8981;&#x66F4;&#x65B0;.&#x5982;&#x679C;&#x51FA;&#x73B0;&#x4E0D;&#x53EF;&#x7528;&#x7684;&#x60C5;&#x51B5;&#xFF0C;&#x8BF7;&#x4F7F;&#x7528;&#x5982;&#x4E0B;&#x65B9;&#x5F0F;&#x6765;&#x4EE3;&#x66FF;&#x2236;</strong></p>
+<p>&#x200B;        1.&#x8FD8;&#x539F;kubeadm.yaml&#x7684;imageRepository</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">...</span><br><span class="line">imageRepository: k8s.gcr.io</span><br><span class="line">...</span><br><span class="line"><span class="meta"></span></span><br><span class="line"><span class="meta">#</span><span class="bash"><span class="comment"># &#x67E5;&#x770B;&#x4F7F;&#x7528;&#x7684;&#x955C;&#x50CF;&#x6E90;</span></span></span><br><span class="line">kubeadm config images list --config kubeadm.yaml</span><br><span class="line">k8s.gcr.io/kube-apiserver:v1.16.0</span><br><span class="line">k8s.gcr.io/kube-controller-manager:v1.16.0 </span><br><span class="line">k8s.gcr.io/kube-scheduler:v1.16.0</span><br><span class="line">k8s.gcr.io/kube-proxy:V1.16.0 </span><br><span class="line">k8s.gcr.io/pause:3.1</span><br><span class="line">k8s.gcr.io/etcd:3.3.15-0 </span><br><span class="line">k8s.gcr.io/coredns:1.6.2</span><br></pre></td></tr></table></figure>
+
+<p>&#x200B;        2.&#x4F7F;&#x7528;docker hub&#x4E2D;&#x7684;&#x955C;&#x50CF;&#x6E90;&#x6765;&#x4E0B;&#x8F7D;&#xFF0C;&#x6CE8;&#x610F;&#x4E0A;&#x8FF0;&#x5217;&#x8868;&#x4E2D;&#x8981;&#x52A0;&#x4E0A;&#x5904;&#x7406;&#x5668;&#x67B6;&#x6784;&#xFF0C;&#x901A;&#x5E38;&#x6211;&#x4EEC;&#x4F7F;&#x7528;&#x7684;&#x865A;&#x62DF;&#x673A;&#x90FD;&#x662F;amd64</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">docker pull mirrorgooglecontainers/kube-scheduler-amd64:v1.16.0 </span><br><span class="line">docker pull mirrorgooglecontainers/etcd-amd64:3.3.15-0</span><br><span class="line">docker pull k8s.gcr.io/kube-apiserver:v1.16.0</span><br><span class="line">docker pull k8s.gcr.io/kube-controller-manager:v1.16.0 </span><br><span class="line">docker pull k8s.gcr.io/kube-scheduler:v1.16.0</span><br><span class="line">docker pull k8s.gcr.io/kube-proxy:V1.16.0 </span><br><span class="line">docker pull k8s.gcr.io/pause:3.1</span><br><span class="line">docker pull k8s.gcr.io/etcd:3.3.15-0 </span><br><span class="line">docker pull k8s.gcr.io/coredns:1.6.2</span><br><span class="line">docker tag mirrorgooglecontainers/etcd-amd64:3.3.15-0 k8s.gcr.io/etcd:3.3.15-0</span><br></pre></td></tr></table></figure>
+
+<p>&#x200B;    &#x6700;&#x540E;&#x8FD8;&#x662F;&#x4E0B;&#x8F7D;&#x4E0D;&#x4E86;&#x955C;&#x50CF;&#xFF0C;&#x53EF;&#x4EE5;&#x6839;&#x636E;&#x4E0B;&#x9762;&#x535A;&#x5BA2;&#x6765;&#x64CD;&#x4F5C;&#xFF0C;&#x53EA;&#x662F;&#x9700;&#x8981;&#x6CE8;&#x610F;&#x4E00;&#x4E0B;&#x76F8;&#x5173;&#x95EE;&#x9898;&#xFF1A;</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&#x535A;&#x5BA2;&#xFF1A;https://www.cnblogs.com/yinzhengjie/p/12258215.html</span><br><span class="line"><span class="meta">#</span><span class="bash"><span class="comment"># &#x6CE8;&#x610F;&#xFF1A;</span></span></span><br><span class="line"><span class="meta">#</span><span class="bash"> 1&#x3001;&#x9700;&#x8981;&#x6709;&#x81EA;&#x5DF1;&#x7684;&#x8D26;&#x53F7;</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> 2&#x3001;docker&#x767B;&#x5F55;aliyun&#x7684;&#x65F6;&#x5019;&#xFF0C;&#x662F;&#x955C;&#x50CF;&#x8D26;&#x53F7;&#xFF0C;&#x800C;&#x4E0D;&#x662F;aliyun&#x8D26;&#x53F7;&#xFF1B;</span></span><br></pre></td></tr></table></figure>
+
+<p>&#x200B;    &#x62A5;&#x9519;&#xFF1A;</p>
+<p><img src="/%E4%BA%91%E5%8E%9F%E7%94%9F/kubernetes/02_k8s_k8s%E5%8D%95%E5%8F%B0master%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/image-20211127123535252.png" alt="image-20211127123535252"></p>
+<p>&#x200B;    &#x89E3;&#x51B3;&#xFF1A;</p>
+<p>&#x200B;        &#x8981;&#x767B;&#x5F55;&#x963F;&#x91CC;&#x4E91;&#x955C;&#x50CF;&#x670D;&#x52A1;&#x624D;&#x884C;&#xFF1B;</p>
+<blockquote>
+<p>&#x6CE8;&#x610F;&#xFF1A;&#x8FD9;&#x91CC;&#x4F7F;&#x7528;&#x7684;&#x955C;&#x50CF;&#x670D;&#x52A1;&#x7684;&#x5BC6;&#x7801;&#x548C;&#x963F;&#x91CC;&#x4E91;&#x8D26;&#x53F7;&#x7684;&#x5BC6;&#x7801;&#x4E0D;&#x662F;&#x540C;&#x4E00;&#x4E2A;&#x5BC6;&#x7801;&#xFF1B;</p>
+</blockquote>
+<p><img src="/%E4%BA%91%E5%8E%9F%E7%94%9F/kubernetes/02_k8s_k8s%E5%8D%95%E5%8F%B0master%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/image-20211127124441543.png" alt="image-20211127124441543"></p>
+<h2 id="4&#x3001;&#x521D;&#x59CB;&#x5316;master&#x8282;&#x70B9;"><a href="#4&#x3001;&#x521D;&#x59CB;&#x5316;master&#x8282;&#x70B9;" class="headerlink" title="4&#x3001;&#x521D;&#x59CB;&#x5316;master&#x8282;&#x70B9;"></a>4&#x3001;&#x521D;&#x59CB;&#x5316;master&#x8282;&#x70B9;</h2><p>&#x200B;    &#x64CD;&#x4F5C;&#x8282;&#x70B9;&#x2236;&#x53EA;&#x5728;master&#x8282;&#x70B9;&#xFF08;k8s-master&#xFF09;&#x6267;&#x884C;</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">kubeadm init --config kubeadm.yaml</span><br><span class="line"><span class="meta">#</span><span class="bash"> kubeadm init --kubernetes-version=v1.16.2 --pod-network-cidr=10.244.0.0/16 --ignore-preflight-errors=Swap --config kubeadm.yaml</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> &#x521D;&#x59CB;&#x5316;&#x8FC7;&#x7A0B;&#x53EF;&#x80FD;&#x4F1A;&#x6D88;&#x8017;&#x4E00;&#x70B9;&#x90A3;&#x65F6;&#x95F4;</span></span><br><span class="line"><span class="meta">#</span></span><br></pre></td></tr></table></figure>
+
+<p>&#x200B;    &#x521D;&#x59CB;&#x5316;&#x62A5;&#x9519;&#xFF1A;</p>
+<p><img src="/%E4%BA%91%E5%8E%9F%E7%94%9F/kubernetes/02_k8s_k8s%E5%8D%95%E5%8F%B0master%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/image-20211129095856598.png" alt="image-20211129095856598"></p>
+<p>&#x200B;    &#x89E3;&#x51B3;&#xFF1A;</p>
+<p>&#x200B;        master&#x8282;&#x70B9;&#x6700;&#x5C11;CPU&#x8981;&#x6709;&#x4E24;&#x4E2A;&#xFF1B;</p>
+<p>&#x200B;    &#x521D;&#x59CB;&#x5316;&#x6210;&#x529F;&#x540E;&#xFF0C;&#x4F1A;&#x6709;&#x5982;&#x4E0B;&#x63D0;&#x793A;&#xFF1A;</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">...</span><br><span class="line">Your Kubernetes master has initialized successfully!</span><br><span class="line"></span><br><span class="line">To start using your cluster,you need to run the following as a reqular user:</span><br><span class="line"></span><br><span class="line">	mkdir -p SHOME/. kube</span><br><span class="line">	sudo cp-i/etc/kubernetes/admin.conf SHOME/.kube/config </span><br><span class="line">	sudo chown $(id -u):$(id -g) $HOME/. kube/config</span><br><span class="line">	</span><br><span class="line">You should now deploy a pod network to the cluster.</span><br><span class="line">Run &quot;kubectl apply -f [podnetwork].yam1&quot; with one of the options listed at:</span><br><span class="line">	https://kubernetes.io/docs/concepts/cluster-administration/addons/</span><br><span class="line">	</span><br><span class="line">Then you can join any number of worker nodes by running the following on each as root:</span><br><span class="line"></span><br><span class="line">kubeadm join 172.21.51.67:6443 --token abcdef.0123456789abcdef \</span><br><span class="line">	--discovery-token-ca-cert-hash</span><br><span class="line">sha256:Yc4305f032f4bf534f628c32f5039084f4b103c922ff71b12a5f0f98dlca9a4f</span><br></pre></td></tr></table></figure>
+
+<p>&#x63A5;&#x4E0B;&#x6765;&#x6309;&#x7167;&#x4E0A;&#x8FF0;&#x63D0;&#x793A;&#x4FE1;&#x606F;&#x64CD;&#x4F5C;&#xFF0C;&#x914D;&#x7F6E;kubectlI&#x5BA2;&#x6237;&#x7AEF;&#x7684;&#x8BA4;&#x8BC1;</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">mkdir -p $HOME/. kube</span><br><span class="line">sudo cp -i /etc/kubernetes/admin.conf SHOME/.kube/config</span><br><span class="line">sudo chown $(id -u):$(id -g) $HOME/.kube/config</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>&#x6CE8;&#x610F;&#x2236;&#x6B64;&#x65F6;&#x4F7F;&#x7528;kubectl get nodes&#x67E5;&#x770B;&#x8282;&#x70B9;&#x5E94;&#x8BE5;&#x5904;&#x4E8E;notReady&#x72B6;&#x6001;&#xFF0C;&#x56E0;&#x4E3A;&#x8FD8;&#x672A;&#x914D;&#x7F6E;&#x7F51;&#x7EDC;&#x63D2;&#x4EF6;&#x82E5;&#x6267;&#x884C;&#x521D;&#x59CB;&#x5316;&#x8FC7;&#x7A0B;&#x4E2D;&#x51FA;&#x9519;&#xFF0C;&#x6839;&#x636E;&#x9519;&#x8BEF;&#x4FE1;&#x606F;&#x8C03;&#x6574;&#x540E;&#xFF0C;&#x6267;&#x884C;kubeadm reset&#x540E;&#x518D;&#x6B21;&#x6267;&#x884C;init&#x64CD;&#x4F5C;&#x5373;&#x53EF;</p>
+</blockquote>
+<h2 id="5&#x3001;&#x6DFB;&#x52A0;slave&#x8282;&#x70B9;&#x5230;&#x96C6;&#x7FA4;&#x4E2D;"><a href="#5&#x3001;&#x6DFB;&#x52A0;slave&#x8282;&#x70B9;&#x5230;&#x96C6;&#x7FA4;&#x4E2D;" class="headerlink" title="5&#x3001;&#x6DFB;&#x52A0;slave&#x8282;&#x70B9;&#x5230;&#x96C6;&#x7FA4;&#x4E2D;"></a>5&#x3001;&#x6DFB;&#x52A0;slave&#x8282;&#x70B9;&#x5230;&#x96C6;&#x7FA4;&#x4E2D;</h2><p>&#x200B;    &#x64CD;&#x4F5C;&#x8282;&#x70B9;&#x2236;&#x6240;&#x6709;&#x7684;slave&#x8282;&#x70B9;&#xFF08;k8s-slave&#xFF09;&#x9700;&#x8981;&#x6267;&#x884C;</p>
+<p>&#x200B;    &#x5728;&#x6BCF;&#x53F0;slave&#x8282;&#x70B9;&#xFF0C;&#x6267;&#x884C;&#x5982;&#x4E0B;&#x547D;&#x4EE4;&#xFF0C;&#x8BE5;&#x547D;&#x4EE4;&#x662F;&#x5728;kubeadm init&#x6210;&#x529F;&#x540E;&#x63D0;&#x793A;&#x4FE1;&#x606F;&#x4E2D;&#x6253;&#x5370;&#x51FA;&#x6765;&#x7684;&#xFF0C;&#x9700;&#x8981;&#x66FF;&#x6362;&#x6210;&#x5B9E;&#x9645;init&#x540E;&#x6253;&#x5370;&#x51FA;&#x7684;&#x547D;&#x4EE4;&#x3002;</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">kuheadm join 192.168.169.135:6443 --token abcdef.0123456789abcdef \</span><br><span class="line">	--discovery-token-ca-cert-hash</span><br><span class="line">sha256:1c4305f032f4bf534f628c32f5039084f4b103c922ff71b12a5f0f98dlca9a4f</span><br></pre></td></tr></table></figure>
+
+<p>&#x200B;    &#x6267;&#x884C;&#x7ED3;&#x679C;&#x5982;&#x4E0B;&#xFF1A;</p>
+<p><img src="/%E4%BA%91%E5%8E%9F%E7%94%9F/kubernetes/02_k8s_k8s%E5%8D%95%E5%8F%B0master%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/image-20211129101042255.png" alt="image-20211129101042255"></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># &#x5728;master&#x8282;&#x70B9;&#x4E0A;&#x9762;&#x67E5;&#x6DFB;&#x52A0;&#x60C5;&#x51B5;</span></span><br><span class="line">kubectl get nodes</span><br><span class="line"><span class="comment"># &#x6DFB;&#x52A0;&#x8282;&#x70B9;&#x9700;&#x8981;&#x7B49;&#x5F85;&#x4E00;&#x4E0B;</span></span><br></pre></td></tr></table></figure>
+
+<p><img src="/%E4%BA%91%E5%8E%9F%E7%94%9F/kubernetes/02_k8s_k8s%E5%8D%95%E5%8F%B0master%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/image-20211129101201518.png" alt="image-20211129101201518"></p>
+<h2 id="6&#x3001;&#x5B89;&#x88C5;flannel&#x63D2;&#x4EF6;"><a href="#6&#x3001;&#x5B89;&#x88C5;flannel&#x63D2;&#x4EF6;" class="headerlink" title="6&#x3001;&#x5B89;&#x88C5;flannel&#x63D2;&#x4EF6;"></a>6&#x3001;&#x5B89;&#x88C5;flannel&#x63D2;&#x4EF6;</h2><p>&#x200B;    &#x64CD;&#x4F5C;&#x8282;&#x70B9;&#x2236;&#x53EA;&#x5728;master&#x8282;&#x70B9;&#xFF08;k8s-master&#xFF09;&#x6267;&#x884C;</p>
+<p>&#x200B;    &#x25CF; &#x4E0B;&#x8F7D;flannel&#x7684;yaml&#x6587;&#x4EF6;</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">wget https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml --no-check-certificate</span><br></pre></td></tr></table></figure>
+
+<p>&#x200B;    &#x25CF; &#x4FEE;&#x6539;&#x914D;&#x7F6E;&#xFF0C;&#x6307;&#x5B9A;&#x7F51;&#x5361;&#x540D;&#x79F0;&#xFF0C;&#x5927;&#x6982;&#x5728;&#x6587;&#x4EF6;&#x7684;199&#x884C;&#xFF0C;&#x6DFB;&#x52A0;&#x4E00;&#x884C;&#x914D;&#x7F6E;&#x2236;</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">vim kube-flannel.yml</span><br><span class="line">...</span><br><span class="line">	containers:</span><br><span class="line">	- name :kube-flannel</span><br><span class="line">	  image quay.io/coreos/flannel:v0.11.0-amd64 </span><br><span class="line">	  command:</span><br><span class="line">	  - /opt/bin/flanneld </span><br><span class="line">	  args:</span><br><span class="line">	  - --ip-masq </span><br><span class="line">	  - --kube-subnet-mgr</span><br><span class="line">	  - --iface=ens33  # &#x5982;&#x679C;&#x673A;&#x5668;&#x5B58;&#x5728;&#x591A;&#x7F51;&#x5361;&#x7684;&#x8BDD;&#xFF0C;&#x6307;&#x5B9A;&#x5185;&#x7F51;&#x7F51;&#x5361;&#x7684;&#x540D;&#x79F0;&#xFF0C;&#x9ED8;&#x8BA4;&#x4E0D;&#x6307;&#x5B9A;&#x7684;&#x8BDD;&#x4F1A;&#x627E;&#x7B2C;&#x4E00;&#x5757;&#x7F51;</span><br><span class="line">	  resources:</span><br><span class="line">		requests:</span><br><span class="line">			cpu: &quot;100m&quot;</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+
+<p>&#x200B;    &#x25CF; &#xFF08;&#x53EF;&#x9009;&#xFF09;&#x4FEE;&#x6539;flannel&#x955C;&#x50CF;&#x5730;&#x5740;&#xFF0C;&#x4EE5;&#x9632;&#x9ED8;&#x8BA4;&#x7684;&#x955C;&#x50CF;&#x62C9;&#x53D6;&#x5931;&#x8D25;&#xFF0C;&#x540C;&#x6837;&#x662F;&#x5728;170&#x548C;190&#x884C;&#x4E0A;&#x4E0B;&#x7684;&#x4F4D;&#x7F6E;</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">vim kube-flannel.yml</span><br><span class="line">...</span><br><span class="line">containers:</span><br><span class="line">	- name: kube-flannel</span><br><span class="line">	  image: registry.cn-hangzhou.aliyuncs.com/google_containers/flannel-amd64:0.5.5</span><br><span class="line">      # &#x6307;&#x5B9A;&#x955C;&#x50CF;&#x4ED3;&#x5E93;&#xFF0C;&#x8FD9;&#x662F;&#x81EA;&#x5DF1;aliyun&#x7684;&#x955C;&#x50CF;&#x5730;&#x5740;&#xFF1B;&#x6CE8;&#x610F;&#x90FD;&#x8981;&#x6362;</span><br><span class="line">	  Command:</span><br><span class="line">	  - /opt/bin/flanneld </span><br><span class="line">	  args:</span><br><span class="line">	  - --ip-masq</span><br><span class="line">	  - --kube-subnet-mgr</span><br><span class="line">	  - --iface=ens33  # &#x5982;&#x679C;&#x673A;&#x5668;&#x5B58;&#x5728;&#x591A;&#x7F51;&#x5361;&#x7684;&#x8BDD;&#xFF0C;&#x6307;&#x5B9A;&#x5185;&#x7F51;&#x7F51;&#x5361;&#x7684;&#x540D;&#x79F0;&#xFF0C;&#x9ED8;&#x8BA4;&#x4E0D;&#x6307;&#x5B9A;&#x7684;&#x8BDD;&#x4F1A;&#x627E;&#x7B2C;&#x4E00;&#x5757;&#x7F51;</span><br><span class="line">	  resources:</span><br><span class="line">		requests:</span><br><span class="line">			cpu:&quot;100m&quot;</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+
+<p>&#x200B;    &#x25CF; &#x6267;&#x884C;&#x5B89;&#x88C5;flannel&#x7F51;&#x7EDC;&#x63D2;&#x4EF6;</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"><span class="comment"># &#x5148;&#x62C9;&#x53D6;&#x955C;&#x50CF;&#xFF0C;&#x6B64;&#x8FC7;&#x7A0B;&#x56FD;&#x5185;&#x901F;&#x5EA6;&#x6BD4;&#x8F83;&#x6162;&#xFF08;&#x955C;&#x50CF;&#x6CA1;&#x6709;&#x62C9;&#x53D6;&#x4E0B;&#x6765;&#xFF09;</span></span></span><br><span class="line">docker pull  registry.cn-hangzhou.aliyuncs.com/google_containers/flannel-amd64:0.5.5</span><br><span class="line"><span class="meta">#</span><span class="bash"> &#x591A;&#x6D4B;&#x8BD5;&#x51E0;&#x6B21;&#x53EF;&#x4EE5;&#x62C9;&#x53D6;&#x4E0B;&#x6765;</span></span><br><span class="line"><span class="meta"></span></span><br><span class="line"><span class="meta">#</span><span class="bash"> &#x6267;&#x884C;flannel&#x5B89;&#x88C5;</span></span><br><span class="line">kubectl create -f kube-flannel.yml</span><br><span class="line"><span class="meta">#</span><span class="bash"> &#x5982;&#x679C;&#x9700;&#x8981;&#x91CD;&#x65B0;&#x52A0;&#x8F7D;&#x914D;&#x7F6E;&#xFF0C;&#x5219;&#x4F7F;&#x7528;apply&#x53C2;&#x6570;&#x5373;&#x53EF;</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> kubectl apply -f kube-flannel.yml</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="7&#x3001;&#x8BBE;&#x7F6E;master&#x8282;&#x70B9;&#x662F;&#x5426;&#x53EF;&#x8C03;&#x5EA6;&#xFF08;&#x53EF;&#x9009;&#xFF09;"><a href="#7&#x3001;&#x8BBE;&#x7F6E;master&#x8282;&#x70B9;&#x662F;&#x5426;&#x53EF;&#x8C03;&#x5EA6;&#xFF08;&#x53EF;&#x9009;&#xFF09;" class="headerlink" title="7&#x3001;&#x8BBE;&#x7F6E;master&#x8282;&#x70B9;&#x662F;&#x5426;&#x53EF;&#x8C03;&#x5EA6;&#xFF08;&#x53EF;&#x9009;&#xFF09;"></a>7&#x3001;&#x8BBE;&#x7F6E;master&#x8282;&#x70B9;&#x662F;&#x5426;&#x53EF;&#x8C03;&#x5EA6;&#xFF08;&#x53EF;&#x9009;&#xFF09;</h2><p>&#x200B;    &#x64CD;&#x4F5C;&#x8282;&#x70B9;&#x2236;k8s-master</p>
+<p>&#x200B;    &#x9ED8;&#x8BA4;&#x90E8;&#x7F72;&#x6210;&#x529F;&#x540E;&#xFF0C;master&#x8282;&#x70B9;&#x65E0;&#x6CD5;&#x8C03;&#x5EA6;&#x4E1A;&#x52A1;pod&#xFF0C;&#x5982;&#x9700;&#x8BBE;&#x7F6E;master&#x8282;&#x70B9;&#x4E5F;&#x53EF;&#x4EE5;&#x53C2;&#x4E0E;pod&#x7684;&#x8C03;&#x5EA6;&#xFF0C;&#x9700;&#x6267;&#x884C;&#x2236;</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> &#x8FD9;&#x4E2A;&#x547D;&#x4EE4;&#x4E0D;&#x5BF9;&#xFF1B;</span></span><br><span class="line">kubectl taint node k8s-master node-role.kubernetes.io/master:Noschedule-</span><br></pre></td></tr></table></figure>
+
+<h2 id="8&#x3001;&#x9A8C;&#x8BC1;&#x96C6;&#x7FA4;"><a href="#8&#x3001;&#x9A8C;&#x8BC1;&#x96C6;&#x7FA4;" class="headerlink" title="8&#x3001;&#x9A8C;&#x8BC1;&#x96C6;&#x7FA4;"></a>8&#x3001;&#x9A8C;&#x8BC1;&#x96C6;&#x7FA4;</h2><p>&#x200B;    &#x64CD;&#x4F5C;&#x8282;&#x70B9;&#x2236;&#x5728;master&#x8282;&#x70B9;&#xFF08;k8s-master&#xFF09;&#x6267;&#x884C;</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">kubectl get nodes #&#x89C2;&#x5BDF;&#x96C6;&#x7FA4;&#x8282;&#x70B9;&#x662F;&#x5426;&#x5168;&#x90E8;Ready</span><br><span class="line"><span class="meta">#</span><span class="bash"> &#x62A5;&#x9519;&#xFF1A;master&#x8282;&#x70B9;&#x6CA1;&#x6709;Ready&#x7684;&#x5904;&#x7406;&#x529E;&#x6CD5;&#xFF1B;&#x8FD9;&#x91CC;&#x6709;&#x65F6;&#x5019;&#x9700;&#x8981;&#x7B49;&#x4E00;&#x4F1A;&#xFF1B;</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> &#x535A;&#x5BA2;&#xFF1A;https://blog.csdn.net/w849593893/article/details/119883531</span></span><br></pre></td></tr></table></figure>
+
+<p><img src="/%E4%BA%91%E5%8E%9F%E7%94%9F/kubernetes/02_k8s_k8s%E5%8D%95%E5%8F%B0master%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/image-20211214141909683.png" alt="image-20211214141909683"></p>
+<p>&#x200B;    &#x521B;&#x5EFA;&#x6D4B;&#x8BD5;nginx&#x670D;&#x52A1;</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">kubectl run test-nginx --image=nginx:alpine</span><br></pre></td></tr></table></figure>
+
+<p>&#x200B;    &#x67E5;&#x770B;pod&#x662F;&#x5426;&#x521B;&#x5EFA;&#x6210;&#x529F;&#xFF0C;&#x5E76;&#x8BBF;&#x95EE;pod ip&#x6D4B;&#x8BD5;&#x662F;&#x5426;&#x53EF;&#x7528;</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line">kubectl get po -o wide</span><br><span class="line">NAME	READY STATUS	RESTARTS	AGE 	IP		NODE	NOMINATED	 NODE	 READINESS GATES </span><br><span class="line">test-nginx-5bd8859b98-5nnnw	1/1	Running	 0 9s	10.244.1.2 k8s-slave1	&lt;none&gt;	&lt;none&gt;</span><br><span class="line"><span class="meta"></span></span><br><span class="line"><span class="meta">#</span><span class="bash"><span class="comment"># &#x62A5;&#x9519;</span></span></span><br><span class="line"><span class="meta">#</span><span class="bash"><span class="comment"># &#x5982;&#x679C;&#x955C;&#x50CF;STATUS&#x4E00;&#x76F4;&#x5904;&#x4E8E;ContainerCreating&#x72B6;&#x6001;&#xFF1B;</span></span></span><br><span class="line"><span class="meta">#</span><span class="bash"><span class="comment"># &#x67E5;&#x770B;&#x62A5;&#x9519; -- kubectl describe pod test-nginx-5bd8859b98-5nnnw</span></span></span><br><span class="line"><span class="meta">#</span><span class="bash"><span class="comment"># &#x62A5;&#x9519;&#x5982;&#x4E0B;</span></span></span><br><span class="line">networkPlugin cni failed to set up pod &quot;test-nginx-1-6f86d846b6-86cqk_default&quot; network: open /run/flannel/subnet.env: no such file or directory</span><br><span class="line"><span class="meta">#</span><span class="bash"><span class="comment"># &#x89E3;&#x51B3;&#x65B9;&#x6CD5;</span></span></span><br><span class="line"><span class="meta">#</span><span class="bash"><span class="comment">#</span></span></span><br><span class="line"><span class="meta">#</span><span class="bash"><span class="comment"># &#xFF08;1&#xFF09;&#x67E5;&#x770B;&#x6307;&#x5B9A;&#x8DEF;&#x5F84;&#x4E0B;&#x662F;&#x5426;&#x5B58;&#x5728;subnet.env&#x6587;&#x4EF6;</span></span></span><br><span class="line"><span class="meta">#</span><span class="bash"><span class="comment"># /run/flannel/subnet.env&#x7684;&#x5185;&#x5BB9;&#xFF1A;</span></span></span><br><span class="line">FLANNEL_NETWORK=10.244.0.0/16</span><br><span class="line">FLANNEL_SUBNET=10.224.0.1/24</span><br><span class="line">FLANNEL_MTU=1450</span><br><span class="line">FLANNEL_IPMASQ=true</span><br><span class="line"><span class="meta">#</span><span class="bash"><span class="comment"># &#xFF08;2&#xFF09;coredns pod&#x7684;&#x72B6;&#x6001;&#x663E;&#x793A;&#x4E3A;&#x201C;CrashLoopBackOff&#x201D;</span></span></span><br><span class="line"><span class="meta">	#</span><span class="bash"> &#x8FD9;&#x4E2A;&#x95EE;&#x9898;&#x5728;&#x62A5;&#x9519;&#x4E2D;&#x7ED9;&#x51FA;&#x4E86;&#x5B98;&#x65B9;&#x7684;&#x89E3;&#x51B3;&#x529E;&#x6CD5;&#xFF0C;&#x9020;&#x6210;&#x8FD9;&#x4E00;&#x95EE;&#x9898;&#x7684;&#x4E3B;&#x8981;&#x539F;&#x56E0;&#x5728;&#x4E8E;resolv.conf&#x6587;&#x4EF6;&#x4E2D;&#x7684;nameserver&#x8BBE;&#x7F6E;&#x4E3A;&#x4E86;127.0.0.1&#xFF0C;&#x6307;&#x5411;&#x4E86;&#x81EA;&#x8EAB;&#xFF0C;&#x5BFC;&#x81F4;&#x51FA;&#x73B0;&#x4E86;&#x73AF;&#x8DEF;&#xFF0C;&#x800C;k8s&#x73AF;&#x5883;&#x4E2D;&#x7684;&#x67D0;&#x79CD;&#x673A;&#x5236;&#x68C0;&#x6D4B;&#x5230;&#x4E86;&#x8FD9;&#x79CD;&#x73AF;&#x8DEF;&#xFF0C;&#x6240;&#x4EE5;&#x4E0D;&#x505C;&#x7684;&#x91CD;&#x542F;&#x8BE5;pod&#x3002;&#x89E3;&#x51B3;&#x529E;&#x6CD5;&#x6709;&#x4E24;&#x79CD;&#xFF1A;</span></span><br><span class="line">    # &#xFF08;i&#xFF09;sudo&#x60C5;&#x51B5;&#x4E0B;&#x4FEE;&#x6539;resolv.conf&#x6587;&#x4EF6;&#xFF0C;&#x5C06;&#x6307;&#x5411;&#x81EA;&#x8EAB;&#xFF08;127&#x5F00;&#x5934;&#xFF09;&#x7684;nameserver&#x4E00;&#x884C;&#x6CE8;&#x91CA;&#x6389;&#xFF0C;&#x6DFB;&#x52A0;8.8.8.8&#x6216;114.114.114.114.&#xFF08;&#x9700;&#x8981;&#x6CE8;&#x610F;&#x7684;&#x662F;&#x6211;&#x7684;&#x7CFB;&#x7EDF;&#x4E2D;resolv.conf&#x6587;&#x4EF6;&#x5B58;&#x5728;&#x591A;&#x4E2A;&#xFF0C;&#x800C;etc&#x76EE;&#x5F55;&#x4E0B;&#x7684;resolv.conf&#x8FDE;&#x63A5;&#x5230;&#x4E86;run/resolvconf/resolv.conf&#xFF0C;&#x6240;&#x4EE5;&#x9700;&#x8981;&#x4FEE;&#x6539;&#x6839;&#x6E90;&#x7684;&#x6587;&#x4EF6;&#x5185;&#x5BB9;&#xFF0C;&#x6CE8;&#x610F;&#x6CE8;&#x610F;&#xFF01;&#xFF09;&#xFF0C;&#x7136;&#x540E;&#x91CD;&#x542F;kubelet&#x670D;&#x52A1;&#xFF0C;</span><br><span class="line">    # &#xFF08;ii&#xFF09;&#x76F4;&#x63A5;&#x66B4;&#x529B;&#x5220;&#x9664;coredns&#x51FA;&#x9519;&#x7684;&#x8282;&#x70B9;&#xFF0C;&#x7CFB;&#x7EDF;&#x4F1A;&#x81EA;&#x52A8;&#x91CD;&#x5EFA;&#x8BE5;&#x8282;&#x70B9;&#xFF0C;&#x5982;&#x679C;&#x8FDB;&#x884C;&#x4E86;&#x4E0A;&#x8FF0;&#x64CD;&#x4F5C;&#x6CA1;&#x6709;&#x53CD;&#x5E94;&#x7684;&#x8BDD;&#x53EF;&#x4EE5;&#x5C1D;&#x8BD5;&#x8FD9;&#x4E00;&#x62DB;&#x3002;</span><br><span class="line"><span class="meta"></span></span><br><span class="line"><span class="meta"></span></span><br><span class="line"><span class="meta">#</span><span class="bash"><span class="comment"># &#x8BBF;&#x95EE;&#x9875;&#x9762;&#xFF0C;&#x663E;&#x793A;&#x5982;&#x4E0B;</span></span></span><br><span class="line">curl 10.244.1.2</span><br><span class="line">&lt;h1&gt;welcome to nginx!&lt;/hl&gt;</span><br><span class="line">&lt;p&gt;If you see this page,the nginx web server is successfuly instaled and working. Further configuration is required.&lt;/p&gt;</span><br><span class="line"></span><br><span class="line">&lt;p&gt;For online documentation and support please refer to </span><br><span class="line">&lt;a href=&quot;http://nginx.org/&quot;&gt;nginx.org&lt;/a&gt;.&lt;br/&gt;</span><br><span class="line">Commercial support is available at</span><br><span class="line">&lt;a href=&quot;http: //nginx.com/&quot;&gt;nginx.com&lt;/a&gt;.&lt;/p&gt;</span><br><span class="line"></span><br><span class="line">&lt;p&gt;&lt;em&gt;Thank you for using nginx.&lt;/em&gt;&lt;/p&gt;</span><br><span class="line">&lt;/body&gt;</span><br><span class="line">&lt;/html&gt;</span><br></pre></td></tr></table></figure>
+
+<h2 id="9&#x3001;&#x90E8;&#x7F72;dashboard"><a href="#9&#x3001;&#x90E8;&#x7F72;dashboard" class="headerlink" title="9&#x3001;&#x90E8;&#x7F72;dashboard"></a>9&#x3001;&#x90E8;&#x7F72;dashboard</h2><p>&#x200B;    &#x25CF; &#x90E8;&#x7F72;&#x670D;&#x52A1;</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> &#x63A8;&#x8350;&#x4F7F;&#x7528;&#x4E0B;&#x9762;&#x8FD9;&#x79CD;&#x65B9;&#x5F0F;</span></span><br><span class="line">wget https://raw.githubusercontent.com/kubernetes/dashboard/v2.4.0/aio/deploy/recommended.yaml --no-check-certificate</span><br><span class="line">vi recommended.yaml</span><br><span class="line"><span class="meta"></span></span><br><span class="line"><span class="meta">#</span><span class="bash"> &#x4FEE;&#x6539;Service&#x4E3A;NodePort&#x7C7B;&#x578B;&#xFF0C;&#x6587;&#x4EF6;&#x7684;45&#x884C;&#x4E0A;&#x4E0B;......</span></span><br><span class="line">......</span><br><span class="line">kind: Service </span><br><span class="line">apiversion: v1 </span><br><span class="line">metadata:</span><br><span class="line">	labels:</span><br><span class="line">		k8s-app: kubernetes-dashboard </span><br><span class="line">	name: kubernetes-dashboard </span><br><span class="line">	namespace: kubernetes-dashboard</span><br><span class="line">spec:</span><br><span class="line">	ports:</span><br><span class="line">		- port: 443</span><br><span class="line">		  targetPort:8443 </span><br><span class="line">	selector:</span><br><span class="line">		k8s-app:kubernetes-dashboard</span><br><span class="line">	type&#x2236;NodePort #&#x52A0;&#x4E0A;type=NodePort&#x53D8;&#x6210;NodePort&#x7C7B;&#x578B;&#x7684;&#x670D;&#x52A1;</span><br><span class="line">......</span><br></pre></td></tr></table></figure>
+
+<p>&#x200B;    &#x25CF; &#x67E5;&#x770B;&#x8BBF;&#x95EE;&#x5730;&#x5740;&#xFF0C;&#x672C;&#x4F8B;&#x4E3A;30133&#x7AEF;&#x53E3;</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">kubectl create -f recommended.yaml </span><br><span class="line">kubectl -n kubernetes-dashboard get svc</span><br><span class="line">NAME TYPE	CLUSTER-IP 	EXTERNAL-IP		NodePort	PORT(S)		AGE </span><br><span class="line">dashboard-metrics-scraper ClusterIP	10.105.62.124	&lt;none&gt;	8000/TCP 31m</span><br><span class="line">kubernetes-dashboard	  NodePort	10.103.74.46	&lt;none&gt;	443:30133/TCP	 31m</span><br></pre></td></tr></table></figure>
+
+<p>&#x200B;    &#x25CF; &#x4F7F;&#x7528;&#x6D4F;&#x89C8;&#x5668;&#x8BBF;&#x95EE;https//172.21.51.67:30133&#xFF0C;&#x5176;&#x4E2D;172.21.51.67&#x4E3A;master&#x8282;&#x70B9;&#x7684;&#x5916;&#x7F51;ip&#x5730;&#x5740;&#xFF0C;chrome&#x76EE;&#x524D;&#x7531;&#x4E8E;&#x5B89;&#x5168;&#x9650;&#x5236;&#xFF0C;&#x6D4B;&#x8BD5;&#x8BBF;&#x95EE;&#x4E0D;&#x4E86;&#xFF0C;&#x4F7F;&#x7528;firefox&#x53EF;&#x4EE5;&#x8FDB;&#x884C;&#x8BBF;&#x95EE;&#x3002;</p>
+<p>&#x200B;    &#x25CF; &#x521B;&#x5EFA;ServiceAccount&#x8FDB;&#x884C;&#x8BBF;&#x95EE;</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line">vi /etc/kubernetes/admin.conf</span><br><span class="line">kind: ClusterRoleBinding</span><br><span class="line">apiVersion: rbac.authorization. k8s.io/vlbetal </span><br><span class="line">metadata:</span><br><span class="line">	name: admin </span><br><span class="line">	annotations:</span><br><span class="line">		rbac.authorization.kubernetes.io/autoupdate:&quot;true&quot;</span><br><span class="line">roleRef:</span><br><span class="line">	kind: ClusterRole </span><br><span class="line">	name: cluster-admin</span><br><span class="line">	apiGroup: rbac.authorization.k8s.io</span><br><span class="line">subjects:</span><br><span class="line">- kind: ServiceAccount </span><br><span class="line">  name: admin</span><br><span class="line">  namespace: kubernetes-dashboard</span><br><span class="line"></span><br><span class="line">---</span><br><span class="line">apiVersion: v1</span><br><span class="line">kind:ServiceACcount</span><br><span class="line">metadata:</span><br><span class="line">	name: admin</span><br><span class="line">	namespace: kubernetes-dashboard</span><br><span class="line"></span><br><span class="line">kubectl create -f admin.conf</span><br><span class="line">kubectl -n kubernetes-dashboard get secret | grep admin-token</span><br><span class="line">	admin-token-fqdpf   kubernetes.io/service-account-token  3  7m17s</span><br><span class="line"><span class="meta"></span></span><br><span class="line"><span class="meta">#</span><span class="bash"> &#x4F7F;&#x7528;&#x8BE5;&#x547D;&#x4EE4;&#x62FF;&#x5230;token&#xFF0C;&#x7136;&#x540E;&#x7C98;&#x8D34;&#x5230;</span></span><br><span class="line">kubectl -n kubernetes-dashboard get secret admin-token-fqdpf -o jsonpath={.data.token} | base64 -d</span><br><span class="line">ey3hbGciOiJSUzIINiIsImtpZCI6Ik1rb2xHWHMwbWFPMjJaRzhleGRqaExnVilBLVNRc2txaEhETmVpRzlDeDQifQ.eyJpc3Mioi]rdwJ1cm51dGVzL3NTcnZpY2vhY2Nvdw50riwia3vizxJuZxRTcy5pby9zZxJ2awN1YwNjb3vudc9uYwlTc3BhY2Uioi3rdw1cm51dGVzLWRhc2hib2FyZCIsImt1YmyybmvOZXMuaw8yc2yydm]jZwEiY291bnovc2yicmvOLm5hbwUioiJhZGlpbi10b2t1bilmcWRwZiIsImt1YmVybmVOZXMuaw8vc2vydmljZWFjY291bnQvc2vydmljzs1hY2Nvdw50Lm5hbwUioiJhZGlpbiIsImt1YmVybmvOZXMuaw8vc2vydmljzwFjY291bnQvc2vydmljzs1hY2Nvdw 50LnVpZCI6IjYyNwMxNjJ1LTQ1ZG...</span><br></pre></td></tr></table></figure>
+
+<p>&#x200B;    &#x754C;&#x9650;&#x663E;&#x793A;&#x5982;&#x4E0B;&#xFF1A;</p>
+<p><img src="/%E4%BA%91%E5%8E%9F%E7%94%9F/kubernetes/02_k8s_k8s%E5%8D%95%E5%8F%B0master%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/image-20211127142302514.png" alt="image-20211127142302514"></p>
+<p>&#x200B;                                    <img src="/%E4%BA%91%E5%8E%9F%E7%94%9F/kubernetes/02_k8s_k8s%E5%8D%95%E5%8F%B0master%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/image-20211127142335300.png" alt="image-20211127142335300"></p>
+<h2 id="10&#x3001;&#x6E05;&#x7406;&#x73AF;&#x5883;"><a href="#10&#x3001;&#x6E05;&#x7406;&#x73AF;&#x5883;" class="headerlink" title="10&#x3001;&#x6E05;&#x7406;&#x73AF;&#x5883;"></a>10&#x3001;&#x6E05;&#x7406;&#x73AF;&#x5883;</h2><p>&#x200B;    &#x5982;&#x679C;&#x4F60;&#x7684;&#x96C6;&#x7FA4;&#x5B89;&#x88C5;&#x8FC7;&#x7A0B;&#x4E2D;&#x9047;&#x5230;&#x4E86;&#x5176;&#x4ED6;&#x95EE;&#x9898;&#xFF0C;&#x6211;&#x4EEC;&#x53EF;&#x4EE5;&#x4F7F;&#x7528;&#x4E0B;&#x9762;&#x7684;&#x547D;&#x4EE4;&#x6765;&#x8FDB;&#x884C;&#x91CD;&#x7F6E;&#xFF1A;</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">kubeadm reset</span><br><span class="line">ifconfig cni0 down &amp;&amp; ip 1ink delete cni0</span><br><span class="line">ifconfig flannel.1 down &amp;&amp; ip 1ink delete flannel.1 </span><br><span class="line">rm -rf /var/lib/cni/</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+
+
+
+    </div>
+    
+    
+    
+    
+    
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/kubernetes-install/" rel="tag"># kubernetes install</a>
+          </div>
+    
+        
+
+    
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/%E4%BA%91%E5%8E%9F%E7%94%9F/kubernetes/03_k8s_k8s%E9%AB%98%E6%80%A7%E8%83%BD%E9%9B%86%E7%BE%A4%E7%9A%84%E6%90%AD%E5%BB%BA/" rel="prev" title="kubernetes集群安装">
+      <i class="fa fa-chevron-left"></i> kubernetes集群安装
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/%E4%BA%91%E5%8E%9F%E7%94%9F/kubernetes/01_k8s_k8s%E5%B9%B3%E5%8F%B0%E5%9F%BA%E6%9C%AC%E4%BB%8B%E7%BB%8D/" rel="next" title="k8s平台介绍">
+      k8s平台介绍 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+    <div>
+        
+        
+
+<div>
+    
+        <div style="text-align:center;color: #ccc;font-size:14px;">------ 版权声明：本文属于原创文章------</div>
+    	<div style="text-align:center;color: #FF0000;font-size:14px;">转载请注明：Burnov.github.io原创文章+本文链接，谢谢合作！！</i></div>
+    
+</div>
+
+
+        
+     </div>
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%9B%86%E7%BE%A4%E4%BF%A1%E6%81%AF"><span class="nav-number">1.</span> <span class="nav-text">集群信息</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-%E8%8A%82%E7%82%B9%E8%A7%84%E5%88%92"><span class="nav-number">1.1.</span> <span class="nav-text">1.节点规划</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2%E3%80%81%E7%BB%84%E4%BB%B6%E7%89%88%E6%9C%AC"><span class="nav-number">1.2.</span> <span class="nav-text">2、组件版本</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%AE%89%E8%A3%85%E5%89%8D%E7%9A%84%E5%87%86%E5%A4%87%E5%B7%A5%E4%BD%9C"><span class="nav-number">2.</span> <span class="nav-text">安装前的准备工作</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1%E3%80%81%E5%BC%80%E5%90%AF%E8%99%9A%E6%8B%9F%E6%9C%BA%E7%9A%84%E8%99%9A%E6%8B%9F%E5%8C%96%E5%8A%9F%E8%83%BD"><span class="nav-number">2.1.</span> <span class="nav-text">1、开启虚拟机的虚拟化功能</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2%E3%80%81%E8%AE%BE%E7%BD%AEhosts%E8%A7%A3%E6%9E%90"><span class="nav-number">2.2.</span> <span class="nav-text">2、设置hosts解析</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3%E3%80%81%E9%85%8D%E7%BD%AE%E6%97%B6%E9%97%B4%E5%90%8C%E6%AD%A5"><span class="nav-number">2.3.</span> <span class="nav-text">3、配置时间同步</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4%E3%80%81%E8%B0%83%E6%95%B4%E7%B3%BB%E7%BB%9F%E9%85%8D%E7%BD%AE"><span class="nav-number">2.4.</span> <span class="nav-text">4、调整系统配置</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#5%E3%80%81%E5%AE%89%E8%A3%85dockers"><span class="nav-number">2.5.</span> <span class="nav-text">5、安装dockers</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%83%A8%E7%BD%B2Kubernetes"><span class="nav-number">3.</span> <span class="nav-text">部署Kubernetes</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1%E3%80%81%E5%AE%89%E8%A3%85Kubeadm-kubelet%E5%92%8Ckubectl"><span class="nav-number">3.1.</span> <span class="nav-text">1、安装Kubeadm,kubelet和kubectl</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2%E3%80%81%E5%88%9D%E5%A7%8B%E5%8C%96%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6"><span class="nav-number">3.2.</span> <span class="nav-text">2、初始化配置文件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3%E3%80%81%E6%8F%90%E5%89%8D%E4%B8%8B%E8%BD%BD%E9%95%9C%E5%83%8F"><span class="nav-number">3.3.</span> <span class="nav-text">3、提前下载镜像</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4%E3%80%81%E5%88%9D%E5%A7%8B%E5%8C%96master%E8%8A%82%E7%82%B9"><span class="nav-number">3.4.</span> <span class="nav-text">4、初始化master节点</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#5%E3%80%81%E6%B7%BB%E5%8A%A0slave%E8%8A%82%E7%82%B9%E5%88%B0%E9%9B%86%E7%BE%A4%E4%B8%AD"><span class="nav-number">3.5.</span> <span class="nav-text">5、添加slave节点到集群中</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#6%E3%80%81%E5%AE%89%E8%A3%85flannel%E6%8F%92%E4%BB%B6"><span class="nav-number">3.6.</span> <span class="nav-text">6、安装flannel插件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#7%E3%80%81%E8%AE%BE%E7%BD%AEmaster%E8%8A%82%E7%82%B9%E6%98%AF%E5%90%A6%E5%8F%AF%E8%B0%83%E5%BA%A6%EF%BC%88%E5%8F%AF%E9%80%89%EF%BC%89"><span class="nav-number">3.7.</span> <span class="nav-text">7、设置master节点是否可调度（可选）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#8%E3%80%81%E9%AA%8C%E8%AF%81%E9%9B%86%E7%BE%A4"><span class="nav-number">3.8.</span> <span class="nav-text">8、验证集群</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#9%E3%80%81%E9%83%A8%E7%BD%B2dashboard"><span class="nav-number">3.9.</span> <span class="nav-text">9、部署dashboard</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#10%E3%80%81%E6%B8%85%E7%90%86%E7%8E%AF%E5%A2%83"><span class="nav-number">3.10.</span> <span class="nav-text">10、清理环境</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Burnov"
+      src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">Burnov</p>
+  <div class="site-description" itemprop="description">No end for Learning</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">16</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">10</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">19</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/Burnov" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;Burnov" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:xials1990@gmail.com" title="E-Mail → mailto:xials1990@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://www.zhihu.com/people/xia-liang-shi-78" title="Skype → https:&#x2F;&#x2F;www.zhihu.com&#x2F;people&#x2F;xia-liang-shi-78" rel="noopener" target="_blank"><i class="fab fa-skype fa-fw"></i></a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class=""></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Burnov</span>
+</div>
+
+<!--
+  <div class="powered-by">Powered by <a href="https://github.com/Burnov" class="theme-link" rel="noopener" target="_blank">Burnov</a> & <a href="https://mist.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Mist</a>
+  </div>
+
+-->
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : false,
+      appId      : 'wIjFqGmEUzY7fpTNVHpKA0eH-gzGzoHsz',
+      appKey     : 'KdXueGM1xFH8pBVSO5SkFRKI',
+      placeholder: "Just go go",
+      avatar     : 'mm',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : false,
+      lang       : '' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : false,
+      serverURLs : ''
+    });
+  }, window.Valine);
+});
+</script>
+
+</body>
+</html>

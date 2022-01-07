@@ -6,7 +6,7 @@
   <link href="http://example.com/atom.xml" rel="self"/>
   
   <link href="http://example.com/"/>
-  <updated>2022-01-07T08:51:52.018Z</updated>
+  <updated>2022-01-07T15:21:39.067Z</updated>
   <id>http://example.com/</id>
   
   <author>
@@ -17,11 +17,110 @@
   <generator uri="https://hexo.io/">Hexo</generator>
   
   <entry>
+    <title>k8s平台介绍</title>
+    <link href="http://example.com/%E4%BA%91%E5%8E%9F%E7%94%9F/kubernetes/01_k8s_k8s%E5%B9%B3%E5%8F%B0%E5%9F%BA%E6%9C%AC%E4%BB%8B%E7%BB%8D/"/>
+    <id>http://example.com/%E4%BA%91%E5%8E%9F%E7%94%9F/kubernetes/01_k8s_k8s%E5%B9%B3%E5%8F%B0%E5%9F%BA%E6%9C%AC%E4%BB%8B%E7%BB%8D/</id>
+    <published>2022-01-07T15:13:50.000Z</published>
+    <updated>2022-01-07T15:21:39.067Z</updated>
+    
+    
+    <summary type="html">&lt;h1 id=&quot;&amp;#x4E91;&amp;#x539F;&amp;#x751F;&amp;#x4ECB;&amp;#x7ECD;&quot;&gt;&lt;a href=&quot;#&amp;#x4E91;&amp;#x539F;&amp;#x751F;&amp;#x4ECB;&amp;#x7ECD;&quot; class=&quot;headerlink&quot; title=&quot;&amp;#x4E91;&amp;#x539F;&amp;#x751F;&amp;#x4ECB;&amp;#x7ECD;&quot;&gt;&lt;/a&gt;&amp;#x4E91;&amp;#x539F;&amp;#x751F;&amp;#x4ECB;&amp;#x7ECD;&lt;/h1&gt;&lt;h2 id=&quot;&amp;#x4E91;&amp;#x539F;&amp;#x751F;&amp;#x7684;&amp;#x57FA;&amp;#x672C;&amp;#x4ECB;&amp;#x7ECD;&quot;&gt;&lt;a href=&quot;#&amp;#x4E91;&amp;#x539F;&amp;#x751F;&amp;#x7684;&amp;#x57FA;&amp;#x672C;&amp;#x4ECB;&amp;#x7ECD;&quot; class=&quot;headerlink&quot; title=&quot;&amp;#x4E91;&amp;#x539F;&amp;#x751F;&amp;#x7684;&amp;#x57FA;&amp;#x672C;&amp;#x4ECB;&amp;#x7ECD;&quot;&gt;&lt;/a&gt;&amp;#x4E91;&amp;#x539F;&amp;#x751F;&amp;#x7684;&amp;#x57FA;&amp;#x672C;&amp;#x4ECB;&amp;#x7ECD;&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;2004&amp;#x5E74;&amp;#x5F00;&amp;#x59CB;&amp;#xFF0C;Google&amp;#x5DF2;&amp;#x5728;&amp;#x5185;&amp;#x90E8;&amp;#x5927;&amp;#x89C4;&amp;#x6A21;&amp;#x5730;&amp;#x4F7F;&amp;#x7528;&amp;#x5BB9;&amp;#x5668;&amp;#x6280;&amp;#x672F;&lt;/li&gt;
+&lt;li&gt;2008&amp;#x5E74;&amp;#xFF0C;Google&amp;#x5C06; Cgroups&amp;#x5408;&amp;#x5E76;&amp;#x8FDB;&amp;#x4EBA;&amp;#x4E86;Linux&amp;#x5185;&amp;#x6838;&lt;/li&gt;
+&lt;li&gt;2013&amp;#x5E74;&amp;#xFF0C;Docker&amp;#x9879;&amp;#x76EE;&amp;#x6B63;&amp;#x5F0F;&amp;#x53D1;&amp;#x5E03;&lt;/li&gt;
+&lt;/ul&gt;</summary>
+    
+    
+    
+    <category term="云原生" scheme="http://example.com/categories/%E4%BA%91%E5%8E%9F%E7%94%9F/"/>
+    
+    <category term="kubernetes" scheme="http://example.com/categories/%E4%BA%91%E5%8E%9F%E7%94%9F/kubernetes/"/>
+    
+    
+    <category term="云原生" scheme="http://example.com/tags/%E4%BA%91%E5%8E%9F%E7%94%9F/"/>
+    
+    <category term="kubernetes" scheme="http://example.com/tags/kubernetes/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>kubernetes单台master部署</title>
+    <link href="http://example.com/%E4%BA%91%E5%8E%9F%E7%94%9F/kubernetes/02_k8s_k8s%E5%8D%95%E5%8F%B0master%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/"/>
+    <id>http://example.com/%E4%BA%91%E5%8E%9F%E7%94%9F/kubernetes/02_k8s_k8s%E5%8D%95%E5%8F%B0master%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/</id>
+    <published>2022-01-07T15:13:50.000Z</published>
+    <updated>2022-01-07T15:16:10.311Z</updated>
+    
+    
+    <summary type="html">&lt;h1 id=&quot;&amp;#x96C6;&amp;#x7FA4;&amp;#x4FE1;&amp;#x606F;&quot;&gt;&lt;a href=&quot;#&amp;#x96C6;&amp;#x7FA4;&amp;#x4FE1;&amp;#x606F;&quot; class=&quot;headerlink&quot; title=&quot;&amp;#x96C6;&amp;#x7FA4;&amp;#x4FE1;&amp;#x606F;&quot;&gt;&lt;/a&gt;&amp;#x96C6;&amp;#x7FA4;&amp;#x4FE1;&amp;#x606F;&lt;/h1&gt;&lt;h2 id=&quot;1-&amp;#x8282;&amp;#x70B9;&amp;#x89C4;&amp;#x5212;&quot;&gt;&lt;a href=&quot;#1-&amp;#x8282;&amp;#x70B9;&amp;#x89C4;&amp;#x5212;&quot; class=&quot;headerlink&quot; title=&quot;1.&amp;#x8282;&amp;#x70B9;&amp;#x89C4;&amp;#x5212;&quot;&gt;&lt;/a&gt;1.&amp;#x8282;&amp;#x70B9;&amp;#x89C4;&amp;#x5212;&lt;/h2&gt;&lt;p&gt;&amp;#x200B;    &amp;#x90E8;&amp;#x7F72;k8s&amp;#x96C6;&amp;#x7FA4;&amp;#x7684;&amp;#x8282;&amp;#x70B9;&amp;#x6309;&amp;#x7167;&amp;#x7528;&amp;#x9014;&amp;#x53EF;&amp;#x4EE5;&amp;#x5212;&amp;#x5206;&amp;#x4E3A;&amp;#x5982;&amp;#x4E0B;2&amp;#x7C7B;&amp;#x89D2;&amp;#x8272;&amp;#x2236;&lt;/p&gt;
+&lt;p&gt;&amp;#x200B;         &amp;#x25CF; master&amp;#x2236;&amp;#x96C6;&amp;#x7FA4;&amp;#x7684;master&amp;#x8282;&amp;#x70B9;&amp;#xFF0C;&amp;#x96C6;&amp;#x7FA4;&amp;#x7684;&amp;#x521D;&amp;#x59CB;&amp;#x5316;&amp;#x8282;&amp;#x70B9;&amp;#xFF0C;&amp;#x57FA;&amp;#x7840;&amp;#x914D;&amp;#x7F6E;&amp;#x4E0D;&amp;#x4F4E;&amp;#x4E8E;2C4G&lt;/p&gt;
+&lt;p&gt;&amp;#x200B;         &amp;#x25CF; slave&amp;#x2236;&amp;#x96C6;&amp;#x7FA4;&amp;#x7684;slave&amp;#x8282;&amp;#x70B9;&amp;#xFF0C;&amp;#x53EF;&amp;#x4EE5;&amp;#x591A;&amp;#x53F0;&amp;#xFF0C;&amp;#x57FA;&amp;#x7840;&amp;#x914D;&amp;#x7F6E;&amp;#x4E0D;&amp;#x4F4E;&amp;#x4E8E;2C4G&lt;/p&gt;</summary>
+    
+    
+    
+    <category term="云原生" scheme="http://example.com/categories/%E4%BA%91%E5%8E%9F%E7%94%9F/"/>
+    
+    <category term="kubernetes" scheme="http://example.com/categories/%E4%BA%91%E5%8E%9F%E7%94%9F/kubernetes/"/>
+    
+    
+    <category term="kubernetes install" scheme="http://example.com/tags/kubernetes-install/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>kubernetes集群安装</title>
+    <link href="http://example.com/%E4%BA%91%E5%8E%9F%E7%94%9F/kubernetes/03_k8s_k8s%E9%AB%98%E6%80%A7%E8%83%BD%E9%9B%86%E7%BE%A4%E7%9A%84%E6%90%AD%E5%BB%BA/"/>
+    <id>http://example.com/%E4%BA%91%E5%8E%9F%E7%94%9F/kubernetes/03_k8s_k8s%E9%AB%98%E6%80%A7%E8%83%BD%E9%9B%86%E7%BE%A4%E7%9A%84%E6%90%AD%E5%BB%BA/</id>
+    <published>2022-01-07T15:13:50.000Z</published>
+    <updated>2022-01-07T15:16:37.657Z</updated>
+    
+    
+    <summary type="html">&lt;h1 id=&quot;k8s&amp;#x73AF;&amp;#x5883;&amp;#x5B89;&amp;#x88C5;&quot;&gt;&lt;a href=&quot;#k8s&amp;#x73AF;&amp;#x5883;&amp;#x5B89;&amp;#x88C5;&quot; class=&quot;headerlink&quot; title=&quot;k8s&amp;#x73AF;&amp;#x5883;&amp;#x5B89;&amp;#x88C5;&quot;&gt;&lt;/a&gt;k8s&amp;#x73AF;&amp;#x5883;&amp;#x5B89;&amp;#x88C5;&lt;/h1&gt;&lt;h2 id=&quot;&amp;#x73AF;&amp;#x5883;&amp;#x51C6;&amp;#x5907;&quot;&gt;&lt;a href=&quot;#&amp;#x73AF;&amp;#x5883;&amp;#x51C6;&amp;#x5907;&quot; class=&quot;headerlink&quot; title=&quot;&amp;#x73AF;&amp;#x5883;&amp;#x51C6;&amp;#x5907;&quot;&gt;&lt;/a&gt;&amp;#x73AF;&amp;#x5883;&amp;#x51C6;&amp;#x5907;&lt;/h2&gt;&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;IP&amp;#x5730;&amp;#x5740;&lt;/th&gt;
+&lt;th&gt;&amp;#x4E3B;&amp;#x673A;&amp;#x89D2;&amp;#x8272;&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;&lt;tr&gt;
+&lt;td&gt;192.168.169.20&lt;/td&gt;
+&lt;td&gt;keepalived-&amp;#x4E3B;&amp;#x3001;haproxy-&amp;#x4E3B;&amp;#x3001;harbor-1&amp;#x3001;k8s-master&amp;#x3001;etcd-1&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;192.168.169.21&lt;/td&gt;
+&lt;td&gt;keepalived-&amp;#x5907;&amp;#x3001;haproxy-&amp;#x5907;&amp;#x3001;harbor-2&amp;#x3001;k8s-master&amp;#x3001;etcd-2&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;192.168.169.22&lt;/td&gt;
+&lt;td&gt;etcd-3&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;192.168.169.23&lt;/td&gt;
+&lt;td&gt;node1&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;192.168.169.24&lt;/td&gt;
+&lt;td&gt;node2&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;&lt;/table&gt;
+&lt;p&gt;&amp;#x6BCF;&amp;#x53F0;&amp;#x673A;&amp;#x5668;&amp;#x5747;&amp;#x914D;&amp;#x7F6E;&amp;#x4E86;2&amp;#x6838;CPU&amp;#x3001;2G&amp;#x5185;&amp;#x5B58;&amp;#xFF1B;&amp;#x5747;&amp;#x4E3A;Ubuntu 20.04&amp;#x7248;&amp;#x672C;&amp;#x7684;&amp;#x64CD;&amp;#x4F5C;&amp;#x7CFB;&amp;#x7EDF;&amp;#xFF1B;&lt;/p&gt;</summary>
+    
+    
+    
+    <category term="云原生" scheme="http://example.com/categories/%E4%BA%91%E5%8E%9F%E7%94%9F/"/>
+    
+    <category term="kubernetes" scheme="http://example.com/categories/%E4%BA%91%E5%8E%9F%E7%94%9F/kubernetes/"/>
+    
+    
+    <category term="kubernetes cluster install" scheme="http://example.com/tags/kubernetes-cluster-install/"/>
+    
+  </entry>
+  
+  <entry>
     <title>Python程序实现文件复制</title>
     <link href="http://example.com/development/python/01_python%E8%87%AA%E5%8A%A8%E8%BF%90%E7%BB%B4_%E5%AE%9E%E4%BE%8B%E4%B8%80%E3%80%81Python%E7%A8%8B%E5%BA%8F%E5%AE%9E%E7%8E%B0%E6%96%87%E4%BB%B6%E5%A4%8D%E5%88%B6/"/>
     <id>http://example.com/development/python/01_python%E8%87%AA%E5%8A%A8%E8%BF%90%E7%BB%B4_%E5%AE%9E%E4%BE%8B%E4%B8%80%E3%80%81Python%E7%A8%8B%E5%BA%8F%E5%AE%9E%E7%8E%B0%E6%96%87%E4%BB%B6%E5%A4%8D%E5%88%B6/</id>
     <published>2022-01-07T08:51:00.000Z</published>
-    <updated>2022-01-07T08:51:52.018Z</updated>
+    <updated>2022-01-07T08:56:38.697Z</updated>
     
     
     <summary type="html">&lt;h1 id=&quot;&amp;#x9700;&amp;#x6C42;&quot;&gt;&lt;a href=&quot;#&amp;#x9700;&amp;#x6C42;&quot; class=&quot;headerlink&quot; title=&quot;&amp;#x9700;&amp;#x6C42;&quot;&gt;&lt;/a&gt;&amp;#x9700;&amp;#x6C42;&lt;/h1&gt;&lt;p&gt;&amp;#x8BF7;&amp;#x7F16;&amp;#x5199;Python&amp;#x7A0B;&amp;#x5E8F;&amp;#xFF0C;&amp;#x5B9E;&amp;#x73B0;&amp;#x5982;&amp;#x4E0B;&amp;#x529F;&amp;#x80FD;&amp;#x2236;&lt;/p&gt;
