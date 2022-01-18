@@ -6,7 +6,7 @@
   <link href="http://example.com/atom.xml" rel="self"/>
   
   <link href="http://example.com/"/>
-  <updated>2022-01-18T07:34:00.048Z</updated>
+  <updated>2022-01-18T10:29:09.604Z</updated>
   <id>http://example.com/</id>
   
   <author>
@@ -21,7 +21,7 @@
     <link href="http://example.com/cloud-native/kubernetes/04_k8s_k8s%E5%AE%89%E8%A3%85%E5%90%8E%E7%BB%AD%EF%BC%88corednsdashboard%E9%83%A8%E7%BD%B2%EF%BC%89/"/>
     <id>http://example.com/cloud-native/kubernetes/04_k8s_k8s%E5%AE%89%E8%A3%85%E5%90%8E%E7%BB%AD%EF%BC%88corednsdashboard%E9%83%A8%E7%BD%B2%EF%BC%89/</id>
     <published>2022-01-18T07:32:50.000Z</published>
-    <updated>2022-01-18T07:34:00.048Z</updated>
+    <updated>2022-01-18T10:29:09.604Z</updated>
     
     
     <summary type="html">&lt;h1 id=&quot;kubernetes&amp;#x6A21;&amp;#x5757;&amp;#x8BE6;&amp;#x89E3;&quot;&gt;&lt;a href=&quot;#kubernetes&amp;#x6A21;&amp;#x5757;&amp;#x8BE6;&amp;#x89E3;&quot; class=&quot;headerlink&quot; title=&quot;kubernetes&amp;#x6A21;&amp;#x5757;&amp;#x8BE6;&amp;#x89E3;&quot;&gt;&lt;/a&gt;kubernetes&amp;#x6A21;&amp;#x5757;&amp;#x8BE6;&amp;#x89E3;&lt;/h1&gt;&lt;h2 id=&quot;K8S&amp;#x7EC4;&amp;#x4EF6;&amp;#x4ECB;&amp;#x7ECD;&amp;#x56DE;&amp;#x987E;&quot;&gt;&lt;a href=&quot;#K8S&amp;#x7EC4;&amp;#x4EF6;&amp;#x4ECB;&amp;#x7ECD;&amp;#x56DE;&amp;#x987E;&quot; class=&quot;headerlink&quot; title=&quot;K8S&amp;#x7EC4;&amp;#x4EF6;&amp;#x4ECB;&amp;#x7ECD;&amp;#x56DE;&amp;#x987E;&quot;&gt;&lt;/a&gt;K8S&amp;#x7EC4;&amp;#x4EF6;&amp;#x4ECB;&amp;#x7ECD;&amp;#x56DE;&amp;#x987E;&lt;/h2&gt;&lt;p&gt;&lt;img src=&quot;/cloud-native/kubernetes/04_k8s_k8s%E5%AE%89%E8%A3%85%E5%90%8E%E7%BB%AD%EF%BC%88corednsdashboard%E9%83%A8%E7%BD%B2%EF%BC%89/image-20220110155937439.png&quot; alt=&quot;k8s&amp;#x67B6;&amp;#x6784;&amp;#x56FE;&quot;&gt;&lt;/p&gt;
@@ -160,6 +160,28 @@
   </entry>
   
   <entry>
+    <title>kubectl命令详解</title>
+    <link href="http://example.com/cloud-native/kubernetes/05_k8s_kubectl%E5%91%BD%E4%BB%A4%E7%9A%84%E4%BD%BF%E7%94%A8%E4%BB%8B%E7%BB%8D/"/>
+    <id>http://example.com/cloud-native/kubernetes/05_k8s_kubectl%E5%91%BD%E4%BB%A4%E7%9A%84%E4%BD%BF%E7%94%A8%E4%BB%8B%E7%BB%8D/</id>
+    <published>2022-01-07T15:13:50.000Z</published>
+    <updated>2022-01-18T07:30:54.296Z</updated>
+    
+    
+    <summary type="html">&lt;h1 id=&quot;kubectl&amp;#x547D;&amp;#x4EE4;&amp;#x8BE6;&amp;#x89E3;&quot;&gt;&lt;a href=&quot;#kubectl&amp;#x547D;&amp;#x4EE4;&amp;#x8BE6;&amp;#x89E3;&quot; class=&quot;headerlink&quot; title=&quot;kubectl&amp;#x547D;&amp;#x4EE4;&amp;#x8BE6;&amp;#x89E3;&quot;&gt;&lt;/a&gt;kubectl&amp;#x547D;&amp;#x4EE4;&amp;#x8BE6;&amp;#x89E3;&lt;/h1&gt;&lt;h2 id=&quot;kubectl&amp;#x7684;&amp;#x8BBF;&amp;#x95EE;&amp;#x65B9;&amp;#x5F0F;&quot;&gt;&lt;a href=&quot;#kubectl&amp;#x7684;&amp;#x8BBF;&amp;#x95EE;&amp;#x65B9;&amp;#x5F0F;&quot; class=&quot;headerlink&quot; title=&quot;kubectl&amp;#x7684;&amp;#x8BBF;&amp;#x95EE;&amp;#x65B9;&amp;#x5F0F;&quot;&gt;&lt;/a&gt;kubectl&amp;#x7684;&amp;#x8BBF;&amp;#x95EE;&amp;#x65B9;&amp;#x5F0F;&lt;/h2&gt;&lt;p&gt;&amp;#x57FA;&amp;#x4E8E;kubectl&amp;#x7684;&amp;#x547D;&amp;#x4EE4;&amp;#xFF0C;&amp;#x6211;&amp;#x4EEC;&amp;#x90FD;&amp;#x662F;&amp;#x901A;&amp;#x8FC7;api-server&amp;#x7AEF;&amp;#x6765;&amp;#x8FDB;&amp;#x884C;&amp;#x8BBF;&amp;#x95EE;&amp;#x7684;&amp;#xFF1B;&lt;/p&gt;
+&lt;figure class=&quot;highlight shell&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;3&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;root@ke-ha-har-ma-et:~# cat .kube/config&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;meta&quot;&gt;#&lt;/span&gt;&lt;span class=&quot;bash&quot;&gt; &amp;#x6307;&amp;#x5B9A;kubectl&amp;#x6240;&amp;#x8BF7;&amp;#x6C42;&amp;#x7684;&amp;#x670D;&amp;#x52A1;&amp;#x5730;&amp;#x5740;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;server: https://192.168.169.20:6443&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;</summary>
+    
+    
+    
+    <category term="cloud native" scheme="http://example.com/categories/cloud-native/"/>
+    
+    <category term="kubernetes" scheme="http://example.com/categories/cloud-native/kubernetes/"/>
+    
+    
+    <category term="kubectl" scheme="http://example.com/tags/kubectl/"/>
+    
+  </entry>
+  
+  <entry>
     <title>kubernetes集群安装</title>
     <link href="http://example.com/cloud-native/kubernetes/03_k8s_k8s%E9%AB%98%E6%80%A7%E8%83%BD%E9%9B%86%E7%BE%A4%E7%9A%84%E6%90%AD%E5%BB%BA/"/>
     <id>http://example.com/cloud-native/kubernetes/03_k8s_k8s%E9%AB%98%E6%80%A7%E8%83%BD%E9%9B%86%E7%BE%A4%E7%9A%84%E6%90%AD%E5%BB%BA/</id>
@@ -205,28 +227,6 @@
     
     
     <category term="kubernetes cluster install" scheme="http://example.com/tags/kubernetes-cluster-install/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>kubectl命令详解</title>
-    <link href="http://example.com/cloud-native/kubernetes/05_k8s_kubectl%E5%91%BD%E4%BB%A4%E7%9A%84%E4%BD%BF%E7%94%A8%E4%BB%8B%E7%BB%8D/"/>
-    <id>http://example.com/cloud-native/kubernetes/05_k8s_kubectl%E5%91%BD%E4%BB%A4%E7%9A%84%E4%BD%BF%E7%94%A8%E4%BB%8B%E7%BB%8D/</id>
-    <published>2022-01-07T15:13:50.000Z</published>
-    <updated>2022-01-18T07:30:54.296Z</updated>
-    
-    
-    <summary type="html">&lt;h1 id=&quot;kubectl&amp;#x547D;&amp;#x4EE4;&amp;#x8BE6;&amp;#x89E3;&quot;&gt;&lt;a href=&quot;#kubectl&amp;#x547D;&amp;#x4EE4;&amp;#x8BE6;&amp;#x89E3;&quot; class=&quot;headerlink&quot; title=&quot;kubectl&amp;#x547D;&amp;#x4EE4;&amp;#x8BE6;&amp;#x89E3;&quot;&gt;&lt;/a&gt;kubectl&amp;#x547D;&amp;#x4EE4;&amp;#x8BE6;&amp;#x89E3;&lt;/h1&gt;&lt;h2 id=&quot;kubectl&amp;#x7684;&amp;#x8BBF;&amp;#x95EE;&amp;#x65B9;&amp;#x5F0F;&quot;&gt;&lt;a href=&quot;#kubectl&amp;#x7684;&amp;#x8BBF;&amp;#x95EE;&amp;#x65B9;&amp;#x5F0F;&quot; class=&quot;headerlink&quot; title=&quot;kubectl&amp;#x7684;&amp;#x8BBF;&amp;#x95EE;&amp;#x65B9;&amp;#x5F0F;&quot;&gt;&lt;/a&gt;kubectl&amp;#x7684;&amp;#x8BBF;&amp;#x95EE;&amp;#x65B9;&amp;#x5F0F;&lt;/h2&gt;&lt;p&gt;&amp;#x57FA;&amp;#x4E8E;kubectl&amp;#x7684;&amp;#x547D;&amp;#x4EE4;&amp;#xFF0C;&amp;#x6211;&amp;#x4EEC;&amp;#x90FD;&amp;#x662F;&amp;#x901A;&amp;#x8FC7;api-server&amp;#x7AEF;&amp;#x6765;&amp;#x8FDB;&amp;#x884C;&amp;#x8BBF;&amp;#x95EE;&amp;#x7684;&amp;#xFF1B;&lt;/p&gt;
-&lt;figure class=&quot;highlight shell&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;3&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;root@ke-ha-har-ma-et:~# cat .kube/config&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;meta&quot;&gt;#&lt;/span&gt;&lt;span class=&quot;bash&quot;&gt; &amp;#x6307;&amp;#x5B9A;kubectl&amp;#x6240;&amp;#x8BF7;&amp;#x6C42;&amp;#x7684;&amp;#x670D;&amp;#x52A1;&amp;#x5730;&amp;#x5740;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;server: https://192.168.169.20:6443&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;</summary>
-    
-    
-    
-    <category term="cloud native" scheme="http://example.com/categories/cloud-native/"/>
-    
-    <category term="kubernetes" scheme="http://example.com/categories/cloud-native/kubernetes/"/>
-    
-    
-    <category term="kubectl" scheme="http://example.com/tags/kubectl/"/>
     
   </entry>
   
@@ -336,17 +336,16 @@
   </entry>
   
   <entry>
-    <title>Java基础介绍</title>
-    <link href="http://example.com/development/java/01_java%E5%9F%BA%E7%A1%80_java%E4%BB%8B%E7%BB%8D/"/>
-    <id>http://example.com/development/java/01_java%E5%9F%BA%E7%A1%80_java%E4%BB%8B%E7%BB%8D/</id>
+    <title>第一个Java程序</title>
+    <link href="http://example.com/development/java/02_java%E5%9F%BA%E7%A1%80_%E7%AC%AC%E4%B8%80%E4%B8%AAjava%E7%A8%8B%E5%BA%8F/"/>
+    <id>http://example.com/development/java/02_java%E5%9F%BA%E7%A1%80_%E7%AC%AC%E4%B8%80%E4%B8%AAjava%E7%A8%8B%E5%BA%8F/</id>
     <published>2022-01-01T13:10:50.000Z</published>
-    <updated>2022-01-04T12:27:36.290Z</updated>
+    <updated>2022-01-04T12:28:57.333Z</updated>
     
     
-    <summary type="html">&lt;h1 id=&quot;java&amp;#x8BED;&amp;#x8A00;&amp;#x4ECB;&amp;#x7ECD;&quot;&gt;&lt;a href=&quot;#java&amp;#x8BED;&amp;#x8A00;&amp;#x4ECB;&amp;#x7ECD;&quot; class=&quot;headerlink&quot; title=&quot;java&amp;#x8BED;&amp;#x8A00;&amp;#x4ECB;&amp;#x7ECD;&quot;&gt;&lt;/a&gt;java&amp;#x8BED;&amp;#x8A00;&amp;#x4ECB;&amp;#x7ECD;&lt;/h1&gt;&lt;p&gt;&amp;#x8BED;&amp;#x8A00;&amp;#xFF1A;&amp;#x4EBA;&amp;#x4E0E;&amp;#x4EBA;&amp;#x4EA4;&amp;#x6D41;&amp;#x6C9F;&amp;#x901A;&amp;#x7684;&amp;#x8868;&amp;#x8FBE;&amp;#x65B9;&amp;#x5F0F;&lt;/p&gt;
-&lt;p&gt;&amp;#x8BA1;&amp;#x7B97;&amp;#x673A;&amp;#x8BED;&amp;#x8A00;&amp;#xFF1A;&amp;#x4EBA;&amp;#x4E0E;&amp;#x8BA1;&amp;#x7B97;&amp;#x673A;&amp;#x4E4B;&amp;#x95F4;&amp;#x8FDB;&amp;#x884C;&amp;#x4FE1;&amp;#x606F;&amp;#x4EA4;&amp;#x6D41;&amp;#x7684;&amp;#x6C9F;&amp;#x901A;&amp;#x7684;&amp;#x4E00;&amp;#x79CD;&amp;#x7279;&amp;#x6B8A;&amp;#x8BED;&amp;#x8A00;&lt;/p&gt;
-&lt;p&gt;java&amp;#x8BED;&amp;#x8A00;&amp;#xFF1A;&amp;#x7531;&amp;#x7F8E;&amp;#x56FD;sun&amp;#xFF08;stanford university network&amp;#xFF09;&amp;#x516C;&amp;#x53F8;&amp;#x518D;1995&amp;#x5E74;&amp;#x63A8;&amp;#x51FA;&amp;#x7684;&amp;#x8BA1;&amp;#x7B97;&amp;#x673A;&amp;#x8BED;&amp;#x8A00;&lt;/p&gt;
-&lt;p&gt;java&amp;#x4E4B;&amp;#x7236;&amp;#xFF1A;&amp;#x8A79;&amp;#x59C6;&amp;#x65AF;&amp;#x9AD8;&amp;#x65AF;&amp;#x6797;&lt;/p&gt;</summary>
+    <summary type="html">&lt;h1 id=&quot;&amp;#x5E38;&amp;#x7528;&amp;#x7684;dos&amp;#x547D;&amp;#x4EE4;&quot;&gt;&lt;a href=&quot;#&amp;#x5E38;&amp;#x7528;&amp;#x7684;dos&amp;#x547D;&amp;#x4EE4;&quot; class=&quot;headerlink&quot; title=&quot;&amp;#x5E38;&amp;#x7528;&amp;#x7684;dos&amp;#x547D;&amp;#x4EE4;&quot;&gt;&lt;/a&gt;&amp;#x5E38;&amp;#x7528;&amp;#x7684;dos&amp;#x547D;&amp;#x4EE4;&lt;/h1&gt;&lt;p&gt;dos&amp;#x547D;&amp;#x4EE4;&amp;#x63D0;&amp;#x793A;&amp;#x7B26;&amp;#xFF1A;&amp;#x6211;&amp;#x4EEC;&amp;#x9700;&amp;#x8981;&amp;#x4F7F;&amp;#x7528;java.exe&amp;#x3001;javac.exe&amp;#x7684;&amp;#x8F6F;&amp;#x4EF6;&amp;#x7A0B;&amp;#x5E8F;&amp;#xFF0C;&amp;#x4ED6;&amp;#x548C;&amp;#x6211;&amp;#x4EEC;&amp;#x666E;&amp;#x901A;&amp;#x7684;&amp;#x8F6F;&amp;#x4EF6;&amp;#x7A0B;&amp;#x5E8F;&amp;#x4E0D;&amp;#x540C;&amp;#xFF0C;&amp;#x4ED6;&amp;#x4EEC;&amp;#x9700;&amp;#x8981;&amp;#x5728;Windows&amp;#x7684;dos&amp;#x754C;&amp;#x9762;&amp;#x4E0B;&amp;#x9762;&amp;#x6267;&amp;#x884C;&amp;#xFF0C;&amp;#x6240;&amp;#x4EE5;&amp;#x6211;&amp;#x4EEC;&amp;#x5148;&amp;#x9700;&amp;#x8981;&amp;#x4ECB;&amp;#x7ECD;&amp;#x4EE5;&amp;#x4E0B;dos&amp;#x754C;&amp;#x9762;&amp;#xFF1B;&lt;/p&gt;
+&lt;p&gt;&amp;#x5F00;&amp;#x542F;dos&amp;#x547D;&amp;#x4EE4;&amp;#x63D0;&amp;#x793A;&amp;#x7B26;&amp;#x754C;&amp;#x9762;&amp;#xFF1A;&lt;/p&gt;
+&lt;p&gt;&amp;#x7B2C;&amp;#x4E00;&amp;#x6B65;&amp;#x3001;win+R&amp;#x952E;&amp;#x542F;&amp;#x52A8;&amp;#x201C;&amp;#x8FD0;&amp;#x884C;&amp;#x201D;&amp;#x5BF9;&amp;#x8BDD;&amp;#x6846;&lt;/p&gt;</summary>
     
     
     
@@ -360,16 +359,17 @@
   </entry>
   
   <entry>
-    <title>第一个Java程序</title>
-    <link href="http://example.com/development/java/02_java%E5%9F%BA%E7%A1%80_%E7%AC%AC%E4%B8%80%E4%B8%AAjava%E7%A8%8B%E5%BA%8F/"/>
-    <id>http://example.com/development/java/02_java%E5%9F%BA%E7%A1%80_%E7%AC%AC%E4%B8%80%E4%B8%AAjava%E7%A8%8B%E5%BA%8F/</id>
+    <title>Java基础介绍</title>
+    <link href="http://example.com/development/java/01_java%E5%9F%BA%E7%A1%80_java%E4%BB%8B%E7%BB%8D/"/>
+    <id>http://example.com/development/java/01_java%E5%9F%BA%E7%A1%80_java%E4%BB%8B%E7%BB%8D/</id>
     <published>2022-01-01T13:10:50.000Z</published>
-    <updated>2022-01-04T12:28:57.333Z</updated>
+    <updated>2022-01-04T12:27:36.290Z</updated>
     
     
-    <summary type="html">&lt;h1 id=&quot;&amp;#x5E38;&amp;#x7528;&amp;#x7684;dos&amp;#x547D;&amp;#x4EE4;&quot;&gt;&lt;a href=&quot;#&amp;#x5E38;&amp;#x7528;&amp;#x7684;dos&amp;#x547D;&amp;#x4EE4;&quot; class=&quot;headerlink&quot; title=&quot;&amp;#x5E38;&amp;#x7528;&amp;#x7684;dos&amp;#x547D;&amp;#x4EE4;&quot;&gt;&lt;/a&gt;&amp;#x5E38;&amp;#x7528;&amp;#x7684;dos&amp;#x547D;&amp;#x4EE4;&lt;/h1&gt;&lt;p&gt;dos&amp;#x547D;&amp;#x4EE4;&amp;#x63D0;&amp;#x793A;&amp;#x7B26;&amp;#xFF1A;&amp;#x6211;&amp;#x4EEC;&amp;#x9700;&amp;#x8981;&amp;#x4F7F;&amp;#x7528;java.exe&amp;#x3001;javac.exe&amp;#x7684;&amp;#x8F6F;&amp;#x4EF6;&amp;#x7A0B;&amp;#x5E8F;&amp;#xFF0C;&amp;#x4ED6;&amp;#x548C;&amp;#x6211;&amp;#x4EEC;&amp;#x666E;&amp;#x901A;&amp;#x7684;&amp;#x8F6F;&amp;#x4EF6;&amp;#x7A0B;&amp;#x5E8F;&amp;#x4E0D;&amp;#x540C;&amp;#xFF0C;&amp;#x4ED6;&amp;#x4EEC;&amp;#x9700;&amp;#x8981;&amp;#x5728;Windows&amp;#x7684;dos&amp;#x754C;&amp;#x9762;&amp;#x4E0B;&amp;#x9762;&amp;#x6267;&amp;#x884C;&amp;#xFF0C;&amp;#x6240;&amp;#x4EE5;&amp;#x6211;&amp;#x4EEC;&amp;#x5148;&amp;#x9700;&amp;#x8981;&amp;#x4ECB;&amp;#x7ECD;&amp;#x4EE5;&amp;#x4E0B;dos&amp;#x754C;&amp;#x9762;&amp;#xFF1B;&lt;/p&gt;
-&lt;p&gt;&amp;#x5F00;&amp;#x542F;dos&amp;#x547D;&amp;#x4EE4;&amp;#x63D0;&amp;#x793A;&amp;#x7B26;&amp;#x754C;&amp;#x9762;&amp;#xFF1A;&lt;/p&gt;
-&lt;p&gt;&amp;#x7B2C;&amp;#x4E00;&amp;#x6B65;&amp;#x3001;win+R&amp;#x952E;&amp;#x542F;&amp;#x52A8;&amp;#x201C;&amp;#x8FD0;&amp;#x884C;&amp;#x201D;&amp;#x5BF9;&amp;#x8BDD;&amp;#x6846;&lt;/p&gt;</summary>
+    <summary type="html">&lt;h1 id=&quot;java&amp;#x8BED;&amp;#x8A00;&amp;#x4ECB;&amp;#x7ECD;&quot;&gt;&lt;a href=&quot;#java&amp;#x8BED;&amp;#x8A00;&amp;#x4ECB;&amp;#x7ECD;&quot; class=&quot;headerlink&quot; title=&quot;java&amp;#x8BED;&amp;#x8A00;&amp;#x4ECB;&amp;#x7ECD;&quot;&gt;&lt;/a&gt;java&amp;#x8BED;&amp;#x8A00;&amp;#x4ECB;&amp;#x7ECD;&lt;/h1&gt;&lt;p&gt;&amp;#x8BED;&amp;#x8A00;&amp;#xFF1A;&amp;#x4EBA;&amp;#x4E0E;&amp;#x4EBA;&amp;#x4EA4;&amp;#x6D41;&amp;#x6C9F;&amp;#x901A;&amp;#x7684;&amp;#x8868;&amp;#x8FBE;&amp;#x65B9;&amp;#x5F0F;&lt;/p&gt;
+&lt;p&gt;&amp;#x8BA1;&amp;#x7B97;&amp;#x673A;&amp;#x8BED;&amp;#x8A00;&amp;#xFF1A;&amp;#x4EBA;&amp;#x4E0E;&amp;#x8BA1;&amp;#x7B97;&amp;#x673A;&amp;#x4E4B;&amp;#x95F4;&amp;#x8FDB;&amp;#x884C;&amp;#x4FE1;&amp;#x606F;&amp;#x4EA4;&amp;#x6D41;&amp;#x7684;&amp;#x6C9F;&amp;#x901A;&amp;#x7684;&amp;#x4E00;&amp;#x79CD;&amp;#x7279;&amp;#x6B8A;&amp;#x8BED;&amp;#x8A00;&lt;/p&gt;
+&lt;p&gt;java&amp;#x8BED;&amp;#x8A00;&amp;#xFF1A;&amp;#x7531;&amp;#x7F8E;&amp;#x56FD;sun&amp;#xFF08;stanford university network&amp;#xFF09;&amp;#x516C;&amp;#x53F8;&amp;#x518D;1995&amp;#x5E74;&amp;#x63A8;&amp;#x51FA;&amp;#x7684;&amp;#x8BA1;&amp;#x7B97;&amp;#x673A;&amp;#x8BED;&amp;#x8A00;&lt;/p&gt;
+&lt;p&gt;java&amp;#x4E4B;&amp;#x7236;&amp;#xFF1A;&amp;#x8A79;&amp;#x59C6;&amp;#x65AF;&amp;#x9AD8;&amp;#x65AF;&amp;#x6797;&lt;/p&gt;</summary>
     
     
     
@@ -527,11 +527,11 @@
     
     <category term="vlan trunk" scheme="http://example.com/tags/vlan-trunk/"/>
     
-    <category term="静态路由" scheme="http://example.com/tags/%E9%9D%99%E6%80%81%E8%B7%AF%E7%94%B1/"/>
-    
     <category term="stp" scheme="http://example.com/tags/stp/"/>
     
     <category term="vrrp hsrp" scheme="http://example.com/tags/vrrp-hsrp/"/>
+    
+    <category term="静态路由" scheme="http://example.com/tags/%E9%9D%99%E6%80%81%E8%B7%AF%E7%94%B1/"/>
     
   </entry>
   
