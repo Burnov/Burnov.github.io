@@ -1,0 +1,682 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-minimal.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Mist","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="yaml&amp;#x6587;&amp;#x4EF6;&amp;#x7684;&amp;#x57FA;&amp;#x7840;&amp;#x4ECB;&amp;#x7ECD;&amp;#x4EE5;&amp;#x53CA;yaml&amp;#x6587;&amp;#x4EF6;&amp;#x8FD0;&amp;#x884C;nginx&amp;#x548C;tomcat&amp;#x7684;&amp;#x6848;&amp;#x4F8B;&amp;#x4ECB;&amp;#x7ECD;yaml&amp;#x6587;&amp;#x4EF6;&amp;#x7684;&amp;">
+<meta property="og:type" content="article">
+<meta property="og:title" content="yaml文件基础与k8s架构下nginx+tomcat服务部署">
+<meta property="og:url" content="http://example.com/cloud-native/kubernetes/08_k8s_yaml%E6%96%87%E4%BB%B6%E5%9F%BA%E7%A1%80%E4%BB%8B%E7%BB%8D%E4%BB%A5%E5%8F%8A%E5%9F%BA%E4%BA%8Eyaml%E6%96%87%E4%BB%B6%E8%BF%90%E8%A1%8Cnginx%E5%92%8Ctomcat%E7%9A%84%E6%A1%88%E4%BE%8B%E4%BB%8B%E7%BB%8D/index.html">
+<meta property="og:site_name" content="Burnov^-^Blog">
+<meta property="og:description" content="yaml&amp;#x6587;&amp;#x4EF6;&amp;#x7684;&amp;#x57FA;&amp;#x7840;&amp;#x4ECB;&amp;#x7ECD;&amp;#x4EE5;&amp;#x53CA;yaml&amp;#x6587;&amp;#x4EF6;&amp;#x8FD0;&amp;#x884C;nginx&amp;#x548C;tomcat&amp;#x7684;&amp;#x6848;&amp;#x4F8B;&amp;#x4ECB;&amp;#x7ECD;yaml&amp;#x6587;&amp;#x4EF6;&amp;#x7684;&amp;">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://example.com/cloud-native/kubernetes/08_k8s_yaml%E6%96%87%E4%BB%B6%E5%9F%BA%E7%A1%80%E4%BB%8B%E7%BB%8D%E4%BB%A5%E5%8F%8A%E5%9F%BA%E4%BA%8Eyaml%E6%96%87%E4%BB%B6%E8%BF%90%E8%A1%8Cnginx%E5%92%8Ctomcat%E7%9A%84%E6%A1%88%E4%BE%8B%E4%BB%8B%E7%BB%8D/image-20220112164544654.png">
+<meta property="og:image" content="http://example.com/cloud-native/kubernetes/08_k8s_yaml%E6%96%87%E4%BB%B6%E5%9F%BA%E7%A1%80%E4%BB%8B%E7%BB%8D%E4%BB%A5%E5%8F%8A%E5%9F%BA%E4%BA%8Eyaml%E6%96%87%E4%BB%B6%E8%BF%90%E8%A1%8Cnginx%E5%92%8Ctomcat%E7%9A%84%E6%A1%88%E4%BE%8B%E4%BB%8B%E7%BB%8D/image-20220112162422707.png">
+<meta property="og:image" content="http://example.com/cloud-native/kubernetes/08_k8s_yaml%E6%96%87%E4%BB%B6%E5%9F%BA%E7%A1%80%E4%BB%8B%E7%BB%8D%E4%BB%A5%E5%8F%8A%E5%9F%BA%E4%BA%8Eyaml%E6%96%87%E4%BB%B6%E8%BF%90%E8%A1%8Cnginx%E5%92%8Ctomcat%E7%9A%84%E6%A1%88%E4%BE%8B%E4%BB%8B%E7%BB%8D/image-20220112165357699.png">
+<meta property="og:image" content="http://example.com/cloud-native/kubernetes/08_k8s_yaml%E6%96%87%E4%BB%B6%E5%9F%BA%E7%A1%80%E4%BB%8B%E7%BB%8D%E4%BB%A5%E5%8F%8A%E5%9F%BA%E4%BA%8Eyaml%E6%96%87%E4%BB%B6%E8%BF%90%E8%A1%8Cnginx%E5%92%8Ctomcat%E7%9A%84%E6%A1%88%E4%BE%8B%E4%BB%8B%E7%BB%8D/image-20220112200244652.png">
+<meta property="og:image" content="http://example.com/cloud-native/kubernetes/08_k8s_yaml%E6%96%87%E4%BB%B6%E5%9F%BA%E7%A1%80%E4%BB%8B%E7%BB%8D%E4%BB%A5%E5%8F%8A%E5%9F%BA%E4%BA%8Eyaml%E6%96%87%E4%BB%B6%E8%BF%90%E8%A1%8Cnginx%E5%92%8Ctomcat%E7%9A%84%E6%A1%88%E4%BE%8B%E4%BB%8B%E7%BB%8D/image-20220112205222369.png">
+<meta property="og:image" content="http://example.com/cloud-native/kubernetes/08_k8s_yaml%E6%96%87%E4%BB%B6%E5%9F%BA%E7%A1%80%E4%BB%8B%E7%BB%8D%E4%BB%A5%E5%8F%8A%E5%9F%BA%E4%BA%8Eyaml%E6%96%87%E4%BB%B6%E8%BF%90%E8%A1%8Cnginx%E5%92%8Ctomcat%E7%9A%84%E6%A1%88%E4%BE%8B%E4%BB%8B%E7%BB%8D/image-20220112205442041.png">
+<meta property="og:image" content="http://example.com/cloud-native/kubernetes/08_k8s_yaml%E6%96%87%E4%BB%B6%E5%9F%BA%E7%A1%80%E4%BB%8B%E7%BB%8D%E4%BB%A5%E5%8F%8A%E5%9F%BA%E4%BA%8Eyaml%E6%96%87%E4%BB%B6%E8%BF%90%E8%A1%8Cnginx%E5%92%8Ctomcat%E7%9A%84%E6%A1%88%E4%BE%8B%E4%BB%8B%E7%BB%8D/image-20220112212237460.png">
+<meta property="og:image" content="http://example.com/cloud-native/kubernetes/08_k8s_yaml%E6%96%87%E4%BB%B6%E5%9F%BA%E7%A1%80%E4%BB%8B%E7%BB%8D%E4%BB%A5%E5%8F%8A%E5%9F%BA%E4%BA%8Eyaml%E6%96%87%E4%BB%B6%E8%BF%90%E8%A1%8Cnginx%E5%92%8Ctomcat%E7%9A%84%E6%A1%88%E4%BE%8B%E4%BB%8B%E7%BB%8D/image-20220112212528792.png">
+<meta property="og:image" content="http://example.com/cloud-native/kubernetes/08_k8s_yaml%E6%96%87%E4%BB%B6%E5%9F%BA%E7%A1%80%E4%BB%8B%E7%BB%8D%E4%BB%A5%E5%8F%8A%E5%9F%BA%E4%BA%8Eyaml%E6%96%87%E4%BB%B6%E8%BF%90%E8%A1%8Cnginx%E5%92%8Ctomcat%E7%9A%84%E6%A1%88%E4%BE%8B%E4%BB%8B%E7%BB%8D/image-20220112213706014.png">
+<meta property="og:image" content="http://example.com/cloud-native/kubernetes/08_k8s_yaml%E6%96%87%E4%BB%B6%E5%9F%BA%E7%A1%80%E4%BB%8B%E7%BB%8D%E4%BB%A5%E5%8F%8A%E5%9F%BA%E4%BA%8Eyaml%E6%96%87%E4%BB%B6%E8%BF%90%E8%A1%8Cnginx%E5%92%8Ctomcat%E7%9A%84%E6%A1%88%E4%BE%8B%E4%BB%8B%E7%BB%8D/image-20220112222940785.png">
+<meta property="og:image" content="http://example.com/cloud-native/kubernetes/08_k8s_yaml%E6%96%87%E4%BB%B6%E5%9F%BA%E7%A1%80%E4%BB%8B%E7%BB%8D%E4%BB%A5%E5%8F%8A%E5%9F%BA%E4%BA%8Eyaml%E6%96%87%E4%BB%B6%E8%BF%90%E8%A1%8Cnginx%E5%92%8Ctomcat%E7%9A%84%E6%A1%88%E4%BE%8B%E4%BB%8B%E7%BB%8D/image-20220112223723876.png">
+<meta property="og:image" content="http://example.com/cloud-native/kubernetes/08_k8s_yaml%E6%96%87%E4%BB%B6%E5%9F%BA%E7%A1%80%E4%BB%8B%E7%BB%8D%E4%BB%A5%E5%8F%8A%E5%9F%BA%E4%BA%8Eyaml%E6%96%87%E4%BB%B6%E8%BF%90%E8%A1%8Cnginx%E5%92%8Ctomcat%E7%9A%84%E6%A1%88%E4%BE%8B%E4%BB%8B%E7%BB%8D/image-20220112225536651.png">
+<meta property="og:image" content="http://example.com/cloud-native/kubernetes/08_k8s_yaml%E6%96%87%E4%BB%B6%E5%9F%BA%E7%A1%80%E4%BB%8B%E7%BB%8D%E4%BB%A5%E5%8F%8A%E5%9F%BA%E4%BA%8Eyaml%E6%96%87%E4%BB%B6%E8%BF%90%E8%A1%8Cnginx%E5%92%8Ctomcat%E7%9A%84%E6%A1%88%E4%BE%8B%E4%BB%8B%E7%BB%8D/image-20220112225747186.png">
+<meta property="og:image" content="http://example.com/cloud-native/kubernetes/08_k8s_yaml%E6%96%87%E4%BB%B6%E5%9F%BA%E7%A1%80%E4%BB%8B%E7%BB%8D%E4%BB%A5%E5%8F%8A%E5%9F%BA%E4%BA%8Eyaml%E6%96%87%E4%BB%B6%E8%BF%90%E8%A1%8Cnginx%E5%92%8Ctomcat%E7%9A%84%E6%A1%88%E4%BE%8B%E4%BB%8B%E7%BB%8D/image-20220112225916843.png">
+<meta property="og:image" content="http://example.com/cloud-native/kubernetes/08_k8s_yaml%E6%96%87%E4%BB%B6%E5%9F%BA%E7%A1%80%E4%BB%8B%E7%BB%8D%E4%BB%A5%E5%8F%8A%E5%9F%BA%E4%BA%8Eyaml%E6%96%87%E4%BB%B6%E8%BF%90%E8%A1%8Cnginx%E5%92%8Ctomcat%E7%9A%84%E6%A1%88%E4%BE%8B%E4%BB%8B%E7%BB%8D/image-20220112230403548.png">
+<meta property="og:image" content="http://example.com/cloud-native/kubernetes/08_k8s_yaml%E6%96%87%E4%BB%B6%E5%9F%BA%E7%A1%80%E4%BB%8B%E7%BB%8D%E4%BB%A5%E5%8F%8A%E5%9F%BA%E4%BA%8Eyaml%E6%96%87%E4%BB%B6%E8%BF%90%E8%A1%8Cnginx%E5%92%8Ctomcat%E7%9A%84%E6%A1%88%E4%BE%8B%E4%BB%8B%E7%BB%8D/image-20220112220056180.png">
+<meta property="og:image" content="http://example.com/cloud-native/kubernetes/08_k8s_yaml%E6%96%87%E4%BB%B6%E5%9F%BA%E7%A1%80%E4%BB%8B%E7%BB%8D%E4%BB%A5%E5%8F%8A%E5%9F%BA%E4%BA%8Eyaml%E6%96%87%E4%BB%B6%E8%BF%90%E8%A1%8Cnginx%E5%92%8Ctomcat%E7%9A%84%E6%A1%88%E4%BE%8B%E4%BB%8B%E7%BB%8D/image-20220112221114538.png">
+<meta property="article:published_time" content="2022-01-18T07:32:50.000Z">
+<meta property="article:modified_time" content="2022-01-18T07:35:11.381Z">
+<meta property="article:author" content="Burnov">
+<meta property="article:tag" content="yaml">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/cloud-native/kubernetes/08_k8s_yaml%E6%96%87%E4%BB%B6%E5%9F%BA%E7%A1%80%E4%BB%8B%E7%BB%8D%E4%BB%A5%E5%8F%8A%E5%9F%BA%E4%BA%8Eyaml%E6%96%87%E4%BB%B6%E8%BF%90%E8%A1%8Cnginx%E5%92%8Ctomcat%E7%9A%84%E6%A1%88%E4%BE%8B%E4%BB%8B%E7%BB%8D/image-20220112164544654.png">
+
+<link rel="canonical" href="http://example.com/cloud-native/kubernetes/08_k8s_yaml%E6%96%87%E4%BB%B6%E5%9F%BA%E7%A1%80%E4%BB%8B%E7%BB%8D%E4%BB%A5%E5%8F%8A%E5%9F%BA%E4%BA%8Eyaml%E6%96%87%E4%BB%B6%E8%BF%90%E8%A1%8Cnginx%E5%92%8Ctomcat%E7%9A%84%E6%A1%88%E4%BE%8B%E4%BB%8B%E7%BB%8D/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>yaml文件基础与k8s架构下nginx+tomcat服务部署 | Burnov^-^Blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="Burnov^-^Blog" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Burnov^-^Blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="Searching..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://example.com/cloud-native/kubernetes/08_k8s_yaml%E6%96%87%E4%BB%B6%E5%9F%BA%E7%A1%80%E4%BB%8B%E7%BB%8D%E4%BB%A5%E5%8F%8A%E5%9F%BA%E4%BA%8Eyaml%E6%96%87%E4%BB%B6%E8%BF%90%E8%A1%8Cnginx%E5%92%8Ctomcat%E7%9A%84%E6%A1%88%E4%BE%8B%E4%BB%8B%E7%BB%8D/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="Burnov">
+      <meta itemprop="description" content="No end for Learning">
+    </span>
+    
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Burnov^-^Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          yaml文件基础与k8s架构下nginx+tomcat服务部署
+        </h1>
+    
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+              
+    
+              <time title="Created: 2022-01-18 15:32:50 / Modified: 15:35:11" itemprop="dateCreated datePublished" datetime="2022-01-18T15:32:50+08:00">2022-01-18</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/cloud-native/" itemprop="url" rel="index"><span itemprop="name">cloud native</span></a>
+                </span>
+                  , 
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/cloud-native/kubernetes/" itemprop="url" rel="index"><span itemprop="name">kubernetes</span></a>
+                </span>
+            </span>
+    
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Valine: </span>
+    
+    <a title="valine" href="/cloud-native/kubernetes/08_k8s_yaml%E6%96%87%E4%BB%B6%E5%9F%BA%E7%A1%80%E4%BB%8B%E7%BB%8D%E4%BB%A5%E5%8F%8A%E5%9F%BA%E4%BA%8Eyaml%E6%96%87%E4%BB%B6%E8%BF%90%E8%A1%8Cnginx%E5%92%8Ctomcat%E7%9A%84%E6%A1%88%E4%BE%8B%E4%BB%8B%E7%BB%8D/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/cloud-native/kubernetes/08_k8s_yaml%E6%96%87%E4%BB%B6%E5%9F%BA%E7%A1%80%E4%BB%8B%E7%BB%8D%E4%BB%A5%E5%8F%8A%E5%9F%BA%E4%BA%8Eyaml%E6%96%87%E4%BB%B6%E8%BF%90%E8%A1%8Cnginx%E5%92%8Ctomcat%E7%9A%84%E6%A1%88%E4%BE%8B%E4%BB%8B%E7%BB%8D/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+    
+        </div>
+      </header>
+    
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+    
+      
+        <h1 id="yaml&#x6587;&#x4EF6;&#x7684;&#x57FA;&#x7840;&#x4ECB;&#x7ECD;&#x4EE5;&#x53CA;yaml&#x6587;&#x4EF6;&#x8FD0;&#x884C;nginx&#x548C;tomcat&#x7684;&#x6848;&#x4F8B;&#x4ECB;&#x7ECD;"><a href="#yaml&#x6587;&#x4EF6;&#x7684;&#x57FA;&#x7840;&#x4ECB;&#x7ECD;&#x4EE5;&#x53CA;yaml&#x6587;&#x4EF6;&#x8FD0;&#x884C;nginx&#x548C;tomcat&#x7684;&#x6848;&#x4F8B;&#x4ECB;&#x7ECD;" class="headerlink" title="yaml&#x6587;&#x4EF6;&#x7684;&#x57FA;&#x7840;&#x4ECB;&#x7ECD;&#x4EE5;&#x53CA;yaml&#x6587;&#x4EF6;&#x8FD0;&#x884C;nginx&#x548C;tomcat&#x7684;&#x6848;&#x4F8B;&#x4ECB;&#x7ECD;"></a>yaml&#x6587;&#x4EF6;&#x7684;&#x57FA;&#x7840;&#x4ECB;&#x7ECD;&#x4EE5;&#x53CA;yaml&#x6587;&#x4EF6;&#x8FD0;&#x884C;nginx&#x548C;tomcat&#x7684;&#x6848;&#x4F8B;&#x4ECB;&#x7ECD;</h1><h2 id="yaml&#x6587;&#x4EF6;&#x7684;&#x57FA;&#x672C;&#x4ECB;&#x7ECD;"><a href="#yaml&#x6587;&#x4EF6;&#x7684;&#x57FA;&#x672C;&#x4ECB;&#x7ECD;" class="headerlink" title="yaml&#x6587;&#x4EF6;&#x7684;&#x57FA;&#x672C;&#x4ECB;&#x7ECD;"></a>yaml&#x6587;&#x4EF6;&#x7684;&#x57FA;&#x672C;&#x4ECB;&#x7ECD;</h2><p>&#x5176;&#x5B9E;&#xFF0C;&#x6211;&#x4EEC;&#x7684;pod&#x5F88;&#x591A;&#x60C5;&#x51B5;&#x4E0B;&#x90FD;&#x9700;&#x8981;&#x901A;&#x8FC7;yaml&#x6587;&#x4EF6;&#x6765;&#x7F16;&#x5199;&#x3002;&#x57FA;&#x4E8E;yaml&#x6587;&#x4EF6;&#x624D;&#x80FD;&#x6784;&#x5EFA;&#x51FA;&#x516C;&#x53F8;&#x4E5F;&#x8BB8;&#x9700;&#x8981;&#x7684;pod&#x5BB9;&#x5668;&#xFF0C;&#x56E0;&#x6B64;&#xFF0C;&#x80FD;&#x591F;&#x8BE6;&#x7EC6;&#x638C;&#x63E1;yaml&#x6587;&#x4EF6;&#x7F16;&#x5199;&#x662F;&#x80FD;&#x591F;&#x6B63;&#x5E38;&#x7BA1;&#x7406;&#x53F7;k8s&#x96C6;&#x7FA4;&#x7684;&#x5173;&#x952E;&#x56E0;&#x7D20;&#xFF1B;</p>
+<p>&#x8FD9;&#x91CC;&#x6211;&#x4EEC;&#x901A;&#x8FC7;&#x4E00;&#x4E2A;&#x7B80;&#x5355;&#x7684;&#x9879;&#x76EE;&#x90E8;&#x7F72;&#x6765;&#x4ECB;&#x7ECD;yaml&#x6587;&#x4EF6;&#x521B;&#x5EFA;pod&#x7684;&#x8FC7;&#x7A0B;&#xFF1B;</p>
+<p>yaml&#x7684;&#x683C;&#x5F0F;&#x4ECB;&#x7ECD;&#xFF1A;</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">&#x4EBA;&#x5458;&#x540D;&#x5355;:</span></span><br><span class="line">  <span class="string">&#x5F20;&#x4E09;:</span>  <span class="comment"># &#x4E00;&#x822C;&#x524D;&#x9762;&#x7F29;&#x8FDB;&#x4E24;&#x4E2A;&#x7A7A;&#x683C;&#x8868;&#x793A;&#x4E0A;&#x4E0B;&#x7EA7;&#x5173;&#x7CFB;</span></span><br><span class="line">    <span class="string">&#x5E74;&#x9F84;:</span> <span class="number">18</span>  <span class="comment"># &#x8FD9;&#x79CD;&#x5199;&#x6CD5;&#x5C31;&#x662F;k-v&#x683C;&#x5F0F;&#x952E;&#x503C;&#x5BF9;&#xFF0C;&#x4E5F;&#x5C31;&#x662F;&#x5B57;&#x5178;&#xFF1B;</span></span><br><span class="line">    <span class="string">&#x804C;&#x4E1A;:</span> <span class="string">linux&#x8FD0;&#x7EF4;&#x5DE5;&#x7A0B;&#x5E08;</span></span><br><span class="line">    <span class="string">&#x7231;&#x597D;:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">&#x770B;&#x4E66;</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">&#x5B66;&#x4E60;</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">&#x52A0;&#x73ED;</span></span><br><span class="line">      <span class="comment"># &#x8FD9;&#x79CD;&#x5199;&#x6CD5;&#x662F;&#x5217;&#x8868;&#x7684;&#x5F62;&#x5F0F;</span></span><br><span class="line">  </span><br><span class="line">  <span class="string">&#x674E;&#x56DB;:</span></span><br><span class="line">  	<span class="string">&#x5E74;&#x9F84;:</span> <span class="number">20</span></span><br><span class="line">  	<span class="string">&#x804C;&#x4E1A;:</span> <span class="string">java&#x5F00;&#x53D1;&#x5DE5;&#x7A0B;&#x5E08;</span> <span class="comment"># &#x8FD9;&#x662F;&#x804C;&#x4E1A;</span></span><br><span class="line">  	<span class="string">&#x7231;&#x597D;:</span></span><br><span class="line">  	  <span class="bullet">-</span> <span class="string">&#x5F00;&#x6E90;&#x6280;&#x672F;</span></span><br><span class="line">  	  <span class="bullet">-</span> <span class="string">&#x5FAE;&#x670D;&#x52A1;</span></span><br><span class="line">  	  <span class="bullet">-</span> <span class="string">&#x5206;&#x5E03;&#x5F0F;&#x5B58;&#x50A8;</span></span><br></pre></td></tr></table></figure>
+
+<p>yaml&#x6587;&#x4EF6;&#x7684;&#x57FA;&#x672C;&#x7279;&#x70B9;&#xFF1A;</p>
+<ul>
+<li>&#x5927;&#x5C0F;&#x5199;&#x654F;&#x611F;</li>
+<li>&#x4F7F;&#x7528;&#x7F29;&#x8FDB;&#x8868;&#x793A;&#x5C42;&#x7EA7;&#x5173;&#x7CFB;</li>
+<li>&#x7F29;&#x8FDB;&#x65F6;&#x4E0D;&#x5BB9;&#x8BB8;&#x4F7F;&#x7528;tab&#x952E;&#xFF0C;&#x53EA;&#x80FD;&#x5BB9;&#x8BB8;&#x4F7F;&#x7528;&#x7A7A;&#x683C;&#x952E;</li>
+<li>&#x7F29;&#x8FDB;&#x7684;&#x7A7A;&#x683C;&#x6055;&#x4E0D;&#x4E0D;&#x91CD;&#x8981;&#xFF0C;&#x53EA;&#x8981;&#x76F8;&#x540C;&#x5C42;&#x7EA7;&#x7684;&#x5143;&#x7D20;&#x5DE6;&#x4FA7;&#x5BF9;&#x9F50;&#x5373;&#x53EF;</li>
+<li>&#x4F7F;&#x7528;&#x201C;#&#x201D;&#x8868;&#x793A;&#x6CE8;&#x91CA;&#xFF0C;&#x4ECE;&#x8FD9;&#x4E2A;&#x5B57;&#x7B26;&#x4E00;&#x76F4;&#x5230;&#x884C;&#x5C3E;&#x90FD;&#x4F1A;&#x88AB;&#x89E3;&#x6790;&#x5668;&#x5FFD;&#x7565;</li>
+<li>&#x6BD4;json&#x66F4;&#x52A0;&#x9002;&#x7528;&#x4E8E;&#x914D;&#x7F6E;&#x6587;&#x4EF6;</li>
+</ul>
+<p>yaml&#x4E0E;json&#x683C;&#x5F0F;&#x7684;&#x533A;&#x522B;&#xFF1A;</p>
+<p>&#x5176;&#x5B9E;&#x9664;&#x4E86;yaml&#x6587;&#x4EF6;&#x610F;&#x5916;&#xFF0C;&#x8FD8;&#x6709;json&#x6587;&#x4EF6;&#x4E5F;&#x53EF;&#x4EE5;&#x4F5C;&#x4E3A;&#x914D;&#x7F6E;&#x6587;&#x4EF6;&#x6765;&#x5199;&#xFF1B;&#x4F46;&#x662F;json&#x6587;&#x4EF6;&#x6709;&#x4E00;&#x4E9B;&#x7F3A;&#x9677;&#xFF1A;</p>
+<ul>
+<li><p>json&#x4E0D;&#x80FD;&#x6CE8;&#x91CA;</p>
+</li>
+<li><p>json&#x7684;&#x53EF;&#x8BFB;&#x6027;&#x5DEE;</p>
+</li>
+<li><p>json&#x7684;&#x8BED;&#x6CD5;&#x5F88;&#x4E25;&#x683C;&#x6BD4;</p>
+</li>
+</ul>
+<p>&#x4F46;&#x662F;json&#x6587;&#x4EF6;&#x4E5F;&#x7531;&#x5B83;&#x81EA;&#x5DF1;&#x7684;&#x4F18;&#x70B9;&#xFF0C;&#x4F8B;&#x5982;&#xFF1A;&#x8F83;&#x9002;&#x7528;&#x4E8E;API&#x8FD4;&#x56DE;&#x503C;&#xFF0C;&#x4E5F;&#x53EF;&#x7528;&#x4E8E;&#x914D;&#x7F6E;&#x6587;&#x4EF6;&#xFF0C;Jenkins&#x5C31;&#x662F;&#x4F7F;&#x7528;json&#x683C;&#x5F0F;&#x7684;&#x914D;&#x7F6E;&#x6587;&#x4EF6;&#xFF1B;&#x5728;&#x7F51;&#x7EDC;&#x4E0A;&#xFF0C;&#x7531;json&#x548C;yaml&#x6587;&#x4EF6;&#x7684;&#x76F8;&#x4E92;&#x8F6C;&#x6362;&#x7684;&#x529F;&#x80FD;&#xFF1B;</p>
+<p><img src="/cloud-native/kubernetes/08_k8s_yaml%E6%96%87%E4%BB%B6%E5%9F%BA%E7%A1%80%E4%BB%8B%E7%BB%8D%E4%BB%A5%E5%8F%8A%E5%9F%BA%E4%BA%8Eyaml%E6%96%87%E4%BB%B6%E8%BF%90%E8%A1%8Cnginx%E5%92%8Ctomcat%E7%9A%84%E6%A1%88%E4%BE%8B%E4%BB%8B%E7%BB%8D/image-20220112164544654.png" alt="json&#x4E0E;yaml&#x8F6C;&#x6362;&#x5173;&#x7CFB;"></p>
+<h2 id="&#x9879;&#x76EE;&#x80CC;&#x666F;"><a href="#&#x9879;&#x76EE;&#x80CC;&#x666F;" class="headerlink" title="&#x9879;&#x76EE;&#x80CC;&#x666F;"></a>&#x9879;&#x76EE;&#x80CC;&#x666F;</h2><p>&#x5728;&#x751F;&#x4EA7;&#x4E2D;&#xFF0C;&#x6211;&#x4EEC;&#x4F1A;&#x901A;&#x8FC7;&#x5B9A;&#x4E49;namespace&#x6765;&#x65B0;&#x542F;&#x52A8;&#x4E00;&#x4E2A;&#x9879;&#x76EE;&#xFF0C;&#x4F8B;&#x5982;&#xFF0C;&#x6211;&#x4EEC;&#x53EF;&#x4EE5;&#x6307;&#x5B9A;Linux60&#x4E3A;&#x7B2C;&#x4E00;&#x4E2A;namespace&#xFF0C;&#x800C;Linux61&#x4E3A;&#x53E6;&#x5916;&#x4E00;&#x4E2A;namespace&#xFF0C;&#x7136;&#x540E;&#x5206;&#x522B;&#x7531;&#x4E00;&#x4E2A;user1&#x548C;user2&#x5206;&#x522B;&#x5BF9;&#x5176;&#x8BBF;&#x95EE;&#xFF1B;</p>
+<p><img src="/cloud-native/kubernetes/08_k8s_yaml%E6%96%87%E4%BB%B6%E5%9F%BA%E7%A1%80%E4%BB%8B%E7%BB%8D%E4%BB%A5%E5%8F%8A%E5%9F%BA%E4%BA%8Eyaml%E6%96%87%E4%BB%B6%E8%BF%90%E8%A1%8Cnginx%E5%92%8Ctomcat%E7%9A%84%E6%A1%88%E4%BE%8B%E4%BB%8B%E7%BB%8D/image-20220112162422707.png" alt="&#x57FA;&#x672C;&#x548C;&#x67B6;&#x6784;"></p>
+<h2 id="&#x521B;&#x5EFA;namespace"><a href="#&#x521B;&#x5EFA;namespace" class="headerlink" title="&#x521B;&#x5EFA;namespace"></a>&#x521B;&#x5EFA;namespace</h2><ul>
+<li>&#x547D;&#x4EE4;&#x884C;&#x521B;&#x5EFA;namespace</li>
+</ul>
+<p>&#x547D;&#x4EE4;&#x884C;&#x521B;&#x5EFA;&#x8D44;&#x6E90;&#x5BF9;&#x8C61;&#x53EA;&#x9002;&#x5408;&#x6BD4;&#x8F83;&#x7B80;&#x5355;&#x7684;&#x64CD;&#x4F5C;&#xFF1B;</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">kubectl create namespace linux60  # &#x8FD9;&#x6837;&#x5C31;&#x521B;&#x5EFA;&#x4E86;linux60&#x8FD9;&#x4E2A;&#x8D44;&#x6E90;&#x5BF9;&#x8C61;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>&#x901A;&#x8FC7;yaml&#x6587;&#x4EF6;&#x521B;&#x5EFA;namespace</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> &#x9996;&#x5148;&#xFF0C;&#x6211;&#x4EEC;&#x53EF;&#x4EE5;&#x901A;&#x8FC7;explain&#x6765;&#x67E5;&#x770B;yaml&#x6587;&#x4EF6;&#x5E2E;&#x52A9;&#x4FE1;&#x606F;</span></span><br><span class="line">kubectl explain namespace</span><br><span class="line"></span><br><span class="line">mkdir -p /root/yaml/</span><br><span class="line">cd /root/yaml/</span><br><span class="line">vim linux60-namespace.yaml  # &#x521B;&#x5EFA;yaml&#x6587;&#x4EF6;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">apiVersion:</span> <span class="string">v1</span>  <span class="comment"># &#x6307;&#x5B9A;API&#x7684;&#x7248;&#x672C;&#xFF0C;&#x57FA;&#x672C;&#x4E0A;&#x90FD;&#x662F;v1&#x7684;&#x7248;&#x672C;</span></span><br><span class="line"><span class="attr">kind:</span> <span class="string">Namespace</span>  <span class="comment"># &#x6307;&#x5B9A;&#x8D44;&#x6E90;&#x5BF9;&#x8C61;</span></span><br><span class="line"><span class="attr">metadata:</span>  <span class="comment"># &#x67E5;&#x770B;&#x5C5E;&#x6027;&#x4FE1;&#x606F;</span></span><br><span class="line">  <span class="attr">name:</span> <span class="string">linux60</span>  <span class="comment"># &#x6307;&#x5B9A;namespace&#x7684;&#x540D;&#x79F0;</span></span><br></pre></td></tr></table></figure>
+
+<p>&#x4FDD;&#x5B58;&#x8BE5;&#x6587;&#x4EF6;&#x4EE5;&#x540E;&#x5C31;&#x53EF;&#x4EE5;&#x901A;&#x8FC7;&#x8BE5;&#x6587;&#x4EF6;&#x6765;&#x521B;&#x5EFA;namespace&#x4E86;&#xFF1B;&#x914D;&#x7F6E;&#x5982;&#x4E0B;&#xFF1A;</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">kubectl apply -f linux60-namespace.yaml</span><br><span class="line"><span class="meta"></span></span><br><span class="line"><span class="meta">#</span><span class="bash"> &#x67E5;&#x770B;&#x521B;&#x5EFA;&#x540E;&#x7684;&#x7ED3;&#x679C;</span></span><br><span class="line">kubectl get namespace</span><br></pre></td></tr></table></figure>
+
+<p><img src="/cloud-native/kubernetes/08_k8s_yaml%E6%96%87%E4%BB%B6%E5%9F%BA%E7%A1%80%E4%BB%8B%E7%BB%8D%E4%BB%A5%E5%8F%8A%E5%9F%BA%E4%BA%8Eyaml%E6%96%87%E4%BB%B6%E8%BF%90%E8%A1%8Cnginx%E5%92%8Ctomcat%E7%9A%84%E6%A1%88%E4%BE%8B%E4%BB%8B%E7%BB%8D/image-20220112165357699.png" alt="&#x7ED3;&#x679C;&#x663E;&#x793A;"></p>
+<h2 id="&#x521B;&#x5EFA;nginx-pod"><a href="#&#x521B;&#x5EFA;nginx-pod" class="headerlink" title="&#x521B;&#x5EFA;nginx pod"></a>&#x521B;&#x5EFA;nginx pod</h2><p>&#x4E0B;&#x9762;&#xFF0C;&#x6211;&#x4EEC;&#x770B;&#x4E00;&#x4E2A;&#x521B;&#x5EFA;nginx pod&#x5BB9;&#x5668;&#x7684;&#x6848;&#x4F8B;&#xFF1A;</p>
+<p>&#x6211;&#x4EEC;&#x5728;opt&#x4E0B;&#x53BB;&#x521B;&#x5EFA;Linux60&#x9879;&#x76EE;&#xFF0C;&#x7136;&#x540E;&#x5C06;&#x6211;&#x7684;yaml&#x6587;&#x4EF6;&#x5B58;&#x653E;&#x5728;&#x8FD9;&#x91CC;&#x3002;</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">mkdir -p /opt/k8s-data/yaml/linux60/nginx</span><br><span class="line">cd /opt/k8s-data/yaml/linux60/nginx</span><br><span class="line">vim nginx.yaml</span><br></pre></td></tr></table></figure>
+
+<p>nginx.yaml&#x6587;&#x4EF6;&#x7684;&#x5185;&#x5BB9;&#x5982;&#x4E0B;&#xFF1A;</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">kind:</span> <span class="string">Deployment</span>  <span class="comment"># pod&#x7C7B;&#x578B; -- deployment&#xFF0C;&#x8FD9;&#x662F;&#x63A7;&#x5236;&#x5668;&#x7C7B;&#x578B;&#xFF0C;&#x4E00;&#x822C;&#x4E3B;&#x8981;&#x4F7F;&#x7528;deployment&#x7C7B;&#x578B;&#xFF0C;&#x6216;&#x8005;&#x8FD8;&#x6709;servcie&#x7B49;&#xFF1B;</span></span><br><span class="line"><span class="comment">#apiVersion: extensions/v1beta1 &#x8FD9;&#x662F;&#x8001;&#x7248;&#x672C;&#x4E86;&#xFF0C;&#x73B0;&#x5728;&#x4E0D;&#x600E;&#x4E48;&#x4F7F;&#x7528;&#x4E86;</span></span><br><span class="line"><span class="attr">apiVersion:</span> <span class="string">apps/v1</span>  <span class="comment"># apiVersion&#x7248;&#x672C;v1</span></span><br><span class="line"><span class="attr">metadata:</span>  <span class="comment"># pod&#x7684;&#x5143;&#x6570;&#x636E;&#x4FE1;&#x606F;&#xFF0C;&#x67E5;&#x770B;&#x5668;&#x5E2E;&#x52A9;&#x53EF;&#x4EE5;&#x4F7F;&#x7528;&#xFF1A;kubectl explain Deployment.metadata</span></span><br><span class="line"><span class="comment"># &#x8FD9;&#x4E2A;&#x6570;&#x636E;&#x8981;&#x6CE8;&#x610F;&#xFF0C;&#x5B83;&#x548C;kind&#x7C7B;&#x578B;&#x6709;&#x5173;&#xFF0C;&#x5982;&#x679C;&#x662F;Deployment&#xFF0C;&#x90A3;&#x4E48;&#x4E0B;&#x9762;&#x5143;&#x6570;&#x636E;&#x5C31;&#x662F;Deployment&#x7684;&#x6570;&#x636E;&#xFF1B;</span></span><br><span class="line">  <span class="attr">labels:</span>  <span class="comment"># &#x5B9A;&#x4E49;pod&#x7684;&#x6807;&#x7B7E;&#xFF1B;&#x8FD9;&#x4E2A;&#x975E;&#x5E38;&#x91CD;&#x8981;</span></span><br><span class="line">    <span class="attr">app:</span> <span class="string">linux60-nginx-deployment-label</span>  <span class="comment"># &#x6807;&#x7B7E;&#x540D;&#x79F0;&#x4E3A;app&#x503C;&#x4E3A;&#x524D;&#x9762;&#x7684;&#x503C;&#x3002;&#x540E;&#x9762;&#x4F1A;&#x7528;&#x5230;&#x8FD9;&#x4E2A;&#x503C;&#x3002;</span></span><br><span class="line">  <span class="attr">name:</span> <span class="string">linux60-nginx-deployment</span>  <span class="comment"># &#x6307;&#x5B9A;pod&#x7684;&#x540D;&#x79F0;</span></span><br><span class="line">  <span class="attr">namespace:</span> <span class="string">linux60</span>  <span class="comment"># &#x6307;&#x5B9A;pod&#x7684;namespace&#xFF0C;&#x9ED8;&#x8BA4;default</span></span><br><span class="line">  <span class="comment"># &#x6709;&#x65F6;&#x5019;&#x8FD9;&#x4E2A;&#x662F;&#x6709;&#x6548;&#x7684;&#xFF0C;&#x6709;&#x65F6;&#x5019;&#x662F;&#x65E0;&#x6548;&#x7684;&#xFF0C;&#x56E0;&#x4E3A;&#x5728;k8s&#x96C6;&#x7FA4;&#x4E2D;&#xFF0C;&#x6709;&#x4E9B;namespace&#x662F;&#x5C5E;&#x4E8E;&#x5168;&#x5C40;&#x7684;&#xFF1B;</span></span><br><span class="line"><span class="attr">spec:</span>  <span class="comment"># &#x5B9A;&#x4E49;deployment&#x63A7;&#x5236;&#x5668;&#x4E2D;&#x7684;&#x8BE6;&#x7EC6;&#x4FE1;&#x606F;&#xFF0C;</span></span><br><span class="line">  <span class="attr">replicas:</span> <span class="number">1</span>  <span class="comment"># &#x5B9A;&#x4E49;&#x526F;&#x672C;&#x6570;&#xFF0C;&#x5373;&#x591A;&#x5C11;&#x4E2A;pod&#xFF0C;&#x9ED8;&#x8BA4;&#x503C;&#x4E3A;1&#xFF1B;&#x5982;&#x679C;&#x6302;&#x4E86;&#xFF0C;&#x5C31;&#x4F1A;&#x5728;&#x5176;&#x4ED6;&#x7684;node&#x8282;&#x70B9;&#x4E0A;&#x9762;&#x81EA;&#x52A8;&#x91CD;&#x5EFA;&#xFF0C;&#x4ECE;&#x800C;&#x59CB;&#x7EC8;&#x7EF4;&#x6301;&#x526F;&#x672C;&#x6570;&#x4E3A;1&#xFF1B;</span></span><br><span class="line">  <span class="attr">selector:</span>  <span class="comment"># &#x5B9A;&#x4E49;&#x6807;&#x7B7E;&#x9009;&#x62E9;&#x5668;</span></span><br><span class="line">    <span class="attr">matchLabels:</span>  <span class="comment"># &#x5B9A;&#x4E49;&#x5339;&#x914D;&#x7684;&#x6807;&#x7B7E;&#xFF0C;&#x5FC5;&#x987B;&#x8BBE;&#x7F6E;</span></span><br><span class="line">      <span class="attr">app:</span> <span class="string">linux60-nginx-selector</span>  <span class="comment"># &#x5339;&#x914D;&#x7684;&#x76EE;&#x6807;&#x6807;&#x7B7E;&#xFF0C;&#x4E5F;&#x5C31;&#x662F;&#x4E0A;&#x9762;&#x5B9A;&#x4E49;&#x7684;&#x6807;&#x7B7E;</span></span><br><span class="line">  <span class="attr">template:</span>  <span class="comment"># &#x5B9A;&#x4E49;&#x6A21;&#x677F;&#xFF0C;&#x5FC5;&#x987B;&#x5B9A;&#x4E49;&#xFF0C;&#x6A21;&#x677F;&#x662F;&#x8D77;&#x5230;&#x63CF;&#x8FF0;&#x8981;&#x521B;&#x5EFA;&#x7684;pod&#x7684;&#x4F5C;&#x7528;</span></span><br><span class="line">    <span class="attr">metadata:</span>  <span class="comment"># &#x5B9A;&#x4E49;&#x6A21;&#x677F;&#x5143;&#x6570;&#x636E;</span></span><br><span class="line">      <span class="attr">labels:</span>  <span class="comment"># &#x5B9A;&#x4E49;&#x6A21;&#x677F;label</span></span><br><span class="line">        <span class="attr">app:</span> <span class="string">linux60-nginx-selector</span>  <span class="comment"># &#x5B9A;&#x4E49;&#x6807;&#x7B7E;</span></span><br><span class="line">    <span class="attr">spec:</span>  <span class="comment"># &#x5B9A;&#x4E49;pod&#x4FE1;&#x606F;</span></span><br><span class="line">      <span class="attr">containers:</span>  <span class="comment"># &#x5B9A;&#x4E49;pod&#x4E2D;&#x5BB9;&#x5668;&#x5217;&#x8868;&#xFF0C;&#x53EF;&#x4EE5;&#x81F3;&#x5C11;&#x4E00;&#x4E2A;&#xFF0C;pod&#x4E0D;&#x80FD;&#x52A8;&#x6001;&#x589E;&#x51CF;&#x5BB9;&#x5668;</span></span><br><span class="line">      <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">linux60-nginx-container</span>  <span class="comment"># &#x5B9A;&#x4E49;&#x5BB9;&#x5668;&#x540D;&#x79F0;&#xFF0C;&#x4E00;&#x4E2A;pod&#x4E2D;&#x53EF;&#x4EE5;&#x6709;&#x591A;&#x4E2A;&#x5BB9;&#x5668;&#xFF0C;&#x4F46;&#x662F;&#x5BB9;&#x5668;&#x540D;&#x79F0;&#x662F;&#x4E0D;&#x80FD;&#x91CD;&#x590D;&#x7684;&#xFF01;</span></span><br><span class="line">        <span class="attr">image:</span> <span class="string">nginx</span>  <span class="comment"># &#x5B9A;&#x4E49;&#x955C;&#x50CF;&#x5730;&#x5740;&#xFF0C;&#x8FD9;&#x4E2A;&#x955C;&#x50CF;&#x5730;&#x5740;&#x4E00;&#x822C;&#x90FD;&#x662F;&#x516C;&#x53F8;&#x7684;&#x5185;&#x90E8;&#x955C;&#x50CF;&#x5730;&#x5740;&#xFF0C;&#x4F8B;&#x5982;&#xFF1A;harbor.test.net/nginx/nginx-web1:v1</span></span><br><span class="line">        <span class="comment">#command: [&quot;/apps/tomcat/bin/run_tomcat.sh&quot;]  # &#x5BB9;&#x5668;&#x542F;&#x52A8;&#x6267;&#x884C;&#x7684;&#x547D;&#x4EE4;&#x6216;&#x8005;&#x811A;&#x672C;&#xFF0C;&#x8FD9;&#x4E2A;&#x5378;&#x8F7D;&#x5BB9;&#x5668;&#x91CC;&#x9762;&#xFF1B;&#x4E0D;&#x5728;k8s&#x7684;pod&#x4E2D;&#x6307;&#x5B9A;</span></span><br><span class="line">        <span class="comment">#imagePullPolicy: IfNotPresent  # IfNotPresent -- &#x8868;&#x793A;&#x5728;&#x672C;&#x5730;&#x6709;&#x955C;&#x50CF;&#xFF0C;&#x5C31;&#x7528;&#x672C;&#x5730;&#x7684;&#xFF0C;&#x6CA1;&#x6709;&#x5C31;&#x53BB;&#x4E0B;&#x8F7D;</span></span><br><span class="line">        <span class="attr">imagePullPolicy:</span> <span class="string">Always</span>  <span class="comment"># Always -- &#x8868;&#x793A;&#x4E00;&#x76F4;&#x53BB;&#x7F51;&#x4E0A;&#x4E0B;&#x8F7D;&#xFF1B;&#x8FD8;&#x6709;&#x4E00;&#x4E2A;Null&#x5C31;&#x662F;&#x4E00;&#x76F4;&#x4E0D;&#x518D;&#x4E92;&#x8054;&#x7F51;&#x4E0A;&#x4E0B;&#x8F7D;&#xFF0C;&#x8FD9;&#x4E2A;&#x7528;&#x7684;&#x975E;&#x5E38;&#x5C11;&#xFF1B;</span></span><br><span class="line">        <span class="attr">ports:</span>  <span class="comment"># &#x5B9A;&#x4E49;&#x5BB9;&#x5668;&#x7AEF;&#x53E3;&#x66B4;&#x9732;&#x5217;&#x8868;&#xFF0C;&#x5B83;&#x6709;&#x70B9;&#x7C7B;&#x4F3C;&#x4E8E;dockerfile&#x4E2D;&#x7684;EXPORE&#x547D;&#x4EE4;&#xFF1B;&#x5176;&#x5B9E;&#x4E0D;&#x5199;&#x4E5F;&#x662F;&#x53EF;&#x4EE5;&#x7684;&#xFF1B;</span></span><br><span class="line">        <span class="bullet">-</span> <span class="attr">containerPort:</span> <span class="number">80</span>  <span class="comment"># &#x5B9A;&#x4E49;&#x4E00;&#x4E2A;&#x7AEF;&#x53E3;&#xFF1B; </span></span><br><span class="line">          <span class="attr">protocol:</span> <span class="string">TCP</span>  <span class="comment"># &#x5B9A;&#x4E49;&#x534F;&#x8BAE;; &#x67E5;&#x770B;&#x5E2E;&#x52A9;&#x547D;&#x4EE4; -- kubectl explain Deployment.spec.template.spec.containers.ports.protocol  &#x8FD9;&#x6837;&#x5C31;&#x53EF;&#x4EE5;&#x67E5;&#x770B;&#x5230;&#x5E2E;&#x52A9;&#xFF0C;&#x4E00;&#x822C;&#x4F7F;&#x7528;&#x6BD4;&#x8F83;&#x591A;&#x7684;&#x5C31;&#x662F;TCP&#x534F;&#x8BAE;&#x4E86;</span></span><br><span class="line">          <span class="attr">name:</span> <span class="string">http</span>  <span class="comment"># &#x914D;&#x7F6E;&#x7AEF;&#x53E3;&#x540D;&#x79F0;</span></span><br><span class="line">        <span class="bullet">-</span> <span class="attr">containerPort:</span> <span class="number">443</span>  <span class="comment"># &#x5B9A;&#x4E49;&#x4E00;&#x4E2A;&#x7AEF;&#x53E3;</span></span><br><span class="line">          <span class="attr">protocol:</span> <span class="string">TCP</span>  <span class="comment"># &#x7AEF;&#x53E3;&#x534F;&#x8BAE;</span></span><br><span class="line">          <span class="attr">name:</span> <span class="string">https</span>  <span class="comment"># &#x7AEF;&#x53E3;&#x540D;&#x79F0;</span></span><br><span class="line">        <span class="attr">env:</span>  <span class="comment"># &#x914D;&#x7F6E;&#x73AF;&#x5883;&#x53D8;&#x91CF;</span></span><br><span class="line">        <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">&quot;password&quot;</span>  <span class="comment"># &#x53D8;&#x91CF;&#x540D;&#x79F0;&#xFF0C;&#x5FC5;&#x987B;&#x8981;&#x7528;&#x5F15;&#x53F7;&#x5F15;&#x8D77;&#x6765;</span></span><br><span class="line">          <span class="attr">value:</span> <span class="string">&quot;123456&quot;</span>  <span class="comment"># &#x5F53;&#x524D;&#x53D8;&#x91CF;&#x7684;&#x503C;</span></span><br><span class="line">        <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">&quot;age&quot;</span>  <span class="comment"># &#x53D8;&#x91CF;&#x540D;&#x79F0;</span></span><br><span class="line">          <span class="attr">value:</span> <span class="string">&quot;18&quot;</span>  <span class="comment"># &#x53D8;&#x91CF;&#x7684;&#x503C;</span></span><br><span class="line"><span class="comment">#        resources:  # &#x5B9A;&#x4E49;&#x8D44;&#x6E90;&#x9650;&#x5236;&#xFF0C;&#x5BF9;&#x8D44;&#x6E90;&#x7684;&#x8BF7;&#x6C42;&#x8BBE;&#x7F6E;&#x548C;&#x9650;&#x5236;&#x8BBE;&#x7F6E;</span></span><br><span class="line"><span class="comment">#          limits:  # &#x8D44;&#x6E90;&#x9650;&#x5236;&#x8BBE;&#x7F6E;&#xFF0C;&#x4E0A;&#x7EBF;</span></span><br><span class="line"><span class="comment">#            cpu: 2  # 2&#x6838;CPU</span></span><br><span class="line"><span class="comment">#            memory: 2Gi  # 2Gi&#x5185;&#x5B58;</span></span><br><span class="line"><span class="comment">#          requests:  # &#x8D44;&#x6E90;&#x8BF7;&#x6C42;&#x7684;&#x8BBE;&#x7F6E;&#xFF0C;&#x8981;node&#x8282;&#x70B9;&#x6709;&#x8FD9;&#x4E48;&#x8D44;&#x6E90;&#x7684;&#x65F6;&#x5019;&#x624D;&#x4F1A;&#x53C2;&#x4E0E;&#x8C03;&#x5EA6;</span></span><br><span class="line"><span class="comment">#            cpu: 500m  # cpu&#x8BF7;&#x6C42;&#x6570;&#xFF0C;&#x5BB9;&#x5668;&#x542F;&#x52A8;&#x521D;&#x59CB;&#x53EF;&#x7528;&#x6570;&#x91CF;&#xFF0C;&#x5199;0.5&#x5C31;&#x7B49;&#x4E8E;500m&#x6838;</span></span><br><span class="line"><span class="comment">#            memory: 1Gi  # &#x8BF7;&#x6C42;&#x5185;&#x5B58;&#x5927;&#x5C0F;&#xFF0C;&#x5BB9;&#x5668;&#x542F;&#x52A8;&#x7684;&#x521D;&#x59CB;&#x53EF;&#x7528;&#x6570;&#x91CF;&#x7528;&#x4E8E;&#x8C03;&#x5EA6;pod&#x65F6;&#x5019;&#x4F7F;&#x7528;</span></span><br><span class="line"></span><br><span class="line"><span class="string">---</span>  <span class="comment"># &#x4E09;&#x4E2A;&#x6A2A;&#x7EBF;&#x7528;&#x6765;&#x9694;&#x79BB;&#x4E00;&#x4E2A;&#x65B0;&#x7684;&#x8D44;&#x6E90;&#xFF1B;</span></span><br><span class="line"><span class="attr">kind:</span> <span class="string">Service</span>  <span class="comment"># &#x6307;&#x5B9A;&#x8D44;&#x6E90;&#x7C7B;&#x578B;&#x4E3A;service</span></span><br><span class="line"><span class="attr">apiVersion:</span> <span class="string">v1</span>  <span class="comment"># &#x6307;&#x5B9A;service API&#x7248;&#x672C;&#x4E3A;v1&#x7248;&#x672C;&#x3002; &#x67E5;&#x770B;&#x914D;&#x7F6E;&#x5E2E;&#x52A9;&#xFF1A;kubectl explain service.apiVersion</span></span><br><span class="line"><span class="attr">metadata:</span>  <span class="comment"># service&#x7684;&#x5143;&#x6570;&#x636E;&#x4FE1;&#x606F;</span></span><br><span class="line">  <span class="attr">labels:</span>  <span class="comment"># &#x5B9A;&#x4E49;&#x6807;&#x7B7E;&#x4FE1;&#x606F;&#x3002; &#x67E5;&#x770B;&#x914D;&#x7F6E;&#x5E2E;&#x52A9;&#xFF1A;kubectl explain service.metadata.labels</span></span><br><span class="line">    <span class="attr">app:</span> <span class="string">linux60-nginx-service-label</span>  <span class="comment"># &#x5B9A;&#x4E49;&#x6807;&#x7B7E;&#x540D;</span></span><br><span class="line">  <span class="attr">name:</span> <span class="string">linux60-nginx-service</span>  <span class="comment"># &#x5B9A;&#x4E49;service&#x540D;&#x79F0;&#xFF0C;&#x6B64;&#x540D;&#x79F0;&#x4F1A;&#x88AB;dns&#x505A;&#x89E3;&#x6790;&#x7684;</span></span><br><span class="line">  <span class="attr">namespace:</span> <span class="string">linux60</span>  <span class="comment"># &#x6307;&#x5B9A;&#x8FD9;&#x4E2A;service&#x96B6;&#x5C5E;&#x4E8E;&#x90A3;&#x4E2A;namespace</span></span><br><span class="line"><span class="attr">spec:</span>  <span class="comment"># &#x5B9A;&#x4E49;service&#x7684;&#x8BE6;&#x7EC6;&#x4FE1;&#x606F;</span></span><br><span class="line">  <span class="attr">type:</span> <span class="string">NodePort</span>  <span class="comment"># service&#x7684;&#x7C7B;&#x578B;&#xFF0C;&#x5B9A;&#x4E49;&#x670D;&#x52A1;&#x7684;&#x8BBF;&#x95EE;&#x65B9;&#x5F0F;&#xFF1B;&#x9ED8;&#x8BA4;&#x4E3A;ClusterIP</span></span><br><span class="line">  <span class="attr">ports:</span>  <span class="comment"># &#x5B9A;&#x4E49;&#x8BBF;&#x95EE;&#x7AEF;&#x53E3;</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">http</span>  <span class="comment"># &#x5B9A;&#x4E49;&#x7AEF;&#x53E3;&#x540D;&#x79F0;</span></span><br><span class="line">    <span class="attr">port:</span> <span class="number">80</span>  <span class="comment"># service 80&#x7AEF;&#x53E3;</span></span><br><span class="line">    <span class="attr">protocol:</span> <span class="string">TCP</span>  <span class="comment"># &#x534F;&#x8BAE;&#x7C7B;&#x578B;</span></span><br><span class="line">    <span class="attr">targetPort:</span> <span class="number">80</span>  <span class="comment"># &#x76EE;&#x6807;pod&#x7684;&#x7AEF;&#x53E3;</span></span><br><span class="line">    <span class="attr">nodePort:</span> <span class="number">30004</span>  <span class="comment"># node&#x8282;&#x70B9;&#x66B4;&#x9732;&#x7684;&#x7AEF;&#x53E3;&#xFF0C;&#x8981;&#x5728;30000&#x5230;40000&#x4E4B;&#x95F4;&#xFF0C;&#x8FD9;&#x4E2A;&#x662F;&#x4E4B;&#x524D;&#x8BBE;&#x7F6E;&#x7684;&#xFF1B;&#x8FD9;&#x91CC;&#x4E0D;&#x6307;&#x5B9A;&#x5C31;&#x968F;&#x673A;&#x5206;&#x914D;&#x4E86;&#xFF1B;</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">https</span>  <span class="comment"># ssl&#x7AEF;&#x53E3;</span></span><br><span class="line">    <span class="attr">port:</span> <span class="number">443</span>  <span class="comment"># service 443&#x7AEF;&#x53E3;</span></span><br><span class="line">    <span class="attr">protocol:</span> <span class="string">TCP</span>  <span class="comment"># &#x7AEF;&#x53E3;&#x534F;&#x8BAE;</span></span><br><span class="line">    <span class="attr">targetPort:</span> <span class="number">443</span>  <span class="comment"># &#x76EE;&#x6807;pod&#x7AEF;&#x53E3;</span></span><br><span class="line">    <span class="attr">nodePort:</span> <span class="number">30443</span>  <span class="comment"># node&#x8282;&#x70B9;&#x66B4;&#x9732;&#x7684;ssl&#x7AEF;&#x53E3;</span></span><br><span class="line">  <span class="attr">selector:</span>  <span class="comment"># service&#x7684;&#x6807;&#x7B7E;&#x9009;&#x62E9;&#x5668;&#xFF0C;&#x5B9A;&#x4E49;&#x8981;&#x8BBF;&#x95EE;&#x7684;ssl&#x7AEF;&#x53E3;</span></span><br><span class="line">    <span class="attr">app:</span> <span class="string">linux60-nginx-selector</span>  <span class="comment"># &#x5C06;&#x6D41;&#x91CF;&#x5F15;&#x5230;&#x9009;&#x62E9;&#x7684;pod&#x4E0A;&#xFF0C;&#x987B;&#x7B49;&#x4E8E;Deployment.spec.selector.matchLabels</span></span><br></pre></td></tr></table></figure>
+
+<p>&#x5FAE;&#x670D;&#x52A1;&#x67B6;&#x6784;&#x4E0B;&#xFF0C;&#x57FA;&#x672C;&#x7684;&#x8D44;&#x6E90;&#x5206;&#x914D;&#x5982;&#x4E0B;&#xFF1A;</p>
+<ul>
+<li><p>&#x5BF9;&#x4E8E;nginx&#x9759;&#x6001;&#x670D;&#x52A1;&#xFF1A; 1C 1G</p>
+</li>
+<li><p>&#x5BF9;&#x4E8E;PHP&#xFF1A; 1C 2G</p>
+</li>
+<li><p>&#x5BF9;&#x4E8E;java&#x670D;&#x52A1;&#xFF1A; 1C 2G &#x6216;&#x8005; 1C 3G # &#x5982;&#x679C;&#x8D44;&#x6E90;&#x4E0D;&#x591F;&#xFF0C;&#x5C31;&#x8D77;&#x591A;&#x526F;&#x672C;&#x5C31;&#x884C;&#x4E86;</p>
+</li>
+<li><p>&#x5BF9;&#x4E8E;elasticsearch/mysql/kafka&#x5927;&#x6570;&#x636E;&#x670D;&#x52A1;&#xFF1A; 2C 4G &#x6216;&#x8005; 8C 16G</p>
+</li>
+</ul>
+<p>&#x5728;&#x8FD9;&#x4E2A;yaml&#x6587;&#x4EF6;&#x4E2D;&#xFF0C;&#x901A;&#x8FC7;&#x201D;&#x2014;&#x201C;&#x5206;&#x5272;&#x4E00;&#x4E2A;&#x65B0;&#x7684;service&#x8D44;&#x6E90;&#xFF0C;&#x8FD9;&#x4E2A;&#x8D44;&#x6E90;&#x6A21;&#x5757;&#x5E2E;&#x52A9;&#x6211;&#x4EEC;&#x5EFA;&#x7ACB;&#x4E00;&#x4E2A;&#x524D;&#x7AEF;&#x8BF7;&#x6C42;&#x63A5;&#x6536;&#x70B9;&#xFF0C;&#x5BA2;&#x6237;&#x7AEF;&#x7684;&#x8BF7;&#x6C42;&#x4F1A;&#x5148;&#x4EA4;&#x7ED9;&#x8FD9;&#x4E2A;service&#x8D44;&#x6E90;&#x6A21;&#x5757;&#xFF0C;&#x518D;&#x8F6C;&#x53D1;&#x5230;&#x6211;&#x7684;nginx&#x7684;&#x670D;&#x52A1;&#x8282;&#x70B9;&#x4E0A;&#x9762;&#xFF1B;&#x8FD9;&#x91CC;&#x9700;&#x8981;&#x77E5;&#x9053;&#x7684;&#x662F;&#xFF0C;service&#x540E;&#x9762;&#x6700;&#x5C11;&#x8981;&#x6709;&#x4E00;&#x4E2A;pod&#x8282;&#x70B9;&#xFF1B;</p>
+<p><img src="/cloud-native/kubernetes/08_k8s_yaml%E6%96%87%E4%BB%B6%E5%9F%BA%E7%A1%80%E4%BB%8B%E7%BB%8D%E4%BB%A5%E5%8F%8A%E5%9F%BA%E4%BA%8Eyaml%E6%96%87%E4%BB%B6%E8%BF%90%E8%A1%8Cnginx%E5%92%8Ctomcat%E7%9A%84%E6%A1%88%E4%BE%8B%E4%BB%8B%E7%BB%8D/image-20220112200244652.png" alt="serviced&#x670D;&#x52A1;&#x7684;&#x8FD0;&#x884C;&#x6846;&#x67B6;"></p>
+<p>&#x5982;&#x679C;&#x540E;&#x53F0;&#x662F;nginx&#x63D0;&#x4F9B;80&#x7AEF;&#x53E3;&#xFF0C;&#x524D;&#x7AEF;&#x8BBF;&#x95EE;nodeport&#x66B4;&#x9732;&#x7684;30001&#x7AEF;&#x53E3;&#x5C31;&#x4F1A;&#x8F6C;&#x7ED9;service&#x670D;&#x52A1;&#x7684;80&#x7AEF;&#x53E3;&#xFF0C;&#x7136;&#x540E;&#x518D;&#x9ED8;&#x8BA4;&#x8F6E;&#x8BE2;&#x7684;&#x65B9;&#x5F0F;&#x4F9D;&#x6B21;&#x8F6C;&#x7ED9;&#x540E;&#x53F0;&#x5BB9;&#x5668;&#x7684;80&#x7AEF;&#x53E3;&#x3002;&#x8FD9;&#x5C31;&#x662F;&#x5B83;&#x7684;&#x57FA;&#x672C;&#x8BBF;&#x95EE;&#x6A21;&#x5F0F;&#xFF1B;</p>
+<p>&#x6709;&#x65F6;&#x5019;&#xFF0C;&#x6211;&#x4EEC;&#x9700;&#x8981;&#x62FF;&#x7740;&#x4E00;&#x4E2A;yaml&#x6587;&#x4EF6;&#x53BB;&#x542F;&#x52A8;&#x597D;&#x591A;&#x7684;&#x5BB9;&#x5668;&#xFF0C;&#x4F46;&#x662F;&#x540D;&#x79F0;&#x53C8;&#x4E0D;&#x80FD;&#x91CD;&#x590D;&#xFF0C;&#x6240;&#x4EE5;&#x6211;&#x4EEC;&#x9700;&#x8981;&#x66FF;&#x6362;name&#xFF0C;&#x8FD9;&#x91CC;&#x53EF;&#x4EE5;&#x4F7F;&#x7528;vim&#x7684;&#x672B;&#x884C;&#x6A21;&#x5F0F;&#x6765;&#x8FDB;&#x884C;&#x66FF;&#x6362;&#xFF0C;&#x547D;&#x4EE4;&#x5982;&#x4E0B;&#xFF1A;</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">:%s/&#x6E90;&#x6587;&#x4EF6;&#x4E2D;&#x7684;&#x540D;&#x79F0;/&#x8981;&#x66FF;&#x6362;&#x79F0;&#x4E3A;&#x7684;&#x540D;&#x79F0;/g  # &#x8FD9;&#x6837;&#x66FF;&#x6362;&#x5373;&#x53EF;&#xFF0C;&#x5F53;&#x7136;&#x4E5F;&#x53EF;&#x4EE5;&#x4F7F;&#x7528;sed&#x547D;&#x4EE4;&#x6765;&#x8FDB;&#x884C;&#x66FF;&#x6362;&#xFF0C;&#x662F;&#x4E00;&#x6837;&#x7684;&#xFF1B;</span><br></pre></td></tr></table></figure>
+
+<p>&#x6709;&#x4E86;yaml&#x6587;&#x4EF6;&#x4EE5;&#x540E;&#xFF0C;&#x6211;&#x4EEC;&#x5C31;&#x53EF;&#x4EE5;&#x57FA;&#x4E8E;&#x8FD9;&#x4E2A;nginx.yaml&#x6587;&#x4EF6;&#x6765;&#x542F;&#x52A8;pod&#x4E86;&#xFF1B;</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> &#x5728;&#x521B;&#x5EFA;&#x4E4B;&#x524D;&#x9700;&#x8981;&#x5148;&#x67E5;&#x770B;&#x4E00;&#x4E0B;&#x662F;&#x5426;&#x6709;linux60&#x7684;namespace&#xFF0C;&#x6CA1;&#x6709;&#x7684;&#x8BDD;&#x9700;&#x8981;&#x521B;&#x5EFA;</span></span><br><span class="line">kubectl apply -f nginx.yaml  # &#x521B;&#x5EFA;&#x8FD9;&#x4E2A;nginx pod</span><br></pre></td></tr></table></figure>
+
+<p><img src="/cloud-native/kubernetes/08_k8s_yaml%E6%96%87%E4%BB%B6%E5%9F%BA%E7%A1%80%E4%BB%8B%E7%BB%8D%E4%BB%A5%E5%8F%8A%E5%9F%BA%E4%BA%8Eyaml%E6%96%87%E4%BB%B6%E8%BF%90%E8%A1%8Cnginx%E5%92%8Ctomcat%E7%9A%84%E6%A1%88%E4%BE%8B%E4%BB%8B%E7%BB%8D/image-20220112205222369.png" alt="&#x521B;&#x5EFA;nginx&#x5BB9;&#x5668;"></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> &#x901A;&#x8FC7;describe&#x53EF;&#x4EE5;&#x67E5;&#x770B;&#x8D77;&#x5BB9;&#x5668;&#x521B;&#x5EFA;&#x7684;&#x8FC7;&#x7A0B;</span></span><br><span class="line">kubectl describe pod linux60-nginx-deployment-64f84c86dd-dpjqq -n linux60</span><br></pre></td></tr></table></figure>
+
+<p><img src="/cloud-native/kubernetes/08_k8s_yaml%E6%96%87%E4%BB%B6%E5%9F%BA%E7%A1%80%E4%BB%8B%E7%BB%8D%E4%BB%A5%E5%8F%8A%E5%9F%BA%E4%BA%8Eyaml%E6%96%87%E4%BB%B6%E8%BF%90%E8%A1%8Cnginx%E5%92%8Ctomcat%E7%9A%84%E6%A1%88%E4%BE%8B%E4%BB%8B%E7%BB%8D/image-20220112205442041.png" alt="&#x5BB9;&#x5668;&#x7684;&#x521B;&#x5EFA;&#x8FC7;&#x7A0B;"></p>
+<p>1&#x3001;&#x5148;&#x4F7F;&#x7528;&#x9ED8;&#x8BA4;&#x7684;&#x8C03;&#x5EA6;&#x5668;&#x6765;&#x627E;node&#x521B;&#x5EFA;pod&#x5BB9;&#x5668;</p>
+<p>2&#x3001;&#x7136;&#x540E;&#x4E0B;&#x8F7D;nginx&#x7684;&#x9ED8;&#x8BA4;&#x955C;&#x50CF;</p>
+<p>3&#x3001;&#x4E0B;&#x8F7D;&#x5B8C;&#x6210;</p>
+<p>4&#x3001;&#x521B;&#x5EFA;&#x5BB9;&#x5668;</p>
+<p>5&#x3001;&#x542F;&#x52A8;&#x5BB9;&#x5668;</p>
+<p>&#x5982;&#x679C;&#x662F;&#x5BB9;&#x5668;&#x7684;&#x542F;&#x52A8;&#x8FC7;&#x7A0B;&#x4E4B;&#x4E2D;&#x62A5;&#x9519;&#x4E86;&#xFF0C;&#x6211;&#x4EEC;&#x9700;&#x8981;&#x770B;&#x5BB9;&#x5668;&#x7684;&#x542F;&#x52A8;&#x65E5;&#x5FD7;&#xFF1A;</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">kubectl logs -f linux60-nginx-deployment-64f84c86dd-dpjqq -n linux60</span><br><span class="line"><span class="meta">#</span><span class="bash"> &#x67E5;&#x770B;&#x8BBF;&#x95EE;&#x65E5;&#x5FD7;&#x4FE1;&#x606F;</span></span><br></pre></td></tr></table></figure>
+
+<p>&#x8BA9;&#x540E;&#x901A;&#x8FC7;&#x67E5;&#x770B;linux60&#x7684;service&#x8D44;&#x6E90;&#xFF0C;&#x6211;&#x4EEC;&#x53EF;&#x4EE5;&#x770B;&#x5230;&#x7AEF;&#x53E3;&#x6620;&#x5C04;&#x7684;&#x4FE1;&#x606F;&#xFF1A;</p>
+<p><img src="/cloud-native/kubernetes/08_k8s_yaml%E6%96%87%E4%BB%B6%E5%9F%BA%E7%A1%80%E4%BB%8B%E7%BB%8D%E4%BB%A5%E5%8F%8A%E5%9F%BA%E4%BA%8Eyaml%E6%96%87%E4%BB%B6%E8%BF%90%E8%A1%8Cnginx%E5%92%8Ctomcat%E7%9A%84%E6%A1%88%E4%BE%8B%E4%BB%8B%E7%BB%8D/image-20220112212237460.png" alt="&#x7AEF;&#x53E3;&#x6620;&#x5C04;&#x7684;&#x4FE1;&#x606F;"></p>
+<p>&#x8FD9;&#x6837;&#xFF0C;&#x5C31;&#x53EF;&#x4EE5;&#x901A;&#x8FC7;&#x8BBF;&#x95EE;&#x7269;&#x7406;&#x4E3B;&#x673A;&#x7684;30004&#x7AEF;&#x53E3;&#x8BBF;&#x95EE;&#x5230;&#x8FD9;&#x4E2A;pod&#x5BB9;&#x5668;&#x4E86;&#xFF1B;</p>
+<p><img src="/cloud-native/kubernetes/08_k8s_yaml%E6%96%87%E4%BB%B6%E5%9F%BA%E7%A1%80%E4%BB%8B%E7%BB%8D%E4%BB%A5%E5%8F%8A%E5%9F%BA%E4%BA%8Eyaml%E6%96%87%E4%BB%B6%E8%BF%90%E8%A1%8Cnginx%E5%92%8Ctomcat%E7%9A%84%E6%A1%88%E4%BE%8B%E4%BB%8B%E7%BB%8D/image-20220112212528792.png" alt="&#x8BBF;&#x95EE;&#x6D4B;&#x8BD5;"></p>
+<h2 id="&#x521B;&#x5EFA;tomcat-pod"><a href="#&#x521B;&#x5EFA;tomcat-pod" class="headerlink" title="&#x521B;&#x5EFA;tomcat pod"></a>&#x521B;&#x5EFA;tomcat pod</h2><p>&#x5728;&#x6B64;&#xFF0C;&#x6211;&#x4EEC;&#x8981;&#x5B9E;&#x73B0;&#x7684;&#x76EE;&#x7684;&#x662F;&#xFF1A;&#x5F53;&#x5BA2;&#x6237;&#x8BBF;&#x95EE;&#x5916;&#x90E8;&#x7269;&#x7406;&#x670D;&#x52A1;&#x7684;IP&#x5730;&#x5740;30004&#x7AEF;&#x53E3;&#x7684;&#x65F6;&#x5019;&#xFF0C;&#x53EF;&#x4EE5;&#x5C06;&#x8BBF;&#x95EE;nginx&#x7684;&#x8BF7;&#x6C42;&#x518D;&#x8F6C;&#x5411;tomcat&#x7684;&#x5BB9;&#x5668;&#xFF1B;&#x7136;&#x540E;tomcat-service&#x53EF;&#x4EE5;&#x57FA;&#x4E8E;&#x8BBF;&#x95EE;&#x89C4;&#x5219;&#x8D1F;&#x8F7D;&#x5230;&#x540E;&#x9762;&#x7684;tomcat&#x670D;&#x52A1;&#x5668;&#x4E0A;&#xFF1B;</p>
+<p><img src="/cloud-native/kubernetes/08_k8s_yaml%E6%96%87%E4%BB%B6%E5%9F%BA%E7%A1%80%E4%BB%8B%E7%BB%8D%E4%BB%A5%E5%8F%8A%E5%9F%BA%E4%BA%8Eyaml%E6%96%87%E4%BB%B6%E8%BF%90%E8%A1%8Cnginx%E5%92%8Ctomcat%E7%9A%84%E6%A1%88%E4%BE%8B%E4%BB%8B%E7%BB%8D/image-20220112213706014.png" alt="&#x7F51;&#x7AD9;&#x67B6;&#x6784;"></p>
+<p>&#x7B2C;&#x4E00;&#x6B65;&#x3001;&#x542F;&#x52A8;tomcat&#x955C;&#x50CF;</p>
+<p>&#x8FD9;&#x91CC;&#x63D0;&#x4F9B;&#x4E86;tomcat.yaml&#x7684;&#x914D;&#x7F6E;&#x95EE;&#x9898;&#xFF0C;&#x8FD9;&#x4E2A;pod&#x4E5F;&#x662F;&#x8981;&#x5C5E;&#x4E8E;linux60&#x7684;namespace&#x4E2D;&#x7684;&#xFF1B;&#x6587;&#x4EF6;&#x5185;&#x5BB9;&#x5982;&#x4E0B;&#xFF1A;</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">kind:</span> <span class="string">Deployment</span></span><br><span class="line"><span class="comment">#apiVersion: extensions/v1beta1</span></span><br><span class="line"><span class="attr">apiVersion:</span> <span class="string">apps/v1</span></span><br><span class="line"><span class="attr">metadata:</span></span><br><span class="line">  <span class="attr">labels:</span></span><br><span class="line">    <span class="attr">app:</span> <span class="string">linux60-tomcat-app1-deployment-label</span></span><br><span class="line">  <span class="attr">name:</span> <span class="string">linux60-tomcat-app1-deployment</span></span><br><span class="line">  <span class="attr">namespace:</span> <span class="string">linux60</span></span><br><span class="line"><span class="attr">spec:</span></span><br><span class="line">  <span class="attr">replicas:</span> <span class="number">1</span></span><br><span class="line">  <span class="attr">selector:</span></span><br><span class="line">    <span class="attr">matchLabels:</span></span><br><span class="line">      <span class="attr">app:</span> <span class="string">linux60-tomcat-app1-selector</span></span><br><span class="line">  <span class="attr">template:</span></span><br><span class="line">    <span class="attr">metadata:</span></span><br><span class="line">      <span class="attr">labels:</span></span><br><span class="line">        <span class="attr">app:</span> <span class="string">linux60-tomcat-app1-selector</span></span><br><span class="line">    <span class="attr">spec:</span></span><br><span class="line">      <span class="attr">containers:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">linux60-tomcat-app1-container</span></span><br><span class="line">        <span class="attr">image:</span> <span class="string">tomcat:7.0.109-jdk8-openjdk</span> </span><br><span class="line">        <span class="comment">#command: [&quot;/apps/tomcat/bin/run_tomcat.sh&quot;]</span></span><br><span class="line">        <span class="comment">#imagePullPolicy: IfNotPresent</span></span><br><span class="line">        <span class="attr">imagePullPolicy:</span> <span class="string">Always</span></span><br><span class="line">        <span class="attr">ports:</span></span><br><span class="line">        <span class="bullet">-</span> <span class="attr">containerPort:</span> <span class="number">8080</span></span><br><span class="line">          <span class="attr">protocol:</span> <span class="string">TCP</span></span><br><span class="line">          <span class="attr">name:</span> <span class="string">http</span></span><br><span class="line">        <span class="attr">env:</span></span><br><span class="line">        <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">&quot;password&quot;</span></span><br><span class="line">          <span class="attr">value:</span> <span class="string">&quot;123456&quot;</span></span><br><span class="line">        <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">&quot;age&quot;</span></span><br><span class="line">          <span class="attr">value:</span> <span class="string">&quot;18&quot;</span></span><br><span class="line"><span class="comment">#        resources:</span></span><br><span class="line"><span class="comment">#          limits:</span></span><br><span class="line"><span class="comment">#            cpu: 2</span></span><br><span class="line"><span class="comment">#            memory: 2Gi</span></span><br><span class="line"><span class="comment">#          requests:</span></span><br><span class="line"><span class="comment">#            cpu: 500m</span></span><br><span class="line"><span class="comment">#            memory: 1Gi</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="meta">---</span></span><br><span class="line"><span class="attr">kind:</span> <span class="string">Service</span></span><br><span class="line"><span class="attr">apiVersion:</span> <span class="string">v1</span></span><br><span class="line"><span class="attr">metadata:</span></span><br><span class="line">  <span class="attr">labels:</span></span><br><span class="line">    <span class="attr">app:</span> <span class="string">linux60-tomcat-app1-service-label</span></span><br><span class="line">  <span class="attr">name:</span> <span class="string">linux60-tomcat-app1-service</span></span><br><span class="line">  <span class="attr">namespace:</span> <span class="string">linux60</span></span><br><span class="line"><span class="attr">spec:</span></span><br><span class="line">  <span class="attr">type:</span> <span class="string">NodePort</span></span><br><span class="line">  <span class="attr">ports:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">http</span></span><br><span class="line">    <span class="attr">port:</span> <span class="number">80</span></span><br><span class="line">    <span class="attr">protocol:</span> <span class="string">TCP</span></span><br><span class="line">    <span class="attr">targetPort:</span> <span class="number">8080</span></span><br><span class="line">    <span class="attr">nodePort:</span> <span class="number">30005</span></span><br><span class="line">  <span class="attr">selector:</span></span><br><span class="line">    <span class="attr">app:</span> <span class="string">linux60-tomcat-app1-selector</span></span><br></pre></td></tr></table></figure>
+
+<p>&#x7B2C;&#x4E8C;&#x6B65;&#x3001;&#x542F;&#x52A8;tomcat</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> &#x542F;&#x52A8;&#x955C;&#x50CF;</span></span><br><span class="line">kubectl apply -f tomcat.yaml</span><br><span class="line"><span class="meta">#</span><span class="bash"> tomcat&#x6BD4;&#x8F83;&#x5927;&#xFF0C;&#x5B83;&#x9700;&#x8981;&#x5728;&#x7F51;&#x4E0A;&#x4E0B;&#x8F7D;&#x955C;&#x50CF;&#xFF0C;&#x6240;&#x4EE5;&#x6BD4;&#x8F83;&#x6162;</span></span><br><span class="line"><span class="meta"></span></span><br><span class="line"><span class="meta">#</span><span class="bash"> &#x67E5;&#x770B;&#x662F;&#x5426;&#x80FD;&#x591F;&#x8BBF;&#x95EE;&#x5230;&#x955C;&#x50CF;</span></span><br><span class="line">kubectl get pod -n linux60</span><br></pre></td></tr></table></figure>
+
+<p><img src="/cloud-native/kubernetes/08_k8s_yaml%E6%96%87%E4%BB%B6%E5%9F%BA%E7%A1%80%E4%BB%8B%E7%BB%8D%E4%BB%A5%E5%8F%8A%E5%9F%BA%E4%BA%8Eyaml%E6%96%87%E4%BB%B6%E8%BF%90%E8%A1%8Cnginx%E5%92%8Ctomcat%E7%9A%84%E6%A1%88%E4%BE%8B%E4%BB%8B%E7%BB%8D/image-20220112222940785.png" alt="&#x5BB9;&#x5668;&#x542F;&#x52A8;&#x6210;&#x529F;"></p>
+<p>&#x7B2C;&#x4E09;&#x6B65;&#x3001;&#x8FDB;&#x5165;tomcat&#x955C;&#x50CF;&#x5199;&#x5165;&#x9875;&#x9762;&#x5185;&#x5BB9;</p>
+<p>&#x6211;&#x4EEC;&#x8FDB;&#x5165;&#x5230;dashboard&#x7684;&#x7BA1;&#x7406;&#x754C;&#x9762;&#x4E2D;&#xFF0C;&#x5BF9;tomcat&#x8FDB;&#x884C;&#x7BA1;&#x7406;&#x64CD;&#x4F5C;&#xFF1B;</p>
+<p><img src="/cloud-native/kubernetes/08_k8s_yaml%E6%96%87%E4%BB%B6%E5%9F%BA%E7%A1%80%E4%BB%8B%E7%BB%8D%E4%BB%A5%E5%8F%8A%E5%9F%BA%E4%BA%8Eyaml%E6%96%87%E4%BB%B6%E8%BF%90%E8%A1%8Cnginx%E5%92%8Ctomcat%E7%9A%84%E6%A1%88%E4%BE%8B%E4%BB%8B%E7%BB%8D/image-20220112223723876.png" alt="dashboard&#x7BA1;&#x7406;&#x754C;&#x9762;"></p>
+<p>&#x70B9;&#x51FB;&#xFF1A;&#x201D;pods&#x201D;-&gt;&#x201D;pods&#x540E;&#x9762;&#x4E09;&#x4E2A;&#x70B9;&#x201D;-&gt;&#x201D;&#x6267;&#x884C;&#x201D;&#xFF0C;&#x8FD9;&#x5C31;&#x53EF;&#x4EE5;&#x8FDB;&#x5165;&#x5230;&#x7BA1;&#x7406;&#x754C;&#x9762;&#x4E86;&#xFF1B;</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> &#x5728;&#x5BB9;&#x5668;&#x4E2D;&#x624B;&#x52A8;&#x7ED9;&#x5B83;&#x5199;&#x4E00;&#x4E2A;jsp&#x7684;&#x9875;&#x9762;</span></span><br><span class="line">mkdir linux60  # &#x8FD9;&#x91CC;&#x9700;&#x8981;webapp&#x7684;&#x76EE;&#x5F55;&#x4E0B;&#x8FDB;&#x884C;&#x64CD;&#x4F5C;&#xFF0C;&#x8FD9;&#x662F;tomcat&#x7684;&#x9ED8;&#x8BA4;&#x76EE;&#x5F55;</span><br><span class="line">echo &quot;&lt;h1&gt; linux60 tomcat1 web page! &lt;/h1&gt;&quot; &gt;&gt; linux60/index.jsp</span><br></pre></td></tr></table></figure>
+
+<p>&#x7B2C;&#x56DB;&#x6B65;&#x3001;&#x8BBF;&#x95EE;&#x6D4B;&#x8BD5;</p>
+<p>&#x5728;&#x6D41;&#x6D6A;&#x5668;&#x4E2D;&#x8BBF;&#x95EE;&#x6D4B;&#x8BD5;tomcat&#xFF1B;&#x8BBF;&#x95EE;&#x6D4B;&#x8BD5;&#x6210;&#x529F;&#x4EE5;&#x540E;&#xFF0C;&#x6211;&#x4EEC;&#x53EF;&#x4EE5;&#x5C06;yaml&#x6587;&#x4EF6;&#x4E2D;&#x7684;&#x201C;nodePort: 30005&#x201D;&#x6CE8;&#x91CA;&#x6389;&#xFF0C;&#x56E0;&#x4E3A;&#x540E;&#x9762;&#x7684;tomcat&#x7684;&#x8BBF;&#x95EE;&#x90FD;&#x662F;&#x7531;nginx&#x4F5C;&#x4E3A;&#x5BA2;&#x6237;&#x7AEF;&#x6765;&#x8FDB;&#x884C;&#x8BBF;&#x95EE;&#x7684;&#xFF0C;&#x4E0D;&#x9700;&#x8981;&#x5728;&#x5916;&#x9762;&#x76F4;&#x63A5;&#x8BBF;&#x95EE;tomcat&#x670D;&#x52A1;&#x5668;&#xFF1B;</p>
+<p><img src="/cloud-native/kubernetes/08_k8s_yaml%E6%96%87%E4%BB%B6%E5%9F%BA%E7%A1%80%E4%BB%8B%E7%BB%8D%E4%BB%A5%E5%8F%8A%E5%9F%BA%E4%BA%8Eyaml%E6%96%87%E4%BB%B6%E8%BF%90%E8%A1%8Cnginx%E5%92%8Ctomcat%E7%9A%84%E6%A1%88%E4%BE%8B%E4%BB%8B%E7%BB%8D/image-20220112225536651.png" alt="&#x8BBF;&#x95EE;&#x6D4B;&#x8BD5;"></p>
+<p>&#x7B2C;&#x4E94;&#x6B65;&#x3001;&#x53C8;&#x521B;&#x5EFA;&#x4E00;&#x4E2A;tomcat&#x7684;pod</p>
+<p>&#x8FD9;&#x91CC;&#xFF0C;&#x5728;dashboard&#x7684;&#x201C;&#x7F29;&#x653E;&#x201D;&#x8D44;&#x6E90;&#x7684;&#x529F;&#x80FD;&#x4E2D;&#xFF0C;&#x6269;&#x5C55;&#x4E4B;&#x524D;&#x521B;&#x5EFA;&#x597D;&#x7684;tomcat&#xFF0C;&#x8FD9;&#x6837;&#x7684;&#x8BDD;&#x5C31;&#x53EF;&#x4EE5;&#x5F97;&#x5230;&#x4E00;&#x4E2A;&#x65B0;&#x7684;tomcat&#x5BB9;&#x5668;&#xFF1B;&#x5982;&#x4E0B;&#x56FE;&#x6240;&#x793A;&#xFF1A;</p>
+<p>&#x64CD;&#x4F5C;&#x5982;&#x4E0B;&#xFF1A;&#x201D;Deployments&#x201D;-&gt;&#x201D;linux60&#x201D;&#x7684;namespace-&gt;&#x201D;&#x7F29;&#x653E;&#x201D;&#x64CD;&#x4F5C;&#xFF1B;</p>
+<p><img src="/cloud-native/kubernetes/08_k8s_yaml%E6%96%87%E4%BB%B6%E5%9F%BA%E7%A1%80%E4%BB%8B%E7%BB%8D%E4%BB%A5%E5%8F%8A%E5%9F%BA%E4%BA%8Eyaml%E6%96%87%E4%BB%B6%E8%BF%90%E8%A1%8Cnginx%E5%92%8Ctomcat%E7%9A%84%E6%A1%88%E4%BE%8B%E4%BB%8B%E7%BB%8D/image-20220112225747186.png" alt="&#x7F29;&#x653E;&#x64CD;&#x4F5C;"></p>
+<p><img src="/cloud-native/kubernetes/08_k8s_yaml%E6%96%87%E4%BB%B6%E5%9F%BA%E7%A1%80%E4%BB%8B%E7%BB%8D%E4%BB%A5%E5%8F%8A%E5%9F%BA%E4%BA%8Eyaml%E6%96%87%E4%BB%B6%E8%BF%90%E8%A1%8Cnginx%E5%92%8Ctomcat%E7%9A%84%E6%A1%88%E4%BE%8B%E4%BB%8B%E7%BB%8D/image-20220112225916843.png" alt="&#x6DFB;&#x52A0;&#x4E00;&#x4E2A;&#x526F;&#x672C;"></p>
+<p>&#x8FD9;&#x6837;&#x5C31;&#x53EF;&#x4EE5;&#x5F97;&#x5230;&#x4E24;&#x4E2A;tomcat&#x7684;pod&#x5BB9;&#x5668;&#x4E86;&#xFF1B;&#x7136;&#x540E;&#x518D;&#x5728;pod&#x5BB9;&#x5668;&#x8D44;&#x6E90;&#x4E2D;&#x4FEE;&#x6539;&#x663E;&#x793A;&#x5185;&#x5BB9;&#xFF1A;</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> &#x5728;&#x7B2C;&#x4E8C;&#x4E2A;&#x5BB9;&#x5668;&#x4E2D;&#x4FEE;&#x6539;jsp&#x7684;&#x9875;&#x9762;</span></span><br><span class="line">mkdir linux60  # &#x4E5F;&#x662F;&#x5728;tomcat&#x7684;webapp&#x7684;&#x5F55;&#x4E0B;</span><br><span class="line">echo &quot;&lt;h1&gt; linux60 tomcat2 web page! &lt;/h1&gt;&quot; &gt;&gt; linux60/index.jsp</span><br></pre></td></tr></table></figure>
+
+<p>&#x901A;&#x8FC7;curl&#x547D;&#x4EE4;&#x8BBF;&#x95EE;tomcat&#x53EF;&#x4EE5;&#x770B;&#x5230;&#x5B83;&#x7684;&#x6548;&#x679C;&#x662F;&#x8F6E;&#x8BE2;&#x7684;&#xFF1B;&#x8FD9;&#x662F;service&#x7684;&#x9ED8;&#x8BA4;&#x8D1F;&#x8F7D;&#x5206;&#x6863;&#x7684;&#x65B9;&#x5F0F;&#xFF1B;</p>
+<p><img src="/cloud-native/kubernetes/08_k8s_yaml%E6%96%87%E4%BB%B6%E5%9F%BA%E7%A1%80%E4%BB%8B%E7%BB%8D%E4%BB%A5%E5%8F%8A%E5%9F%BA%E4%BA%8Eyaml%E6%96%87%E4%BB%B6%E8%BF%90%E8%A1%8Cnginx%E5%92%8Ctomcat%E7%9A%84%E6%A1%88%E4%BE%8B%E4%BB%8B%E7%BB%8D/image-20220112230403548.png" alt="&#x81EA;&#x52A8;&#x8F6E;&#x8BE2;"></p>
+<p>&#x7B2C;&#x516D;&#x6B65;&#x3001;&#x914D;&#x7F6E;nginx&#x7684;location</p>
+<p>&#x901A;&#x8FC7;&#x914D;&#x7F6E;location&#xFF0C;&#x53EF;&#x4EE5;&#x5B9E;&#x73B0;&#x5176;&#x52A8;&#x9759;&#x5206;&#x79BB;&#x7684;&#x529F;&#x80FD;&#xFF1B;&#x8FD9;&#x91CC;&#x7684;&#x64CD;&#x4F5C;&#x6211;&#x4EEC;&#x4E5F;&#x662F;&#x5728;dashboard&#x7684;&#x63A7;&#x5236;&#x754C;&#x9762;&#x4E2D;&#x6765;&#x5B9E;&#x73B0;&#xFF1B;</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> &#x9996;&#x5148;&#x4FEE;&#x6539;&#x9ED8;&#x8BA4;&#x7684;nginx&#x9875;&#x9762;</span></span><br><span class="line">cd /usr/share/nginx/html/</span><br><span class="line">echo &quot;nginx web page&quot; &gt; index.html</span><br><span class="line"><span class="meta"></span></span><br><span class="line"><span class="meta">#</span><span class="bash"> &#x7136;&#x540E;&#x914D;&#x7F6E;location&#x5B9E;&#x73B0;&#x52A8;&#x9759;&#x5206;&#x79BB;</span></span><br><span class="line">apt update  # &#x8FD9;&#x91CC;&#x9ED8;&#x8BA4;&#x53BB;&#x5230;Debian&#x7684;&#x5B98;&#x65B9;&#x7F51;&#x7AD9;&#x505A;apt&#x6E90;&#x505A;&#x8DDF;&#x65B0;&#xFF0C;&#x6709;&#x70B9;&#x6162;&#xFF0C;&#x4E4B;&#x540E;&#x6211;&#x4EEC;&#x81EA;&#x5DF1;&#x6253;&#x955C;&#x50CF;&#x6307;&#x5B9A;&#x56FD;&#x5185;apt&#x6E90;&#x5C31;&#x4F1A;&#x5FEB;&#x5F88;&#x591A;&#xFF1B;</span><br><span class="line">apt install vim  # &#x6DFB;&#x52A0;&#x4EE5;&#x4E0B;vim&#x5DE5;&#x5177;&#xFF0C;&#x5BB9;&#x5668;&#x4E2D;&#x6CA1;&#x6709;vim&#x7684;&#x5DE5;&#x5177;</span><br><span class="line">cd /etc/nginx/conf.d/default.conf</span><br><span class="line">location /linux60 {</span><br><span class="line">	proxy pass https://linux60-tomcat-app1-service:80  # &#x8FD9;&#x91CC;&#x7684;&#x5730;&#x5740;&#x5F97;&#x901A;&#x8FC7;service name&#x6765;&#x8C03;&#x7528;&#x624D;&#x884C;&#xFF0C;&#x901A;&#x8FC7;&#x547D;&#x4EE4;&#x201C;kubectl get svc -n linux60&#x201D;&#x53EF;&#x4EE5;&#x770B;&#x5230;tomcat&#x6307;&#x5B9A;&#x7684;service name&#xFF0C;&#x7136;&#x540E;&#x8BBF;&#x95EE;&#x5176;80&#x7AEF;&#x53E3;&#x5373;&#x53EF;&#xFF1B;</span><br><span class="line">}</span><br><span class="line"><span class="meta"></span></span><br><span class="line"><span class="meta">#</span><span class="bash"> &#x6700;&#x540E;&#x91CD;&#x65B0;&#x52A0;&#x8F7D;nginx</span></span><br><span class="line">nginx -t</span><br><span class="line">nginx -s reload  # &#x91CD;&#x65B0;&#x52A0;&#x8F7D;nginx</span><br></pre></td></tr></table></figure>
+
+<p>&#x914D;&#x7F6E;&#x5B8C;&#x6210;&#x4EE5;&#x540E;&#xFF0C;&#x53EF;&#x4EE5;&#x653E;&#x4E00;&#x4E9B;&#x56FE;&#x7247;&#xFF0C;&#x7B49;&#x6D4B;&#x8BD5;&#x7684;&#x65F6;&#x5019;&#x53EF;&#x4EE5;&#x770B;&#x7684;&#x6E05;&#x695A;&#x4E00;&#x4E9B;&#xFF1B;</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> &#x5728;nginx&#x7684;&#x5BB9;&#x5668;&#x4E2D;</span></span><br><span class="line">cd /usr/share/nginx/html</span><br><span class="line">mkdir images  # &#x8FD9;&#x4E2A;&#x76EE;&#x5F55;&#x7528;&#x6765;&#x5B58;&#x653E;&#x9759;&#x6001;&#x56FE;&#x7247;</span><br><span class="line"><span class="meta"></span></span><br><span class="line"><span class="meta">#</span><span class="bash"> &#x5B89;&#x88C5;wget&#x5DE5;&#x5177;</span></span><br><span class="line">apt update</span><br><span class="line">apt install wget -y</span><br><span class="line">wget htps://http://www.edudongfang.com/skin/dong/images/619-031.png  # &#x627E;&#x5230;&#x4E00;&#x4E2A;&#x9759;&#x6001;&#x56FE;&#x7247;</span><br></pre></td></tr></table></figure>
+
+<p>&#x7B2C;&#x4E03;&#x6B65;&#x3001;&#x6DFB;&#x52A0;&#x8D1F;&#x8F7D;&#x5747;&#x8861;</p>
+<p>&#x4E0D;&#x7BA1;&#x662F;nginx&#x670D;&#x52A1;&#x8FD8;&#x662F;tomcat&#x7684;&#x670D;&#x52A1;&#x90FD;&#x662F;&#x66B4;&#x9732;&#x7684;30004&#x548C;30005&#x7684;&#x7AEF;&#x53E3;&#xFF0C;&#x6240;&#x4EE5;&#x6BCF;&#x6B21;&#x8BBF;&#x95EE;&#x7684;&#x65F6;&#x5019;&#x90FD;&#x9700;&#x8981;&#x5728;url&#x540E;&#x9762;&#x6DFB;&#x52A0;&#x8FD9;&#x4E2A;&#x7AEF;&#x53E3;&#x624D;&#x884C;&#xFF0C;&#x5426;&#x5219;&#x65E0;&#x6CD5;&#x8FDB;&#x884C;&#x8BBF;&#x95EE;&#xFF1B;&#x56E0;&#x6B64;&#xFF0C;&#x6211;&#x4EEC;&#x53EF;&#x4EE5;&#x5728;haproxy&#x7684;&#x914D;&#x7F6E;&#x4E2D;&#x6DFB;&#x52A0;&#x8D1F;&#x8F7D;&#x5747;&#x8861;&#x7684;&#x65B9;&#x5F0F;&#x6765;&#x8FDB;&#x884C;&#x8BBF;&#x95EE;&#xFF0C;&#x8FD9;&#x6837;&#x5C31;&#x53EF;&#x4EE5;&#x4E0D;&#x7528;&#x6DFB;&#x52A0;&#x8FD9;&#x4E2A;&#x5927;&#x7AEF;&#x53E3;&#x4E86;&#xFF1B;</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">vim /etc/haproxy/ha .cfg</span><br><span class="line"><span class="meta">#</span><span class="bash"> &#x6DFB;&#x52A0;&#x8D1F;&#x8F7D;&#x5747;&#x8861;</span></span><br><span class="line">listen test-web1</span><br><span class="line">	bind 192.168.169.40:80</span><br><span class="line">	server 192.168.169.23 192.168.169.23:3004 check inter 2s fall 3 rise 3</span><br><span class="line">	server 192.168.169.24 192.168.169.23:3004 check inter 2s fall 3 rise 3</span><br><span class="line"><span class="meta">	</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> &#x91CD;&#x65B0;&#x52A0;&#x8F7D;&#x670D;&#x52A1;</span></span><br><span class="line">systemctl restart haproxy</span><br></pre></td></tr></table></figure>
+
+<p>&#x8FD9;&#x6837;&#x5C31;&#x53EF;&#x4EE5;&#x76F4;&#x63A5;&#x8BBF;&#x95EE;&#xFF0C;&#x8FD9;&#x6837;&#x7684;&#x8BDD;&#x67B6;&#x6784;&#x5C31;&#x53D8;&#x6210;&#x8FD9;&#x6837;&#x4E86;&#xFF1A;</p>
+<p><img src="/cloud-native/kubernetes/08_k8s_yaml%E6%96%87%E4%BB%B6%E5%9F%BA%E7%A1%80%E4%BB%8B%E7%BB%8D%E4%BB%A5%E5%8F%8A%E5%9F%BA%E4%BA%8Eyaml%E6%96%87%E4%BB%B6%E8%BF%90%E8%A1%8Cnginx%E5%92%8Ctomcat%E7%9A%84%E6%A1%88%E4%BE%8B%E4%BB%8B%E7%BB%8D/image-20220112220056180.png" alt="&#x6700;&#x7EC8;&#x7684;&#x670D;&#x52A1;&#x67B6;&#x6784;"></p>
+<p>&#x6700;&#x540E;&#xFF0C;&#x5728;&#x672C;&#x673A;&#x7684;hosts&#x6587;&#x4EF6;&#x4E2D;&#x6DFB;&#x52A0;&#x4E00;&#x4E2A;&#x57DF;&#x540D;&#x89E3;&#x6790;&#x5373;&#x53EF;</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> &#x627E;&#x5230;&#x672C;&#x673A;&#x7684;&#x57DF;&#x540D;hosts&#x6587;&#x4EF6;&#x6DFB;&#x52A0;&#x57DF;&#x540D;&#x89E3;&#x6790;&#xFF1A;C:\Windows\System32\drivers\etc</span></span><br><span class="line">192.168.169.40 www.n60.com</span><br></pre></td></tr></table></figure>
+
+<p>&#x8FD9;&#x6837;&#x7684;&#x8BDD;&#xFF0C;&#x5C31;&#x548C;&#x6253;&#x5F00;&#x4E00;&#x4E2A;&#x7F51;&#x7AD9;&#x7684;&#x8FD0;&#x4F5C;&#x5C31;&#x6CA1;&#x6709;&#x4EC0;&#x4E48;&#x533A;&#x522B;&#x4E86;&#xFF1B;</p>
+<p>&#x6700;&#x540E;&#x6211;&#x4EEC;&#x5728;&#x672C;&#x673A;&#x901A;&#x8FC7;&#x57DF;&#x540D;&#x8BBF;&#x95EE;nginx&#x7684;&#x524D;&#x7AEF;80&#x7AEF;&#x53E3;&#x5C31;&#x53EF;&#x4EE5;&#x5B9E;&#x73B0;&#x8F6E;&#x8BE2;&#x8BBF;&#x95EE;&#x4E86;&#x3002;&#x7136;&#x540E;&#x8BBF;&#x95EE;&#x5230;&#x6307;&#x5B9A;&#x7684;/linux60&#x76EE;&#x5F55;&#x7684;&#x65F6;&#x5019;&#xFF0C;&#x5C31;&#x53EF;&#x4EE5;&#x9001;&#x5230;&#x540E;&#x7AEF;&#x7684;tomcat&#x670D;&#x52A1;&#x5668;&#x4E0A;&#x8FDB;&#x884C;&#x8F6E;&#x8BE2;&#x8BBF;&#x95EE;&#x4E86;&#xFF1B;</p>
+<p><img src="/cloud-native/kubernetes/08_k8s_yaml%E6%96%87%E4%BB%B6%E5%9F%BA%E7%A1%80%E4%BB%8B%E7%BB%8D%E4%BB%A5%E5%8F%8A%E5%9F%BA%E4%BA%8Eyaml%E6%96%87%E4%BB%B6%E8%BF%90%E8%A1%8Cnginx%E5%92%8Ctomcat%E7%9A%84%E6%A1%88%E4%BE%8B%E4%BB%8B%E7%BB%8D/image-20220112221114538.png" alt="&#x6D4B;&#x8BD5;&#x7ED3;&#x679C;"></p>
+
+    </div>
+    
+    
+    
+    
+    
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/yaml/" rel="tag"># yaml</a>
+          </div>
+    
+        
+
+    
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/cloud-native/kubernetes/01_k8s_k8s%E5%B9%B3%E5%8F%B0%E5%9F%BA%E6%9C%AC%E4%BB%8B%E7%BB%8D/" rel="prev" title="k8s平台介绍">
+      <i class="fa fa-chevron-left"></i> k8s平台介绍
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/cloud-native/kubernetes/07_k8s_k8s%E9%9B%86%E7%BE%A4%E7%BB%B4%E6%8A%A4/" rel="next" title="kubernetes集群维护">
+      kubernetes集群维护 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+    <div>
+        
+        
+
+<div>
+    
+        <div style="text-align:center;color: #ccc;font-size:14px;">------ 版权声明：本文属于原创文章------</div>
+    	<div style="text-align:center;color: #FF0000;font-size:14px;">转载请注明：Burnov.github.io原创文章+本文链接，谢谢合作！！</i></div>
+    
+</div>
+
+
+        
+     </div>
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#yaml%E6%96%87%E4%BB%B6%E7%9A%84%E5%9F%BA%E7%A1%80%E4%BB%8B%E7%BB%8D%E4%BB%A5%E5%8F%8Ayaml%E6%96%87%E4%BB%B6%E8%BF%90%E8%A1%8Cnginx%E5%92%8Ctomcat%E7%9A%84%E6%A1%88%E4%BE%8B%E4%BB%8B%E7%BB%8D"><span class="nav-number">1.</span> <span class="nav-text">yaml文件的基础介绍以及yaml文件运行nginx和tomcat的案例介绍</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#yaml%E6%96%87%E4%BB%B6%E7%9A%84%E5%9F%BA%E6%9C%AC%E4%BB%8B%E7%BB%8D"><span class="nav-number">1.1.</span> <span class="nav-text">yaml文件的基本介绍</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%A1%B9%E7%9B%AE%E8%83%8C%E6%99%AF"><span class="nav-number">1.2.</span> <span class="nav-text">项目背景</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%9B%E5%BB%BAnamespace"><span class="nav-number">1.3.</span> <span class="nav-text">创建namespace</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%9B%E5%BB%BAnginx-pod"><span class="nav-number">1.4.</span> <span class="nav-text">创建nginx pod</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%9B%E5%BB%BAtomcat-pod"><span class="nav-number">1.5.</span> <span class="nav-text">创建tomcat pod</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Burnov"
+      src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">Burnov</p>
+  <div class="site-description" itemprop="description">No end for Learning</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">21</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">24</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/Burnov" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;Burnov" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:xials1990@gmail.com" title="E-Mail → mailto:xials1990@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://www.zhihu.com/people/xia-liang-shi-78" title="Skype → https:&#x2F;&#x2F;www.zhihu.com&#x2F;people&#x2F;xia-liang-shi-78" rel="noopener" target="_blank"><i class="fab fa-skype fa-fw"></i></a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class=""></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Burnov</span>
+</div>
+
+<!--
+  <div class="powered-by">Powered by <a href="https://github.com/Burnov" class="theme-link" rel="noopener" target="_blank">Burnov</a> & <a href="https://mist.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Mist</a>
+  </div>
+
+-->
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : false,
+      appId      : 'wIjFqGmEUzY7fpTNVHpKA0eH-gzGzoHsz',
+      appKey     : 'KdXueGM1xFH8pBVSO5SkFRKI',
+      placeholder: "Just go go",
+      avatar     : 'mm',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : false,
+      lang       : '' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : false,
+      serverURLs : ''
+    });
+  }, window.Valine);
+});
+</script>
+
+</body>
+</html>

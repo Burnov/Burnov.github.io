@@ -1,0 +1,637 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-minimal.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Mist","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="kubectl&amp;#x547D;&amp;#x4EE4;&amp;#x8BE6;&amp;#x89E3;kubectl&amp;#x7684;&amp;#x8BBF;&amp;#x95EE;&amp;#x65B9;&amp;#x5F0F;&amp;#x57FA;&amp;#x4E8E;kubectl&amp;#x7684;&amp;#x547D;&amp;#x4EE4;&amp;#xFF0C;&amp;#x6211;&amp;#x4EEC;&amp;#x90FD;&amp;#x662F;&amp;#x901A;&amp;#x8FC7;api-server&amp;">
+<meta property="og:type" content="article">
+<meta property="og:title" content="kubectl命令详解">
+<meta property="og:url" content="http://example.com/cloud-native/kubernetes/05_k8s_kubectl%E5%91%BD%E4%BB%A4%E7%9A%84%E4%BD%BF%E7%94%A8%E4%BB%8B%E7%BB%8D/index.html">
+<meta property="og:site_name" content="Burnov^-^Blog">
+<meta property="og:description" content="kubectl&amp;#x547D;&amp;#x4EE4;&amp;#x8BE6;&amp;#x89E3;kubectl&amp;#x7684;&amp;#x8BBF;&amp;#x95EE;&amp;#x65B9;&amp;#x5F0F;&amp;#x57FA;&amp;#x4E8E;kubectl&amp;#x7684;&amp;#x547D;&amp;#x4EE4;&amp;#xFF0C;&amp;#x6211;&amp;#x4EEC;&amp;#x90FD;&amp;#x662F;&amp;#x901A;&amp;#x8FC7;api-server&amp;">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://example.com/cloud-native/kubernetes/05_k8s_kubectl%E5%91%BD%E4%BB%A4%E7%9A%84%E4%BD%BF%E7%94%A8%E4%BB%8B%E7%BB%8D/image-20220112092104556.png">
+<meta property="og:image" content="http://example.com/cloud-native/kubernetes/05_k8s_kubectl%E5%91%BD%E4%BB%A4%E7%9A%84%E4%BD%BF%E7%94%A8%E4%BB%8B%E7%BB%8D/image-20220112092307009.png">
+<meta property="og:image" content="http://example.com/cloud-native/kubernetes/05_k8s_kubectl%E5%91%BD%E4%BB%A4%E7%9A%84%E4%BD%BF%E7%94%A8%E4%BB%8B%E7%BB%8D/image-20220112093411622.png">
+<meta property="og:image" content="http://example.com/cloud-native/kubernetes/05_k8s_kubectl%E5%91%BD%E4%BB%A4%E7%9A%84%E4%BD%BF%E7%94%A8%E4%BB%8B%E7%BB%8D/image-20220112093758543.png">
+<meta property="og:image" content="http://example.com/cloud-native/kubernetes/05_k8s_kubectl%E5%91%BD%E4%BB%A4%E7%9A%84%E4%BD%BF%E7%94%A8%E4%BB%8B%E7%BB%8D/image-20220112094317017.png">
+<meta property="og:image" content="http://example.com/cloud-native/kubernetes/05_k8s_kubectl%E5%91%BD%E4%BB%A4%E7%9A%84%E4%BD%BF%E7%94%A8%E4%BB%8B%E7%BB%8D/image-20220112100135646.png">
+<meta property="og:image" content="http://example.com/cloud-native/kubernetes/05_k8s_kubectl%E5%91%BD%E4%BB%A4%E7%9A%84%E4%BD%BF%E7%94%A8%E4%BB%8B%E7%BB%8D/image-20220112101730380.png">
+<meta property="og:image" content="http://example.com/cloud-native/kubernetes/05_k8s_kubectl%E5%91%BD%E4%BB%A4%E7%9A%84%E4%BD%BF%E7%94%A8%E4%BB%8B%E7%BB%8D/image-20220112095757668.png">
+<meta property="og:image" content="http://example.com/cloud-native/kubernetes/05_k8s_kubectl%E5%91%BD%E4%BB%A4%E7%9A%84%E4%BD%BF%E7%94%A8%E4%BB%8B%E7%BB%8D/image-20220112094656028.png">
+<meta property="article:published_time" content="2022-01-07T15:13:50.000Z">
+<meta property="article:modified_time" content="2022-01-18T07:30:54.296Z">
+<meta property="article:author" content="Burnov">
+<meta property="article:tag" content="kubectl">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/cloud-native/kubernetes/05_k8s_kubectl%E5%91%BD%E4%BB%A4%E7%9A%84%E4%BD%BF%E7%94%A8%E4%BB%8B%E7%BB%8D/image-20220112092104556.png">
+
+<link rel="canonical" href="http://example.com/cloud-native/kubernetes/05_k8s_kubectl%E5%91%BD%E4%BB%A4%E7%9A%84%E4%BD%BF%E7%94%A8%E4%BB%8B%E7%BB%8D/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>kubectl命令详解 | Burnov^-^Blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="Burnov^-^Blog" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Burnov^-^Blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="Searching..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://example.com/cloud-native/kubernetes/05_k8s_kubectl%E5%91%BD%E4%BB%A4%E7%9A%84%E4%BD%BF%E7%94%A8%E4%BB%8B%E7%BB%8D/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="Burnov">
+      <meta itemprop="description" content="No end for Learning">
+    </span>
+    
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Burnov^-^Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          kubectl命令详解
+        </h1>
+    
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+    
+              <time title="Created: 2022-01-07 23:13:50" itemprop="dateCreated datePublished" datetime="2022-01-07T23:13:50+08:00">2022-01-07</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2022-01-18 15:30:54" itemprop="dateModified" datetime="2022-01-18T15:30:54+08:00">2022-01-18</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/cloud-native/" itemprop="url" rel="index"><span itemprop="name">cloud native</span></a>
+                </span>
+                  , 
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/cloud-native/kubernetes/" itemprop="url" rel="index"><span itemprop="name">kubernetes</span></a>
+                </span>
+            </span>
+    
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Valine: </span>
+    
+    <a title="valine" href="/cloud-native/kubernetes/05_k8s_kubectl%E5%91%BD%E4%BB%A4%E7%9A%84%E4%BD%BF%E7%94%A8%E4%BB%8B%E7%BB%8D/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/cloud-native/kubernetes/05_k8s_kubectl%E5%91%BD%E4%BB%A4%E7%9A%84%E4%BD%BF%E7%94%A8%E4%BB%8B%E7%BB%8D/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+    
+        </div>
+      </header>
+    
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+    
+      
+        <h1 id="kubectl&#x547D;&#x4EE4;&#x8BE6;&#x89E3;"><a href="#kubectl&#x547D;&#x4EE4;&#x8BE6;&#x89E3;" class="headerlink" title="kubectl&#x547D;&#x4EE4;&#x8BE6;&#x89E3;"></a>kubectl&#x547D;&#x4EE4;&#x8BE6;&#x89E3;</h1><h2 id="kubectl&#x7684;&#x8BBF;&#x95EE;&#x65B9;&#x5F0F;"><a href="#kubectl&#x7684;&#x8BBF;&#x95EE;&#x65B9;&#x5F0F;" class="headerlink" title="kubectl&#x7684;&#x8BBF;&#x95EE;&#x65B9;&#x5F0F;"></a>kubectl&#x7684;&#x8BBF;&#x95EE;&#x65B9;&#x5F0F;</h2><p>&#x57FA;&#x4E8E;kubectl&#x7684;&#x547D;&#x4EE4;&#xFF0C;&#x6211;&#x4EEC;&#x90FD;&#x662F;&#x901A;&#x8FC7;api-server&#x7AEF;&#x6765;&#x8FDB;&#x884C;&#x8BBF;&#x95EE;&#x7684;&#xFF1B;</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">root@ke-ha-har-ma-et:~# cat .kube/config</span><br><span class="line"><span class="meta">#</span><span class="bash"> &#x6307;&#x5B9A;kubectl&#x6240;&#x8BF7;&#x6C42;&#x7684;&#x670D;&#x52A1;&#x5730;&#x5740;</span></span><br><span class="line">server: https://192.168.169.20:6443</span><br></pre></td></tr></table></figure>
+
+<span id="more"></span>
+
+<p>&#x5982;&#x679C;&#x4E0D;&#x80FD;&#x8C03;&#x7528;&#x8FD9;&#x4E2A;&#x7AEF;&#x53E3;&#xFF0C;&#x8005;kubectl&#x7684;&#x7BA1;&#x7406;&#x547D;&#x4EE4;&#x662F;&#x65E0;&#x6CD5;&#x4F7F;&#x7528;&#x7684;&#x3002;&#x540C;&#x65F6;&#xFF0C;&#x5982;&#x679C;master&#x51FA;&#x73B0;&#x6545;&#x969C;&#xFF0C;&#x662F;&#x4E0D;&#x5F71;&#x54CD;pod&#x7684;&#x4F7F;&#x7528;&#x7684;&#xFF0C;&#x4F46;&#x662F;&#x540C;&#x65F6;&#x4E5F;&#x65E0;&#x6CD5;&#x8FDB;&#x884C;&#x7BA1;&#x63A7;&#x4E86;&#xFF1B;</p>
+<p>&#x540C;&#x65F6;&#x5728;master&#x7684;&#x96C6;&#x7FA4;&#x73AF;&#x5883;&#x4E0B;&#xFF0C;&#x5982;&#x679C;&#x4FEE;&#x6539;&#x8FD9;&#x4E2A;server&#x914D;&#x7F6E;&#xFF0C;&#x4E5F;&#x662F;&#x53EF;&#x4EE5;&#x8C03;&#x7528;&#x5176;&#x4ED6;master&#x7684;&#x8282;&#x70B9;&#x7684;api-server&#x63A5;&#x53E3;&#x5BF9;k8s&#x96C6;&#x7FA4;&#x8FDB;&#x884C;&#x7BA1;&#x7406;&#x7684;&#xFF1B;</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">server: https://1.1.1.1:6443  # &#x96C6;&#x7FA4;&#x73AF;&#x5883;&#x4E0B;&#x4E0D;&#x5F71;&#x54CD;&#xFF0C;1.1.1.1&#x7684;&#x5730;&#x5740;&#x662F;&#x968F;&#x4FBF;&#x5199;&#x7684;&#xFF1B;</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>&#x6CE8;&#x610F;&#xFF1A;k8s&#x7684;&#x547D;&#x4EE4;&#x662F;&#x53EF;&#x4EE5;&#x901A;&#x8FC7;tab&#x952E;&#x6765;&#x8865;&#x5168;&#x7684;&#xFF0C;&#x8FD9;&#x4E2A;&#x7C7B;&#x4F3C;&#x4E8E;shell&#x547D;&#x4EE4;</p>
+</blockquote>
+<h2 id="get"><a href="#get" class="headerlink" title="get"></a>get</h2><p>&#x9996;&#x5148;&#xFF0C;&#x6211;&#x4EEC;&#x53EF;&#x4EE5;&#x901A;&#x8FC7;kubectl -h&#x7684;&#x65B9;&#x5F0F;&#x6765;&#x67E5;&#x770B;&#x6240;&#x6709;&#x7684;&#x547D;&#x4EE4;&#xFF1B;&#x800C;get&#x5219;&#x662F;&#x6700;&#x5E38;&#x7528;&#x7684;&#x8D44;&#x6E90;&#x5BF9;&#x8C61;&#xFF0C;&#x4ED6;&#x662F;display one or more resourse&#xFF1B;&#x663E;&#x793A;&#x8D44;&#x6E90;&#x5BF9;&#x8C61;&#x7684;&#xFF1B;</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">kubectl get --help  # &#x67E5;&#x770B;&#x53EF;&#x4EE5;&#x663E;&#x793A;&#x7684;&#x8D44;&#x6E90;&#x5BF9;&#x8C61;&#xFF0C;&#x4E14;&#x8D44;&#x6E90;&#x5BF9;&#x8C61;&#x6709;&#x7B80;&#x79F0;&#x53EF;&#x4EE5;&#x5199;&#xFF1B;</span><br><span class="line"><span class="meta"></span></span><br><span class="line"><span class="meta">#</span><span class="bash"> &#x5982;&#x679C;&#x4E0D;&#x6307;&#x5B9A;namespace&#x5219;&#x53EA;&#x663E;&#x793A;default&#x7684;&#x91CC;&#x9762;&#x7684;&#x8D44;&#x6E90;&#x5BF9;&#x8C61;&#xFF0C;&#x4F8B;&#x5982;&#xFF1A;</span></span><br><span class="line">kubectl get pod</span><br></pre></td></tr></table></figure>
+
+<p><img src="/cloud-native/kubernetes/05_k8s_kubectl%E5%91%BD%E4%BB%A4%E7%9A%84%E4%BD%BF%E7%94%A8%E4%BB%8B%E7%BB%8D/image-20220112092104556.png" alt="default&#x7684;pod&#x8D44;&#x6E90;"></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> &#x663E;&#x793A;&#x6240;&#x6709;namespace pod&#x8D44;&#x6E90;&#xFF0C;-A&#x4E5F;&#x662F;--all-namespace</span></span><br><span class="line">kubectl get pod -A</span><br><span class="line"><span class="meta"></span></span><br><span class="line"><span class="meta">#</span><span class="bash"> &#x663E;&#x793A;&#x591A;&#x4E2A;namespace &#x591A;&#x4E2A;&#x8D44;&#x6E90;&#x5BF9;&#x8C61;&#xFF1B;</span></span><br><span class="line">kubectl get pod,service pod -A</span><br></pre></td></tr></table></figure>
+
+<p><img src="/cloud-native/kubernetes/05_k8s_kubectl%E5%91%BD%E4%BB%A4%E7%9A%84%E4%BD%BF%E7%94%A8%E4%BB%8B%E7%BB%8D/image-20220112092307009.png" alt="&#x663E;&#x793A;&#x591A;&#x4E2A;&#x8D44;&#x6E90;&#x5BF9;&#x8C61;"></p>
+<p>&#x8FD9;&#x91CC;&#x9762;&#x5173;&#x4E8E;pod&#x8D44;&#x6E90;&#x7684;&#x7684;&#x53C2;&#x6570;&#x6211;&#x4EEC;&#x7B80;&#x5355;&#x8BF4;&#x4E00;&#x4E0B;</p>
+<ul>
+<li>NAMESPACE &#x2013; &#x540D;&#x79F0;&#x7A7A;&#x95F4;&#x7684;&#x540D;&#x5B57;</li>
+<li>NAME &#x2013; pod&#x7684;&#x540D;&#x5B57;&#xFF0C;&#x8FD9;&#x4E2A;&#x662F;&#x4E0D;&#x80FD;&#x91CD;&#x590D;&#x7684;&#xFF0C;&#x5982;&#x679C;&#x91CD;&#x590D;&#x4E86;&#x4E4B;&#x540E;&#x914D;&#x7F6E;&#x7684;&#x4F1A;&#x8986;&#x76D6;&#x4E4B;&#x524D;&#x7684;&#x540D;&#x79F0;</li>
+<li>READY &#x2013; &#x540E;&#x9762;&#x4E00;&#x4E2A;1&#x8868;&#x793A;&#x6709;&#x591A;&#x5C11;&#x5BB9;&#x5668;&#xFF0C;&#x800C;&#x524D;&#x9762;1&#x8868;&#x793A;&#x8FD9;&#x4E2A;&#x662F;&#x5426;&#x5728;&#x4F7F;&#x7528;</li>
+<li>STATUS &#x2013; &#x8868;&#x793A;pod&#x7684;&#x72B6;&#x6001;&#xFF0C;&#x6700;&#x597D;&#x7684;&#x5C31;&#x662F;Running&#x4E86;&#xFF0C;&#x8FD8;&#x6709;&#x5176;&#x4ED6;&#x72B6;&#x6001;&#x6211;&#x4EEC;&#x4E4B;&#x540E;&#x518D;&#x8BF4;</li>
+<li>RESTARTS &#x2013; &#x662F;&#x5426;&#x91CD;&#x542F;&#x8FC7;</li>
+<li>AGE &#x2013; &#x542F;&#x52A8;&#x7684;&#x65F6;&#x957F;</li>
+</ul>
+<p>service&#x7684;&#x53C2;&#x6570;</p>
+<ul>
+<li>NAME &#x2013; service&#x7684;&#x540D;&#x79F0;</li>
+<li>TYPE &#x2013; service&#x7684;&#x7C7B;&#x578B;&#xFF0C;ClusterIP&#x548C;NodePort</li>
+<li>CLUSTER-IP &#x2013; &#x96C6;&#x7FA4;IP&#x5730;&#x5740;</li>
+<li>EXTERNAL-IP &#x2013; &#x5916;&#x90E8;&#x5730;&#x5740;&#xFF0C;&#x8FD9;&#x4E9B;&#x5728;&#x4E91;&#x4EA7;&#x5BB6;&#x91CC;&#x9762;&#x662F;&#x9700;&#x8981;&#x63D0;&#x4F9B;&#x7ED9;&#x5BA2;&#x6237;&#x8BBF;&#x95EE;&#x7684;</li>
+<li>PORT &#x2013; &#x7AEF;&#x53E3;&#xFF0C;&#x5982;&#x679C;&#x6CA1;&#x6709;&#x505A;nodeport&#x8F6C;&#x53D1;&#xFF0C;&#x5219;&#x663E;&#x793A;&#x5C31;&#x662F;service&#x7684;&#x7AEF;&#x53E3;&#xFF1B;&#x5982;&#x679C;&#x662F;nodeport&#x6A21;&#x5F0F;&#xFF0C;&#x5DE6;&#x4FA7;&#x5C31;&#x662F;service&#x7AEF;&#x53E3;&#x53F3;&#x4FA7;&#x5C31;&#x662F;&#x5BBF;&#x4E3B;&#x673A;&#x7AEF;&#x53E3;&#xFF1B;&#x4E3B;&#x8981;&#x4F7F;&#x7528;TCP&#x7528;UDP&#x5C11;&#x4E00;&#x4E9B;&#xFF1B;</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> -o&#x53EF;&#x4EE5;&#x6269;&#x5C55;&#x6211;&#x4EEC;&#x7684;&#x663E;&#x793A;&#x7ED3;&#x679C;</span></span><br><span class="line">kubectl get pod -o wide</span><br><span class="line"><span class="meta">#</span><span class="bash"> wide &#x662F;&#x8BE6;&#x7EC6;&#x7684;&#x7ED3;&#x679C;</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> yaml &#x6307;&#x5B9A;&#x8F93;&#x51FA;&#x4E3A;yaml&#x683C;&#x5F0F;</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> json &#x6307;&#x5B9A;&#x8F93;&#x51FA;&#x4E3A;json&#x683C;&#x5F0F;</span></span><br></pre></td></tr></table></figure>
+
+<p>&#x6307;&#x5B9A;&#x683C;&#x5F0F;&#x4EE5;&#x540E;&#x65B9;&#x4FBF;&#x5199;&#x4EE3;&#x7801;&#x8C03;&#x7528;&#x91CC;&#x9762;&#x7684;&#x5185;&#x5BB9;&#xFF1B;</p>
+<p><img src="/cloud-native/kubernetes/05_k8s_kubectl%E5%91%BD%E4%BB%A4%E7%9A%84%E4%BD%BF%E7%94%A8%E4%BB%8B%E7%BB%8D/image-20220112093411622.png" alt="&#x6307;&#x5B9A;json&#x683C;&#x5F0F;&#x8F93;&#x51FA;"></p>
+<h2 id="describe"><a href="#describe" class="headerlink" title="describe"></a>describe</h2><p>get&#x7528;&#x6765;&#x67E5;&#x770B;&#x8D44;&#x6E90;&#x7684;&#x57FA;&#x672C;&#x4FE1;&#x606F;&#x7684;&#xFF0C;&#x800C;describe&#x5219;&#x662F;&#x7528;&#x6765;&#x67E5;&#x770B;&#x8D44;&#x6E90;&#x7684;&#x8BE6;&#x7EC6;&#x4FE1;&#x606F;&#xFF1B;&#x5982;&#x679C;&#x51FA;&#x73B0;&#x5F02;&#x5E38;&#xFF0C;&#x4F1A;&#x4F7F;&#x7528;describe&#x6765;&#x8FDB;&#x884C;&#x6392;&#x9519;&#xFF1B;&#x4E00;&#x822C;&#x4F7F;&#x7528;&#x6B65;&#x9AA4;&#x4E3A;&#xFF1A;</p>
+<p>&#x7B2C;&#x4E00;&#x6B65;&#x3001;&#x901A;&#x8FC7;get&#x547D;&#x4EE4;&#x83B7;&#x53D6;&#x4F60;&#x8981;&#x67E5;&#x770B;&#x8D44;&#x6E90;&#x5BF9;&#x8C61;&#x7684;&#x540D;&#x79F0;</p>
+<p>&#x7B2C;&#x4E8C;&#x6B65;&#x3001;&#x901A;&#x8FC7;describe&#x6765;&#x83B7;&#x53D6;&#x8BE5;&#x8D44;&#x6E90;&#x5BF9;&#x8C61;&#x7684;&#x8BE6;&#x7EC6;&#x4FE1;&#x606F;</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">kubectl get pod</span><br><span class="line">kubectl describe pod net-test1  # &#x8FD9;&#x91CC;&#x6CE8;&#x610F;&#xFF0C;&#x6211;&#x4EEC;&#x9700;&#x8981;&#x6307;&#x5B9A;&#x67E5;&#x770B;&#x7684;&#x8D44;&#x6E90;&#x7C7B;&#x578B;&#x201C;pod&#x201D;</span><br></pre></td></tr></table></figure>
+
+<p><img src="/cloud-native/kubernetes/05_k8s_kubectl%E5%91%BD%E4%BB%A4%E7%9A%84%E4%BD%BF%E7%94%A8%E4%BB%8B%E7%BB%8D/image-20220112093758543.png" alt="describe&#x57FA;&#x672C;&#x7528;&#x6CD5;"></p>
+<p>&#x4F8B;&#x5982;&#xFF1A;&#x6211;&#x4EEC;&#x8981;&#x67E5;&#x770B;&#x4E00;&#x4E2A;&#x63A7;&#x5236;&#x4E0A;&#x542F;&#x52A8;pod&#x7684;&#x65F6;&#x5019;&#x603B;&#x62A5;&#x9519;&#xFF0C;&#x65E0;&#x6CD5;&#x542F;&#x52A8;&#xFF0C;&#x6211;&#x4EEC;&#x53EF;&#x4EE5;&#x901A;&#x8FC7;&#x4E0B;&#x9762;&#x7684;&#x547D;&#x4EE4;&#x6765;&#x5B8C;&#x6210;&#x76F8;&#x5E94;&#x7684;&#x64CD;&#x4F5C;&#xFF1A;</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> &#x5148;&#x67E5;&#x770B;deployments&#x8D44;&#x6E90;&#x5BF9;&#x8C61;</span></span><br><span class="line">kubectl get deployments.apps -A</span><br><span class="line"><span class="meta"></span></span><br><span class="line"><span class="meta">#</span><span class="bash"> &#x7136;&#x540E;&#x6307;&#x5B9A;&#x8D44;&#x6E90;&#x5BF9;&#x8C61;&#x67E5;&#x770B;&#x5176;event&#x4E8B;&#x4EF6;&#x4FE1;&#x606F;</span></span><br><span class="line">kubectl describe deployments.apps coredns -n kube-system</span><br><span class="line"><span class="meta">#</span><span class="bash"> -n &#x6307;&#x5B9A;namespace&#xFF0C;&#x8FD9;&#x91CC;&#x4E00;&#x5B9A;&#x8981;&#x6307;&#x5B9A;&#x8D44;&#x6E90;&#x5BF9;&#x8C61;&#x6240;&#x5728;&#x7684;&#x8D44;&#x6E90;&#x5BF9;&#x8C61;&#xFF1B;</span></span><br></pre></td></tr></table></figure>
+
+<p>&#x6700;&#x4E0B;&#x9762;&#x5C31;&#x4F1A;&#x663E;&#x793A;&#x76F8;&#x5E94;&#x7684;&#x65E5;&#x5FD7;&#x4FE1;&#x606F;&#x4E86;&#xFF1A;</p>
+<p><img src="/cloud-native/kubernetes/05_k8s_kubectl%E5%91%BD%E4%BB%A4%E7%9A%84%E4%BD%BF%E7%94%A8%E4%BB%8B%E7%BB%8D/image-20220112094317017.png" alt="events&#x4E8B;&#x4EF6;&#x4FE1;&#x606F;"></p>
+<p>&#x6211;&#x8FD9;&#x4E2A;&#x5730;&#x65B9;&#x662F;&#x6CA1;&#x6709;&#x4E8B;&#x4EF6;&#x4FE1;&#x606F;&#x7684;&#xFF1B;&#x5728;&#x8FD9;&#x91CC;&#x6211;&#x4EEC;&#x5C31;&#x53EF;&#x4EE5;&#x770B;&#x5230;pod&#x51FA;&#x73B0;&#x6545;&#x969C;&#x7684;&#x539F;&#x56E0;&#x4E86;&#xFF01;</p>
+<h2 id="create&#x3001;apply"><a href="#create&#x3001;apply" class="headerlink" title="create&#x3001;apply"></a>create&#x3001;apply</h2><p>&#x4F7F;&#x7528;create&#x548C;apply&#x6765;&#x76F4;&#x63A5;&#x521B;&#x5EFA;&#x8D44;&#x6E90;&#xFF1A;</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">kubectl create ns test</span><br></pre></td></tr></table></figure>
+
+<p><img src="/cloud-native/kubernetes/05_k8s_kubectl%E5%91%BD%E4%BB%A4%E7%9A%84%E4%BD%BF%E7%94%A8%E4%BB%8B%E7%BB%8D/image-20220112100135646.png" alt="&#x521B;&#x5EFA;&#x8D44;&#x6E90;"></p>
+<p>&#x540C;&#x65F6;&#xFF0C;&#x8FD9;&#x4E24;&#x4E2A;&#x547D;&#x4EE4;&#x90FD;&#x662F;&#x7528;&#x6765;&#x901A;&#x8FC7;yaml&#x7684;&#x6587;&#x4EF6;&#x6765;&#x521B;&#x5EFA;&#x4E00;&#x4E9B;&#x8D44;&#x6E90;&#x7684;&#xFF1B;&#x6211;&#x4EEC;&#x4F7F;&#x7528;apply&#x4F1A;&#x6BD4;&#x8F83;&#x591A;&#x4E00;&#x70B9;&#xFF1B;</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> &#x4F8B;&#x5982;</span></span><br><span class="line">kubectl apply -f tomcat-app1.yaml</span><br><span class="line"><span class="meta">#</span><span class="bash"> &#x4E5F;&#x53EF;&#x4EE5;&#x5199;&#x6210;</span></span><br><span class="line">kubectl create -f tomcat-app1.yaml</span><br><span class="line"><span class="meta">#</span><span class="bash"> &#x4E24;&#x8005;&#x662F;&#x4E00;&#x6837;&#x7684;</span></span><br></pre></td></tr></table></figure>
+
+<p>&#x63A8;&#x8350;&#xFF1A;</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">kubectl apply -f coredns.yaml --record  # &#x8FD9;&#x4E2A;&#x4F1A;&#x8BB0;&#x5F55;&#x521B;&#x5EFA;&#x4FE1;&#x606F;&#xFF1B;</span><br><span class="line"><span class="meta">#</span><span class="bash"> &#x4F46;&#x662F;&#x8FD9;&#x4E2A;&#x547D;&#x4EE4;&#x5728;&#x65B0;&#x7684;&#x7248;&#x672C;&#x4E2D;&#x4F1A;&#x88AB;&#x5220;&#x9664;&#xFF0C;&#x6240;&#x4EE5;&#x53EA;&#x7528;-f&#x5C31;&#x884C;&#x4E86;&#xFF1B;</span></span><br></pre></td></tr></table></figure>
+
+<p>&#x4ED6;&#x4EEC;&#x7684;&#x533A;&#x522B;&#xFF1A;</p>
+<ul>
+<li>create &#x2013; &#x5982;&#x679C;&#x8D44;&#x6E90;&#x5BF9;&#x8C61;&#x901A;&#x8FC7;create&#x521B;&#x5EFA;&#x7684;&#xFF0C;&#x4E4B;&#x540E;&#x5982;&#x679C;yaml&#x6587;&#x4EF6;&#x6709;&#x6240;&#x4FEE;&#x6539;&#xFF0C;&#x5219;&#x4E0D;&#x80FD;&#x5728;create&#xFF0C;&#x4E5F;&#x4E0D;&#x80FD;apply&#xFF0C;&#x5426;&#x5219;&#x5C31;&#x62A5;&#x9519;&#xFF1B;&#x6211;&#x4EEC;&#x9700;&#x8981;&#x901A;&#x8FC7;create&#x52A0;&#x4E0A;&#x53C2;&#x6570; &#x2013;save-config &#x8FD9;&#x6837;&#x624D;&#x884C;&#xFF1B;</li>
+<li>apply &#x2013; &#x5219;&#x4E00;&#x76F4;&#x4F7F;&#x7528;apply&#x5C31;&#x884C;&#xFF0C;&#x5B83;&#x53EA;&#x6267;&#x884C;&#x53D8;&#x5316;&#x4E86;&#x7684;&#x8D44;&#x6E90;&#x5BF9;&#x8C61;</li>
+</ul>
+<h2 id="delete"><a href="#delete" class="headerlink" title="delete"></a>delete</h2><p>delete&#x547D;&#x4EE4;&#x548C;create&#x3001;apply&#x6B63;&#x597D;&#x76F8;&#x53CD;&#xFF0C;&#x4ED6;&#x4EEC;&#x662F;&#x7528;&#x6765;&#x5220;&#x9664;&#x8D44;&#x6E90;&#x5BF9;&#x8C61;&#x7684;&#xFF1B;</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> &#x76F4;&#x63A5;&#x5220;&#x9664;&#x8D44;&#x6E90;</span></span><br><span class="line">kubectl delete ns test  # &#x76F4;&#x63A5;&#x6307;&#x5B9A;&#x8D44;&#x6E90;&#x5220;&#x9664;</span><br><span class="line"><span class="meta"></span></span><br><span class="line"><span class="meta">#</span><span class="bash"> &#x6307;&#x5B9A;yaml&#x6587;&#x4EF6;&#x6765;&#x5220;&#x9664;</span></span><br><span class="line">kubectl delete -f tomcat-app1.yaml</span><br></pre></td></tr></table></figure>
+
+<p>&#x793A;&#x4F8B;&#xFF1A;</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">kubectl delete -f coredns.yaml  # &#x5220;&#x9664;&#x4E00;&#x4E0B;coredns&#x7684;&#x6A21;&#x5757;</span><br><span class="line"><span class="meta">#</span><span class="bash"> &#x8FD9;&#x6837;&#x5BB9;&#x5668;&#x5C31;&#x4E0A;&#x4E0D;&#x4E86;&#x7F51;&#x4E86;</span></span><br><span class="line"><span class="meta"></span></span><br><span class="line"><span class="meta">#</span><span class="bash"> &#x7136;&#x540E;&#x518D;&#x521B;&#x5EFA;&#x5C31;&#x53EF;&#x4EE5;</span></span><br><span class="line">kubectl apply -f coredns.yaml</span><br></pre></td></tr></table></figure>
+
+<p>&#x8FD9;&#x91CC;&#x9700;&#x8981;&#x77E5;&#x9053;&#x7684;&#x662F;&#xFF0C;&#x5220;&#x9664;&#x8D44;&#x6E90;&#x7684;&#x65F6;&#x5019;&#x6211;&#x4EEC;&#x9700;&#x8981;&#x53BB;&#x5230;etcd&#x7684;&#x6570;&#x636E;&#x5E93;&#x4E2D;&#x505A;&#x6570;&#x636E;&#x540C;&#x6B65;&#xFF0C;&#x6240;&#x4EE5;&#x4F1A;&#x6BD4;&#x8F83;&#x6162;&#x4E00;&#x70B9;&#xFF1B;</p>
+<p>&#x5E76;&#x4E14;&#xFF0C;&#x5982;&#x679C;&#x6709;&#x4E00;&#x4E9B;&#x6BD4;&#x8F83;&#x91CD;&#x8981;&#x7684;&#x5BB9;&#x5668;&#x88AB;&#x5220;&#x9664;&#x540E;&#xFF0C;&#x53C8;&#x4F1A;&#x91CD;&#x5EFA;&#xFF1B;</p>
+<p><img src="/cloud-native/kubernetes/05_k8s_kubectl%E5%91%BD%E4%BB%A4%E7%9A%84%E4%BD%BF%E7%94%A8%E4%BB%8B%E7%BB%8D/image-20220112101730380.png" alt="coredns&#x5220;&#x9664;&#x91CD;&#x5EFA;"></p>
+<p>&#x8FD9;&#x6837;&#x5C31;&#x53EF;&#x4EE5;&#x4FDD;&#x8BC1;&#x6211;&#x4EEC;&#x6307;&#x5B9A;&#x5BB9;&#x5668;&#x7684;&#x526F;&#x672C;&#x6570;&#x3010;&#x8FD9;&#x4E2A;&#x6211;&#x4EEC;&#x4E4B;&#x540E;&#x518D;&#x4ECB;&#x7ECD;&#x3011;&#xFF1B;</p>
+<h2 id="exec"><a href="#exec" class="headerlink" title="exec"></a>exec</h2><p>&#x548C;docker&#x7684;exec&#x4E00;&#x6837;&#xFF0C;&#x901A;&#x8FC7;&#x547D;&#x4EE4;&#x884C;&#x8FDB;&#x5165;&#x5230;&#x5BB9;&#x5668;&#x4E2D;&#x8FDB;&#x884C;&#x6307;&#x5B9A;&#x64CD;&#x4F5C;&#xFF1B;</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">kubectl exec -it net-test1 sh -n default  # &#x52A0;&#x4E0A;sh&#x73AF;&#x5883;</span><br><span class="line"><span class="meta">#</span><span class="bash"> &#x5982;&#x679C;&#x5BB9;&#x5668;&#x4E0D;&#x518D;default&#x4E2D;&#xFF0C;&#x9700;&#x8981;&#x6307;&#x5B9A;namespace&#x624D;&#x884C;</span></span><br></pre></td></tr></table></figure>
+
+<p>&#x5982;&#x679C;&#x4E00;&#x4E2A;pod&#x91CC;&#x9762;&#x53C8;&#x591A;&#x4E2A;&#x5BB9;&#x5668;&#xFF0C;&#x5219;&#x9700;&#x8981;&#x901A;&#x8FC7; -c &#x7684;&#x547D;&#x4EE4;&#x6765;&#x6307;&#x5B9A;&#x4F60;&#x9700;&#x8981;&#x8FDB;&#x5165;&#x5230;&#x90A3;&#x4E2A;&#x5BB9;&#x5668;&#x4E2D;&#xFF1B;</p>
+<p><img src="/cloud-native/kubernetes/05_k8s_kubectl%E5%91%BD%E4%BB%A4%E7%9A%84%E4%BD%BF%E7%94%A8%E4%BB%8B%E7%BB%8D/image-20220112095757668.png" alt="&#x4F7F;&#x7528;&#x65B9;&#x5F0F;"></p>
+<p>&#x8FD9;&#x4E2A;&#x5E94;&#x7528;&#x573A;&#x666F;&#x4F1A;&#x5728;&#x540E;&#x9762;&#x9047;&#x5230;&#xFF0C;&#x4E00;&#x4E2A;pod&#x591A;&#x5BB9;&#x5668;&#x7684;&#x5199;&#x6CD5;&#x5982;&#x4E0B;&#xFF1A;</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">kubectl exec -it POD -c CONTAINER bash -n NAMESPACE</span><br></pre></td></tr></table></figure>
+
+<h2 id="logs"><a href="#logs" class="headerlink" title="logs"></a>logs</h2><p>&#x5F53;pod&#x5BB9;&#x5668;&#x521B;&#x5EFA;&#x6210;&#x529F;&#x4EE5;&#x540E;&#xFF0C;&#x4F46;&#x662F;&#x8FD0;&#x884C;&#x7684;&#x65F6;&#x5019;&#x5931;&#x8D25;&#x4E86;&#xFF1B;</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">kubectl get pod</span><br><span class="line">kubectl logs net-test1  # &#x8FD9;&#x91CC;&#x5C31;&#x53EF;&#x4EE5;&#x67E5;&#x770B;&#x5230;&#x65E5;&#x5FD7;&#x4FE1;&#x606F;</span><br><span class="line"><span class="meta">#</span><span class="bash"> &#x8FD9;&#x91CC;&#x662F;&#x9ED8;&#x8BA4;namespace &#x4E5F;&#x5C31;&#x662F;default</span></span><br></pre></td></tr></table></figure>
+
+<p><img src="/cloud-native/kubernetes/05_k8s_kubectl%E5%91%BD%E4%BB%A4%E7%9A%84%E4%BD%BF%E7%94%A8%E4%BB%8B%E7%BB%8D/image-20220112094656028.png" alt="&#x67E5;&#x770B;&#x65E5;&#x5FD7;&#x4FE1;&#x606F;"></p>
+<h2 id="explain"><a href="#explain" class="headerlink" title="explain"></a>explain</h2><p>&#x518D;&#x540E;&#x9762;&#xFF0C;&#x6211;&#x4EEC;&#x9700;&#x8981;&#x5199;yaml&#x6587;&#x4EF6;&#x3002;&#x5982;&#x679C;&#x4E0D;&#x77E5;&#x9053;&#x5199;&#x90A3;&#x4E9B;&#x53C2;&#x6570;&#xFF0C;&#x6211;&#x4EEC;&#x53EF;&#x4EE5;&#x901A;&#x8FC7;explain&#x6765;&#x8FDB;&#x884C;&#x67E5;&#x770B;&#xFF1B;</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">kubectl explain service  # &#x67E5;&#x770B;service&#x8D44;&#x6E90;&#x5BF9;&#x8C61;&#x4E0B;&#x9762;&#x7684;&#x53C2;&#x6570;</span><br></pre></td></tr></table></figure>
+
+<p>&#x540E;&#x9762;&#x518D;&#x505A;&#x4ECB;&#x7ECD;</p>
+
+    </div>
+    
+    
+    
+    
+    
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/kubectl/" rel="tag"># kubectl</a>
+          </div>
+    
+        
+
+    
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/development/python/01_python%E8%87%AA%E5%8A%A8%E8%BF%90%E7%BB%B4_%E5%AE%9E%E4%BE%8B%E4%B8%80%E3%80%81Python%E7%A8%8B%E5%BA%8F%E5%AE%9E%E7%8E%B0%E6%96%87%E4%BB%B6%E5%A4%8D%E5%88%B6/" rel="prev" title="Python程序实现文件复制">
+      <i class="fa fa-chevron-left"></i> Python程序实现文件复制
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/cloud-native/kubernetes/03_k8s_k8s%E9%AB%98%E6%80%A7%E8%83%BD%E9%9B%86%E7%BE%A4%E7%9A%84%E6%90%AD%E5%BB%BA/" rel="next" title="kubernetes集群安装">
+      kubernetes集群安装 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+    <div>
+        
+        
+
+<div>
+    
+        <div style="text-align:center;color: #ccc;font-size:14px;">------ 版权声明：本文属于原创文章------</div>
+    	<div style="text-align:center;color: #FF0000;font-size:14px;">转载请注明：Burnov.github.io原创文章+本文链接，谢谢合作！！</i></div>
+    
+</div>
+
+
+        
+     </div>
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#kubectl%E5%91%BD%E4%BB%A4%E8%AF%A6%E8%A7%A3"><span class="nav-number">1.</span> <span class="nav-text">kubectl命令详解</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#kubectl%E7%9A%84%E8%AE%BF%E9%97%AE%E6%96%B9%E5%BC%8F"><span class="nav-number">1.1.</span> <span class="nav-text">kubectl的访问方式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#get"><span class="nav-number">1.2.</span> <span class="nav-text">get</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#describe"><span class="nav-number">1.3.</span> <span class="nav-text">describe</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#create%E3%80%81apply"><span class="nav-number">1.4.</span> <span class="nav-text">create、apply</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#delete"><span class="nav-number">1.5.</span> <span class="nav-text">delete</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#exec"><span class="nav-number">1.6.</span> <span class="nav-text">exec</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#logs"><span class="nav-number">1.7.</span> <span class="nav-text">logs</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#explain"><span class="nav-number">1.8.</span> <span class="nav-text">explain</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Burnov"
+      src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">Burnov</p>
+  <div class="site-description" itemprop="description">No end for Learning</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">21</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">24</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/Burnov" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;Burnov" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:xials1990@gmail.com" title="E-Mail → mailto:xials1990@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://www.zhihu.com/people/xia-liang-shi-78" title="Skype → https:&#x2F;&#x2F;www.zhihu.com&#x2F;people&#x2F;xia-liang-shi-78" rel="noopener" target="_blank"><i class="fab fa-skype fa-fw"></i></a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class=""></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Burnov</span>
+</div>
+
+<!--
+  <div class="powered-by">Powered by <a href="https://github.com/Burnov" class="theme-link" rel="noopener" target="_blank">Burnov</a> & <a href="https://mist.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Mist</a>
+  </div>
+
+-->
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : false,
+      appId      : 'wIjFqGmEUzY7fpTNVHpKA0eH-gzGzoHsz',
+      appKey     : 'KdXueGM1xFH8pBVSO5SkFRKI',
+      placeholder: "Just go go",
+      avatar     : 'mm',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : false,
+      lang       : '' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : false,
+      serverURLs : ''
+    });
+  }, window.Valine);
+});
+</script>
+
+</body>
+</html>
