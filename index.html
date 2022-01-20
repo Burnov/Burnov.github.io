@@ -194,6 +194,298 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://example.com/cloud-native/kubernetes/09_k8s_deployment%E4%B8%8Eservice%E8%B5%84%E6%BA%90%E4%BB%8B%E7%BB%8D%EF%BC%88pod%E7%9A%84%E5%88%9B%E5%BB%BA%E4%B8%8E%E7%BD%91%E7%BB%9C%E8%AE%BF%E9%97%AE%EF%BC%89/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="Burnov">
+      <meta itemprop="description" content="No end for Learning">
+    </span>
+    
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Burnov^-^Blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/cloud-native/kubernetes/09_k8s_deployment%E4%B8%8Eservice%E8%B5%84%E6%BA%90%E4%BB%8B%E7%BB%8D%EF%BC%88pod%E7%9A%84%E5%88%9B%E5%BB%BA%E4%B8%8E%E7%BD%91%E7%BB%9C%E8%AE%BF%E9%97%AE%EF%BC%89/" class="post-title-link" itemprop="url">deployment与service资源介绍（pod的创建于网络访问）</a>
+        </h2>
+    
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+              
+    
+              <time title="Created: 2022-01-20 22:18:30 / Modified: 22:19:29" itemprop="dateCreated datePublished" datetime="2022-01-20T22:18:30+08:00">2022-01-20</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/cloud-native/" itemprop="url" rel="index"><span itemprop="name">cloud native</span></a>
+                </span>
+                  , 
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/cloud-native/kubernetes/" itemprop="url" rel="index"><span itemprop="name">kubernetes</span></a>
+                </span>
+            </span>
+    
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Valine: </span>
+    
+    <a title="valine" href="/cloud-native/kubernetes/09_k8s_deployment%E4%B8%8Eservice%E8%B5%84%E6%BA%90%E4%BB%8B%E7%BB%8D%EF%BC%88pod%E7%9A%84%E5%88%9B%E5%BB%BA%E4%B8%8E%E7%BD%91%E7%BB%9C%E8%AE%BF%E9%97%AE%EF%BC%89/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/cloud-native/kubernetes/09_k8s_deployment%E4%B8%8Eservice%E8%B5%84%E6%BA%90%E4%BB%8B%E7%BB%8D%EF%BC%88pod%E7%9A%84%E5%88%9B%E5%BB%BA%E4%B8%8E%E7%BD%91%E7%BB%9C%E8%AE%BF%E9%97%AE%EF%BC%89/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+    
+        </div>
+      </header>
+    
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+    
+      
+          <h2 id="k8s&#x7684;&#x67B6;&#x6784;&#x4E0E;&#x670D;&#x52A1;&#x6982;&#x5FF5;&#x7684;&#x4ECB;&#x7ECD;"><a href="#k8s&#x7684;&#x67B6;&#x6784;&#x4E0E;&#x670D;&#x52A1;&#x6982;&#x5FF5;&#x7684;&#x4ECB;&#x7ECD;" class="headerlink" title="k8s&#x7684;&#x67B6;&#x6784;&#x4E0E;&#x670D;&#x52A1;&#x6982;&#x5FF5;&#x7684;&#x4ECB;&#x7ECD;"></a>k8s&#x7684;&#x67B6;&#x6784;&#x4E0E;&#x670D;&#x52A1;&#x6982;&#x5FF5;&#x7684;&#x4ECB;&#x7ECD;</h2><h3 id="k8s&#x7684;&#x57FA;&#x672C;&#x67B6;&#x6784;"><a href="#k8s&#x7684;&#x57FA;&#x672C;&#x67B6;&#x6784;" class="headerlink" title="k8s&#x7684;&#x57FA;&#x672C;&#x67B6;&#x6784;"></a>k8s&#x7684;&#x57FA;&#x672C;&#x67B6;&#x6784;</h3><p><img src="/cloud-native/kubernetes/09_k8s_deployment%E4%B8%8Eservice%E8%B5%84%E6%BA%90%E4%BB%8B%E7%BB%8D%EF%BC%88pod%E7%9A%84%E5%88%9B%E5%BB%BA%E4%B8%8E%E7%BD%91%E7%BB%9C%E8%AE%BF%E9%97%AE%EF%BC%89/1642557782860.png" alt="k8s&#x67B6;&#x6784;&#x56FE;"></p>
+<ul>
+<li>&#x57FA;&#x7840;&#x5E95;&#x5C42;&#xFF1A;&#x5728;&#x8FD9;&#x4E2A;&#x7ED3;&#x6784;&#x56FE;&#x4E2D;&#xFF0C;&#x5BB9;&#x5668;&#x5C31;&#x5C5E;&#x4E8E;CRI&#xFF08;containered runtime interface-docker&#xFF09;&#x3001;CNI&#xFF08;containered network inferface-calico&#xFF09;&#x548C;CSI&#xFF08;containered storge interface&#x2013;ceph&#xFF09;&#x7684;&#x7ED3;&#x6784;&#xFF0C;&#x7136;&#x540E;harbor&#x63D0;&#x4F9B;&#x955C;&#x50CF;&#x4ED3;&#x5E93;&#xFF0C;&#x518D;&#x52A0;&#x4E0A;&#x4E91;&#x4F9B;&#x5E94;&#x5546;&#x548C;&#x8EAB;&#x4EFD;&#x8BA4;&#x8BC1;&#x7684;&#x4F9B;&#x5E94;&#x5546;&#xFF0C;&#x8FD9;&#x6837;&#x5C31;&#x6784;&#x6210;&#x4E86;&#x5E95;&#x5C42;&#x670D;&#x52A1;&#xFF1B;</li>
+</ul>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/cloud-native/kubernetes/09_k8s_deployment%E4%B8%8Eservice%E8%B5%84%E6%BA%90%E4%BB%8B%E7%BB%8D%EF%BC%88pod%E7%9A%84%E5%88%9B%E5%BB%BA%E4%B8%8E%E7%BD%91%E7%BB%9C%E8%AE%BF%E9%97%AE%EF%BC%89/#more" rel="contents">
+                Read more &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+    
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+    <div>
+        
+     </div>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://example.com/cloud-native/kubernetes/10_k8s_%E6%8C%81%E4%B9%85%E5%8C%96%E5%AD%98%E5%82%A8%E4%B8%8Econfigmap%E8%B5%84%E6%BA%90%E4%BB%8B%E7%BB%8D%EF%BC%88pod%E7%9A%84%E6%95%B0%E6%8D%AE%E5%AD%98%E5%82%A8%E4%B8%8E%E9%85%8D%E7%BD%AE%E7%AE%A1%E7%90%86%EF%BC%89/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="Burnov">
+      <meta itemprop="description" content="No end for Learning">
+    </span>
+    
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Burnov^-^Blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/cloud-native/kubernetes/10_k8s_%E6%8C%81%E4%B9%85%E5%8C%96%E5%AD%98%E5%82%A8%E4%B8%8Econfigmap%E8%B5%84%E6%BA%90%E4%BB%8B%E7%BB%8D%EF%BC%88pod%E7%9A%84%E6%95%B0%E6%8D%AE%E5%AD%98%E5%82%A8%E4%B8%8E%E9%85%8D%E7%BD%AE%E7%AE%A1%E7%90%86%EF%BC%89/" class="post-title-link" itemprop="url">持久化存储与configmap资源介绍（pod的数据存储与配置管理）</a>
+        </h2>
+    
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+              
+    
+              <time title="Created: 2022-01-20 22:18:30 / Modified: 22:21:25" itemprop="dateCreated datePublished" datetime="2022-01-20T22:18:30+08:00">2022-01-20</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/cloud-native/" itemprop="url" rel="index"><span itemprop="name">cloud native</span></a>
+                </span>
+                  , 
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/cloud-native/kubernetes/" itemprop="url" rel="index"><span itemprop="name">kubernetes</span></a>
+                </span>
+            </span>
+    
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Valine: </span>
+    
+    <a title="valine" href="/cloud-native/kubernetes/10_k8s_%E6%8C%81%E4%B9%85%E5%8C%96%E5%AD%98%E5%82%A8%E4%B8%8Econfigmap%E8%B5%84%E6%BA%90%E4%BB%8B%E7%BB%8D%EF%BC%88pod%E7%9A%84%E6%95%B0%E6%8D%AE%E5%AD%98%E5%82%A8%E4%B8%8E%E9%85%8D%E7%BD%AE%E7%AE%A1%E7%90%86%EF%BC%89/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/cloud-native/kubernetes/10_k8s_%E6%8C%81%E4%B9%85%E5%8C%96%E5%AD%98%E5%82%A8%E4%B8%8Econfigmap%E8%B5%84%E6%BA%90%E4%BB%8B%E7%BB%8D%EF%BC%88pod%E7%9A%84%E6%95%B0%E6%8D%AE%E5%AD%98%E5%82%A8%E4%B8%8E%E9%85%8D%E7%BD%AE%E7%AE%A1%E7%90%86%EF%BC%89/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+    
+        </div>
+      </header>
+    
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+    
+      
+          <h1 id="pod&#x7684;&#x6570;&#x636E;&#x6301;&#x4E45;&#x5316;&#x4E0E;configmap&#x914D;&#x7F6E;&#x7BA1;&#x7406;"><a href="#pod&#x7684;&#x6570;&#x636E;&#x6301;&#x4E45;&#x5316;&#x4E0E;configmap&#x914D;&#x7F6E;&#x7BA1;&#x7406;" class="headerlink" title="pod&#x7684;&#x6570;&#x636E;&#x6301;&#x4E45;&#x5316;&#x4E0E;configmap&#x914D;&#x7F6E;&#x7BA1;&#x7406;"></a>pod&#x7684;&#x6570;&#x636E;&#x6301;&#x4E45;&#x5316;&#x4E0E;configmap&#x914D;&#x7F6E;&#x7BA1;&#x7406;</h1><h2 id="&#x56DE;&#x987E;service&#x7F51;&#x7EDC;&#x8D44;&#x6E90;"><a href="#&#x56DE;&#x987E;service&#x7F51;&#x7EDC;&#x8D44;&#x6E90;" class="headerlink" title="&#x56DE;&#x987E;service&#x7F51;&#x7EDC;&#x8D44;&#x6E90;"></a>&#x56DE;&#x987E;service&#x7F51;&#x7EDC;&#x8D44;&#x6E90;</h2><p>&#x5728;&#x4E4B;&#x524D;&#x6211;&#x4EEC;&#x4ECB;&#x7ECD;&#x8FC7;service&#x7684;&#x7F51;&#x7EDC;&#x8BBF;&#x95EE;&#x67B6;&#x6784;&#x3002;&#x5728;k8s&#x67B6;&#x6784;&#x4E0B;&#xFF0C;service&#x7528;&#x6765;&#x627F;&#x63A5;node&#x8282;&#x70B9;&#x6D41;&#x91CF;&#x4E0E;&#x5185;&#x90E8;&#x7684;pod&#x6D41;&#x91CF;&#xFF0C;&#x8FD9;&#x6837;&#xFF0C;service&#x8D44;&#x6E90;&#x6A21;&#x5757;&#x5C31;&#x6210;&#x4E3A;&#x4E86;&#x7F51;&#x8DEF;&#x6027;&#x80FD;&#x7684;&#x74F6;&#x9888;&#xFF0C;&#x4E3A;&#x4E86;&#x907F;&#x514D;&#x8FD9;&#x79CD;&#x73B0;&#x8C61;&#xFF0C;&#x6211;&#x4EEC;&#x53EF;&#x4EE5;&#x9009;&#x62E9;&#x901A;&#x8FC7;<strong>&#x670D;&#x52A1;&#x6CE8;&#x518C;</strong>&#x7684;&#x65B9;&#x5F0F;&#x89E3;&#x51B3;&#x8FD9;&#x4E2A;&#x95EE;&#x9898;&#xFF1B;&#x5176;&#x7F51;&#x7EDC;&#x67B6;&#x6784;&#x5982;&#x4E0B;&#x56FE;&#x6240;&#x793A;&#xFF1A;</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/cloud-native/kubernetes/10_k8s_%E6%8C%81%E4%B9%85%E5%8C%96%E5%AD%98%E5%82%A8%E4%B8%8Econfigmap%E8%B5%84%E6%BA%90%E4%BB%8B%E7%BB%8D%EF%BC%88pod%E7%9A%84%E6%95%B0%E6%8D%AE%E5%AD%98%E5%82%A8%E4%B8%8E%E9%85%8D%E7%BD%AE%E7%AE%A1%E7%90%86%EF%BC%89/#more" rel="contents">
+                Read more &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+    
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+    <div>
+        
+     </div>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://example.com/cloud-native/kubernetes/11_k8s_%E4%BD%BF%E7%94%A8%E5%AD%98%E5%82%A8%E6%8E%A2%E9%92%88%E5%92%8C%E5%B0%B1%E7%BB%AA%E6%8E%A2%E9%92%88%E4%B8%BApod%E6%9C%8D%E5%8A%A1%E8%BF%9B%E8%A1%8C%E6%8E%A2%E6%B5%8B%EF%BC%88pod%E7%9A%84%E7%9B%91%E6%8E%A7%EF%BC%89/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="Burnov">
+      <meta itemprop="description" content="No end for Learning">
+    </span>
+    
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Burnov^-^Blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/cloud-native/kubernetes/11_k8s_%E4%BD%BF%E7%94%A8%E5%AD%98%E5%82%A8%E6%8E%A2%E9%92%88%E5%92%8C%E5%B0%B1%E7%BB%AA%E6%8E%A2%E9%92%88%E4%B8%BApod%E6%9C%8D%E5%8A%A1%E8%BF%9B%E8%A1%8C%E6%8E%A2%E6%B5%8B%EF%BC%88pod%E7%9A%84%E7%9B%91%E6%8E%A7%EF%BC%89/" class="post-title-link" itemprop="url">存储探针和就绪探针介绍（pod的监控与恢复）</a>
+        </h2>
+    
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+              
+    
+              <time title="Created: 2022-01-20 22:18:30 / Modified: 22:24:36" itemprop="dateCreated datePublished" datetime="2022-01-20T22:18:30+08:00">2022-01-20</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/cloud-native/" itemprop="url" rel="index"><span itemprop="name">cloud native</span></a>
+                </span>
+                  , 
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/cloud-native/kubernetes/" itemprop="url" rel="index"><span itemprop="name">kubernetes</span></a>
+                </span>
+            </span>
+    
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Valine: </span>
+    
+    <a title="valine" href="/cloud-native/kubernetes/11_k8s_%E4%BD%BF%E7%94%A8%E5%AD%98%E5%82%A8%E6%8E%A2%E9%92%88%E5%92%8C%E5%B0%B1%E7%BB%AA%E6%8E%A2%E9%92%88%E4%B8%BApod%E6%9C%8D%E5%8A%A1%E8%BF%9B%E8%A1%8C%E6%8E%A2%E6%B5%8B%EF%BC%88pod%E7%9A%84%E7%9B%91%E6%8E%A7%EF%BC%89/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/cloud-native/kubernetes/11_k8s_%E4%BD%BF%E7%94%A8%E5%AD%98%E5%82%A8%E6%8E%A2%E9%92%88%E5%92%8C%E5%B0%B1%E7%BB%AA%E6%8E%A2%E9%92%88%E4%B8%BApod%E6%9C%8D%E5%8A%A1%E8%BF%9B%E8%A1%8C%E6%8E%A2%E6%B5%8B%EF%BC%88pod%E7%9A%84%E7%9B%91%E6%8E%A7%EF%BC%89/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+    
+        </div>
+      </header>
+    
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+    
+      
+          <h1 id="&#x4F7F;&#x7528;&#x5B58;&#x50A8;&#x63A2;&#x9488;&#x548C;&#x5C31;&#x7EEA;&#x63A2;&#x9488;&#x4E3A;pod&#x670D;&#x52A1;&#x8FDB;&#x884C;&#x63A2;&#x6D4B;&#xFF08;pod&#x7684;&#x76D1;&#x63A7;&#xFF09;"><a href="#&#x4F7F;&#x7528;&#x5B58;&#x50A8;&#x63A2;&#x9488;&#x548C;&#x5C31;&#x7EEA;&#x63A2;&#x9488;&#x4E3A;pod&#x670D;&#x52A1;&#x8FDB;&#x884C;&#x63A2;&#x6D4B;&#xFF08;pod&#x7684;&#x76D1;&#x63A7;&#xFF09;" class="headerlink" title="&#x4F7F;&#x7528;&#x5B58;&#x50A8;&#x63A2;&#x9488;&#x548C;&#x5C31;&#x7EEA;&#x63A2;&#x9488;&#x4E3A;pod&#x670D;&#x52A1;&#x8FDB;&#x884C;&#x63A2;&#x6D4B;&#xFF08;pod&#x7684;&#x76D1;&#x63A7;&#xFF09;"></a>&#x4F7F;&#x7528;&#x5B58;&#x50A8;&#x63A2;&#x9488;&#x548C;&#x5C31;&#x7EEA;&#x63A2;&#x9488;&#x4E3A;pod&#x670D;&#x52A1;&#x8FDB;&#x884C;&#x63A2;&#x6D4B;&#xFF08;pod&#x7684;&#x76D1;&#x63A7;&#xFF09;</h1><h2 id="pod&#x7684;&#x72B6;&#x6001;&#x4ECB;&#x7ECD;"><a href="#pod&#x7684;&#x72B6;&#x6001;&#x4ECB;&#x7ECD;" class="headerlink" title="pod&#x7684;&#x72B6;&#x6001;&#x4ECB;&#x7ECD;"></a>pod&#x7684;&#x72B6;&#x6001;&#x4ECB;&#x7ECD;</h2><p>pod&#x7684;&#x751F;&#x547D;&#x5468;&#x671F;&#x4ECB;&#x7ECD;&#xFF1A;<a target="_blank" rel="noopener" href="https://kubernetes.io/zh/docs/concepts/workloads/pods/pod-lifecycle/">https://kubernetes.io/zh/docs/concepts/workloads/pods/pod-lifecycle/</a></p>
+<p><img src="/cloud-native/kubernetes/11_k8s_%E4%BD%BF%E7%94%A8%E5%AD%98%E5%82%A8%E6%8E%A2%E9%92%88%E5%92%8C%E5%B0%B1%E7%BB%AA%E6%8E%A2%E9%92%88%E4%B8%BApod%E6%9C%8D%E5%8A%A1%E8%BF%9B%E8%A1%8C%E6%8E%A2%E6%B5%8B%EF%BC%88pod%E7%9A%84%E7%9B%91%E6%8E%A7%EF%BC%89/1642658776002.png" alt="&#x72B6;&#x6001;&#x53D8;&#x5316;&#x8FC7;&#x7A0B;"></p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/cloud-native/kubernetes/11_k8s_%E4%BD%BF%E7%94%A8%E5%AD%98%E5%82%A8%E6%8E%A2%E9%92%88%E5%92%8C%E5%B0%B1%E7%BB%AA%E6%8E%A2%E9%92%88%E4%B8%BApod%E6%9C%8D%E5%8A%A1%E8%BF%9B%E8%A1%8C%E6%8E%A2%E6%B5%8B%EF%BC%88pod%E7%9A%84%E7%9B%91%E6%8E%A7%EF%BC%89/#more" rel="contents">
+                Read more &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+    
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+    <div>
+        
+     </div>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
     <link itemprop="mainEntityOfPage" href="http://example.com/cloud-native/kubernetes/04_k8s_k8s%E5%AE%89%E8%A3%85%E5%90%8E%E7%BB%AD%EF%BC%88corednsdashboard%E9%83%A8%E7%BD%B2%EF%BC%89/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -412,7 +704,7 @@
               <span class="post-meta-item-text">Posted on</span>
               
     
-              <time title="Created: 2022-01-18 15:32:50 / Modified: 15:33:11" itemprop="dateCreated datePublished" datetime="2022-01-18T15:32:50+08:00">2022-01-18</time>
+              <time title="Created: 2022-01-18 15:32:50 / Modified: 18:47:54" itemprop="dateCreated datePublished" datetime="2022-01-18T15:32:50+08:00">2022-01-18</time>
             </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -455,84 +747,14 @@
       
           <h1 id="kubernetes&#x96C6;&#x7FA4;&#x7684;&#x7EF4;&#x62A4;"><a href="#kubernetes&#x96C6;&#x7FA4;&#x7684;&#x7EF4;&#x62A4;" class="headerlink" title="kubernetes&#x96C6;&#x7FA4;&#x7684;&#x7EF4;&#x62A4;"></a>kubernetes&#x96C6;&#x7FA4;&#x7684;&#x7EF4;&#x62A4;</h1><h2 id="&#x6DFB;&#x52A0;&#x4E0E;&#x5220;&#x9664;master&#x8282;&#x70B9;"><a href="#&#x6DFB;&#x52A0;&#x4E0E;&#x5220;&#x9664;master&#x8282;&#x70B9;" class="headerlink" title="&#x6DFB;&#x52A0;&#x4E0E;&#x5220;&#x9664;master&#x8282;&#x70B9;"></a>&#x6DFB;&#x52A0;&#x4E0E;&#x5220;&#x9664;master&#x8282;&#x70B9;</h2><h3 id="&#x6DFB;&#x52A0;master"><a href="#&#x6DFB;&#x52A0;master" class="headerlink" title="&#x6DFB;&#x52A0;master"></a>&#x6DFB;&#x52A0;master</h3><p>&#x5F53;&#x524D;&#x7684;&#x8282;&#x70B9;&#x73B0;&#x72B6;&#x662F;&#x4E24;&#x4E2A;master&#x4E24;&#x4E2A;node&#x8282;&#x70B9;</p>
 <p><img src="/cloud-native/kubernetes/07_k8s_k8s%E9%9B%86%E7%BE%A4%E7%BB%B4%E6%8A%A4/image-20220112132059673.png" alt="&#x5F53;&#x524D;&#x8282;&#x70B9;&#x73B0;&#x72B6;"></p>
-<p>&#x6211;&#x4EEC;&#x53EF;&#x4EE5;&#x6DFB;&#x52A0;master&#x8282;&#x70B9;&#x3002;&#x5728;&#x4E4B;&#x524D;&#x7684;&#x914D;&#x7F6E;&#x4E2D;&#xFF0C;&#x6211;&#x4EEC;&#x5728;hosts&#x6587;&#x4EF6;&#x4E2D;&#x6307;&#x5B9A;&#x4E86;master&#x8282;&#x70B9;&#x6570;&#x91CF;&#x4E86;&#x7684;&#x3002;</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">cat clusters/k8s-01/hosts  # &#x67E5;&#x770B;&#x4E4B;&#x524D;&#x914D;&#x7F6E;&#x7684;&#x96C6;&#x7FA4;&#x8282;&#x70B9;</span><br><span class="line">[kube_master]</span><br><span class="line">192.168.169.20</span><br><span class="line">192.168.169.21</span><br><span class="line"><span class="meta"></span></span><br><span class="line"><span class="meta">#</span><span class="bash"> &#x8FD9;&#x91CC;&#x8981;&#x6CE8;&#x610F;&#x7684;&#x662F;&#xFF0C;&#x6211;&#x4EEC;&#x4E0D;&#x4F1A;&#x76F4;&#x63A5;&#x5728;&#x8FD9;&#x91CC;&#x9762;&#x52A0;&#x8282;&#x70B9;&#xFF0C;&#x800C;&#x662F;&#x901A;&#x8FC7;</span></span><br><span class="line">./ezctl add-master  # &#x6765;&#x6DFB;&#x52A0;&#x8282;&#x70B9;</span><br></pre></td></tr></table></figure>
-
-<p>&#x6DFB;&#x52A0;master&#x8282;&#x70B9;</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./ezctl add-master k8s-01 192.168.169.22  # &#x6307;&#x5B9A;k8s&#x96C6;&#x7FA4;&#xFF0C;&#x52A0;&#x5165;master&#x8282;&#x70B9;&#xFF1B;</span><br></pre></td></tr></table></figure>
-
-<blockquote>
-<p>&#x6CE8;&#x610F;&#xFF1A;&#x5982;&#x679C;&#x662F;kubeadm&#x7684;&#x8BDD;&#xFF0C;&#x5C31;&#x4F7F;&#x7528;kubeadm join&#x5C31;&#x80FD;&#x6DFB;&#x52A0;&#x4E86;&#xFF1B;&#x5982;&#x679C;&#x662F;&#x4E8C;&#x8FDB;&#x5236;&#x5B89;&#x88C5;&#x5C31;&#x4F1A;&#x9EBB;&#x70E6;&#x4E00;&#x70B9;&#xFF1B;</p>
-</blockquote>
-<p>&#x5B89;&#x88C5;&#x5B8C;&#x6210;&#x4E86;&#x4EE5;&#x540E;&#xFF0C;node&#x8282;&#x70B9;&#x4E0A;&#x9762;&#x7684;kube-lb&#x6587;&#x4EF6;&#x5C31;&#x4F1A;&#x91CD;&#x65B0;&#x751F;&#x6210;&#xFF1B;</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">ll /etc/kube-lb/conf/kube-lb.conf  # &#x8FD9;&#x91CC;&#x4F1A;&#x65B0;&#x751F;&#x6210;&#x4E00;&#x4E2A;&#x65B0;&#x7684;&#x6587;&#x4EF6;&#xFF0C;&#x6307;&#x5B9A;&#x4E3A;&#x4E09;&#x4E2A;&#x8282;&#x70B9;&#x7684;&#x8D1F;&#x8F7D;&#x5747;&#x8861;</span><br><span class="line"><span class="meta">#</span><span class="bash"> &#x6211;&#x8FD9;&#x91CC;&#x6CA1;&#x6709;&#x627E;&#x5230;&#x8FD9;&#x4E2A;&#x6587;&#x4EF6;&#xFF0C;&#x5E94;&#x8BE5;&#x662F;&#x524D;&#x9762;&#x6CA1;&#x6709;&#x914D;&#x7F6E;&#x597D;</span></span><br><span class="line"><span class="meta"></span></span><br><span class="line"><span class="meta">#</span><span class="bash"> &#x518D;&#x6B21;&#x67E5;&#x770B;node&#x8282;&#x70B9;&#x6570;</span></span><br><span class="line">kubectl get nodes  # &#x8FD9;&#x91CC;&#x5C31;&#x53EF;&#x4EE5;&#x770B;&#x5230;master&#x8282;&#x70B9;&#x6DFB;&#x52A0;&#x6210;&#x529F;&#x4E86;</span><br></pre></td></tr></table></figure>
-
-<p><img src="/cloud-native/kubernetes/07_k8s_k8s%E9%9B%86%E7%BE%A4%E7%BB%B4%E6%8A%A4/image-20220112135816494.png" alt="master&#x6DFB;&#x52A0;&#x6210;&#x529F;&#x4EE5;&#x540E;"></p>
-<h3 id="&#x5220;&#x9664;master"><a href="#&#x5220;&#x9664;master" class="headerlink" title="&#x5220;&#x9664;master"></a>&#x5220;&#x9664;master</h3><p>&#x5220;&#x9664;&#x5F88;&#x5C11;&#x505A;&#xFF0C;&#x4F46;&#x662F;&#x5982;&#x679C;&#x670D;&#x52A1;&#x5668;&#x574F;&#x4E86;&#x6216;&#x8005;&#x8FC7;&#x4FDD;&#x4E86;&#xFF0C;&#x5C31;&#x4F1A;&#x9009;&#x62E9;&#x5220;&#x9664;&#x8282;&#x70B9;&#xFF1B;&#x5220;&#x9664;master&#x8282;&#x70B9;&#x7684;&#x65F6;&#x5019;&#xFF1A;<strong>1&#x3001;&#x5148;&#x8981;&#x9A71;&#x9010;pod&#xFF1B;2&#x3001;&#x518D;&#x505A;&#x670D;&#x52A1;&#x5668;&#x4E0B;&#x7EBF;&#xFF1B;</strong></p>
-<p>&#x56E0;&#x4E3A;&#x5982;&#x679C;&#x76F4;&#x63A5;&#x5220;&#xFF0C;&#x5B83;&#x4F1A;&#x7B49;&#x5F85;&#x4E00;&#x6BB5;&#x4E8B;&#x4EF6;&#x624D;&#x4F1A;&#x5728;&#x522B;&#x7684;&#x8282;&#x70B9;&#x4E0A;&#x9762;&#x91CD;&#x5EFA;&#xFF0C;&#x56E0;&#x4E3A;&#x6709;5&#x5206;&#x591A;&#x949F;&#x7684;&#x53D1;&#x73B0;&#x65F6;&#x957F;&#xFF1B;</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./ezctl del-master k8s-01 192.168.169.22  # &#x5148;&#x5B9E;&#x73B0;pod&#x9A71;&#x9010;&#xFF0C;&#x5728;&#x4E0B;&#x7EBF;master</span><br></pre></td></tr></table></figure>
-
-<h2 id="&#x6DFB;&#x52A0;&#x4E0E;&#x5220;&#x9664;node&#x8282;&#x70B9;"><a href="#&#x6DFB;&#x52A0;&#x4E0E;&#x5220;&#x9664;node&#x8282;&#x70B9;" class="headerlink" title="&#x6DFB;&#x52A0;&#x4E0E;&#x5220;&#x9664;node&#x8282;&#x70B9;"></a>&#x6DFB;&#x52A0;&#x4E0E;&#x5220;&#x9664;node&#x8282;&#x70B9;</h2><h3 id="&#x6DFB;&#x52A0;node"><a href="#&#x6DFB;&#x52A0;node" class="headerlink" title="&#x6DFB;&#x52A0;node"></a>&#x6DFB;&#x52A0;node</h3><p>&#x6DFB;&#x52A0;node&#x8282;&#x70B9;&#x548C;master&#x8282;&#x70B9;&#x4E00;&#x6837;&#xFF0C;&#x6211;&#x4EEC;&#x4F7F;&#x7528;ezctl&#x547D;&#x4EE4;&#x80FD;&#x591F;&#x6DFB;&#x52A0;&#x5230;k8s&#x96C6;&#x7FA4;&#x4E2D;&#x6765;&#xFF1B;</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">./ezctl add-node k8s-01 192.168.169.22  # &#x6DFB;&#x52A0;node&#x8282;&#x70B9;</span><br><span class="line"><span class="meta">#</span><span class="bash"> &#x8FD9;&#x91CC;&#x8981;&#x6CE8;&#x610F;&#xFF0C;&#x4E24;&#x4E2A;&#x8282;&#x70B9;&#x4E0D;&#x80FD;&#x540C;&#x65F6;&#x79F0;&#x4E3A;master&#x548C;node&#x3002;&#x56E0;&#x4E3A;&#x901A;&#x8FC7;ezctl&#x5DE5;&#x5177;&#x914D;&#x7F6E;&#x7684;&#x65F6;&#x5019;&#xFF0C;&#x4F1A;&#x6700;&#x65B0;&#x7684;&#x914D;&#x7F6E;&#x4F1A;&#x8986;&#x76D6;&#x4E4B;&#x524D;&#x7684;&#x914D;&#x7F6E;&#xFF1B;</span></span><br></pre></td></tr></table></figure>
-
-<h3 id="&#x5220;&#x9664;node"><a href="#&#x5220;&#x9664;node" class="headerlink" title="&#x5220;&#x9664;node"></a>&#x5220;&#x9664;node</h3><p>&#x5220;&#x9664;node&#x8282;&#x70B9;&#x7684;&#x64CD;&#x4F5C;&#x548C;&#x5220;&#x9664;master&#x8282;&#x70B9;&#x7684;&#x64CD;&#x4F5C;&#x57FA;&#x672C;&#x4E00;&#x81F4;&#xFF1B;&#x5148;&#x9A71;&#x9010;&#x3001;&#x5728;&#x4E0B;&#x7EBF;&#xFF1B;</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./ezctl del-node 192.168.169.22  # ezctl&#x4F1A;&#x81EA;&#x52A8;&#x505A;&#x9A71;&#x9010;&#xFF0C;&#x80FD;&#x591F;&#x652F;&#x6301;&#x5F3A;&#x5236;&#x9A71;&#x9010;</span><br></pre></td></tr></table></figure>
-
-<p>&#x5982;&#x679C;&#x662F;<strong>&#x624B;&#x52A8;&#x9A71;&#x9010;</strong>&#x7684;&#x8BDD;&#xFF0C;kubectl&#x63D0;&#x4F9B;&#x4E86;drain&#x547D;&#x4EE4;&#xFF1B;</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">kubectl drain 192.168.169.22  # &#x9A71;&#x9010;pod</span><br><span class="line"><span class="meta">#</span><span class="bash"> --ignore-daemonsets  &#x5FFD;&#x7565;&#x6389;&#x6709;&#x4E9B;pod</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> --delete-emptydir-data  &#x5220;&#x9664;&#x672C;&#x5730;&#x5B58;&#x50A8;&#x7684;&#x6570;&#x636E;</span></span><br><span class="line">kubectl drain 192.168.169.22 --ignore-daemonsets --delete-emptydir-data  # &#x8FD9;&#x6837;&#x624D;&#x80FD;&#x9A71;&#x9010;pod</span><br><span class="line"><span class="meta"></span></span><br><span class="line"><span class="meta">#</span><span class="bash"> &#x7136;&#x540E;&#x518D;&#x5220;&#x9664;&#x8282;&#x70B9;&#x5373;&#x53EF;</span></span><br><span class="line">kubectl delete node 192.168.169.22</span><br><span class="line"><span class="meta"></span></span><br><span class="line"><span class="meta">#</span><span class="bash"> &#x6700;&#x540E;&#xFF0C;&#x9700;&#x8981;&#x53BB;&#x5230;hosts&#x6587;&#x4EF6;&#x4E2D;&#x5220;&#x9664;&#x8FD9;&#x4E2A;&#x8282;&#x70B9;</span></span><br><span class="line">vim k8s-01/hosts</span><br><span class="line">[kube_node]</span><br><span class="line">192.168.169.23</span><br><span class="line">192.168.169.24</span><br><span class="line"><span class="meta">#</span><span class="bash"> &#x4FDD;&#x5B58;&#x5E76;&#x9000;&#x51FA;&#x5373;&#x53EF;</span></span><br></pre></td></tr></table></figure>
-
-<h2 id="&#x5347;&#x7EA7;master&#x4E0E;node&#x8282;&#x70B9;"><a href="#&#x5347;&#x7EA7;master&#x4E0E;node&#x8282;&#x70B9;" class="headerlink" title="&#x5347;&#x7EA7;master&#x4E0E;node&#x8282;&#x70B9;"></a>&#x5347;&#x7EA7;master&#x4E0E;node&#x8282;&#x70B9;</h2><p>&#x5347;&#x7EA7;&#x7684;&#x65F6;&#x5019;&#x7ECF;&#x91CF;&#x4E0D;&#x8981;&#x8DE8;&#x5927;&#x7248;&#x672C;&#x5347;&#x7EA7;&#xFF0C;&#x5C0F;&#x7248;&#x672C;&#x53EF;&#x4EE5;&#x5347;&#x7EA7;&#xFF0C;&#x5927;&#x7248;&#x672C;&#x6700;&#x597D;&#x80FD;&#x591F;&#x80FD;&#x5148;&#x6D4B;&#x8BD5;&#x597D;&#xFF1B;&#x6211;&#x4EEC;&#x8FD9;&#x91CC;&#x4ECE;1.22.2&#x5347;&#x7EA7;&#x5230;1.22.5&#x5C31;&#x884C;&#x4E86;&#x3002;&#x4E4B;&#x524D;&#x6211;&#x4EEC;&#x5DF2;&#x7ECF;&#x62F7;&#x8D1D;&#x4E86;&#x5347;&#x7EA7;&#x6587;&#x4EF6;&#xFF1B;</p>
-<p><img src="/cloud-native/kubernetes/07_k8s_k8s%E9%9B%86%E7%BE%A4%E7%BB%B4%E6%8A%A4/image-20220112143117277.png" alt="&#x5347;&#x7EA7;&#x9700;&#x8981;&#x7684;&#x4E8C;&#x8FDB;&#x5236;&#x6587;&#x4EF6;"></p>
-<p>&#x8FD9;&#x91CC;&#x6709;&#x6211;&#x4EEC;&#x9700;&#x8981;&#x5347;&#x7EA7;&#x7684;&#x4E8C;&#x8FDB;&#x5236;&#x6587;&#x4EF6;&#xFF1B;&#x4E00;&#x822C;&#x60C5;&#x51B5;&#x4E0B;master&#x4F1A;&#x53CA;&#x5148;&#x5347;&#x7EA7;&#xFF0C;&#x6211;&#x4EEC;&#x901A;&#x8FC7;kube&#x52A0;tab&#x952E;&#x5C31;&#x53EF;&#x4EE5;&#x770B;&#x5230;&#x8981;&#x5347;&#x7EA7;&#x7684;&#x670D;&#x52A1;&#xFF1A;</p>
-<p><img src="/cloud-native/kubernetes/07_k8s_k8s%E9%9B%86%E7%BE%A4%E7%BB%B4%E6%8A%A4/image-20220112143302214.png" alt="master&#x9700;&#x8981;&#x5347;&#x7EA7;&#x7684;&#x6A21;&#x5757;"></p>
-<p>&#x5176;&#x4E2D;&#xFF0C;kube-apiserver&#x3001;kube-proxy&#x3001;kube-controller-manager&#x3001;kubelet&#x3001;kube-scheduler&#x662F;&#x90FD;&#x6709;&#x670D;&#x52A1;&#x7684;&#xFF0C;&#x5BF9;&#x4E8E;&#x8FD9;&#x4E9B;&#x6709;&#x670D;&#x52A1;&#x7684;&#x7EC4;&#x4EF6;&#xFF0C;&#x6211;&#x4EEC;&#x90FD;&#x9700;&#x8981;&#x5148;&#x505C;&#x6B62;&#x8FD9;&#x4E9B;&#x670D;&#x52A1;&#x7684;&#x8FD0;&#x884C;&#xFF0C;&#x624D;&#x80FD;&#x8FDB;&#x884C;&#x5347;&#x7EA7;&#x64CD;&#x4F5C;&#xFF1B;</p>
-<p>&#x5347;&#x7EA7;&#x7684;&#x65F6;&#x5019;&#xFF0C;&#x4E00;&#x822C;&#x5148;&#x5347;&#x7EA7;maste&#x8282;&#x70B9;&#xFF0C;&#x7136;&#x540E;&#x518D;&#x5347;&#x7EA7;node&#x8282;&#x70B9;&#xFF0C;&#x6211;&#x4EEC;&#x518D;node&#x8282;&#x70B9;&#x4E0A;&#x8F93;&#x5165;kube&#x52A0;tab&#x952E;&#xFF0C;&#x5C31;&#x80FD;&#x770B;&#x5230;node&#x9700;&#x8981;&#x5347;&#x7EA7;&#x7684;&#x7EC4;&#x4EF6;&#xFF1A;</p>
-<p><img src="/cloud-native/kubernetes/07_k8s_k8s%E9%9B%86%E7%BE%A4%E7%BB%B4%E6%8A%A4/image-20220112143632189.png" alt="node&#x7EC4;&#x4EF6;"></p>
-<blockquote>
-<p>&#x6CE8;&#x610F;&#xFF1A;&#x5347;&#x7EA7;&#x7684;&#x65F6;&#x5019;&#x4E0D;&#x8981;&#x4E00;&#x8D77;&#x5347;&#x7EA7;&#xFF0C;&#x8981;&#x4E00;&#x4E2A;&#x4E00;&#x4E2A;&#x5347;&#x7EA7;&#xFF1B;</p>
-</blockquote>
-<ul>
-<li>master&#x5347;&#x7EA7;&#x8FC7;&#x7A0B;</li>
-</ul>
-<p>&#x7B2C;&#x4E00;&#x6B65;&#x3001;&#x9996;&#x5148;&#x5728;haproxy&#x4E2D;&#x505C;&#x6B62;&#x8D1F;&#x8F7D;&#x8C03;&#x5EA6;&#xFF0C;&#x8FD9;&#x6837;&#x907F;&#x514D;&#x5728;&#x5347;&#x7EA7;&#x7684;&#x8FC7;&#x7A0B;&#x4E2D;&#x5C06;&#x8D44;&#x6E90;&#x8C03;&#x5EA6;&#x5230;&#x5347;&#x7EA7;&#x7684;&#x8282;&#x70B9;&#x4E0A;&#x53BB;&#xFF1B;</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">vim /etc/haproxy/haproxy.cfg</span><br><span class="line"><span class="meta">#</span><span class="bash"> server 192.168.169.22 192.168.169.22:6443 check inter 2s fall 3 rise 3</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> &#x5C06;&#x5176;&#x6CE8;&#x91CA;&#x6389;&#xFF0C;&#x7136;&#x540E;&#x4FDD;&#x5B58;&#x5E76;&#x9000;&#x51FA;</span></span><br><span class="line"><span class="meta"></span></span><br><span class="line"><span class="meta">#</span><span class="bash"> &#x91CD;&#x542F;&#x4E00;&#x4E0B;&#x670D;&#x52A1;</span></span><br><span class="line">systemctl reload haproxy  # &#x8FD9;&#x6837;&#x5C31;&#x53EF;&#x4EE5;&#x53BB;&#x5347;&#x7EA7;&#x4E86;</span><br></pre></td></tr></table></figure>
-
-<p><img src="/cloud-native/kubernetes/07_k8s_k8s%E9%9B%86%E7%BE%A4%E7%BB%B4%E6%8A%A4/image-20220112150315032.png" alt="&#x4E0B;&#x7EBF;&#x5347;&#x7EA7;&#x8282;&#x70B9;"></p>
-<p>&#x7136;&#x540E;&#x91CD;&#x542F;&#x4E00;&#x4E0B;/etc/kube-lb/conf/kube-lb.conf&#x7684;&#x670D;&#x52A1;&#xFF0C;&#x8FD9;&#x6837;&#x7684;&#x8BDD;&#x6307;&#x5B9A;&#x7684;node&#x8282;&#x70B9;&#x5C31;&#x4F1A;&#x4E0B;&#x7EBF;&#x4E86;&#xFF1B;</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">systemctl restart kube-lb  # &#x6BCF;&#x4E2A;&#x8282;&#x70B9;&#x90FD;&#x9700;&#x8981;&#x8FD9;&#x4E48;&#x505A;&#x4E00;&#x4E0B;</span><br></pre></td></tr></table></figure>
-
-<p>&#x7B2C;&#x4E8C;&#x6B65;&#x3001;&#x505C;&#x6B62;&#x670D;&#x52A1;</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> &#x53BB;&#x5230;192.168.169.22&#x7684;master&#x8282;&#x70B9;&#x4E0A;&#x9762;&#x6765;&#x5347;&#x7EA7;</span></span><br><span class="line">systemctl stop kube-apiserver kube-controller-manager kubelet kube-proxy kube-scheduler</span><br></pre></td></tr></table></figure>
-
-<p>&#x7B2C;&#x4E09;&#x6B65;&#x3001;&#x5347;&#x7EA7;&#x64CD;&#x4F5C;</p>
-<p>&#x5C06;&#x4E8C;&#x8FDB;&#x5236;&#x6587;&#x4EF6;&#x5168;&#x90E8;&#x62F7;&#x8D1D;&#x8FC7;&#x53BB;&#xFF1B;</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">cd /usr/local/src/tools/kubernetes/server/bin</span><br><span class="line"><span class="meta"></span></span><br><span class="line"><span class="meta">#</span><span class="bash"> &#x62F7;&#x8D1D;&#x6587;&#x4EF6;</span></span><br><span class="line">scp kube-apiserver kube-controller-manager kubelet kube-proxy kube-scheduler 192.168.169.22:/usr/bin</span><br><span class="line"><span class="meta"></span></span><br><span class="line"><span class="meta">#</span><span class="bash"> &#x7136;&#x540E;&#x518D;&#x542F;&#x52A8;&#x670D;&#x52A1;&#x5C31;&#x53EF;&#x4EE5;&#x4E86;</span></span><br><span class="line">systemctl start kube-apiserver kube-controller-manager kubelet kube-proxy kube-scheduler</span><br></pre></td></tr></table></figure>
-
-<p>&#x67E5;&#x770B;&#x5347;&#x7EA7;&#x7248;&#x672C;</p>
-<p><img src="/cloud-native/kubernetes/07_k8s_k8s%E9%9B%86%E7%BE%A4%E7%BB%B4%E6%8A%A4/image-20220112151136971.png" alt="&#x5347;&#x7EA7;&#x540E;&#x7684;&#x7248;&#x672C;"></p>
-<p>&#x8FD9;&#x91CC;&#x6211;&#x4EEC;&#x7684;192.168.169.22&#x7684;&#x7248;&#x672C;&#x5C31;&#x53EF;&#x4EE5;&#x5347;&#x7EA7;&#x4E3A;v1.22.5&#x7248;&#x672C;&#x4E86;&#xFF1B;</p>
-<p>&#x8FD9;&#x6837;&#x5C31;&#x53EF;&#x4EE5;&#x5F00;&#x59CB;&#x6309;&#x7167;&#x8FD9;&#x79CD;&#x987A;&#x5E8F;&#x4F9D;&#x6B21;&#x518D;&#x5C06;192.168.169.20&#x548C;192.168.169.21&#x8FDB;&#x884C;&#x5347;&#x7EA7;&#x4E86;&#xFF1B;&#x5982;&#x679C;&#x662F;&#x9879;&#x76EE;&#x4E0A;&#x9762;&#x9700;&#x8981;&#x5347;&#x7EA7;&#x7684;master&#x8282;&#x70B9;&#x6BD4;&#x8F83;&#x591A;&#xFF0C;&#x8FD9;&#x91CC;&#x5C31;&#x9700;&#x8981;&#x4F60;&#x5199;shell&#x811A;&#x672C;&#x6765;&#x6279;&#x91CF;&#x5B8C;&#x6210;&#x5347;&#x7EA7;&#x7684;&#x64CD;&#x4F5C;&#x4E86;&#xFF01;&#x6216;&#x8005;&#x901A;&#x8FC7;ansible&#x6765;&#x5B8C;&#x6210;&#x8FD9;&#x4E9B;&#x64CD;&#x4F5C;&#xFF1B;</p>
-<ul>
-<li>node&#x8282;&#x70B9;&#x5347;&#x7EA7;&#x8FC7;&#x7A0B;</li>
-</ul>
-<p>&#x7B2C;&#x4E00;&#x6B65;&#x3001;&#x5173;&#x95ED;node&#x8282;&#x70B9;&#x4E0A;&#x7684;&#x670D;&#x52A1;</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> &#x5728;192.168.169.24&#x8282;&#x70B9;&#x4E0A;&#x505C;&#x6B62;&#x670D;&#x52A1;</span></span><br><span class="line">systemctl stop kubelet kube-proxy</span><br></pre></td></tr></table></figure>
-
-<p>&#x7B2C;&#x4E8C;&#x6B65;&#x3001;&#x62F7;&#x8D1D;&#x6587;&#x4EF6;&#x5230;node&#x8282;&#x70B9;</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">cd /usr/local/src/tools/kubernetes/server/bin</span><br><span class="line">scp kubectl kubelet kube-proxy 192.168.169.24:/usr/bin</span><br></pre></td></tr></table></figure>
-
-<p>&#x7B2C;&#x4E09;&#x6B65;&#x3001;&#x542F;&#x52A8;&#x670D;&#x52A1;</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> &#x518D;&#x5728;&#x8BE5;&#x8282;&#x70B9;&#x4E0A;&#x542F;&#x52A8;&#x670D;&#x52A1;</span></span><br><span class="line">systemctl start kubelet kube-proxy</span><br></pre></td></tr></table></figure>
-
-<p>&#x67E5;&#x770B;&#x5347;&#x7EA7;&#x4EE5;&#x540E;&#x7684;&#x7248;&#x672C;</p>
-<p><img src="/cloud-native/kubernetes/07_k8s_k8s%E9%9B%86%E7%BE%A4%E7%BB%B4%E6%8A%A4/image-20220112152944000.png" alt="node&#x8282;&#x70B9;&#x5347;&#x7EA7;&#x540E;&#x6548;&#x679C;"></p>
-<p>&#x7136;&#x540E;&#x6309;&#x7167;&#x8FD9;&#x6837;&#x7684;&#x64CD;&#x4F5C;&#x5C06;&#x53E6;&#x5916;&#x4E00;&#x53F0;&#x7684;node&#x8282;&#x70B9;&#x8FDB;&#x884C;&#x5347;&#x7EA7;&#x5373;&#x53EF;&#xFF1B;</p>
-<p>&#x6700;&#x540E;&#x4E0D;&#x7BA1;&#x662F;master&#x8282;&#x70B9;&#x8FD8;&#x662F;node&#x8282;&#x70B9;&#xFF0C;&#x6211;&#x4EEC;&#x90FD;&#x9700;&#x8981;&#x5C06;&#x8FD9;&#x4E9B;&#x5347;&#x7EA7;&#x7684;&#x4E8C;&#x8FDB;&#x5236;&#x6587;&#x4EF6;&#x62F7;&#x8D1D;&#x5230;kubeasz&#x6240;&#x6307;&#x5B9A;&#x7684;&#x6587;&#x4EF6;&#xFF0C;&#x8FD9;&#x6837;&#x4E4B;&#x540E;&#x518D;&#x8FDB;&#x884C;&#x6269;&#x5BB9;&#x7684;&#x65F6;&#x5019;&#xFF0C;&#x65B0;&#x52A0;&#x5165;&#x7684;master&#x6216;&#x8005;node&#x8282;&#x70B9;&#x5C31;&#x90FD;&#x80FD;&#x5B89;&#x88C5;&#x65B0;&#x7248;&#x672C;&#x4E86;&#xFF1B;</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">cd /usr/local/src/tools/kubernetes/server/bin</span><br><span class="line">cp kube-apiserver kube-controller-manager kubectl kubelet kube-proxy kube-scheduler /etc/kubeasz/bin/</span><br><span class="line"><span class="meta"></span></span><br><span class="line"><span class="meta">#</span><span class="bash"> &#x7136;&#x540E;&#x786E;&#x5176;&#x4E8C;&#x8FDB;&#x5236;&#x6587;&#x4EF6;&#x90FD;&#x662F;&#x65B0;&#x7248;&#x672C;&#x7684;&#x4E8C;&#x8FDB;&#x5236;&#x6587;&#x4EF6;</span></span><br><span class="line">cd /etc/kubeasz/bin</span><br><span class="line">./kube-apiserver --version  # &#x67E5;&#x770B;&#x7248;&#x672C;&#x53F7;</span><br></pre></td></tr></table></figure>
-
-<p><img src="/cloud-native/kubernetes/07_k8s_k8s%E9%9B%86%E7%BE%A4%E7%BB%B4%E6%8A%A4/image-20220112153138633.png" alt="&#x67E5;&#x770B;&#x65B0;&#x8282;&#x70B9;&#x7684;&#x7248;&#x672C;"></p>
-<p>&#x5230;&#x6B64;&#xFF0C;k8s&#x96C6;&#x7FA4;&#x7684;&#x57FA;&#x672C;&#x7BA1;&#x7406;&#x5C31;&#x4ECB;&#x7ECD;&#x5B8C;&#x6210;&#x4E86;&#xFF1B;</p>
-
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/cloud-native/kubernetes/07_k8s_k8s%E9%9B%86%E7%BE%A4%E7%BB%B4%E6%8A%A4/#more" rel="contents">
+                Read more &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
       
     </div>
     
@@ -976,109 +1198,6 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="http://example.com/cloud-native/kubernetes/05_k8s_kubectl%E5%91%BD%E4%BB%A4%E7%9A%84%E4%BD%BF%E7%94%A8%E4%BB%8B%E7%BB%8D/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.jpg">
-      <meta itemprop="name" content="Burnov">
-      <meta itemprop="description" content="No end for Learning">
-    </span>
-    
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Burnov^-^Blog">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/cloud-native/kubernetes/05_k8s_kubectl%E5%91%BD%E4%BB%A4%E7%9A%84%E4%BD%BF%E7%94%A8%E4%BB%8B%E7%BB%8D/" class="post-title-link" itemprop="url">kubectl命令详解</a>
-        </h2>
-    
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-    
-              <time title="Created: 2022-01-07 23:13:50" itemprop="dateCreated datePublished" datetime="2022-01-07T23:13:50+08:00">2022-01-07</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2022-01-18 15:30:54" itemprop="dateModified" datetime="2022-01-18T15:30:54+08:00">2022-01-18</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">In</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/cloud-native/" itemprop="url" rel="index"><span itemprop="name">cloud native</span></a>
-                </span>
-                  , 
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/cloud-native/kubernetes/" itemprop="url" rel="index"><span itemprop="name">kubernetes</span></a>
-                </span>
-            </span>
-    
-          
-  
-  <span class="post-meta-item">
-    
-      <span class="post-meta-item-icon">
-        <i class="far fa-comment"></i>
-      </span>
-      <span class="post-meta-item-text">Valine: </span>
-    
-    <a title="valine" href="/cloud-native/kubernetes/05_k8s_kubectl%E5%91%BD%E4%BB%A4%E7%9A%84%E4%BD%BF%E7%94%A8%E4%BB%8B%E7%BB%8D/#valine-comments" itemprop="discussionUrl">
-      <span class="post-comments-count valine-comment-count" data-xid="/cloud-native/kubernetes/05_k8s_kubectl%E5%91%BD%E4%BB%A4%E7%9A%84%E4%BD%BF%E7%94%A8%E4%BB%8B%E7%BB%8D/" itemprop="commentCount"></span>
-    </a>
-  </span>
-  
-  
-    
-        </div>
-      </header>
-    
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-    
-      
-          <h1 id="kubectl&#x547D;&#x4EE4;&#x8BE6;&#x89E3;"><a href="#kubectl&#x547D;&#x4EE4;&#x8BE6;&#x89E3;" class="headerlink" title="kubectl&#x547D;&#x4EE4;&#x8BE6;&#x89E3;"></a>kubectl&#x547D;&#x4EE4;&#x8BE6;&#x89E3;</h1><h2 id="kubectl&#x7684;&#x8BBF;&#x95EE;&#x65B9;&#x5F0F;"><a href="#kubectl&#x7684;&#x8BBF;&#x95EE;&#x65B9;&#x5F0F;" class="headerlink" title="kubectl&#x7684;&#x8BBF;&#x95EE;&#x65B9;&#x5F0F;"></a>kubectl&#x7684;&#x8BBF;&#x95EE;&#x65B9;&#x5F0F;</h2><p>&#x57FA;&#x4E8E;kubectl&#x7684;&#x547D;&#x4EE4;&#xFF0C;&#x6211;&#x4EEC;&#x90FD;&#x662F;&#x901A;&#x8FC7;api-server&#x7AEF;&#x6765;&#x8FDB;&#x884C;&#x8BBF;&#x95EE;&#x7684;&#xFF1B;</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">root@ke-ha-har-ma-et:~# cat .kube/config</span><br><span class="line"><span class="meta">#</span><span class="bash"> &#x6307;&#x5B9A;kubectl&#x6240;&#x8BF7;&#x6C42;&#x7684;&#x670D;&#x52A1;&#x5730;&#x5740;</span></span><br><span class="line">server: https://192.168.169.20:6443</span><br></pre></td></tr></table></figure>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/cloud-native/kubernetes/05_k8s_kubectl%E5%91%BD%E4%BB%A4%E7%9A%84%E4%BD%BF%E7%94%A8%E4%BB%8B%E7%BB%8D/#more" rel="contents">
-                Read more &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-    
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-    <div>
-        
-     </div>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
     <link itemprop="mainEntityOfPage" href="http://example.com/cloud-native/kubernetes/03_k8s_k8s%E9%AB%98%E6%80%A7%E8%83%BD%E9%9B%86%E7%BE%A4%E7%9A%84%E6%90%AD%E5%BB%BA/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1199,209 +1318,6 @@
   
   
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="http://example.com/development/python/01_python%E8%87%AA%E5%8A%A8%E8%BF%90%E7%BB%B4_%E5%AE%9E%E4%BE%8B%E4%B8%80%E3%80%81Python%E7%A8%8B%E5%BA%8F%E5%AE%9E%E7%8E%B0%E6%96%87%E4%BB%B6%E5%A4%8D%E5%88%B6/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.jpg">
-      <meta itemprop="name" content="Burnov">
-      <meta itemprop="description" content="No end for Learning">
-    </span>
-    
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Burnov^-^Blog">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/development/python/01_python%E8%87%AA%E5%8A%A8%E8%BF%90%E7%BB%B4_%E5%AE%9E%E4%BE%8B%E4%B8%80%E3%80%81Python%E7%A8%8B%E5%BA%8F%E5%AE%9E%E7%8E%B0%E6%96%87%E4%BB%B6%E5%A4%8D%E5%88%B6/" class="post-title-link" itemprop="url">Python程序实现文件复制</a>
-        </h2>
-    
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-              
-    
-              <time title="Created: 2022-01-07 16:51:00 / Modified: 16:56:38" itemprop="dateCreated datePublished" datetime="2022-01-07T16:51:00+08:00">2022-01-07</time>
-            </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">In</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/development/" itemprop="url" rel="index"><span itemprop="name">development</span></a>
-                </span>
-                  , 
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/development/python/" itemprop="url" rel="index"><span itemprop="name">python</span></a>
-                </span>
-            </span>
-    
-          
-  
-  <span class="post-meta-item">
-    
-      <span class="post-meta-item-icon">
-        <i class="far fa-comment"></i>
-      </span>
-      <span class="post-meta-item-text">Valine: </span>
-    
-    <a title="valine" href="/development/python/01_python%E8%87%AA%E5%8A%A8%E8%BF%90%E7%BB%B4_%E5%AE%9E%E4%BE%8B%E4%B8%80%E3%80%81Python%E7%A8%8B%E5%BA%8F%E5%AE%9E%E7%8E%B0%E6%96%87%E4%BB%B6%E5%A4%8D%E5%88%B6/#valine-comments" itemprop="discussionUrl">
-      <span class="post-comments-count valine-comment-count" data-xid="/development/python/01_python%E8%87%AA%E5%8A%A8%E8%BF%90%E7%BB%B4_%E5%AE%9E%E4%BE%8B%E4%B8%80%E3%80%81Python%E7%A8%8B%E5%BA%8F%E5%AE%9E%E7%8E%B0%E6%96%87%E4%BB%B6%E5%A4%8D%E5%88%B6/" itemprop="commentCount"></span>
-    </a>
-  </span>
-  
-  
-    
-        </div>
-      </header>
-    
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-    
-      
-          <h1 id="&#x9700;&#x6C42;"><a href="#&#x9700;&#x6C42;" class="headerlink" title="&#x9700;&#x6C42;"></a>&#x9700;&#x6C42;</h1><p>&#x8BF7;&#x7F16;&#x5199;Python&#x7A0B;&#x5E8F;&#xFF0C;&#x5B9E;&#x73B0;&#x5982;&#x4E0B;&#x529F;&#x80FD;&#x2236;</p>
-<p>&#x7A0B;&#x5E8F;&#x540D;file_cp.sh </p>
-<p>&#x7A0B;&#x5E8F;&#x9650;&#x5B9A;python&#x7248;&#x672C;&gt;=3.9 </p>
-<p>&#x8FD0;&#x884C;&#x547D;&#x4EE4;&#x2236;</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/development/python/01_python%E8%87%AA%E5%8A%A8%E8%BF%90%E7%BB%B4_%E5%AE%9E%E4%BE%8B%E4%B8%80%E3%80%81Python%E7%A8%8B%E5%BA%8F%E5%AE%9E%E7%8E%B0%E6%96%87%E4%BB%B6%E5%A4%8D%E5%88%B6/#more" rel="contents">
-                Read more &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-    
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-    <div>
-        
-     </div>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="http://example.com/cloud-native/docker/08_docker%E5%AE%B9%E5%99%A8%E6%8A%80%E6%9C%AF_%E5%AE%B9%E5%99%A8%E5%8D%B7%E5%92%8C%E7%BD%91%E7%BB%9C/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.jpg">
-      <meta itemprop="name" content="Burnov">
-      <meta itemprop="description" content="No end for Learning">
-    </span>
-    
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Burnov^-^Blog">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/cloud-native/docker/08_docker%E5%AE%B9%E5%99%A8%E6%8A%80%E6%9C%AF_%E5%AE%B9%E5%99%A8%E5%8D%B7%E5%92%8C%E7%BD%91%E7%BB%9C/" class="post-title-link" itemprop="url">容器的卷和网络</a>
-        </h2>
-    
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-    
-              <time title="Created: 2022-01-04 20:17:00" itemprop="dateCreated datePublished" datetime="2022-01-04T20:17:00+08:00">2022-01-04</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2022-01-07 23:39:31" itemprop="dateModified" datetime="2022-01-07T23:39:31+08:00">2022-01-07</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">In</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/cloud-native/" itemprop="url" rel="index"><span itemprop="name">cloud native</span></a>
-                </span>
-                  , 
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/cloud-native/docker/" itemprop="url" rel="index"><span itemprop="name">docker</span></a>
-                </span>
-            </span>
-    
-          
-  
-  <span class="post-meta-item">
-    
-      <span class="post-meta-item-icon">
-        <i class="far fa-comment"></i>
-      </span>
-      <span class="post-meta-item-text">Valine: </span>
-    
-    <a title="valine" href="/cloud-native/docker/08_docker%E5%AE%B9%E5%99%A8%E6%8A%80%E6%9C%AF_%E5%AE%B9%E5%99%A8%E5%8D%B7%E5%92%8C%E7%BD%91%E7%BB%9C/#valine-comments" itemprop="discussionUrl">
-      <span class="post-comments-count valine-comment-count" data-xid="/cloud-native/docker/08_docker%E5%AE%B9%E5%99%A8%E6%8A%80%E6%9C%AF_%E5%AE%B9%E5%99%A8%E5%8D%B7%E5%92%8C%E7%BD%91%E7%BB%9C/" itemprop="commentCount"></span>
-    </a>
-  </span>
-  
-  
-    
-        </div>
-      </header>
-    
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-    
-      
-          <h1 id="docker&#x5BB9;&#x5668;&#x7684;&#x5377;&#x8BE6;&#x89E3;"><a href="#docker&#x5BB9;&#x5668;&#x7684;&#x5377;&#x8BE6;&#x89E3;" class="headerlink" title="docker&#x5BB9;&#x5668;&#x7684;&#x5377;&#x8BE6;&#x89E3;"></a>docker&#x5BB9;&#x5668;&#x7684;&#x5377;&#x8BE6;&#x89E3;</h1><h2 id="docker&#x7684;&#x6570;&#x636E;&#x5377;&#x57FA;&#x672C;&#x6982;&#x5FF5;"><a href="#docker&#x7684;&#x6570;&#x636E;&#x5377;&#x57FA;&#x672C;&#x6982;&#x5FF5;" class="headerlink" title="docker&#x7684;&#x6570;&#x636E;&#x5377;&#x57FA;&#x672C;&#x6982;&#x5FF5;"></a>docker&#x7684;&#x6570;&#x636E;&#x5377;&#x57FA;&#x672C;&#x6982;&#x5FF5;</h2><p>&#x5982;&#x679C;&#x6B63;&#x5728;&#x8FD0;&#x884C;&#x4E2D;&#x7684;&#x5BB9;&#x5668;&#x4EA7;&#x751F;&#x4E86;&#x65B0;&#x7684;&#x6570;&#x636E;&#x6216;&#x8005;&#x4FEE;&#x6539;&#x4E86;&#x73B0;&#x6709;&#x7684;&#x4E00;&#x4E2A;&#x5DF2;&#x7ECF;&#x5B58;&#x5728;&#x7684;&#x6587;&#x4EF6;&#x5185;&#x5BB9;&#xFF0C;&#x90A3;&#x4E48;&#x65B0;&#x4EA7;&#x751F;&#x7684;&#x6570;&#x636E;&#x5C06;&#x4F1A;&#x88AB;&#x590D;&#x5236;&#x5230;&#x8BFB;&#x5199;&#x5C42;&#x8FDB;&#x884C;&#x6301;&#x4E45;&#x5316;&#x4FDD;&#x5B58;&#xFF0C;&#x8FD9;&#x4E2A;&#x8BFB;&#x5199;&#x5C42;&#x4E5F;&#x5C31;&#x662F;&#x5BB9;&#x5668;&#x7684;&#x5DE5;&#x4F5C;&#x76EE;&#x5F55;&#xFF0C;&#x6B64;&#x5373;&#x201C;&#x5199;&#x5B9E;&#x590D;&#x5236;&#xFF08;COW&#xFF09;copy on write&#x201D;&#x673A;&#x5236;&#xFF1B;</p>
-<p>&#x5982;&#x4E0B;&#x56FE;&#x662F;&#x5C06;&#x5BF9;&#x6839;&#x7684;&#x6570;&#x636E;&#x5199;&#x5165;&#x5230;&#x5BB9;&#x5668;&#x7684;&#x53EF;&#x5199;&#x6210;&#xFF0C;&#x4F46;&#x662F;&#x628A;/data&#x4E2D;&#x7684;&#x6570;&#x636E;&#x5199;&#x5165;&#x5230;&#x4E00;&#x4E2A;&#x53E6;&#x5916;&#x7684;volume&#x4E2D;&#x7528;&#x4E8E;&#x6570;&#x636E;&#x6301;&#x4E45;&#x5316;&#xFF1B;</p>
-<p><img src="/cloud-native/docker/08_docker%E5%AE%B9%E5%99%A8%E6%8A%80%E6%9C%AF_%E5%AE%B9%E5%99%A8%E5%8D%B7%E5%92%8C%E7%BD%91%E7%BB%9C/image-20220104095503099.png" alt="docker&#x7684;&#x6570;&#x636E;&#x5377;"></p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/cloud-native/docker/08_docker%E5%AE%B9%E5%99%A8%E6%8A%80%E6%9C%AF_%E5%AE%B9%E5%99%A8%E5%8D%B7%E5%92%8C%E7%BD%91%E7%BB%9C/#more" rel="contents">
-                Read more &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-    
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-    <div>
-        
-     </div>
-  </article>
-  
-  
-  
-
 
   
   <nav class="pagination">
@@ -1473,7 +1389,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">21</span>
+          <span class="site-state-item-count">24</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -1486,7 +1402,7 @@
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">24</span>
+        <span class="site-state-item-count">30</span>
         <span class="site-state-item-name">tags</span></a>
       </div>
   </nav>

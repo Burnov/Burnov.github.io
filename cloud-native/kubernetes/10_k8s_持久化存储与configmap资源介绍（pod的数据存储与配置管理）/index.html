@@ -1,0 +1,732 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-minimal.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Mist","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="pod&amp;#x7684;&amp;#x6570;&amp;#x636E;&amp;#x6301;&amp;#x4E45;&amp;#x5316;&amp;#x4E0E;configmap&amp;#x914D;&amp;#x7F6E;&amp;#x7BA1;&amp;#x7406;&amp;#x56DE;&amp;#x987E;service&amp;#x7F51;&amp;#x7EDC;&amp;#x8D44;&amp;#x6E90;&amp;#x5728;&amp;#x4E4B;&amp;#x524D;&amp;#x6211;&amp;#x4EEC;&amp;#x4E">
+<meta property="og:type" content="article">
+<meta property="og:title" content="持久化存储与configmap资源介绍（pod的数据存储与配置管理）">
+<meta property="og:url" content="http://example.com/cloud-native/kubernetes/10_k8s_%E6%8C%81%E4%B9%85%E5%8C%96%E5%AD%98%E5%82%A8%E4%B8%8Econfigmap%E8%B5%84%E6%BA%90%E4%BB%8B%E7%BB%8D%EF%BC%88pod%E7%9A%84%E6%95%B0%E6%8D%AE%E5%AD%98%E5%82%A8%E4%B8%8E%E9%85%8D%E7%BD%AE%E7%AE%A1%E7%90%86%EF%BC%89/index.html">
+<meta property="og:site_name" content="Burnov^-^Blog">
+<meta property="og:description" content="pod&amp;#x7684;&amp;#x6570;&amp;#x636E;&amp;#x6301;&amp;#x4E45;&amp;#x5316;&amp;#x4E0E;configmap&amp;#x914D;&amp;#x7F6E;&amp;#x7BA1;&amp;#x7406;&amp;#x56DE;&amp;#x987E;service&amp;#x7F51;&amp;#x7EDC;&amp;#x8D44;&amp;#x6E90;&amp;#x5728;&amp;#x4E4B;&amp;#x524D;&amp;#x6211;&amp;#x4EEC;&amp;#x4E">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://example.com/cloud-native/kubernetes/10_k8s_%E6%8C%81%E4%B9%85%E5%8C%96%E5%AD%98%E5%82%A8%E4%B8%8Econfigmap%E8%B5%84%E6%BA%90%E4%BB%8B%E7%BB%8D%EF%BC%88pod%E7%9A%84%E6%95%B0%E6%8D%AE%E5%AD%98%E5%82%A8%E4%B8%8E%E9%85%8D%E7%BD%AE%E7%AE%A1%E7%90%86%EF%BC%89/1642599985325.png">
+<meta property="og:image" content="http://example.com/cloud-native/kubernetes/10_k8s_%E6%8C%81%E4%B9%85%E5%8C%96%E5%AD%98%E5%82%A8%E4%B8%8Econfigmap%E8%B5%84%E6%BA%90%E4%BB%8B%E7%BB%8D%EF%BC%88pod%E7%9A%84%E6%95%B0%E6%8D%AE%E5%AD%98%E5%82%A8%E4%B8%8E%E9%85%8D%E7%BD%AE%E7%AE%A1%E7%90%86%EF%BC%89/1642609752551.png">
+<meta property="og:image" content="http://example.com/cloud-native/kubernetes/10_k8s_%E6%8C%81%E4%B9%85%E5%8C%96%E5%AD%98%E5%82%A8%E4%B8%8Econfigmap%E8%B5%84%E6%BA%90%E4%BB%8B%E7%BB%8D%EF%BC%88pod%E7%9A%84%E6%95%B0%E6%8D%AE%E5%AD%98%E5%82%A8%E4%B8%8E%E9%85%8D%E7%BD%AE%E7%AE%A1%E7%90%86%EF%BC%89/1642609893523.png">
+<meta property="og:image" content="http://example.com/cloud-native/kubernetes/10_k8s_%E6%8C%81%E4%B9%85%E5%8C%96%E5%AD%98%E5%82%A8%E4%B8%8Econfigmap%E8%B5%84%E6%BA%90%E4%BB%8B%E7%BB%8D%EF%BC%88pod%E7%9A%84%E6%95%B0%E6%8D%AE%E5%AD%98%E5%82%A8%E4%B8%8E%E9%85%8D%E7%BD%AE%E7%AE%A1%E7%90%86%EF%BC%89/1642610118728.png">
+<meta property="og:image" content="http://example.com/cloud-native/kubernetes/10_k8s_%E6%8C%81%E4%B9%85%E5%8C%96%E5%AD%98%E5%82%A8%E4%B8%8Econfigmap%E8%B5%84%E6%BA%90%E4%BB%8B%E7%BB%8D%EF%BC%88pod%E7%9A%84%E6%95%B0%E6%8D%AE%E5%AD%98%E5%82%A8%E4%B8%8E%E9%85%8D%E7%BD%AE%E7%AE%A1%E7%90%86%EF%BC%89/1642610177661.png">
+<meta property="og:image" content="http://example.com/cloud-native/kubernetes/10_k8s_%E6%8C%81%E4%B9%85%E5%8C%96%E5%AD%98%E5%82%A8%E4%B8%8Econfigmap%E8%B5%84%E6%BA%90%E4%BB%8B%E7%BB%8D%EF%BC%88pod%E7%9A%84%E6%95%B0%E6%8D%AE%E5%AD%98%E5%82%A8%E4%B8%8E%E9%85%8D%E7%BD%AE%E7%AE%A1%E7%90%86%EF%BC%89/1642642653515.png">
+<meta property="og:image" content="http://example.com/cloud-native/kubernetes/10_k8s_%E6%8C%81%E4%B9%85%E5%8C%96%E5%AD%98%E5%82%A8%E4%B8%8Econfigmap%E8%B5%84%E6%BA%90%E4%BB%8B%E7%BB%8D%EF%BC%88pod%E7%9A%84%E6%95%B0%E6%8D%AE%E5%AD%98%E5%82%A8%E4%B8%8E%E9%85%8D%E7%BD%AE%E7%AE%A1%E7%90%86%EF%BC%89/1642650205885.png">
+<meta property="og:image" content="http://example.com/cloud-native/kubernetes/10_k8s_%E6%8C%81%E4%B9%85%E5%8C%96%E5%AD%98%E5%82%A8%E4%B8%8Econfigmap%E8%B5%84%E6%BA%90%E4%BB%8B%E7%BB%8D%EF%BC%88pod%E7%9A%84%E6%95%B0%E6%8D%AE%E5%AD%98%E5%82%A8%E4%B8%8E%E9%85%8D%E7%BD%AE%E7%AE%A1%E7%90%86%EF%BC%89/1642650270678.png">
+<meta property="article:published_time" content="2022-01-20T14:18:30.000Z">
+<meta property="article:modified_time" content="2022-01-20T14:21:25.205Z">
+<meta property="article:author" content="Burnov">
+<meta property="article:tag" content="volumes">
+<meta property="article:tag" content="configmap">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/cloud-native/kubernetes/10_k8s_%E6%8C%81%E4%B9%85%E5%8C%96%E5%AD%98%E5%82%A8%E4%B8%8Econfigmap%E8%B5%84%E6%BA%90%E4%BB%8B%E7%BB%8D%EF%BC%88pod%E7%9A%84%E6%95%B0%E6%8D%AE%E5%AD%98%E5%82%A8%E4%B8%8E%E9%85%8D%E7%BD%AE%E7%AE%A1%E7%90%86%EF%BC%89/1642599985325.png">
+
+<link rel="canonical" href="http://example.com/cloud-native/kubernetes/10_k8s_%E6%8C%81%E4%B9%85%E5%8C%96%E5%AD%98%E5%82%A8%E4%B8%8Econfigmap%E8%B5%84%E6%BA%90%E4%BB%8B%E7%BB%8D%EF%BC%88pod%E7%9A%84%E6%95%B0%E6%8D%AE%E5%AD%98%E5%82%A8%E4%B8%8E%E9%85%8D%E7%BD%AE%E7%AE%A1%E7%90%86%EF%BC%89/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>持久化存储与configmap资源介绍（pod的数据存储与配置管理） | Burnov^-^Blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="Burnov^-^Blog" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Burnov^-^Blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="Searching..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://example.com/cloud-native/kubernetes/10_k8s_%E6%8C%81%E4%B9%85%E5%8C%96%E5%AD%98%E5%82%A8%E4%B8%8Econfigmap%E8%B5%84%E6%BA%90%E4%BB%8B%E7%BB%8D%EF%BC%88pod%E7%9A%84%E6%95%B0%E6%8D%AE%E5%AD%98%E5%82%A8%E4%B8%8E%E9%85%8D%E7%BD%AE%E7%AE%A1%E7%90%86%EF%BC%89/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="Burnov">
+      <meta itemprop="description" content="No end for Learning">
+    </span>
+    
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Burnov^-^Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          持久化存储与configmap资源介绍（pod的数据存储与配置管理）
+        </h1>
+    
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+              
+    
+              <time title="Created: 2022-01-20 22:18:30 / Modified: 22:21:25" itemprop="dateCreated datePublished" datetime="2022-01-20T22:18:30+08:00">2022-01-20</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/cloud-native/" itemprop="url" rel="index"><span itemprop="name">cloud native</span></a>
+                </span>
+                  , 
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/cloud-native/kubernetes/" itemprop="url" rel="index"><span itemprop="name">kubernetes</span></a>
+                </span>
+            </span>
+    
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Valine: </span>
+    
+    <a title="valine" href="/cloud-native/kubernetes/10_k8s_%E6%8C%81%E4%B9%85%E5%8C%96%E5%AD%98%E5%82%A8%E4%B8%8Econfigmap%E8%B5%84%E6%BA%90%E4%BB%8B%E7%BB%8D%EF%BC%88pod%E7%9A%84%E6%95%B0%E6%8D%AE%E5%AD%98%E5%82%A8%E4%B8%8E%E9%85%8D%E7%BD%AE%E7%AE%A1%E7%90%86%EF%BC%89/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/cloud-native/kubernetes/10_k8s_%E6%8C%81%E4%B9%85%E5%8C%96%E5%AD%98%E5%82%A8%E4%B8%8Econfigmap%E8%B5%84%E6%BA%90%E4%BB%8B%E7%BB%8D%EF%BC%88pod%E7%9A%84%E6%95%B0%E6%8D%AE%E5%AD%98%E5%82%A8%E4%B8%8E%E9%85%8D%E7%BD%AE%E7%AE%A1%E7%90%86%EF%BC%89/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+    
+        </div>
+      </header>
+    
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+    
+      
+        <h1 id="pod&#x7684;&#x6570;&#x636E;&#x6301;&#x4E45;&#x5316;&#x4E0E;configmap&#x914D;&#x7F6E;&#x7BA1;&#x7406;"><a href="#pod&#x7684;&#x6570;&#x636E;&#x6301;&#x4E45;&#x5316;&#x4E0E;configmap&#x914D;&#x7F6E;&#x7BA1;&#x7406;" class="headerlink" title="pod&#x7684;&#x6570;&#x636E;&#x6301;&#x4E45;&#x5316;&#x4E0E;configmap&#x914D;&#x7F6E;&#x7BA1;&#x7406;"></a>pod&#x7684;&#x6570;&#x636E;&#x6301;&#x4E45;&#x5316;&#x4E0E;configmap&#x914D;&#x7F6E;&#x7BA1;&#x7406;</h1><h2 id="&#x56DE;&#x987E;service&#x7F51;&#x7EDC;&#x8D44;&#x6E90;"><a href="#&#x56DE;&#x987E;service&#x7F51;&#x7EDC;&#x8D44;&#x6E90;" class="headerlink" title="&#x56DE;&#x987E;service&#x7F51;&#x7EDC;&#x8D44;&#x6E90;"></a>&#x56DE;&#x987E;service&#x7F51;&#x7EDC;&#x8D44;&#x6E90;</h2><p>&#x5728;&#x4E4B;&#x524D;&#x6211;&#x4EEC;&#x4ECB;&#x7ECD;&#x8FC7;service&#x7684;&#x7F51;&#x7EDC;&#x8BBF;&#x95EE;&#x67B6;&#x6784;&#x3002;&#x5728;k8s&#x67B6;&#x6784;&#x4E0B;&#xFF0C;service&#x7528;&#x6765;&#x627F;&#x63A5;node&#x8282;&#x70B9;&#x6D41;&#x91CF;&#x4E0E;&#x5185;&#x90E8;&#x7684;pod&#x6D41;&#x91CF;&#xFF0C;&#x8FD9;&#x6837;&#xFF0C;service&#x8D44;&#x6E90;&#x6A21;&#x5757;&#x5C31;&#x6210;&#x4E3A;&#x4E86;&#x7F51;&#x8DEF;&#x6027;&#x80FD;&#x7684;&#x74F6;&#x9888;&#xFF0C;&#x4E3A;&#x4E86;&#x907F;&#x514D;&#x8FD9;&#x79CD;&#x73B0;&#x8C61;&#xFF0C;&#x6211;&#x4EEC;&#x53EF;&#x4EE5;&#x9009;&#x62E9;&#x901A;&#x8FC7;<strong>&#x670D;&#x52A1;&#x6CE8;&#x518C;</strong>&#x7684;&#x65B9;&#x5F0F;&#x89E3;&#x51B3;&#x8FD9;&#x4E2A;&#x95EE;&#x9898;&#xFF1B;&#x5176;&#x7F51;&#x7EDC;&#x67B6;&#x6784;&#x5982;&#x4E0B;&#x56FE;&#x6240;&#x793A;&#xFF1A;</p>
+<span id="more"></span>
+
+<p><img src="/cloud-native/kubernetes/10_k8s_%E6%8C%81%E4%B9%85%E5%8C%96%E5%AD%98%E5%82%A8%E4%B8%8Econfigmap%E8%B5%84%E6%BA%90%E4%BB%8B%E7%BB%8D%EF%BC%88pod%E7%9A%84%E6%95%B0%E6%8D%AE%E5%AD%98%E5%82%A8%E4%B8%8E%E9%85%8D%E7%BD%AE%E7%AE%A1%E7%90%86%EF%BC%89/1642599985325.png" alt="&#x6CE8;&#x518C;&#x4E2D;&#x5FC3;&#x67B6;&#x6784;"></p>
+<p>&#x5728;&#x6CE8;&#x518C;&#x4E2D;&#x5FC3;&#x67B6;&#x6784;&#x4E2D;&#xFF0C;&#x6211;&#x4EEC;&#x6240;&#x6709;&#x7684;&#x670D;&#x52A1;&#x90FD;&#x4F1A;&#x53BB;&#x5230;&#x6CE8;&#x518C;&#x4E2D;&#x5FC3;&#x6CE8;&#x518C;&#x3010;&#x7C7B;&#x4F3C;&#x4E8E;OpenStack&#x7684;keystone&#x7684;&#x601D;&#x60F3;&#x3011;&#xFF0C;&#x8FD9;&#x6837;&#x5230;&#x6CE8;&#x518C;&#x4E2D;&#x5FC3;&#x83B7;&#x53D6;&#x5230;&#x5BF9;&#x7AEF;&#x7684;IP&#x5730;&#x5740;&#x4E0E;&#x670D;&#x52A1;&#x7AEF;&#x53E3;&#x540E;&#xFF0C;&#x7136;&#x540E;&#x76F4;&#x63A5;&#x53BB;&#x8BBF;&#x95EE;&#x5373;&#x53EF;&#xFF1B;&#x8FD9;&#x79CD;&#x67B6;&#x6784;&#x7684;&#x6027;&#x80FD;&#x7684;&#x662F;&#x6700;&#x9AD8;&#x7684;&#xFF1B;&#x8FD9;&#x4E2A;&#x5728;&#x540E;&#x9762;&#x6211;&#x4EEC;&#x4F1A;&#x8BB2;&#x89E3;&#x4E00;&#x4E9B;&#x4F8B;&#x5B50;&#xFF0C;&#x5B83;&#x53EB;&#x505A;<strong>&#x751F;&#x4EA7;/&#x6D88;&#x8D39;&#x8005;&#x6A21;&#x578B;</strong>&#xFF1B;</p>
+<h2 id="&#x5377;&#x5B58;&#x50A8;-&#x2013;-volume&#xFF08;&#x7EE7;&#x7EED;&#x4E0A;&#x4E00;&#x8282;&#xFF09;"><a href="#&#x5377;&#x5B58;&#x50A8;-&#x2013;-volume&#xFF08;&#x7EE7;&#x7EED;&#x4E0A;&#x4E00;&#x8282;&#xFF09;" class="headerlink" title="&#x5377;&#x5B58;&#x50A8; &#x2013; volume&#xFF08;&#x7EE7;&#x7EED;&#x4E0A;&#x4E00;&#x8282;&#xFF09;"></a>&#x5377;&#x5B58;&#x50A8; &#x2013; volume&#xFF08;&#x7EE7;&#x7EED;&#x4E0A;&#x4E00;&#x8282;&#xFF09;</h2><h3 id="volume&#x57FA;&#x672C;&#x4ECB;&#x7ECD;"><a href="#volume&#x57FA;&#x672C;&#x4ECB;&#x7ECD;" class="headerlink" title="volume&#x57FA;&#x672C;&#x4ECB;&#x7ECD;"></a>volume&#x57FA;&#x672C;&#x4ECB;&#x7ECD;</h3><ul>
+<li>Why &#x2013; &#x6570;&#x636E;&#x548C;&#x955C;&#x50CF;&#x7684;&#x7ED3;&#x6784;&#xFF0C;&#x4EE5;&#x53CA;&#x5BB9;&#x5668;&#x95F4;&#x7684;&#x6570;&#x636E;&#x5171;&#x4EAB;</li>
+<li>what &#x2013; k8s&#x62BD;&#x8C61;&#x51FA;&#x7684;&#x4E00;&#x4E2A;&#x5BF9;&#x8C61;&#xFF0C;&#x7528;&#x6765;&#x4FDD;&#x62A4;&#x6570;&#x636E;&#xFF0C;&#x505A;&#x5B58;&#x50A8;&#x7528;</li>
+<li>&#x5E38;&#x7528;&#x7684;&#x51E0;&#x79CD;&#x5377;&#xFF1A;<ul>
+<li>emptyDir &#x2013; &#x672C;&#x5730;&#x4E34;&#x65F6;&#x5377;&#xFF1B;pod&#x5220;&#x9664;&#x4EE5;&#x540E;&#xFF0C;&#x6240;&#x6709;&#x7684;&#x6570;&#x636E;&#x5C31;&#x4F1A;&#x88AB;&#x5220;&#x9664;&#xFF1B;</li>
+<li>hostPath &#x2013; &#x672C;&#x5730;&#x5377;&#xFF1B;&#x548C;emptyDir&#x4E00;&#x6837;&#xFF0C;&#x4E5F;&#x662F;&#x672C;&#x5730;&#x6570;&#x636E;&#xFF0C;pod&#x5220;&#x9664;&#x4EE5;&#x540E;&#x6570;&#x636E;&#x4E0D;&#x4F1A;&#x88AB;&#x5220;&#x9664;&#xFF0C;&#x4F46;&#x662F;&#x662F;&#x672C;&#x5730;node&#x8282;&#x70B9;&#x5B58;&#x50A8;&#x7684;&#xFF0C;&#x95EE;&#x9898;&#x662F;&#xFF0C;&#x5982;&#x679C;pod&#x5728;&#x5176;&#x4ED6;node&#x8282;&#x70B9;&#x4E0A;&#x91CD;&#x542F;&#x4E86;&#xFF0C;&#x8FD9;&#x4E2A;&#x6570;&#x636E;&#x4E5F;&#x4E0D;&#x4F1A;&#x81EA;&#x52A8;&#x79FB;&#x52A8;&#x8FC7;&#x53BB;&#x7684;&#xFF1B;</li>
+<li>nfs&#x7B49; &#x2013; &#x5171;&#x4EAB;&#x5377;&#xFF1B;&#x63A8;&#x8350;&#x4F7F;&#x7528;&#xFF1B;&#x7EDF;&#x4E00;&#x5171;&#x4EAB;&#x5B58;&#x50A8;&#xFF0C;&#x5982;&#x4E0A;&#x56FE;&#x4E2D;&#x6240;&#x793A;&#xFF1B;&#x8FD9;&#x6837;&#x7684;&#x8BDD;&#xFF0C;&#x4EFB;&#x610F;&#x4EBA;&#x8FC7;&#x6765;&#x4FEE;&#x6539;&#x6570;&#x636E;&#x7684;&#x8BDD;&#x90FD;&#x662F;&#x8BBF;&#x95EE;&#x7684;&#x540C;&#x4E00;&#x4EFD;&#x6570;&#x636E;&#xFF1B;ceph&#x7528;&#x7684;&#x5176;&#x5B9E;&#x5E76;&#x4E0D;&#x591A;&#xFF0C;&#x56E0;&#x4E3A;&#x4E00;&#x4EFD;&#x6570;&#x636E;&#x4F1A;&#x5B58;&#x50A8;&#x4E09;&#x5206;&#xFF0C;&#x4E14;&#x5BF9;&#x786C;&#x4EF6;&#x8981;&#x6C42;&#x8F83;&#x9AD8;&#xFF0C;&#x5E76;&#x4E14;&#x9700;&#x8981;&#x5927;&#x91CF;&#x7684;&#x7F51;&#x7EDC;&#x8BBE;&#x5907;&#x624D;&#x884C;&#xFF1B;</li>
+<li>configmap &#x2013; &#x914D;&#x7F6E;&#x6587;&#x4EF6;</li>
+</ul>
+</li>
+<li><a target="_blank" rel="noopener" href="https://kubernetes.io/zh/docs/concepts/storage/volumes/">https://kubernetes.io/zh/docs/concepts/storage/volumes/</a></li>
+</ul>
+<p>&#x5728;docker&#x4E2D;&#xFF0C;&#x6211;&#x4EEC;&#x53EF;&#x4EE5;&#x901A;&#x8FC7;&#x201D;docker -v&#x201D;&#x7684;&#x65B9;&#x5F0F;&#x6765;&#x8FDB;&#x884C;&#x6570;&#x636E;&#x7684;&#x6301;&#x4E45;&#x5316;&#x5B58;&#x50A8;&#xFF1B;&#x5728;k8s&#x67B6;&#x6784;&#x4E2D;&#xFF0C;&#x4E5F;&#x53EF;&#x4EE5;&#x5B9E;&#x73B0;&#x6301;&#x4E45;&#x5316;&#x5B58;&#x50A8;&#xFF0C;&#x5982;&#x679C;&#x662F;&#x4F7F;&#x7528;hostPath&#x5219;&#x5B9E;&#x73B0;&#x7684;&#x672C;&#x5730;&#x7684;&#x6301;&#x4E45;&#x5316;&#x5B58;&#x50A8;&#xFF0C;&#x8FD9;&#x6837;&#x7684;&#x8BDD;&#xFF0C;&#x6211;&#x4EEC;&#x5C31;&#x8981;&#x8003;&#x8651;nodes&#x4E4B;&#x95F4;&#x7684;&#x540C;&#x6B65;&#x7684;&#x95EE;&#x9898;&#xFF1B;&#x56E0;&#x6B64;&#xFF0C;&#x5EFA;&#x8BAE;&#x4F7F;&#x7528;&#x7B2C;&#x4E09;&#x65B9;&#x7684;&#x5171;&#x4EAB;&#x5B58;&#x50A8;&#x6765;&#x89E3;&#x51B3;&#x8FD9;&#x4E2A;&#x95EE;&#x9898;&#xFF1B;</p>
+<h3 id="emptyDir"><a href="#emptyDir" class="headerlink" title="emptyDir"></a>emptyDir</h3><p>&#x5F53;pod&#x88AB;&#x5206;&#x914D;&#x7ED9;&#x8282;&#x70B9;&#x65F6;&#xFF0C;&#x9996;&#x5148;&#x521B;&#x5EFA;emptyDir&#x5377;&#xFF0C;&#x5E76;&#x4E14;&#x53EA;&#x8981;&#x8BE5;Pod&#x5728;&#x8282;&#x70B9;&#x4E0A;&#x8FD0;&#x884C;&#xFF0C;&#x8BE5;&#x5377;&#x5C31;&#x4F1A;&#x5B58;&#x5728;&#x3002;&#x6B63;&#x5982;&#x5377;&#x7684;&#x540D;&#x5B57;&#x6240;&#x63CF;&#x8FF0;&#xFF0C;&#x5B83;&#x6700;&#x521D;&#x662F;&#x7A7A;&#x7684;&#xFF0C;Pod&#x4E2D;&#x7684;&#x5BB9;&#x5668;&#x53EF;&#x4EE5;&#x8BFB;&#x53D6;&#x548C;&#x5199;&#x5165;emptyDir&#x5377;&#x4E2D;&#x7684;&#x76F8;&#x540C;&#x6587;&#x4EF6;&#xFF0C;&#x5C3D;&#x7BA1;&#x8BE5;&#x5377;&#x53EF;&#x4EE5;&#x6302;&#x5728;&#x5230;&#x6BCF;&#x4E00;&#x4E2A;&#x5BB9;&#x5668;&#x4E2D;&#x7684;&#x76F8;&#x540C;&#x6216;&#x4E0D;&#x540C;&#x7684;&#x8DEF;&#x5F84;&#x4E0A;&#x3002;&#x5F53;&#x5904;&#x4E8E;&#x4EFB;&#x4F55;&#x539F;&#x56E0;&#x4ECE;&#x8282;&#x70B9;&#x4E2D;&#x5220;&#x9664;Pod&#x65F6;&#xFF0C;emptyDir&#x4E2D;&#x7684;&#x6570;&#x636E;&#x5C06;&#x88AB;&#x6C38;&#x4E45;&#x5220;&#x9664;&#xFF1B;</p>
+<p>&#x9ED8;&#x8BA4;&#x5377;&#x7684;&#x76EE;&#x5F55;&#x5982;&#x4E0B;&#xFF1A;/var/lib/kubelet/pods/$ID/volumes/kubernetes.io~empty-dir/cache-volume/$FILE</p>
+<p>&#x56E0;&#x6B64;&#xFF0C;&#x8FD9;&#x91CC;&#x53EA;&#x80FD;&#x653E;&#x4E00;&#x4E9B;&#x4E0D;&#x91CD;&#x8981;&#x7684;&#x6570;&#x636E;&#xFF0C;&#x4F8B;&#x5982;&#x7F13;&#x5B58;&#x3001;&#x65E5;&#x5FD7;&#x6587;&#x4EF6;&#xFF0C;&#x4E1A;&#x52A1;&#x6570;&#x636E;&#x5343;&#x4E07;&#x4E0D;&#x80FD;&#x653E;&#x5728;&#x8FD9;&#x4E2A;&#x76EE;&#x5F55;&#x4E0B;&#xFF1B;</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> &#x5148;&#x5220;&#x9664;case2&#x4E2D;&#x7684;&#x73AF;&#x5883;&#xFF0C;&#x8FDB;&#x5165;case3&#x4E2D;&#x7684;&#x73AF;&#x5883;</span></span><br><span class="line">root@master1:~/yaml/20210115/case/case2# kubectl delete -f .</span><br></pre></td></tr></table></figure>
+
+<p>case3&#x4E2D;&#x6709;&#x4E00;&#x4E2A;emptyDir&#x7684;yaml&#x6587;&#x4EF6;&#xFF1A;</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#apiVersion: extensions/v1beta1</span></span><br><span class="line"><span class="attr">apiVersion:</span> <span class="string">apps/v1</span></span><br><span class="line"><span class="attr">kind:</span> <span class="string">Deployment</span></span><br><span class="line"><span class="attr">metadata:</span></span><br><span class="line">  <span class="attr">name:</span> <span class="string">nginx-deployment</span></span><br><span class="line"><span class="attr">spec:</span></span><br><span class="line">  <span class="attr">replicas:</span> <span class="number">1</span></span><br><span class="line">  <span class="attr">selector:</span></span><br><span class="line">    <span class="attr">matchLabels:</span> <span class="comment">#rs or deployment</span></span><br><span class="line">      <span class="attr">app:</span> <span class="string">ng-deploy-80</span></span><br><span class="line">  <span class="attr">template:</span></span><br><span class="line">    <span class="attr">metadata:</span></span><br><span class="line">      <span class="attr">labels:</span></span><br><span class="line">        <span class="attr">app:</span> <span class="string">ng-deploy-80</span></span><br><span class="line">    <span class="attr">spec:</span></span><br><span class="line">      <span class="attr">containers:</span>  <span class="comment"># &#x6307;&#x5B9A;&#x5BB9;&#x5668;&#xFF0C;&#x5B83;&#x548C;volumes&#x662F;&#x540C;&#x7EA7;&#x522B;&#x7684;&#xFF0C;&#x8BF4;&#x660E;&#x5728;&#x8FD9;&#x4E2A;pod&#x4E2D;&#x7684;&#x6BCF;&#x4E00;&#x4E2A;containers&#x90FD;&#x662F;&#x53EF;&#x4EE5;&#x6302;&#x8F7D;&#x8FD9;&#x4E2A;volumes&#x7684;&#xFF1B;</span></span><br><span class="line">      <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">ng-deploy-80</span></span><br><span class="line">        <span class="attr">image:</span> <span class="string">nginx</span></span><br><span class="line">        <span class="attr">ports:</span></span><br><span class="line">        <span class="bullet">-</span> <span class="attr">containerPort:</span> <span class="number">80</span></span><br><span class="line">        <span class="attr">volumeMounts:</span>  <span class="comment"># container&#x4E2D;&#x901A;&#x8FC7;&#x8FD9;&#x4E2A;&#x5B57;&#x6BB5;&#x53BB;&#x58F0;&#x660E;&#x6302;&#x8F7D;&#xFF1B;</span></span><br><span class="line">        <span class="bullet">-</span> <span class="attr">mountPath:</span> <span class="string">/cache</span></span><br><span class="line">          <span class="attr">name:</span> <span class="string">cache-volume-n60</span>  <span class="comment"># &#x5173;&#x8054;volumes&#xFF0C;&#x4E0E;&#x4E0B;&#x9762;volumes&#x6307;&#x5B9A;&#x7684;name&#x76F8;&#x540C;&#xFF1B;</span></span><br><span class="line">      <span class="attr">volumes:</span>  <span class="comment"># &#x58F0;&#x540D;&#x5377;&#x7684;&#x7C7B;&#x578B;</span></span><br><span class="line">      <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">cache-volume-n60</span></span><br><span class="line">        <span class="attr">emptyDir:</span> {}  <span class="comment"># &#x8FD9;&#x91CC;emptyDir&#x6307;&#x5B9A;&#x6302;&#x5728;&#x7684;&#x7C7B;&#x578B;&#xFF0C;&#x5185;&#x5BB9;&#x662F;&#x7A7A;&#x7684;&#x4E0D;&#x7528;&#x5199;&#xFF1B;</span></span><br></pre></td></tr></table></figure>
+
+<p>&#x542F;&#x52A8;deployment&#x63A7;&#x5236;&#x5668;</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">root@master1:~/yaml/20210115/case/case3# kubectl apply -f deploy_empty.yml</span><br><span class="line">deployment.apps/nginx-deployment created</span><br><span class="line">root@master1:~/yaml/20210115/case/case3# kubectl get pod -o wide</span><br><span class="line">NAME                                READY   STATUS              RESTARTS   AGE     IP               NODE           NOMINATED NODE   READINESS GATES</span><br><span class="line">nginx-deployment-6548cf5d54-4d9cl   0/1     ContainerCreating   0          12s     &lt;none&gt;           192.168.0.23   &lt;none&gt;           &lt;none&gt;</span><br><span class="line"><span class="meta">#</span><span class="bash"> &#x8FD9;&#x53EF;&#x4EE5;&#x770B;&#x5230;&#xFF0C;&#x8FD9;&#x4E2A;deployment&#x88AB;&#x5173;&#x8054;&#x5230;&#x4E86;192.168.0.23&#x7684;&#x4E3B;&#x673A;&#x4E0A;&#x4E86;</span></span><br><span class="line"><span class="meta"></span></span><br><span class="line"><span class="meta">#</span><span class="bash"> &#x7136;&#x540E;&#x6211;&#x4EEC;&#x53EF;&#x4EE5;&#x53BB;192.168.0.23&#x4E0A;&#x9762;&#x53BB;&#x9A8C;&#x8BC1;</span></span><br><span class="line">root@node1:~# find / -name cache-volume*</span><br><span class="line">/var/lib/kubelet/pods/53ffbf13-f9a1-4b98-8dce-5c23e242b852/volumes/kubernetes.io~empty-dir/cache-volume-n60</span><br><span class="line"><span class="meta">#</span><span class="bash"> &#x6211;&#x4EEC;&#x53EF;&#x4EE5;&#x627E;&#x5230;&#x8FD9;&#x4E2A;&#x76EE;&#x5F55;&#xFF0C;&#x8FD9;&#x4E2A;&#x76EE;&#x5F55;&#x5C31;&#x4F1A;&#x5B58;&#x653E;&#x5BB9;&#x5668;&#x4E2D;&#x4EA7;&#x751F;&#x7684;&#x4E34;&#x65F6;&#x6570;&#x636E;&#xFF1B;</span></span><br><span class="line"><span class="meta"></span></span><br><span class="line"><span class="meta">#</span><span class="bash"> &#x8FDB;&#x5165;pod&#x521B;&#x5EFA;&#x4E34;&#x65F6;&#x6570;&#x636E;</span></span><br><span class="line">root@master1:~/yaml/20210115/case/case3# kubectl exec -it nginx-deployment-6548cf5d54-4d9cl sh</span><br><span class="line"><span class="meta">#</span><span class="bash"> <span class="built_in">cd</span> /cache</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> <span class="built_in">echo</span> <span class="string">&quot;abc&quot;</span> &gt; test.sh</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> cat test.sh</span></span><br><span class="line">abc</span><br><span class="line"><span class="meta"></span></span><br><span class="line"><span class="meta">#</span><span class="bash"> &#x5728;node&#x8282;&#x70B9;&#x4E0A;&#x67E5;&#x770B;&#x521B;&#x5EFA;&#x7684;&#x6570;&#x636E;</span></span><br><span class="line">root@node1:~# cd /var/lib/kubelet/pods/53ffbf13-f9a1-4b98-8dce-5c23e242b852/volumes/kubernetes.io~empty-dir/cache-volume-n60</span><br><span class="line">root@node1:/var/lib/kubelet/pods/53ffbf13-f9a1-4b98-8dce-5c23e242b852/volumes/kubernetes.io~empty-dir/cache-volume-n60# cat test.sh</span><br><span class="line">abc</span><br><span class="line"><span class="meta">#</span><span class="bash"> &#x8FD9;&#x5C31;&#x5728;node&#x8282;&#x70B9;&#x4E0A;&#x67E5;&#x770B;&#x5230;&#x4E86;&#x5728;&#x5BB9;&#x5668;&#x4E2D;&#x521B;&#x5EFA;&#x7684;&#x6570;&#x636E;</span></span><br></pre></td></tr></table></figure>
+
+<p>&#x57FA;&#x4E8E;&#x8FD9;&#x79CD;&#x8FD0;&#x4F5C;&#x673A;&#x5236;&#xFF0C;&#x6211;&#x4EEC;&#x53EF;&#x4EE5;&#x914D;&#x7F6E;&#x65E5;&#x5FD7;&#x670D;&#x52A1;&#xFF0C;&#x5C06;&#x6240;&#x6709;&#x7684;&#x65E5;&#x5FD7;&#x6570;&#x636E;&#x914D;&#x7F6E;&#x5728;&#x8FD9;&#x4E2A;&#x4E34;&#x65F6;&#x76EE;&#x5F55;&#x4E2D;&#x6765;&#x8FDB;&#x884C;&#x6536;&#x96C6;&#xFF1B;pod&#x4E00;&#x65E6;&#x88AB;&#x5220;&#x9664;&#xFF0C;&#x5219;&#x6240;&#x6709;&#x7684;&#x4E34;&#x65F6;&#x6570;&#x636E;&#x5C31;&#x90FD;&#x6CA1;&#x6709;&#x4E86;&#xFF1B;</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> &#x5220;&#x9664;pod</span></span><br><span class="line">root@master1:~/yaml/20210115/case/case3# kubectl delete -f deploy_empty.yml</span><br><span class="line">deployment.apps &quot;nginx-deployment&quot; deleted</span><br><span class="line"><span class="meta">#</span><span class="bash"> &#x518D;&#x6B21;&#x67E5;&#x770B;&#x6570;&#x636E;</span></span><br><span class="line">root@node1:/var/lib/kubelet/pods/53ffbf13-f9a1-4b98-8dce-5c23e242b852/volumes/kubernetes.io~empty-dir/cache-volume-n60# ls</span><br><span class="line"><span class="meta">#</span><span class="bash"> &#x76EE;&#x5F55;&#x4E0B;&#x5C31;&#x6CA1;&#x6709;&#x4EFB;&#x4F55;&#x663E;&#x793A;&#x4E86;</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="hostPath"><a href="#hostPath" class="headerlink" title="hostPath"></a>hostPath</h3><p>hostPath&#x5377;&#x5C06;&#x4E3B;&#x8282;&#x70B9;&#x7684;&#x6587;&#x4EF6;&#x7CFB;&#x7EDF;&#x4E2D;&#x7684;&#x6587;&#x4EF6;&#x6216;&#x76EE;&#x5F55;&#x6302;&#x5728;&#x5230;&#x96C6;&#x7FA4;&#x4E2D;&#xFF0C;pod&#x5220;&#x9664;&#x65F6;&#x5019;&#x5377;&#x662F;&#x4E0D;&#x4F1A;&#x5220;&#x9664;&#x7684;&#xFF1B;&#x548C;&#x201D;docker -v&#x201D;&#x7684;&#x529F;&#x80FD;&#x5B8C;&#x5168;&#x76F8;&#x540C;&#xFF0C;&#x5B83;&#x53EF;&#x4EE5;&#x5B9E;&#x73B0;&#x6570;&#x636E;&#x7684;&#x6301;&#x4E45;&#x5316;&#xFF1B;&#x8FD9;&#x79CD;&#x4F7F;&#x7528;&#x65B9;&#x5F0F;&#x4E5F;&#x662F;&#x4F7F;&#x7528;&#x7684;&#x5F88;&#x5C11;&#x7684;&#xFF1B;</p>
+<p>hostPath&#x6700;&#x4E3B;&#x8981;&#x7684;&#x5C40;&#x9650;&#x6027;&#x662F;Pod&#x662F;&#x4E0D;&#x80FD;&#x6765;&#x56DE;&#x6362;&#x4E3B;&#x673A;&#x7684;&#xFF1B;&#x56E0;&#x4E3A;&#x6570;&#x636E;&#x90FD;&#x5B58;&#x50A8;&#x5728;&#x67D0;&#x4E00;&#x4E2A;node&#x4E0A;&#xFF0C;&#x8FD9;&#x6837;&#x5C31;&#x9700;&#x8981;&#x89E3;&#x51B3;node&#x6570;&#x636E;&#x540C;&#x6B65;&#x7684;&#x529F;&#x80FD;&#xFF1B;</p>
+<p>&#x793A;&#x4F8B;&#xFF1A;</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># hostPath&#x7684;yaml&#x6587;&#x4EF6;&#x5982;&#x4E0B;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#apiVersion: extensions/v1beta1</span></span><br><span class="line"><span class="attr">apiVersion:</span> <span class="string">apps/v1</span></span><br><span class="line"><span class="attr">kind:</span> <span class="string">Deployment</span></span><br><span class="line"><span class="attr">metadata:</span></span><br><span class="line">  <span class="attr">name:</span> <span class="string">nginx-deployment</span></span><br><span class="line"><span class="attr">spec:</span></span><br><span class="line">  <span class="attr">replicas:</span> <span class="number">1</span></span><br><span class="line">  <span class="attr">selector:</span></span><br><span class="line">    <span class="attr">matchLabels:</span></span><br><span class="line">      <span class="attr">app:</span> <span class="string">ng-deploy-80</span></span><br><span class="line">  <span class="attr">template:</span></span><br><span class="line">    <span class="attr">metadata:</span></span><br><span class="line">      <span class="attr">labels:</span></span><br><span class="line">        <span class="attr">app:</span> <span class="string">ng-deploy-80</span></span><br><span class="line">    <span class="attr">spec:</span></span><br><span class="line">      <span class="attr">containers:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">ng-deploy-80</span></span><br><span class="line">        <span class="attr">image:</span> <span class="string">nginx</span> </span><br><span class="line">        <span class="attr">ports:</span></span><br><span class="line">        <span class="bullet">-</span> <span class="attr">containerPort:</span> <span class="number">80</span></span><br><span class="line">        <span class="attr">volumeMounts:</span>  <span class="comment"># &#x5728;&#x5BB9;&#x5668;&#x4E2D;&#x8C03;&#x7528;volumes</span></span><br><span class="line">        <span class="bullet">-</span> <span class="attr">mountPath:</span> <span class="string">/data</span>  <span class="comment"># &#x8FD9;&#x4E2A;&#x662F;&#x76EE;&#x7684;&#x6302;&#x8F7D;&#x70B9;&#xFF0C;&#x6CA1;&#x6709;&#x7684;&#x8BDD;&#x5BB9;&#x5668;&#x53EF;&#x4EE5;&#x81EA;&#x5DF1;&#x5EFA;&#x7ACB;</span></span><br><span class="line">          <span class="attr">name:</span> <span class="string">cache-volume</span></span><br><span class="line">      <span class="attr">volumes:</span>  <span class="comment"># &#x58F0;&#x660E;&#x4E00;&#x4E2A;&#x5377;</span></span><br><span class="line">      <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">cache-volume</span></span><br><span class="line">        <span class="attr">hostPath:</span></span><br><span class="line">          <span class="attr">path:</span> <span class="string">/tmp/n60</span>  <span class="comment"># &#x901A;&#x8FC7;path&#x6765;&#x6307;&#x5B9A;&#x5BBF;&#x4E3B;&#x673A;&#x7684;&#x76EE;&#x5F55;</span></span><br></pre></td></tr></table></figure>
+
+<p>&#x8FD0;&#x884C;&#x5BB9;&#x5668;</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">root@master1:~/yaml/20210115/case/case4# kubectl apply -f deploy_hostPath.yml</span><br><span class="line">deployment.apps/nginx-deployment created</span><br><span class="line"><span class="meta">#</span><span class="bash"> &#x67E5;&#x770B;&#x4E00;&#x4E0B;&#x5B83;&#x88AB;&#x8C03;&#x5EA6;&#x5230;&#x4E86;&#x90A3;&#x4E2A;&#x8282;&#x70B9;&#x4E0A;</span></span><br><span class="line">root@master1:~/yaml/20210115/case/case4# kubectl get pod -o wide</span><br><span class="line">NAME                                READY   STATUS    RESTARTS   AGE     IP               NODE           NOMINATED NODE   READINESS GATES</span><br><span class="line">nginx-deployment-7b4cbfb947-9qw7m   1/1     Running   0          52s     10.200.166.137   192.168.0.23   &lt;none&gt;           &lt;none&gt;</span><br><span class="line"><span class="meta">#</span><span class="bash"> &#x6E20;&#x9053;192.168.0.23&#x4E0A;&#x9762;&#x770B;&#x4E00;&#x4E0B;&#x76EE;&#x5F55;&#x662F;&#x5426;&#x88AB;&#x521B;&#x5EFA;&#x4E86;</span></span><br><span class="line">root@node1:~# ls /tmp/n60/ -d </span><br><span class="line">/tmp/n60/</span><br><span class="line"><span class="meta">#</span><span class="bash"> &#x8FD9;&#x662F;&#x5BB9;&#x5668;&#x81EA;&#x5DF1;&#x521B;&#x5EFA;&#x7684;</span></span><br></pre></td></tr></table></figure>
+
+<p>&#x7136;&#x540E;&#x518D;&#x5728;&#x5BB9;&#x5668;&#x4E2D;&#x5199;&#x5165;&#x6570;&#x636E;&#xFF0C;&#x67E5;&#x770B;&#x5176;&#x6570;&#x636E;&#x7684;&#x5199;&#x5165;&#x60C5;&#x51B5;&#xFF1A;</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">root@master1:~/yaml/20210115/case/case4# kubectl exec -it nginx-deployment-7b4cbfb947-9qw7m sh</span><br><span class="line"><span class="meta">#</span><span class="bash"> <span class="built_in">cd</span> /data/</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> <span class="built_in">echo</span> <span class="string">&quot;abc&quot;</span> &gt; test.sh</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> cat test.sh</span></span><br><span class="line">abc</span><br><span class="line"><span class="meta"></span></span><br><span class="line"><span class="meta">#</span><span class="bash"> &#x7136;&#x540E;&#x518D;&#x5230;&#x5BBF;&#x4E3B;&#x673A;&#x4E0A;&#x9762;&#x67E5;&#x770B;&#x6570;&#x636E;</span></span><br><span class="line">root@node1:/tmp/n60# ls</span><br><span class="line">test.sh</span><br><span class="line">root@node1:/tmp/n60# cat test.sh</span><br><span class="line">abc</span><br></pre></td></tr></table></figure>
+
+<p>&#x8FD9;&#x4E2A;pod&#x5220;&#x9664;&#x4EE5;&#x540E;&#xFF0C;&#x8FD9;&#x4E2A;&#x6570;&#x636E;&#x8FD8;&#x662F;&#x5B58;&#x5728;&#x7684;&#xFF1A;</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">root@master1:~/yaml/20210115/case/case4# kubectl delete -f deploy_hostPath.yml</span><br><span class="line">deployment.apps &quot;nginx-deployment&quot; deleted</span><br><span class="line"><span class="meta"></span></span><br><span class="line"><span class="meta">#</span><span class="bash"> &#x518D;&#x6B21;&#x67E5;&#x770B;&#x6570;&#x636E;</span></span><br><span class="line">root@node1:/tmp/n60# cat test.sh</span><br><span class="line">abc</span><br><span class="line"><span class="meta">#</span><span class="bash"> &#x4F9D;&#x7136;&#x80FD;&#x591F;&#x8BBF;&#x95EE;&#x5230;&#x6570;&#x636E;</span></span><br></pre></td></tr></table></figure>
+
+<p>&#x56E0;&#x6B64;&#xFF0C;&#x5BF9;&#x4E8E;&#x8FD9;&#x79CD;&#x6A21;&#x5F0F;&#x4E0B;&#x7684;&#x5B58;&#x50A8;&#x6700;&#x4E3B;&#x8981;&#x89E3;&#x51B3;&#x7684;&#x95EE;&#x9898;&#xFF0C;&#x5C31;&#x662F;pod&#x5728;&#x5176;&#x4ED6;node&#x8282;&#x70B9;&#x4E0A;&#x91CD;&#x5EFA;&#x7684;&#x65F6;&#x5019;&#xFF0C;&#x662F;&#x5426;&#x8FD8;&#x80FD;&#x591F;&#x8BBF;&#x95EE;&#x5230;&#x8FD9;&#x4E2A;&#x6570;&#x636E;&#x7684;&#x95EE;&#x9898;&#xFF1B;&#x5176;&#x6B21;&#xFF0C;&#x8981;&#x8003;&#x8651;node&#x7684;&#x78C1;&#x76D8;&#x5B58;&#x50A8;&#x7A7A;&#x95F4;&#x662F;&#x5426;&#x591F;&#x7528;&#xFF1B;&#x56E0;&#x4E3A;&#x7CFB;&#x7EDF;&#x76D8;&#x7684;&#x7A7A;&#x95F4;&#x4E00;&#x822C;&#x5C31;&#x662F;&#x51E0;&#x5341;&#x4E2A;G&#xFF0C;&#x8FD9;&#x4E00;&#x70B9;&#x4E00;&#x5B9A;&#x8981;&#x6CE8;&#x610F;&#xFF1B;</p>
+<blockquote>
+<p>&#x6CE8;&#x610F;&#xFF1A;emptyDir&#x548C;hostPath&#x7684;&#x4F7F;&#x7528;&#x573A;&#x666F;&#x90FD;&#x662F;&#x6BD4;&#x8F83;&#x5C11;&#x7684;&#xFF1B;</p>
+</blockquote>
+<h3 id="nfs&#x7B49;&#x5171;&#x4EAB;&#x5B58;&#x50A8;"><a href="#nfs&#x7B49;&#x5171;&#x4EAB;&#x5B58;&#x50A8;" class="headerlink" title="nfs&#x7B49;&#x5171;&#x4EAB;&#x5B58;&#x50A8;"></a>nfs&#x7B49;&#x5171;&#x4EAB;&#x5B58;&#x50A8;</h3><p>nfs&#x5377;&#x5BB9;&#x8BB8;&#x5C06;&#x73B0;&#x6709;&#x7684;NFS&#xFF08;&#x7F51;&#x7EDC;&#x6587;&#x4EF6;&#x7CFB;&#x7EDF;&#xFF09;&#x5171;&#x4EAB;&#x6302;&#x8F7D;&#x5230;&#x60A8;&#x7684;&#x5BB9;&#x5668;&#x4E2D;&#xFF0C;&#x4E0D;&#x50CF;emptyDir&#xFF0C;&#x5F53;&#x5220;&#x9664;Pod&#x7684;&#x65F6;&#x5019;&#xFF0C;nfs&#x5377;&#x7684;&#x5185;&#x5BB9;&#x662F;&#x88AB;&#x4FDD;&#x7559;&#x7684;&#xFF0C;&#x5377;&#x4EC5;&#x4EC5;&#x662F;&#x88AB;&#x5378;&#x8F7D;&#x3002;&#x8FD9;&#x610F;&#x5473;&#x7740;NFS&#x5377;&#x53EF;&#x4EE5;&#x9884;&#x586B;&#x5145;&#x6570;&#x636E;&#xFF0C;&#x5E76;&#x4E14;&#x53EF;&#x4EE5;&#x5728;pod&#x4E4B;&#x95F4;&#x201D;&#x5207;&#x6362;&#x201D;&#x6570;&#x636E;&#x3002;NFS&#x53EF;&#x4EE5;&#x88AB;&#x591A;&#x4E2A;&#x5199;&#x5165;&#x8005;&#x540C;&#x65F6;&#x6302;&#x5728;&#x3002;</p>
+<ul>
+<li>&#x521B;&#x5EFA;&#x591A;&#x4E2A;pod&#x6D4B;&#x8BD5;&#x6302;&#x5728;&#x540C;&#x4E00;&#x4E2A;NFS</li>
+<li>&#x521B;&#x5EFA;&#x591A;&#x4E2A;pod&#x6D4B;&#x8BD5;&#x6BCF;&#x4E2A;pod&#x6302;&#x5728;&#x591A;&#x4E2A;NFS</li>
+</ul>
+<p>&#x793A;&#x4F8B;&#xFF1A;&#x914D;&#x7F6E;&#x4E00;&#x4E2A;nfs&#x670D;&#x52A1;&#x5668;&#xFF0C;&#x5B9E;&#x73B0;&#x6570;&#x636E;&#x5171;&#x4EAB;&#xFF1B;</p>
+<p>&#x5B89;&#x88C5;nfs&#x670D;&#x52A1;&#x5668;</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">root@master3:~# apt update</span><br><span class="line">root@master3:~# apt install nfs-server -y</span><br><span class="line"><span class="meta"></span></span><br><span class="line"><span class="meta">#</span><span class="bash"> &#x521B;&#x5EFA;&#x5171;&#x4EAB;&#x76EE;&#x5F55;</span></span><br><span class="line">root@master3:~# mkdir -p /data/k8s/data</span><br><span class="line"><span class="meta"></span></span><br><span class="line"><span class="meta">#</span><span class="bash"> &#x7F16;&#x8F91;exports&#x6587;&#x4EF6;</span></span><br><span class="line">root@master3:~# vim /etc/exports</span><br><span class="line">/data/k8sdata *(rw,no_root_squash)  # *&#x5C31;&#x4EE3;&#x8868;&#x90FD;&#x80FD;&#x8BBF;&#x95EE;</span><br><span class="line"><span class="meta"></span></span><br><span class="line"><span class="meta">#</span><span class="bash"> &#x542F;&#x52A8;nfs&#x670D;&#x52A1;&#xFF0C;&#x8BBE;&#x7F6E;&#x5F00;&#x673A;&#x81EA;&#x542F;&#x52A8;</span></span><br><span class="line">root@master3:~# systemctl start nfs-server.service</span><br><span class="line">root@master3:~# systemctl enable nfs-server.service</span><br></pre></td></tr></table></figure>
+
+<p>&#x914D;&#x7F6E;&#x597D;nfs&#x8282;&#x70B9;&#x4EE5;&#x540E;&#xFF0C;&#x9700;&#x8981;&#x53BB;&#x5230;node&#x8282;&#x70B9;&#x4E0A;&#x9762;&#x770B;&#x4E00;&#x4E0B;&#xFF0C;node&#x8282;&#x70B9;&#x662F;&#x5426;&#x6709;&#x6743;&#x9650;&#x6302;&#x8F7D;&#x8BE5;&#x5171;&#x4EAB;&#x5B58;&#x50A8;&#xFF1B;</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">root@node1:~# showmount -e 192.168.0.22</span><br><span class="line">Export list for 192.168.0.22:</span><br><span class="line">/data/k8sdata *</span><br><span class="line"><span class="meta">#</span><span class="bash"> &#x6D4B;&#x8BD5;&#x6210;&#x529F;</span></span><br></pre></td></tr></table></figure>
+
+<p>&#x8FD9;&#x91CC;&#xFF0C;&#x6211;&#x4EEC;&#x9700;&#x8981;&#x5B89;&#x88C5;&#x4E00;&#x4E0B;nfs-common&#x7684;&#x5305;&#x7684;&#xFF0C;&#x5B83;&#x662F;&#x4E00;&#x4E2A;nfs&#x7684;&#x901A;&#x7528;&#x7EC4;&#x4EF6;&#x5E93;&#xFF0C;&#x8BA9;Linux&#x5185;&#x6838;&#x652F;&#x6301;nfs&#x7684;&#x6570;&#x636E;&#x4F20;&#x8F93;&#xFF1B;</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> &#x5728;node&#x8282;&#x70B9;&#x4E0A;&#x9762;&#x5B89;&#x88C5;&#x5373;&#x53EF;</span></span><br><span class="line">root@node1:~# apt install nfs-common</span><br><span class="line"><span class="meta">#</span><span class="bash"> &#x5728;centos&#x4E0A;&#x9762;&#xFF0C;&#x53EF;&#x4EE5;&#x5B89;&#x88C5;nfs-utils&#x7684;&#x5305;&#x5C31;&#x53EF;&#x4EE5;&#x4E86;&#xFF0C;&#x5B83;&#x4F1A;&#x5F71;&#x54CD;nfs&#x6570;&#x636E;&#x7684;&#x8F6C;&#x53D1;</span></span><br></pre></td></tr></table></figure>
+
+<p>&#x6302;&#x8F7D;&#x5171;&#x4EAB;&#x76EE;&#x5F55;</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> &#x547D;&#x4EE4;&#x6302;&#x8F7D;&#x7684;&#x8BDD;</span></span><br><span class="line">root@node1:~# mount -t nfs 192.168.0.22:/data/k8sdata /mnt</span><br><span class="line"><span class="meta">#</span><span class="bash"> &#x4E0D;&#x8FD9;&#x4E48;&#x6302;&#x8F7D;</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="&#x573A;&#x666F;&#x4E00;&#x3001;&#x5355;&#x4E2A;nfs&#x6302;&#x8F7D;"><a href="#&#x573A;&#x666F;&#x4E00;&#x3001;&#x5355;&#x4E2A;nfs&#x6302;&#x8F7D;" class="headerlink" title="&#x573A;&#x666F;&#x4E00;&#x3001;&#x5355;&#x4E2A;nfs&#x6302;&#x8F7D;"></a>&#x573A;&#x666F;&#x4E00;&#x3001;&#x5355;&#x4E2A;nfs&#x6302;&#x8F7D;</h4><p>&#x6211;&#x4EEC;&#x8FD9;&#x91CC;&#x9700;&#x8981;&#x6302;&#x5728;&#x5230;&#x5BB9;&#x5668;&#x4E2D;&#x53BB;&#xFF0C;&#x5C31;&#x9700;&#x8981;&#x5199;&#x5728;yaml&#x6587;&#x4EF6;&#x4E2D;&#xFF0C;&#x8FD9;&#x91CC;&#x6709;&#x4E24;&#x4E2A;&#x573A;&#x666F;&#xFF0C;&#x4E00;&#x4E2A;&#x662F;&#x6302;&#x5728;&#x4E00;&#x4E2A;nfs&#x5171;&#x4EAB;&#x5B58;&#x50A8;&#xFF0C;&#x53E6;&#x5916;&#x4E00;&#x4E2A;&#x5C31;&#x662F;&#x6302;&#x8F7D;&#x591A;&#x4E2A;nfs&#x5171;&#x4EAB;&#x5B58;&#x50A8;&#xFF0C;&#x8FD9;&#x662F;&#x5386;&#x53F2;&#x9057;&#x7559;&#x539F;&#x56E0;&#xFF0C;&#x6709;&#x4E00;&#x4E9B;&#x539F;&#x6765;&#x7684;&#x5171;&#x4EAB;&#x6570;&#x636E;&#x4E5F;&#x662F;&#x9700;&#x8981;&#x518D;&#x5BB9;&#x5668;&#x4E2D;&#x6267;&#x884C;&#x5E76;&#x4F7F;&#x7528;&#x7684;&#xFF1B;</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># &#x6302;&#x8F7D;&#x4E00;&#x4E2A;nfs&#x5171;&#x4EAB;&#x5B58;&#x50A8;&#x7684;yaml&#x6587;&#x4EF6;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#apiVersion: extensions/v1beta1</span></span><br><span class="line"><span class="attr">apiVersion:</span> <span class="string">apps/v1</span></span><br><span class="line"><span class="attr">kind:</span> <span class="string">Deployment</span></span><br><span class="line"><span class="attr">metadata:</span></span><br><span class="line">  <span class="attr">name:</span> <span class="string">nginx-deployment</span></span><br><span class="line"><span class="attr">spec:</span></span><br><span class="line">  <span class="attr">replicas:</span> <span class="number">1</span></span><br><span class="line">  <span class="attr">selector:</span></span><br><span class="line">    <span class="attr">matchLabels:</span></span><br><span class="line">      <span class="attr">app:</span> <span class="string">ng-deploy-80</span></span><br><span class="line">  <span class="attr">template:</span></span><br><span class="line">    <span class="attr">metadata:</span></span><br><span class="line">      <span class="attr">labels:</span></span><br><span class="line">        <span class="attr">app:</span> <span class="string">ng-deploy-80</span></span><br><span class="line">    <span class="attr">spec:</span></span><br><span class="line">      <span class="attr">containers:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">ng-deploy-80</span></span><br><span class="line">        <span class="attr">image:</span> <span class="string">nginx</span></span><br><span class="line">        <span class="attr">ports:</span></span><br><span class="line">        <span class="bullet">-</span> <span class="attr">containerPort:</span> <span class="number">80</span></span><br><span class="line">        <span class="attr">volumeMounts:</span>  <span class="comment"># &#x5173;&#x8054;&#x58F0;&#x660E;&#x7684;&#x4E00;&#x4E2A;&#x5377;</span></span><br><span class="line">        <span class="bullet">-</span> <span class="attr">mountPath:</span> <span class="string">/usr/share/nginx/html/mysite</span>  <span class="comment"># &#x6302;&#x8F7D;&#x7684;&#x76EE;&#x5F55;</span></span><br><span class="line">          <span class="attr">name:</span> <span class="string">my-nfs-volume</span></span><br><span class="line">      <span class="attr">volumes:</span>  <span class="comment"># &#x58F0;&#x660E;&#x4E00;&#x4E2A;&#x5377;</span></span><br><span class="line">      <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">my-nfs-volume</span></span><br><span class="line">        <span class="attr">nfs:</span></span><br><span class="line">          <span class="attr">server:</span> <span class="number">192.168</span><span class="number">.0</span><span class="number">.22</span>  <span class="comment"># &#x8FD9;&#x4E2A;&#x4E00;&#x5B9A;&#x6307;&#x5B9A;nfs&#x670D;&#x52A1;&#x5668;&#x7684;&#x5730;&#x5740;</span></span><br><span class="line">          <span class="attr">path:</span> <span class="string">/data/k8sdata</span>  <span class="comment"># &#x6307;&#x5B9A;nfs&#x5171;&#x4EAB;&#x7684;&#x76EE;&#x5F55;</span></span><br><span class="line"></span><br><span class="line"><span class="meta">---</span></span><br><span class="line"><span class="attr">apiVersion:</span> <span class="string">v1</span></span><br><span class="line"><span class="attr">kind:</span> <span class="string">Service</span></span><br><span class="line"><span class="attr">metadata:</span></span><br><span class="line">  <span class="attr">name:</span> <span class="string">ng-deploy-80</span></span><br><span class="line"><span class="attr">spec:</span></span><br><span class="line">  <span class="attr">ports:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">http</span></span><br><span class="line">    <span class="attr">port:</span> <span class="number">81</span></span><br><span class="line">    <span class="attr">targetPort:</span> <span class="number">80</span></span><br><span class="line">    <span class="attr">nodePort:</span> <span class="number">30016</span>  <span class="comment"># &#x66B4;&#x9732;&#x7684;&#x7AEF;&#x53E3;</span></span><br><span class="line">    <span class="attr">protocol:</span> <span class="string">TCP</span></span><br><span class="line">  <span class="attr">type:</span> <span class="string">NodePort</span></span><br><span class="line">  <span class="attr">selector:</span></span><br><span class="line">    <span class="attr">app:</span> <span class="string">ng-deploy-80</span></span><br></pre></td></tr></table></figure>
+
+<p>&#x542F;&#x52A8;&#x5BB9;&#x5668;</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">root@master1:~/yaml/20210115/case/case5# kubectl apply -f deploy_nfs.yml</span><br><span class="line">deployment.apps/nginx-deployment created</span><br><span class="line">service/ng-deploy-80 created</span><br><span class="line">root@master1:~/yaml/20210115/case/case5# kubectl get pod</span><br><span class="line">NAME                                READY   STATUS              RESTARTS   AGE</span><br><span class="line">nginx-deployment-54bfbfb9f6-s9wgf   0/1     ContainerCreating   0          4s</span><br></pre></td></tr></table></figure>
+
+<p>&#x5728;&#x5BBF;&#x4E3B;&#x673A;&#x4E0A;&#x67E5;&#x770B;&#xFF0C;&#x53EF;&#x4EE5;&#x770B;&#x5230;&#x5176;&#x6302;&#x8F7D;&#x7684;&#x4FE1;&#x606F;</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> &#x627E;&#x5230;&#x5BBF;&#x4E3B;&#x673A;</span></span><br><span class="line">root@master1:~/yaml/20210115/case/case5# kubectl get pod -o wide</span><br><span class="line">NAME                                READY   STATUS    RESTARTS   AGE     IP               NODE           NOMINATED NODE   READINESS GATES</span><br><span class="line">nginx-deployment-57fd6c9dcb-dpkrp   1/1     Running   0          65s     10.200.166.138   192.168.0.23   &lt;none&gt;           &lt;none&gt;</span><br><span class="line"><span class="meta">#</span><span class="bash"> &#x5728;&#x5BBF;&#x4E3B;&#x673A;&#x4E0A;&#x67E5;&#x770B;&#x6302;&#x8F7D;&#x60C5;&#x51B5;</span></span><br><span class="line">root@node1:~# df -HT | grep /data/k8sdata</span><br><span class="line">192.168.0.22:/data/k8sdata        nfs4       20G  5.1G   14G  27% /var/lib/kubelet/pods/a350c24e-c39f-4aa4-9bae-a2a10253e532/volumes/kubernetes.io~nfs/my-nfs-volume</span><br><span class="line"><span class="meta">#</span><span class="bash"> &#x8FD9;&#x91CC;&#x5F88;&#x591A;&#x529F;&#x80FD;&#x90FD;&#x662F;&#x7531;&#x5185;&#x6838;&#x63D0;&#x4F9B;&#x7684;&#xFF0C;&#x6240;&#x4EE5;&#x5982;&#x679C;&#x4F7F;&#x7528;centos&#x7684;&#x8BDD;&#x6700;&#x5C11;&#x4F7F;&#x7528;7.5&#x4EE5;&#x4E0A;&#x7248;&#x672C;&#x624D;&#x884C;&#xFF1B;</span></span><br></pre></td></tr></table></figure>
+
+<p>&#x8FDB;&#x5165;&#x5BB9;&#x5668;&#x4E2D;&#x67E5;&#x770B;&#xFF0C;&#x5C31;&#x80FD;&#x770B;&#x5230;&#x6302;&#x8F7D;&#x7684;&#x4FE1;&#x606F;&#x4E86;</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">root@master1:~/yaml/20210115/case/case5# kubectl exec -it nginx-deployment-57fd6c9dcb-dpkrp sh</span><br><span class="line"><span class="meta">#</span><span class="bash"> df</span></span><br><span class="line">Filesystem                        1K-blocks    Used Available Use% Mounted on</span><br><span class="line">192.168.0.22:/data/k8sdata         19475200 4964608  13498368  27% </span><br></pre></td></tr></table></figure>
+
+<p>&#x7136;&#x540E;&#x6211;&#x4EEC;&#x4E3A;&#x5176;&#x914D;&#x7F6E;&#x5171;&#x4EAB;&#x5B58;&#x50A8;&#x4E2D;&#x76F8;&#x5173;&#x5185;&#x5BB9;&#xFF0C;&#x4E0B;&#x8F7D;&#x4E00;&#x5F20;&#x56FE;&#x7247;&#x4F5C;&#x4E3A;&#x6D4B;&#x8BD5;&#x5185;&#x5BB9;</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">root@nginx-deployment-57fd6c9dcb-dpkrp:# cd /usr/share/nginx/html/mysite</span><br><span class="line">root@nginx-deployment-57fd6c9dcb-dpkrp:/usr/share/nginx/html/mysite# apt update </span><br><span class="line"><span class="meta"></span></span><br><span class="line"><span class="meta">#</span><span class="bash"> &#x5B89;&#x88C5;&#x4E00;&#x4E0B;wget&#x5DE5;&#x5177;</span></span><br><span class="line">root@nginx-deployment-57fd6c9dcb-dpkrp:/usr/share/nginx/html/mysite# apt install wget</span><br><span class="line">root@nginx-deployment-57fd6c9dcb-dpkrp:/usr/share/nginx/html/mysite# wget http://www.edudongfang.com/skin/dong/images/619-02.png</span><br><span class="line"><span class="meta"></span></span><br><span class="line"><span class="meta">#</span><span class="bash"> &#x79FB;&#x52A8;&#x6587;&#x4EF6;&#x4F4D;&#x7F6E;</span></span><br><span class="line">root@nginx-deployment-57fd6c9dcb-dpkrp:/usr/share/nginx/html/mysite# mv 619-02.png 1.png</span><br></pre></td></tr></table></figure>
+
+<p>&#x5728;&#x5171;&#x4EAB;&#x5B58;&#x50A8;&#x4E2D;&#x5C31;&#x80FD;&#x8BBF;&#x95EE;&#x5230;&#x8FD9;&#x4E2A;&#x6587;&#x4EF6;&#x4E86;&#xFF0C;&#x518D;&#x5728;&#x5916;&#x90E8;&#x53BB;&#x8BBF;&#x95EE;&#x5C31;&#x80FD;&#x8BBF;&#x95EE;&#x5230;&#x4E86;&#xFF1B;</p>
+<p><img src="/cloud-native/kubernetes/10_k8s_%E6%8C%81%E4%B9%85%E5%8C%96%E5%AD%98%E5%82%A8%E4%B8%8Econfigmap%E8%B5%84%E6%BA%90%E4%BB%8B%E7%BB%8D%EF%BC%88pod%E7%9A%84%E6%95%B0%E6%8D%AE%E5%AD%98%E5%82%A8%E4%B8%8E%E9%85%8D%E7%BD%AE%E7%AE%A1%E7%90%86%EF%BC%89/1642609752551.png" alt="&#x8BBF;&#x95EE;&#x6D4B;&#x8BD5;"></p>
+<p>&#x7136;&#x540E;&#xFF0C;&#x6211;&#x4EEC;&#x901A;&#x8FC7;dashboard&#x521B;&#x5EFA;&#x4E00;&#x4E2A;nginx&#x7684;&#x526F;&#x672C;&#xFF0C;&#x8FD9;&#x4E2A;&#x526F;&#x672C;&#x5C31;&#x662F;&#x548C;&#x5F53;&#x524D;nginx&#x4F7F;&#x7528;&#x7684;&#x5171;&#x4EAB;&#x76EE;&#x5F55;&#x662F;&#x76F8;&#x540C;&#x7684;&#x76EE;&#x5F55;&#xFF1B;</p>
+<p><img src="/cloud-native/kubernetes/10_k8s_%E6%8C%81%E4%B9%85%E5%8C%96%E5%AD%98%E5%82%A8%E4%B8%8Econfigmap%E8%B5%84%E6%BA%90%E4%BB%8B%E7%BB%8D%EF%BC%88pod%E7%9A%84%E6%95%B0%E6%8D%AE%E5%AD%98%E5%82%A8%E4%B8%8E%E9%85%8D%E7%BD%AE%E7%AE%A1%E7%90%86%EF%BC%89/1642609893523.png" alt="&#x7F29;&#x653E;&#x526F;&#x672C;&#x6570;&#x91CF;"></p>
+<p>&#x6B64;&#x65F6;&#xFF0C;pods&#x4E2D;&#x5C31;&#x4F1A;&#x6709;&#x4E24;&#x4E2A;nginx&#x526F;&#x672C;&#xFF0C;&#x8FD9;&#x4E24;&#x4E2A;nginx&#x7684;&#x526F;&#x672C;&#x4F1A;&#x4F7F;&#x7528;&#x76F8;&#x540C;&#x7684;nfs&#x7684;&#x5171;&#x4EAB;&#x5B58;&#x50A8;&#xFF1B;</p>
+<p><img src="/cloud-native/kubernetes/10_k8s_%E6%8C%81%E4%B9%85%E5%8C%96%E5%AD%98%E5%82%A8%E4%B8%8Econfigmap%E8%B5%84%E6%BA%90%E4%BB%8B%E7%BB%8D%EF%BC%88pod%E7%9A%84%E6%95%B0%E6%8D%AE%E5%AD%98%E5%82%A8%E4%B8%8E%E9%85%8D%E7%BD%AE%E7%AE%A1%E7%90%86%EF%BC%89/1642610118728.png" alt="&#x526F;&#x672C;&#x6570;"></p>
+<p>&#x67E5;&#x770B;&#x526F;&#x672C;&#x4F7F;&#x7528;nfs&#x5171;&#x4EAB;&#x60C5;&#x51B5;</p>
+<p><img src="/cloud-native/kubernetes/10_k8s_%E6%8C%81%E4%B9%85%E5%8C%96%E5%AD%98%E5%82%A8%E4%B8%8Econfigmap%E8%B5%84%E6%BA%90%E4%BB%8B%E7%BB%8D%EF%BC%88pod%E7%9A%84%E6%95%B0%E6%8D%AE%E5%AD%98%E5%82%A8%E4%B8%8E%E9%85%8D%E7%BD%AE%E7%AE%A1%E7%90%86%EF%BC%89/1642610177661.png" alt="&#x67E5;&#x770B;&#x6302;&#x8F7D;&#x60C5;&#x51B5;"></p>
+<p>&#x56E0;&#x6B64;&#xFF0C;&#x901A;&#x8FC7;yaml&#x6587;&#x4EF6;&#x521B;&#x5EFA;&#x65E0;&#x8BBA;&#x591A;&#x5C11;&#x4E2A;pod&#xFF0C;&#x5176;&#x6570;&#x636E;&#x90FD;&#x662F;&#x540C;&#x6B65;&#x7684;&#xFF1B;</p>
+<h4 id="&#x573A;&#x666F;&#x4E8C;&#x3001;&#x591A;&#x4E2A;nfs&#x6302;&#x8F7D;"><a href="#&#x573A;&#x666F;&#x4E8C;&#x3001;&#x591A;&#x4E2A;nfs&#x6302;&#x8F7D;" class="headerlink" title="&#x573A;&#x666F;&#x4E8C;&#x3001;&#x591A;&#x4E2A;nfs&#x6302;&#x8F7D;"></a>&#x573A;&#x666F;&#x4E8C;&#x3001;&#x591A;&#x4E2A;nfs&#x6302;&#x8F7D;</h4><p>&#x9996;&#x5148;&#x6211;&#x4EEC;&#x518D;&#x914D;&#x7F6E;&#x4E00;&#x4E2A;nfs&#x670D;&#x52A1;&#x5668;&#xFF0C;&#x8FD9;&#x91CC;&#x6211;&#x4EEC;&#x53D6;&#x4E3B;&#x673A;&#x540D;&#x4E3A;master2&#x7684;&#x673A;&#x5668;&#x4F5C;&#x4E3A;&#x7B2C;&#x4E8C;&#x4E2A;nfs&#x670D;&#x52A1;&#x5668;&#xFF1B;</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> &#x5B89;&#x88C5;nfs&#x670D;&#x52A1;&#x5668;</span></span><br><span class="line">root@master2:~# apt update</span><br><span class="line">root@master2:~# apt install nfs-server -y</span><br><span class="line"><span class="meta">#</span><span class="bash"> &#x7136;&#x540E;&#x5B89;&#x88C5;&#x597D;common&#x5DE5;&#x5177;</span></span><br><span class="line">root@master2:~# apt install nfs-common</span><br><span class="line"><span class="meta"></span></span><br><span class="line"><span class="meta">#</span><span class="bash"> &#x521B;&#x5EFA;&#x76EE;&#x5F55;&#x5E76;&#x5171;&#x4EAB;&#x51FA;&#x6765;</span></span><br><span class="line">root@master2:~# mkdir -p /data/k8sdata/cluster1/statics</span><br><span class="line"><span class="meta"></span></span><br><span class="line"><span class="meta">#</span><span class="bash"> &#x7F16;&#x8F91;exports&#x6587;&#x4EF6;</span></span><br><span class="line">root@master2:~# vim /etc/exports</span><br><span class="line">/data/k8sdata/cluster1/statics *(rw,no_root_squash)</span><br><span class="line"><span class="meta"></span></span><br><span class="line"><span class="meta">#</span><span class="bash"> &#x542F;&#x52A8;&#x670D;&#x52A1;&#xFF0C;&#x5E76;&#x8BBE;&#x8BA1;&#x5F00;&#x673A;&#x81EA;&#x542F;&#x52A8;</span></span><br><span class="line">root@master2:~# systemctl start nfs-server</span><br><span class="line">root@master2:~# systemctl enable nfs-server</span><br><span class="line"><span class="meta"></span></span><br><span class="line"><span class="meta">#</span><span class="bash"> &#x5728;master1&#x7684;&#x673A;&#x5668;&#x4E0A;&#x6D4B;&#x8BD5;nfs&#x670D;&#x52A1;&#x7684;&#x914D;&#x8D44;&#x60C5;&#x51B5;</span></span><br><span class="line">root@master1:~/yaml/20210115/case/case5# showmount -e 192.168.0.21</span><br><span class="line">Export list for 192.168.0.21:</span><br><span class="line">/data/k8sdata/cluster1/statics *</span><br><span class="line">root@master1:~/yaml/20210115/case/case5# showmount -e 192.168.0.22</span><br><span class="line">Export list for 192.168.0.22:</span><br><span class="line">/data/k8sdata *</span><br><span class="line"><span class="meta">#</span><span class="bash"> &#x8FD9;&#x4E24;&#x4E2A;nfs&#x7684;&#x5171;&#x4EAB;&#x5B58;&#x50A8;&#x90FD;&#x80FD;&#x591F;&#x6B63;&#x5E38;&#x914D;&#x7F6E;</span></span><br></pre></td></tr></table></figure>
+
+<p>&#x7136;&#x540E;&#x8BA9;&#x6211;&#x4EEC;&#x770B;&#x4E00;&#x4E0B;&#x591A;nfs&#x6302;&#x8F7D;yaml&#x6587;&#x4EF6;&#x7684;&#x914D;&#x7F6E;</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># &#x591A;&#x4E2A;nfs&#x7684;&#x6302;&#x8F7D;&#x7684;yaml&#x6587;&#x4EF6;&#x793A;&#x4F8B;</span></span><br><span class="line"></span><br><span class="line"><span class="attr">apiVersion:</span> <span class="string">apps/v1</span></span><br><span class="line"><span class="attr">kind:</span> <span class="string">Deployment</span></span><br><span class="line"><span class="attr">metadata:</span></span><br><span class="line">  <span class="attr">name:</span> <span class="string">nginx-deployment-site2</span></span><br><span class="line"><span class="attr">spec:</span></span><br><span class="line">  <span class="attr">replicas:</span> <span class="number">1</span></span><br><span class="line">  <span class="attr">selector:</span></span><br><span class="line">    <span class="attr">matchLabels:</span></span><br><span class="line">      <span class="attr">app:</span> <span class="string">ng-deploy-81</span></span><br><span class="line">  <span class="attr">template:</span></span><br><span class="line">    <span class="attr">metadata:</span></span><br><span class="line">      <span class="attr">labels:</span></span><br><span class="line">        <span class="attr">app:</span> <span class="string">ng-deploy-81</span></span><br><span class="line">    <span class="attr">spec:</span></span><br><span class="line">      <span class="attr">containers:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">ng-deploy-81</span></span><br><span class="line">        <span class="attr">image:</span> <span class="string">nginx</span></span><br><span class="line">        <span class="attr">ports:</span></span><br><span class="line">        <span class="bullet">-</span> <span class="attr">containerPort:</span> <span class="number">80</span></span><br><span class="line">        <span class="attr">volumeMounts:</span></span><br><span class="line">        <span class="bullet">-</span> <span class="attr">mountPath:</span> <span class="string">/usr/share/nginx/html/mysite</span>  <span class="comment"># &#x8FD9;&#x662F;&#x7B2C;&#x4E00;&#x4E2A;nfs&#x7684;&#x6302;&#x8F7D;&#x76EE;&#x5F55;</span></span><br><span class="line">          <span class="attr">name:</span> <span class="string">my-nfs-volume</span></span><br><span class="line">        <span class="bullet">-</span> <span class="attr">mountPath:</span> <span class="string">/data/nginx/cluster1</span>  <span class="comment"># &#x8FD9;&#x662F;&#x7B2C;&#x4E8C;&#x4E2A;nfs&#x6302;&#x8F7D;&#x5230;&#x5BB9;&#x5668;&#x7684;&#x6307;&#x5B9A;&#x76EE;&#x5F55;</span></span><br><span class="line">        <span class="comment"># &#x5728;nginx&#x4E2D;&#xFF0C;&#x6211;&#x4EEC;&#x9700;&#x8981;&#x914D;&#x7F6E;location&#x6765;&#x5339;&#x914D;url&#x7684;&#x8BF7;&#x6C42;&#xFF0C;&#x7136;&#x540E;&#x624D;&#x80FD;&#x8BBF;&#x95EE;&#x5230;&#x8FD9;&#x4E2A;&#x8D44;&#x6E90;</span></span><br><span class="line">          <span class="attr">name:</span> <span class="string">cluster-statics</span></span><br><span class="line">      <span class="attr">volumes:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">my-nfs-volume</span></span><br><span class="line">        <span class="attr">nfs:</span></span><br><span class="line">          <span class="attr">server:</span> <span class="number">192.168</span><span class="number">.0</span><span class="number">.22</span>  <span class="comment"># &#x6307;&#x5B9A;&#x7B2C;&#x4E00;&#x4E2A;&#x5171;&#x4EAB;&#x5B58;&#x50A8;&#x76EE;&#x5F55;</span></span><br><span class="line">          <span class="attr">path:</span> <span class="string">/data/k8sdata</span></span><br><span class="line">      <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">cluster-statics</span>  <span class="comment"># &#x518D;&#x5199;&#x4E00;&#x4E2A;name&#xFF0C;&#x4F5C;&#x4E3A;nfs&#x670D;&#x52A1;&#x5668;&#x3002;&#x8FD9;&#x4E2A;name&#x548C;&#x4E0A;&#x9762;&#x4E0D;&#x80FD;&#x76F8;&#x540C;</span></span><br><span class="line">        <span class="attr">nfs:</span></span><br><span class="line">          <span class="attr">server:</span> <span class="number">192.168</span><span class="number">.0</span><span class="number">.21</span>  <span class="comment"># &#x6307;&#x5B9A;&#x7B2C;&#x4E8C;&#x4E2A;&#x5171;&#x4EAB;&#x5B58;&#x50A8;&#x76EE;&#x5F55;</span></span><br><span class="line">          <span class="attr">path:</span> <span class="string">/data/k8sdata/cluster1/statics</span></span><br><span class="line"></span><br><span class="line"><span class="meta">---</span></span><br><span class="line"><span class="attr">apiVersion:</span> <span class="string">v1</span></span><br><span class="line"><span class="attr">kind:</span> <span class="string">Service</span></span><br><span class="line"><span class="attr">metadata:</span></span><br><span class="line">  <span class="attr">name:</span> <span class="string">ng-deploy-81</span></span><br><span class="line"><span class="attr">spec:</span></span><br><span class="line">  <span class="attr">ports:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">http</span></span><br><span class="line">    <span class="attr">port:</span> <span class="number">80</span></span><br><span class="line">    <span class="attr">targetPort:</span> <span class="number">80</span></span><br><span class="line">    <span class="attr">nodePort:</span> <span class="number">30017</span></span><br><span class="line">    <span class="attr">protocol:</span> <span class="string">TCP</span></span><br><span class="line">  <span class="attr">type:</span> <span class="string">NodePort</span></span><br><span class="line">  <span class="attr">selector:</span></span><br><span class="line">    <span class="attr">app:</span> <span class="string">ng-deploy-81</span></span><br></pre></td></tr></table></figure>
+
+<p>&#x542F;&#x52A8;&#x8FD9;&#x4E2A;&#x5BB9;&#x5668;&#x8D44;&#x6E90;</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">root@master1:~/yaml/20210115/case/case5# kubectl apply -f deploy_nfs2.yml</span><br><span class="line">deployment.apps/nginx-deployment-site2 created</span><br><span class="line">service/ng-deploy-81 created</span><br><span class="line">root@master1:~/yaml/20210115/case/case5# kubectl get pod</span><br><span class="line">NAME                                     READY   STATUS    RESTARTS   AGE</span><br><span class="line">nginx-deployment-site2-8cdc6cdd8-f2mr7   1/1     Running   0          39s</span><br></pre></td></tr></table></figure>
+
+<p>&#x5BB9;&#x5668;&#x542F;&#x52A8;&#x4EE5;&#x540E;&#x53EF;&#x4EE5;&#x8FDB;&#x884C;&#x8BBF;&#x95EE;&#x6D4B;&#x8BD5;&#xFF0C;&#x8FD9;&#x4E2A;&#x9875;&#x9762;&#x4F9D;&#x7136;&#x8FD8;&#x5728;&#xFF0C;&#x4F46;&#x662F;node&#x66B4;&#x9732;&#x7684;&#x7AEF;&#x53E3;&#x5728;&#x914D;&#x7F6E;&#x6587;&#x4EF6;&#x4E2D;&#x6539;&#x4E3A;&#x4E86;30017&#xFF1B;&#x8BBF;&#x95EE;&#x6D4B;&#x8BD5;&#x5982;&#x4E0B;&#xFF1A;192.168.0.23:30017/mysite/1.png</p>
+<p><img src="/cloud-native/kubernetes/10_k8s_%E6%8C%81%E4%B9%85%E5%8C%96%E5%AD%98%E5%82%A8%E4%B8%8Econfigmap%E8%B5%84%E6%BA%90%E4%BB%8B%E7%BB%8D%EF%BC%88pod%E7%9A%84%E6%95%B0%E6%8D%AE%E5%AD%98%E5%82%A8%E4%B8%8E%E9%85%8D%E7%BD%AE%E7%AE%A1%E7%90%86%EF%BC%89/1642642653515.png" alt="&#x8BBF;&#x95EE;&#x6D4B;&#x8BD5;"></p>
+<p>&#x5982;&#x4F55;&#x624D;&#x80FD;&#x8BBF;&#x95EE;&#x5230;cluster1&#x4E2D;&#x7684;&#x6570;&#x636E;&#x5462;&#xFF1F;&#x8FD9;&#x65F6;&#x5019;&#x6211;&#x4EEC;&#x9700;&#x8981;&#x53BB;&#x4FEE;&#x6539;location&#x7684;&#x914D;&#x7F6E;&#x624D;&#x884C;&#xFF1B;</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> &#x5230;&#x5BB9;&#x5668;&#x4E2D;&#x5B9E;&#x73B0;&#x76F8;&#x5173;&#x914D;&#x7F6E;</span></span><br><span class="line">root@nginx-deployment-site2-8cdc6cdd8-f2mr7:/data/nginx/cluster1# apt update </span><br><span class="line">root@nginx-deployment-site2-8cdc6cdd8-f2mr7:/data/nginx/cluster1# apt install vim -y</span><br></pre></td></tr></table></figure>
+
+<p>&#x8BA9;&#x540E;&#x53BB;&#x5171;&#x4EAB;&#x7684;nfs&#x76EE;&#x5F55;&#x4E0B;&#x9762;&#x4E0B;&#x8F7D;&#x56FE;&#x7247;</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">root@master2:~# cd /data/k8sdata/cluster1/statics</span><br><span class="line">root@master2:/data/k8sdata/cluster1/statics# wget http://www.edudongfang.com/skin/dong/images/619-03.png</span><br><span class="line">root@master2:/data/k8sdata/cluster1/statics# ls</span><br><span class="line">619-03.png</span><br><span class="line">root@master2:/data/k8sdata/cluster1/statics# mv 619-03.png 2.png</span><br></pre></td></tr></table></figure>
+
+<p>&#x5728;&#x5BB9;&#x5668;&#x4E2D;&#x5C31;&#x80FD;&#x770B;&#x5230;&#x8FD9;&#x4E2A;&#x6587;&#x4EF6;</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> &#x8FD9;&#x5C31;&#x9700;&#x8981;&#x4FEE;&#x6539;nginx&#x7684;&#x914D;&#x7F6E;&#x6587;&#x4EF6;&#x4E86;</span></span><br><span class="line">root@nginx-deployment-site2-8cdc6cdd8-f2mr7: #vim /etc/nginx/conf.d/default.conf</span><br><span class="line"><span class="meta">#</span><span class="bash"> &#x5728;server&#x914D;&#x7F6E;&#x5757;&#x4E0B;&#x914D;&#x7F6E;</span></span><br><span class="line">    location /cluster1 {  # &#x5F53;url&#x8BBF;&#x95EE;/cluster1&#x76EE;&#x5F55;&#x7684;&#x65F6;&#x5019;</span><br><span class="line">        index index.html;</span><br><span class="line">        root /data/nginx;   # &#x5C31;&#x5230;/data/nginx&#x4E0B;&#x9762;&#x6765;&#x627E;&#x6570;&#x636E;</span><br><span class="line">    }</span><br></pre></td></tr></table></figure>
+
+<p>&#x518D;&#x6B21;&#x8BBF;&#x95EE;&#x6D4B;&#x8BD5;&#x5C31;&#x53EF;&#x4EE5;&#x4E86;&#xFF0C;&#x8BBF;&#x95EE;&#x5730;&#x5740;&#xFF1A;192.168.0.23:30017/cluster1/2.png&#x5373;&#x53EF;&#xFF1B;&#x3010;&#x8FD9;&#x91CC;&#x6CA1;&#x6709;&#x622A;&#x56FE;&#x3011;</p>
+<h3 id="PV-PVC&#xFF08;&#x4E4B;&#x540E;&#x518D;&#x4ECB;&#x7ECD;&#xFF09;"><a href="#PV-PVC&#xFF08;&#x4E4B;&#x540E;&#x518D;&#x4ECB;&#x7ECD;&#xFF09;" class="headerlink" title="PV/PVC&#xFF08;&#x4E4B;&#x540E;&#x518D;&#x4ECB;&#x7ECD;&#xFF09;"></a>PV/PVC&#xFF08;&#x4E4B;&#x540E;&#x518D;&#x4ECB;&#x7ECD;&#xFF09;</h3><p>&#x57FA;&#x4E8E;nfs&#x7684;&#x5B58;&#x50A8;&#xFF0C;&#x5728;&#x5BB9;&#x5668;&#x4E2D;&#x53EF;&#x4EE5;&#x76F4;&#x63A5;&#x770B;&#x5230;nfs&#x4E2D;&#x6240;&#x6709;&#x7684;&#x8D44;&#x6E90;&#xFF0C;&#x4E14;&#x6CA1;&#x6709;&#x9650;&#x5236;&#xFF0C;&#x8FD9;&#x65F6;&#x5019;&#x5C31;&#x9700;&#x8981;&#x5BF9;&#x5BB9;&#x5668;&#x8FDB;&#x884C;&#x5B58;&#x50A8;&#x7684;&#x9650;&#x5236;&#x548C;&#x7BA1;&#x7406;&#xFF0C;&#x8FD9;&#x5C31;&#x6709;&#x4E86;PV&#x548C;PVC&#x7684;&#x673A;&#x5236;&#xFF0C;&#x5B83;&#x63D0;&#x4F9B;&#x4E86;&#x5B58;&#x50A8;&#x548C;&#x5BB9;&#x5668;&#x7684;&#x89E3;&#x8026;&#xFF1B;</p>
+<ul>
+<li>why &#x2013; &#x5B9E;&#x73B0;pod&#x548C;storage&#x7684;&#x89E3;&#x8026;&#xFF0C;&#x8FD9;&#x6837;&#x6211;&#x4EEC;&#x4FEE;&#x6539;storage&#x7684;&#x65F6;&#x5019;&#x4E0D;&#x9700;&#x8981;&#x4FEE;&#x6539;pod&#xFF0C;&#x4E5F;&#x53EF;&#x4EE5;&#x5B9E;&#x73B0;&#x5B58;&#x50A8;&#x548C;&#x5E94;&#x7528;&#x6743;&#x9650;&#x7684;&#x9694;&#x79BB;&#xFF1B;</li>
+<li>how &#x2013; persistentVolume&#x548C;PersistentVolumeClaim<ul>
+<li>PersistentVolume&#xFF08;PV&#xFF09;&#x662F;&#x7531;&#x7BA1;&#x7406;&#x5458;&#x8BBE;&#x7F6E;&#x7684;&#x5B58;&#x50A8;&#xFF0C;&#x4ED6;&#x662F;&#x96C6;&#x7FA4;&#x7684;&#x4E00;&#x4E2A;&#x90E8;&#x5206;&#x3002;&#x5C31;&#x50CF;&#x8282;&#x70B9;&#x65F6;&#x96C6;&#x7FA4;&#x4E2D;&#x7684;&#x8D44;&#x6E90;&#x4E00;&#x6837;&#xFF0C;PV&#x4E5F;&#x662F;&#x96C6;&#x7FA4;&#x4E2D;&#x7684;&#x8D44;&#x6E90;&#x3002;PV&#x662F;Volume&#x4E4B;&#x7C7B;&#x7684;&#x5377;&#x63D2;&#x4EF6;&#xFF0C;&#x4F46;&#x5177;&#x6709;&#x72EC;&#x7ACB;&#x4F7F;&#x7528;PV&#x7684;Pod&#x7684;&#x751F;&#x547D;&#x5468;&#x5468;&#x671F;&#x3002;&#x6B64;API&#x5BF9;&#x8C61;&#x5305;&#x542B;&#x5B58;&#x50A8;&#x5B9E;&#x73B0;&#x7684;&#x7EC6;&#x8282;&#xFF0C;&#x5373;NFS&#x3001;iSCSI&#x6216;&#x7279;&#x5B9A;&#x4E8E;&#x4E91;&#x4F9B;&#x5E94;&#x5546;&#x7684;&#x5B58;&#x50A8;&#x7CFB;&#x7EDF;&#x3002;</li>
+<li>PersistentVolumeClaim&#xFF08;PVC&#xFF09;&#x662F;&#x7528;&#x6237;&#x5B58;&#x50A8;&#x7684;&#x8BF7;&#x6C42;&#x3002;&#x5B83;&#x4E0E;Pod&#x76F8;&#x4F3C;&#x3002;Pod&#x6D88;&#x8017;&#x8282;&#x70B9;&#x8D44;&#x6E90;&#xFF0C;PVC&#x6D88;&#x8017;PV&#x8D44;&#x6E90;&#x3002;Pod&#x53EF;&#x4EE5;&#x8BF7;&#x6C42;&#x7279;&#x5B9A;&#x7EA7;&#x522B;&#x7684;&#x8D44;&#x6E90;&#xFF08;CPU&#x548C;&#x5185;&#x5B58;&#xFF09;&#x3002;&#x58F0;&#x660E;&#x53EF;&#x4EE5;&#x8BF7;&#x6C42;&#x7279;&#x5B9A;&#x7684;&#x5927;&#x5C0F;&#x548C;&#x8BBF;&#x95EE;&#x6A21;&#x5F0F;&#xFF08;&#x4F8B;&#x5982;&#xFF1A;&#x53EF;&#x4EE5;&#x4EE5;&#x8BFB;&#x5199;&#x4E00;&#x6B21;&#x6216;&#x53EA;&#x8BFB;&#x591A;&#x6B21;&#x6A21;&#x5F0F;&#x6302;&#x8F7D;&#xFF09;&#x3002;</li>
+</ul>
+</li>
+</ul>
+<h2 id="&#x914D;&#x7F6E;&#x7BA1;&#x7406;-&#x2013;-configmap"><a href="#&#x914D;&#x7F6E;&#x7BA1;&#x7406;-&#x2013;-configmap" class="headerlink" title="&#x914D;&#x7F6E;&#x7BA1;&#x7406; &#x2013; configmap"></a>&#x914D;&#x7F6E;&#x7BA1;&#x7406; &#x2013; configmap</h2><h3 id="configmap&#x57FA;&#x672C;&#x4ECB;&#x7ECD;"><a href="#configmap&#x57FA;&#x672C;&#x4ECB;&#x7ECD;" class="headerlink" title="configmap&#x57FA;&#x672C;&#x4ECB;&#x7ECD;"></a>configmap&#x57FA;&#x672C;&#x4ECB;&#x7ECD;</h3><ul>
+<li>why &#x2013; &#x914D;&#x7F6E;&#x4FE1;&#x606F;&#x548C;&#x955C;&#x50CF;&#x89E3;&#x8026;&#xFF1B;&#x6211;&#x4EEC;&#x53EF;&#x4EE5;&#x5C06;&#x914D;&#x7F6E;&#x5199;&#x5165;configmap&#x4E2D;&#xFF0C;&#x5728;&#x6253;&#x5165;&#x955C;&#x50CF;&#x7684;&#x65F6;&#x5019;&#x5BFC;&#x5165;&#x8FDB;&#x53BB;&#xFF1B;</li>
+<li>what &#x2013; &#x5C06;&#x914D;&#x7F6E;&#x4FE1;&#x606F;&#x653E;&#x5230;configmap&#x5BF9;&#x8C61;&#x4E2D;&#xFF0C;&#x7136;&#x540E;&#x518D;pod&#x7684;&#x5BF9;&#x8C61;&#x4E2D;&#x5BFC;&#x5165;confijgmap&#x5BF9;&#x8C61;&#xFF0C;&#x5B9E;&#x73B0;&#x5BFC;&#x5165;&#x914D;&#x7F6E;&#x64CD;&#x4F5C;&#xFF1B;&#x8FD9;&#x6837;&#x7684;&#x8BDD;&#x65B9;&#x4FBF;&#x540E;&#x671F;&#x5BF9;&#x955C;&#x50CF;&#x505A;&#x53D8;&#x66F4;&#xFF1B;</li>
+<li>how &#x2013; &#x58F0;&#x540D;&#x4E00;&#x4E2A;configmap&#x7684;&#x5BF9;&#x8C61;&#xFF0C;&#x4F5C;&#x4E3A;volume&#x6302;&#x8F7D;&#x5230;pod&#x4E2D;&#xFF1B;</li>
+</ul>
+<p>&#x5B9E;&#x9645;&#x4E0A;&#xFF0C;&#x5728;&#x7F51;&#x8DEF;&#x4E0A;&#x8FD8;&#x6709;&#x5F88;&#x591A;&#x914D;&#x7F6E;&#x4E2D;&#x7684;&#x5DE5;&#x5177;&#xFF0C;&#x4F8B;&#x5982;nacos&#x3001;&#x6216;&#x8005;&#x767E;&#x5EA6;&#x7684;disconf&#x3001;&#x6216;&#x8005;&#x643A;&#x7A0B;&#x7684;&#x963F;&#x6CE2;&#x7F57;&#x7B49;&#x5DE5;&#x5177;&#x3002;&#x8FD9;&#x4E9B;&#x5DE5;&#x5177;&#x90FD;&#x662F;&#x4E13;&#x95E8;&#x63D0;&#x4F9B;&#x914D;&#x7F6E;&#x7684;&#x914D;&#x7F6E;&#x4E2D;&#x5FC3;&#xFF1B;</p>
+<p>&#x56E0;&#x6B64;&#xFF0C;&#x603B;&#x7ED3;&#x8D77;&#x6765;&#xFF0C;&#x63D0;&#x4F9B;&#x914D;&#x7F6E;&#x7684;&#x65B9;&#x5F0F;&#x662F;&#x6709;&#x4E09;&#x79CD;&#x7684;&#xFF1A;1&#x3001;&#x76F4;&#x63A5;&#x548C;&#x955C;&#x50CF;&#x6587;&#x4EF6;&#x5199;&#x5728;&#x4E00;&#x8D77;&#xFF1B;2&#x3001;&#x5176;&#x6B21;&#x914D;&#x7F6E;&#x5728;configmap&#x4E2D;&#xFF1B;3&#x3001;&#x6700;&#x540E;&#x5C31;&#x662F;&#x63D0;&#x4F9B;&#x7B2C;&#x4E09;&#x65B9;&#x7684;&#x914D;&#x7F6E;&#x5DE5;&#x5177;&#xFF1B;</p>
+<h3 id="&#x793A;&#x4F8B;&#xFF1A;&#x6F14;&#x793A;configmap&#x7684;&#x57FA;&#x672C;&#x914D;&#x7F6E;"><a href="#&#x793A;&#x4F8B;&#xFF1A;&#x6F14;&#x793A;configmap&#x7684;&#x57FA;&#x672C;&#x914D;&#x7F6E;" class="headerlink" title="&#x793A;&#x4F8B;&#xFF1A;&#x6F14;&#x793A;configmap&#x7684;&#x57FA;&#x672C;&#x914D;&#x7F6E;"></a>&#x793A;&#x4F8B;&#xFF1A;&#x6F14;&#x793A;configmap&#x7684;&#x57FA;&#x672C;&#x914D;&#x7F6E;</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> &#x67E5;&#x770B;&#x9ED8;&#x8BA4;&#x7684;configmap&#x7684;&#x8D44;&#x6E90;</span></span><br><span class="line">root@master1:~# kubectl get configmaps -A</span><br><span class="line">NAMESPACE              NAME                                 DATA   AGE</span><br><span class="line">default                kube-root-ca.crt                     1      41h</span><br><span class="line">kube-node-lease        kube-root-ca.crt                     1      41h</span><br><span class="line">kube-public            kube-root-ca.crt                     1      41h</span><br><span class="line">kube-system            calico-config                        8      40h</span><br><span class="line">kube-system            coredns                              1      25h</span><br><span class="line">kube-system            extension-apiserver-authentication   6      41h</span><br><span class="line">kube-system            kube-root-ca.crt                     1      41h</span><br><span class="line">kubernetes-dashboard   kube-root-ca.crt                     1      25h</span><br><span class="line">kubernetes-dashboard   kubernetes-dashboard-settings        0      25h</span><br><span class="line"><span class="meta">#</span><span class="bash"> &#x8FD9;&#x4E9B;&#x5185;&#x5BB9;&#x5747;&#x4E3A;configmap&#x7684;&#x65B9;&#x5F0F;&#x63D0;&#x4F9B;&#x7684;</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> coredns&#x3001;calico&#x7684;&#x914D;&#x7F6E;&#x90FD;&#x662F;&#x8FD9;&#x6837;&#x5B9E;&#x73B0;&#x7684;</span></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># &#x67E5;&#x770B;case6&#x4E2D;&#x7684;configmap&#x7684;&#x914D;&#x7F6E;</span></span><br><span class="line"><span class="attr">apiVersion:</span> <span class="string">v1</span></span><br><span class="line"><span class="attr">kind:</span> <span class="string">ConfigMap</span></span><br><span class="line"><span class="attr">metadata:</span></span><br><span class="line">  <span class="attr">name:</span> <span class="string">nginx-config</span>  <span class="comment"># configmap&#x7684;&#x540D;&#x5B57;</span></span><br><span class="line"><span class="attr">data:</span></span><br><span class="line"> <span class="attr">default:</span> <span class="string">|</span>  <span class="comment"># &#x4E3A;&#x67D0;&#x4E2A;server&#x63D0;&#x4F9B;&#x4E86;&#x4E00;&#x4E2A;&#x4E3B;&#x673A;&#x914D;&#x7F6E;</span></span><br><span class="line">    <span class="string">server</span> {</span><br><span class="line">       <span class="string">listen</span>       <span class="number">80</span><span class="string">;</span></span><br><span class="line">       <span class="string">server_name</span>  <span class="string">www.mysite.com;</span></span><br><span class="line">       <span class="string">index</span>        <span class="string">index.html;</span></span><br><span class="line"></span><br><span class="line">       <span class="string">location</span> <span class="string">/</span> {  <span class="comment"># location</span></span><br><span class="line">           <span class="string">root</span> <span class="string">/data/nginx/html;</span></span><br><span class="line">           <span class="string">if</span> <span class="string">(!-e</span> <span class="string">$request_filename)</span> {  <span class="comment"># &#x505A;&#x4E86;&#x4E2A;&#x5224;&#x65AD;&#xFF0C;&#x5982;&#x679C;&#x8BF7;&#x6C42;&#x7684;&#x5185;&#x5BB9;&#x4E0D;&#x5B58;&#x5728;&#xFF0C;&#x5219;&#x8DF3;&#x8F6C;&#x5230;&#x9996;&#x9875;</span></span><br><span class="line">               <span class="string">rewrite</span> <span class="string">^/(.*)</span> <span class="string">/index.html</span> <span class="string">last;</span>  <span class="comment"># &#x8DF3;&#x8F6C;&#x9996;&#x9875;</span></span><br><span class="line">           }</span><br><span class="line">       }</span><br><span class="line">    }</span><br><span class="line"></span><br><span class="line"><span class="comment"># &#x540E;&#x9762;&#x5C31;&#x662F;&#x6302;&#x8F7D;&#x7684;&#x5185;&#x5BB9;&#x4E86;</span></span><br><span class="line"><span class="meta">---</span></span><br><span class="line"><span class="comment">#apiVersion: extensions/v1beta1</span></span><br><span class="line"><span class="attr">apiVersion:</span> <span class="string">apps/v1</span></span><br><span class="line"><span class="attr">kind:</span> <span class="string">Deployment</span></span><br><span class="line"><span class="attr">metadata:</span></span><br><span class="line">  <span class="attr">name:</span> <span class="string">nginx-deployment</span></span><br><span class="line"><span class="attr">spec:</span></span><br><span class="line">  <span class="attr">replicas:</span> <span class="number">1</span></span><br><span class="line">  <span class="attr">selector:</span></span><br><span class="line">    <span class="attr">matchLabels:</span></span><br><span class="line">      <span class="attr">app:</span> <span class="string">ng-deploy-80</span></span><br><span class="line">  <span class="attr">template:</span></span><br><span class="line">    <span class="attr">metadata:</span></span><br><span class="line">      <span class="attr">labels:</span></span><br><span class="line">        <span class="attr">app:</span> <span class="string">ng-deploy-80</span></span><br><span class="line">    <span class="attr">spec:</span></span><br><span class="line">      <span class="attr">containers:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">ng-deploy-80</span></span><br><span class="line">        <span class="attr">image:</span> <span class="string">nginx</span>  <span class="comment"># &#x8FD9;&#x91CC;&#x4F7F;&#x7528;&#x5B98;&#x65B9;&#x7684;&#x955C;&#x50CF;&#x6587;&#x4EF6;&#x5C31;&#x53EF;&#x4EE5;&#x4E86;</span></span><br><span class="line">        <span class="attr">ports:</span></span><br><span class="line">        <span class="bullet">-</span> <span class="attr">containerPort:</span> <span class="number">80</span></span><br><span class="line">        <span class="attr">volumeMounts:</span></span><br><span class="line">        <span class="bullet">-</span> <span class="attr">mountPath:</span> <span class="string">/data/nginx/html</span>  <span class="comment"># nfs&#x7684;&#x5171;&#x4EAB;&#x76EE;&#x5F55;&#x6302;&#x8F7D;</span></span><br><span class="line">          <span class="attr">name:</span> <span class="string">my-nfs-volume</span></span><br><span class="line">        <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">nginx-config</span>  <span class="comment"># &#x5173;&#x8054;volumes</span></span><br><span class="line">          <span class="attr">mountPath:</span>  <span class="string">/etc/nginx/conf.n60</span>  <span class="comment"># &#x5C06;configmap&#x6302;&#x8F7D;&#x5230;&#x8FD9;&#x4E2A;&#x76EE;&#x5F55;&#x4E0B;&#x9762;&#x6765;</span></span><br><span class="line"></span><br><span class="line">      <span class="attr">volumes:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">nginx-config</span>  <span class="comment"># &#x6307;&#x5B9A;volumes&#x7684;&#x540D;&#x79F0;</span></span><br><span class="line">        <span class="attr">configMap:</span>  <span class="comment"># configmap&#x8D44;&#x6E90;&#x7C7B;&#x578B;</span></span><br><span class="line">          <span class="attr">name:</span> <span class="string">nginx-config</span>  <span class="comment"># &#x6307;&#x5B9A;&#x6302;&#x8F7D;&#x7684;configmap</span></span><br><span class="line">          <span class="attr">items:</span>  <span class="comment"># </span></span><br><span class="line">             <span class="bullet">-</span> <span class="attr">key:</span> <span class="string">default</span>  <span class="comment"># &#x8FD9;&#x91CC;&#x6307;&#x5B9A;&#x7684;configmap&#x4E2D;&#x7684;default&#x7684;&#x540D;&#x5B57;</span></span><br><span class="line">               <span class="attr">path:</span> <span class="string">mysite.conf</span>  <span class="comment"># &#x8FD9;&#x662F;&#x6307;&#x5B9A;&#x7684;nginx&#x7684;&#x6302;&#x8F7D;&#x6587;&#x4EF6;&#x540D;&#xFF0C;&#x8FD9;&#x4E2A;&#x4F1A;&#x81EA;&#x52A8;&#x521B;&#x5EFA;</span></span><br><span class="line">      <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">my-nfs-volume</span></span><br><span class="line">        <span class="attr">nfs:</span></span><br><span class="line">          <span class="attr">server:</span> <span class="number">192.168</span><span class="number">.0</span><span class="number">.22</span>  <span class="comment"># &#x6302;&#x8F7D;&#x81EA;&#x5DF1;&#x7684;nfs&#x670D;&#x52A1;&#x5668;</span></span><br><span class="line">          <span class="attr">path:</span> <span class="string">/data/k8sdata</span></span><br><span class="line">          </span><br><span class="line"><span class="meta">---</span></span><br><span class="line"><span class="attr">apiVersion:</span> <span class="string">v1</span></span><br><span class="line"><span class="attr">kind:</span> <span class="string">Service</span>  <span class="comment"># &#x6700;&#x540E;&#x914D;&#x7F6E;&#x4E00;&#x4E2A;service&#x8D44;&#x6E90;&#xFF0C;&#x66B4;&#x9732;&#x7AEF;&#x53E3;&#x63D0;&#x4F9B;&#x8BBF;&#x95EE;</span></span><br><span class="line"><span class="attr">metadata:</span></span><br><span class="line">  <span class="attr">name:</span> <span class="string">ng-deploy-80</span></span><br><span class="line"><span class="attr">spec:</span></span><br><span class="line">  <span class="attr">ports:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">http</span></span><br><span class="line">    <span class="attr">port:</span> <span class="number">81</span></span><br><span class="line">    <span class="attr">targetPort:</span> <span class="number">80</span></span><br><span class="line">    <span class="attr">nodePort:</span> <span class="number">30019</span></span><br><span class="line">    <span class="attr">protocol:</span> <span class="string">TCP</span></span><br><span class="line">  <span class="attr">type:</span> <span class="string">NodePort</span></span><br><span class="line">  <span class="attr">selector:</span></span><br><span class="line">    <span class="attr">app:</span> <span class="string">ng-deploy-80</span></span><br></pre></td></tr></table></figure>
+
+<p>&#x542F;&#x52A8;&#x5BB9;&#x5668;</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">root@master1:~/yaml/20210115/case/case6# kubectl apply -f deploy_configmap.yml</span><br><span class="line">configmap/nginx-config created</span><br><span class="line">deployment.apps/nginx-deployment created</span><br><span class="line">service/ng-deploy-80 created</span><br><span class="line">root@master1:~/yaml/20210115/case/case6# kubectl get pod</span><br><span class="line">NAME                                READY   STATUS              RESTARTS   AGE</span><br><span class="line">nginx-deployment-64f5ccc976-8skxv   0/1     ContainerCreating   0          6s</span><br></pre></td></tr></table></figure>
+
+<p>&#x9A8C;&#x8BC1;&#x914D;&#x7F6E;</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> &#x5728;&#x5BB9;&#x5668;&#x4E2D;&#x67E5;&#x770B;&#x6302;&#x8F7D;&#x8FDB;&#x884C;&#x6765;&#x7684;&#x914D;&#x7F6E;</span></span><br><span class="line">root@nginx-deployment-64f5ccc976-8skxv:~# cd /etc/nginx/conf.n60/</span><br><span class="line">root@nginx-deployment-64f5ccc976-8skxv:/etc/nginx/conf.n60# ls</span><br><span class="line">mysite.conf</span><br><span class="line">root@nginx-deployment-64f5ccc976-8skxv:/etc/nginx/conf.n60# cat mysite.conf </span><br><span class="line">server {</span><br><span class="line">   listen       80;</span><br><span class="line">   server_name  www.mysite.com;</span><br><span class="line">   index        index.html;</span><br><span class="line"></span><br><span class="line">   location / {</span><br><span class="line">       root /data/nginx/html;</span><br><span class="line">       if (!-e $request_filename) {</span><br><span class="line">           rewrite ^/(.*) /index.html last;</span><br><span class="line">       }</span><br><span class="line">   }</span><br><span class="line">}</span><br></pre></td></tr></table></figure>
+
+<p>&#x8BA9;&#x540E;&#x5C06;nfs&#x7684;&#x5171;&#x4EAB;&#x76EE;&#x5F55;&#x6302;&#x5728;&#x5230;/data/nginx/html&#x4E2D;&#xFF0C;&#x8FD9;&#x6837;&#x5C31;&#x6709;&#x88AB;&#x8BBF;&#x95EE;&#x7684;&#x8D44;&#x6E90;&#x4E86;&#xFF1B;</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> &#x8FD9;&#x4E2A;&#x5728;&#x4E0A;&#x9762;&#x7684;&#x914D;&#x7F6E;&#x6587;&#x4EF6;&#x4E2D;&#x5DF2;&#x7ECF;&#x914D;&#x7F6E;&#x4E86;&#xFF0C;&#x8FD9;&#x91CC;&#x53EA;&#x662F;&#x8BF4;&#x660E;&#x4E00;&#x4E0B;</span></span><br><span class="line">        volumeMounts:</span><br><span class="line">        - mountPath: /data/nginx/html  # nfs&#x7684;&#x5171;&#x4EAB;&#x76EE;&#x5F55;&#x6302;&#x8F7D;</span><br><span class="line">          name: my-nfs-volume</span><br><span class="line">          </span><br><span class="line">        - name: my-nfs-volume</span><br><span class="line">        nfs:</span><br><span class="line">          server: 192.168.0.22  # &#x6302;&#x8F7D;&#x81EA;&#x5DF1;&#x7684;nfs&#x670D;&#x52A1;&#x5668;</span><br><span class="line">          path: /data/k8sdata</span><br></pre></td></tr></table></figure>
+
+<p>&#x5728;&#x8FD9;&#x91CC;&#xFF0C;&#x6211;&#x4EEC;&#x662F;&#x5C06;&#x6211;&#x4EEC;&#x5199;&#x7684;conf.n60&#x7684;&#x914D;&#x7F6E;&#x6587;&#x4EF6;&#x5355;&#x72EC;&#x6302;&#x8F7D;&#x5728;&#x8FD9;&#x4E2A;&#x76EE;&#x5F55;&#x4E0B;&#x9762;&#xFF0C;&#x8BA9;&#x540E;&#x5F53;&#x8BBF;&#x95EE;&#x7684;&#x662F;&#x65F6;&#x5019;&#x8FD8;&#x662F;&#x8BBF;&#x95EE;&#x7684;&#x4E3B;&#x9875;&#x9762;&#xFF0C;&#x56E0;&#x6B64;&#xFF0C;&#x6211;&#x4EEC;&#x9700;&#x8981;&#x5230;&#x5BB9;&#x5668;&#x4E2D;&#xFF0C;&#x5C06;&#x6211;&#x4EEC;&#x5BFC;&#x5165;&#x7684;conf.n60&#x7684;&#x914D;&#x7F6E;&#x6587;&#x4EF6;include&#x4E00;&#x4E0B;&#xFF1B;</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">root@nginx-deployment-64f5ccc976-8skxv:/etc/nginx# apt update</span><br><span class="line">root@nginx-deployment-64f5ccc976-8skxv:/etc/nginx# apt install vim -y</span><br><span class="line">root@nginx-deployment-64f5ccc976-8skxv:/etc/nginx# vim nginx.conf</span><br><span class="line">    include /etc/nginx/conf.n60/*.conf;  # &#x5BFC;&#x5165;&#x914D;&#x7F6E;&#x6587;&#x4EF6;</span><br><span class="line">    # &#x4FDD;&#x5B58;&#x5E76;&#x9000;&#x51FA;</span><br><span class="line"><span class="meta">#</span><span class="bash"> &#x518D;&#x91CD;&#x542F;nginx</span></span><br><span class="line">root@nginx-deployment-64f5ccc976-8skxv:/etc/nginx# nginx -t </span><br><span class="line">root@nginx-deployment-64f5ccc976-8skxv:/etc/nginx# nginx -s reload</span><br></pre></td></tr></table></figure>
+
+<p>&#x8FD9;&#x6837;&#x7684;&#x8BDD;&#xFF0C;&#x6211;&#x4EEC;&#x5C31;&#x53EF;&#x4EE5;&#x76F4;&#x63A5;&#x8BBF;&#x95EE;&#x6D4B;&#x8BD5;&#x4E86;&#xFF1B;&#x5728;nfs&#x7684;&#x5171;&#x4EAB;&#x76EE;&#x5F55;&#x4E2D;&#x5199;&#x4E00;&#x4E2A;&#x6D4B;&#x8BD5;&#x9996;&#x9875;&#xFF1A;</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> &#x5728;&#x6302;&#x8F7D;&#x7684;nfs&#x5171;&#x4EAB;&#x76EE;&#x5F55;&#x4E2D;&#x5199;&#x5165;</span></span><br><span class="line">root@master3:/data/k8sdata# vim index.html</span><br><span class="line">&lt;h1&gt;hello world!&lt;/h1&gt;</span><br></pre></td></tr></table></figure>
+
+<p>&#x6839;&#x636E;server{}&#x4E2D;&#x7684;&#x914D;&#x7F6E;&#xFF0C;&#x4E00;&#x65E6;&#x8BBF;&#x95EE;<a target="_blank" rel="noopener" href="http://www.mysite.com&#x7684;&#x65F6;&#x5019;&#x5C31;&#x4F1A;&#x663E;&#x793A;&#x8FD9;&#x4E2A;&#x8D44;&#x6E90;&#x4E86;;&#x56E0;&#x6B64;,&#x6211;&#x4EEC;&#x8BBF;&#x95EE;&#x7684;&#x662F;&#x65F6;&#x5019;&#x662F;&#x8BBF;&#x95EE;&#x7684;&#x57DF;&#x540D;&#x624D;&#x884C;,&#x8FD9;&#x91CC;&#x5C31;&#x9700;&#x8981;&#x914D;&#x7F6E;ha&#x8D1F;&#x8F7D;&#x5747;&#x8861;&#x7684;80&#x7AEF;&#x53E3;&#x53BB;&#x5173;&#x8054;nginx&#x7684;node&#x8282;&#x70B9;&#x63D0;&#x4F9B;&#x7684;30019&#x7AEF;&#x53E3;&#x624D;&#x884C;;/">www.mysite.com&#x7684;&#x65F6;&#x5019;&#x5C31;&#x4F1A;&#x663E;&#x793A;&#x8FD9;&#x4E2A;&#x8D44;&#x6E90;&#x4E86;&#xFF1B;&#x56E0;&#x6B64;&#xFF0C;&#x6211;&#x4EEC;&#x8BBF;&#x95EE;&#x7684;&#x662F;&#x65F6;&#x5019;&#x662F;&#x8BBF;&#x95EE;&#x7684;&#x57DF;&#x540D;&#x624D;&#x884C;&#xFF0C;&#x8FD9;&#x91CC;&#x5C31;&#x9700;&#x8981;&#x914D;&#x7F6E;ha&#x8D1F;&#x8F7D;&#x5747;&#x8861;&#x7684;80&#x7AEF;&#x53E3;&#x53BB;&#x5173;&#x8054;nginx&#x7684;node&#x8282;&#x70B9;&#x63D0;&#x4F9B;&#x7684;30019&#x7AEF;&#x53E3;&#x624D;&#x884C;&#xFF1B;</a></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">root@master1:~# vim /etc/haproxy/haproxy.cfg</span><br><span class="line">listen test-web1</span><br><span class="line">    bind 192.168.0.30:80</span><br><span class="line">    server 192.168.0.23 192.168.0.23:30019 check inter 2s fall 3 rise 3</span><br><span class="line">    server 192.168.0.24 192.168.0.24:30019 check inter 2s fall 3 rise 3</span><br><span class="line"><span class="meta">#</span><span class="bash"> &#x6211;&#x4EEC;&#x5C06;&#x670D;&#x52A1;&#x8F6C;&#x7ED9;&#x540E;&#x9762;&#x7684;&#x4E24;&#x53F0;node&#x8282;&#x70B9;&#x7684;30019&#x7AEF;&#x53E3;</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> &#x91CD;&#x542F;&#x8D1F;&#x8F7D;&#x5747;&#x8861;</span></span><br><span class="line">root@master1:~# systemctl restart haproxy.service</span><br><span class="line"><span class="meta"></span></span><br><span class="line"><span class="meta">#</span><span class="bash"> &#x6211;&#x8FD9;&#x91CC;&#x62A5;&#x9519;&#x4E86;&#xFF1A;80&#x7AEF;&#x53E3;&#x88AB;harbor&#x5360;&#x7528;&#x4E86;&#xFF0C;&#x6240;&#x4EE5;&#x5173;&#x95ED;harbor&#x670D;&#x52A1;&#x518D;&#x505A;&#x6D4B;&#x8BD5;</span></span><br></pre></td></tr></table></figure>
+
+<p>&#x6700;&#x540E;&#x518D;&#x672C;&#x5730;&#x52A0;&#x4E0A;&#x89E3;&#x6790;&#x5C31;&#x53EF;&#x4EE5;&#x4E86;&#xFF1B;</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> &#x5728;windows&#x7684;C:\Windows\System32\drivers\etc\hosts&#x6587;&#x4EF6;</span></span><br><span class="line">192.168.0.30 www.mysite.com</span><br></pre></td></tr></table></figure>
+
+<p>&#x8BBF;&#x95EE;&#x6D4B;&#x8BD5;&#x5982;&#x4E0B;&#xFF1A;</p>
+<p><img src="/cloud-native/kubernetes/10_k8s_%E6%8C%81%E4%B9%85%E5%8C%96%E5%AD%98%E5%82%A8%E4%B8%8Econfigmap%E8%B5%84%E6%BA%90%E4%BB%8B%E7%BB%8D%EF%BC%88pod%E7%9A%84%E6%95%B0%E6%8D%AE%E5%AD%98%E5%82%A8%E4%B8%8E%E9%85%8D%E7%BD%AE%E7%AE%A1%E7%90%86%EF%BC%89/1642650205885.png" alt="&#x8BBF;&#x95EE;&#x6D4B;&#x8BD5;&#x7ED3;&#x679C;"></p>
+<p>&#x8BBF;&#x95EE;&#x6D4B;&#x8BD5;&#x56FE;&#x7247;&#x5982;&#x4E0B;&#xFF1A;</p>
+<p><img src="/cloud-native/kubernetes/10_k8s_%E6%8C%81%E4%B9%85%E5%8C%96%E5%AD%98%E5%82%A8%E4%B8%8Econfigmap%E8%B5%84%E6%BA%90%E4%BB%8B%E7%BB%8D%EF%BC%88pod%E7%9A%84%E6%95%B0%E6%8D%AE%E5%AD%98%E5%82%A8%E4%B8%8E%E9%85%8D%E7%BD%AE%E7%AE%A1%E7%90%86%EF%BC%89/1642650270678.png" alt="&#x8BBF;&#x95EE;&#x6D4B;&#x8BD5;"></p>
+<h3 id="&#x793A;&#x4F8B;&#xFF1A;configmap&#x4F20;&#x9012;&#x73AF;&#x5883;&#x53D8;&#x91CF;"><a href="#&#x793A;&#x4F8B;&#xFF1A;configmap&#x4F20;&#x9012;&#x73AF;&#x5883;&#x53D8;&#x91CF;" class="headerlink" title="&#x793A;&#x4F8B;&#xFF1A;configmap&#x4F20;&#x9012;&#x73AF;&#x5883;&#x53D8;&#x91CF;"></a>&#x793A;&#x4F8B;&#xFF1A;configmap&#x4F20;&#x9012;&#x73AF;&#x5883;&#x53D8;&#x91CF;</h3><p>&#x8FD9;&#x91CC;&#x6211;&#x4EEC;case6&#x76EE;&#x5F55;&#x4E2D;&#x6709;&#x4E00;&#x4E2A;&#x793A;&#x4F8B;yaml&#x6587;&#x4EF6;&#xFF0C;&#x5177;&#x4F53;&#x5185;&#x5BB9;&#x5982;&#x4E0B;&#xFF1A;</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">apiVersion:</span> <span class="string">v1</span></span><br><span class="line"><span class="attr">kind:</span> <span class="string">ConfigMap</span></span><br><span class="line"></span><br><span class="line"><span class="attr">metadata:</span></span><br><span class="line">  <span class="attr">name:</span> <span class="string">nginx-config</span></span><br><span class="line"><span class="attr">data:</span>  <span class="comment"># data&#x4E2D;&#x4E0D;&#x518D;&#x5199;&#x914D;&#x7F6E;</span></span><br><span class="line">  <span class="attr">username:</span> <span class="string">user1</span>  <span class="comment"># key - username;value - user1</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="meta">---</span></span><br><span class="line"><span class="comment">#apiVersion: extensions/v1beta1</span></span><br><span class="line"><span class="attr">apiVersion:</span> <span class="string">apps/v1</span></span><br><span class="line"><span class="attr">kind:</span> <span class="string">Deployment</span></span><br><span class="line"><span class="attr">metadata:</span></span><br><span class="line">  <span class="attr">name:</span> <span class="string">nginx-deployment</span></span><br><span class="line"><span class="attr">spec:</span></span><br><span class="line">  <span class="attr">replicas:</span> <span class="number">1</span></span><br><span class="line">  <span class="attr">selector:</span></span><br><span class="line">    <span class="attr">matchLabels:</span></span><br><span class="line">      <span class="attr">app:</span> <span class="string">ng-deploy-80</span></span><br><span class="line">  <span class="attr">template:</span></span><br><span class="line">    <span class="attr">metadata:</span></span><br><span class="line">      <span class="attr">labels:</span></span><br><span class="line">        <span class="attr">app:</span> <span class="string">ng-deploy-80</span></span><br><span class="line">    <span class="attr">spec:</span></span><br><span class="line">      <span class="attr">containers:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">ng-deploy-80</span></span><br><span class="line">        <span class="attr">image:</span> <span class="string">nginx</span> </span><br><span class="line">        <span class="attr">env:</span>  <span class="comment"># &#x6307;&#x5B9A;&#x73AF;&#x5883;&#x53D8;&#x91CF;&#x53C2;&#x6570;</span></span><br><span class="line">        <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">&quot;mykey&quot;</span>  <span class="comment"># &#x73AF;&#x5883;&#x53D8;&#x91CF;&#x7684; key</span></span><br><span class="line">          <span class="attr">value:</span> <span class="string">&quot;myvalue&quot;</span>  <span class="comment"># &#x73AF;&#x5883;&#x53D8;&#x91CF;&#x7684; value</span></span><br><span class="line">        <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">MY_USERNAME</span>  <span class="comment"># username&#x6307;&#x5B9A;&#x7684;value&#x5C31;&#x7ED9;&#x4E86;MY_USERNAME</span></span><br><span class="line">          <span class="attr">valueFrom:</span></span><br><span class="line">            <span class="attr">configMapKeyRef:</span></span><br><span class="line">              <span class="attr">name:</span> <span class="string">nginx-config</span></span><br><span class="line">              <span class="attr">key:</span> <span class="string">username</span>  <span class="comment"># &#x6307;&#x5B9A;&#x5BFC;&#x5165;&#x7684;key</span></span><br><span class="line">        <span class="attr">ports:</span></span><br><span class="line">        <span class="bullet">-</span> <span class="attr">containerPort:</span> <span class="number">80</span></span><br></pre></td></tr></table></figure>
+
+<p>&#x521B;&#x5EFA;&#x5BB9;&#x5668;</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">root@master1:~/yaml/20210115/case/case6# kubectl apply -f deploy_configmapenv.yml</span><br><span class="line">configmap/nginx-config configured</span><br><span class="line">deployment.apps/nginx-deployment configured</span><br><span class="line">root@master1:~/yaml/20210115/case/case6# kubectl get pod</span><br><span class="line">NAME                                READY   STATUS    RESTARTS   AGE</span><br><span class="line">nginx-deployment-6fb568ff7f-xhtm2   1/1     Running   0          60s</span><br></pre></td></tr></table></figure>
+
+<p>&#x8FD9;&#x6837;&#x5C31;&#x53EF;&#x4EE5;&#x5230;&#x5BB9;&#x5668;&#x4E2D;&#x67E5;&#x770B;&#x73AF;&#x5883;&#x53D8;&#x91CF;&#x7684;&#x503C;&#x4E86;&#xFF1B;</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">root@nginx-deployment-6fb568ff7f-xhtm2:/# echo $MY_USERNAME</span><br><span class="line">user1</span><br></pre></td></tr></table></figure>
+
+<p>&#x9664;&#x4E86;&#x901A;&#x8FC7;configMapKeyRef&#x7684;&#x65B9;&#x5F0F;&#xFF08;&#x4E5F;&#x5C31;&#x662F;&#x901A;&#x8FC7;&#x914D;&#x7F6E;&#x6587;&#x4EF6;&#xFF09;&#x6765;&#x4F20;&#x9012;&#x73AF;&#x5883;&#x53D8;&#x91CF;&#x5916;&#xFF0C;&#x6211;&#x4EEC;&#x6700;&#x597D;&#x8FD8;&#x662F;&#x901A;&#x8FC7;key-value&#x7684;&#x65B9;&#x5F0F;&#x6765;&#x4F20;&#x9012;&#xFF1B;</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#&#x4E0A;&#x9762;&#x7684;yaml&#x7684;&#x6587;&#x4EF6;&#x6709;</span></span><br><span class="line">		<span class="attr">env:</span>  <span class="comment"># &#x6307;&#x5B9A;&#x73AF;&#x5883;&#x53D8;&#x91CF;&#x53C2;&#x6570;</span></span><br><span class="line">        <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">&quot;mykey&quot;</span>  <span class="comment"># &#x73AF;&#x5883;&#x53D8;&#x91CF;&#x7684; key</span></span><br><span class="line">          <span class="attr">value:</span> <span class="string">&quot;myvalue&quot;</span>  <span class="comment"># &#x73AF;&#x5883;&#x53D8;&#x91CF;&#x7684; value</span></span><br></pre></td></tr></table></figure>
+
+<p>&#x6D4B;&#x8BD5;&#x8FD9;&#x79CD;&#x4F20;&#x9012;&#x73AF;&#x5883;&#x53D8;&#x91CF;&#x7684;&#x65B9;&#x5F0F;</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">root@nginx-deployment-6fb568ff7f-xhtm2:/# echo $mykey</span><br><span class="line">myvalue</span><br></pre></td></tr></table></figure>
+
+<p>&#x8FD9;&#x79CD;&#x4F20;&#x9012;&#x73AF;&#x5883;&#x53D8;&#x91CF;&#x7684;&#x65B9;&#x5F0F;&#x66F4;&#x52A0;&#x7B80;&#x4FBF;&#xFF1B;</p>
+<h2 id="&#x5176;&#x4ED6;&#x8D44;&#x6E90;&#x670D;&#x52A1;"><a href="#&#x5176;&#x4ED6;&#x8D44;&#x6E90;&#x670D;&#x52A1;" class="headerlink" title="&#x5176;&#x4ED6;&#x8D44;&#x6E90;&#x670D;&#x52A1;"></a>&#x5176;&#x4ED6;&#x8D44;&#x6E90;&#x670D;&#x52A1;</h2><h3 id="statefulset&#xFF08;&#x540E;&#x671F;&#x6F14;&#x793A;&#xFF09;"><a href="#statefulset&#xFF08;&#x540E;&#x671F;&#x6F14;&#x793A;&#xFF09;" class="headerlink" title="statefulset&#xFF08;&#x540E;&#x671F;&#x6F14;&#x793A;&#xFF09;"></a>statefulset&#xFF08;&#x540E;&#x671F;&#x6F14;&#x793A;&#xFF09;</h3><ul>
+<li>why &#x2013; &#x4E3A;&#x4E86;&#x89E3;&#x51B3;&#x6709;&#x8F6C;&#x53F0;&#x670D;&#x52A1;&#x7684;&#x95EE;&#x9898;</li>
+<li>what &#x2013; &#x5B83;&#x6240;&#x7BA1;&#x7406;&#x7684;pod&#x7528;&#x53CB;&#x56FA;&#x5B9A;pod&#x540D;&#x79F0;&#x3001;&#x4E3B;&#x673A;&#x540D;&#x3001;&#x542F;&#x505C;&#x987A;&#x5E8F;</li>
+<li>how &#x2013; &#x521B;&#x5EFA;&#x4E00;&#x4E2A;statefulset&#x7C7B;&#x578B;&#x7684;pod&#xFF0C;&#x5E76;&#x6307;&#x5B9A;servicename&#xFF0C;&#x521B;&#x5EFA;headless&#x7C7B;&#x578B;&#x7684;svc</li>
+<li><a target="_blank" rel="noopener" href="https://kubernetes.io/zh/docs/concepts/workloads/controllers/statefulset/">https://kubernetes.io/zh/docs/concepts/workloads/controllers/statefulset/</a></li>
+</ul>
+<p>&#x8FD9;&#x4E2A;&#x9700;&#x8981;&#x5173;&#x8054;PVC&#x6765;&#x89E3;&#x51B3;&#x6570;&#x636E;&#x5B58;&#x50A8;&#x7684;&#x95EE;&#x9898;&#xFF0C;&#x4EE5;&#x53CA;&#x89E3;&#x51B3;&#x5B83;&#x7684;&#x90E8;&#x7F72;&#x95EE;&#x9898;&#xFF1B;&#x8FD9;&#x4E2A;&#x4E4B;&#x540E;&#x6211;&#x4EEC;&#x518D;&#x4ECB;&#x7ECD;</p>
+<h3 id="DaemonSet"><a href="#DaemonSet" class="headerlink" title="DaemonSet"></a>DaemonSet</h3><p>DaemonSet&#x5728;&#x5F53;&#x524D;&#x96C6;&#x7FA4;&#x4E2D;&#x6BCF;&#x4E00;&#x4E2A;&#x8282;&#x70B9;&#x8FD0;&#x884C;&#x540C;&#x4E00;&#x4E2A;pod&#xFF0C;&#x5F53;&#x6709;&#x65B0;&#x7684;&#x8282;&#x70B9;&#x52A0;&#x5165;&#x5230;&#x96C6;&#x7FA4;&#x4E2D;&#x6765;&#x7684;&#x65F6;&#x5019;&#xFF0C;&#x4F1A;&#x4E3A;&#x65B0;&#x7684;&#x8282;&#x70B9;&#x914D;&#x7F6E;&#x76F8;&#x540C;&#x7684;pod&#xFF0C;&#x5F53;&#x8282;&#x70B9;&#x4ECE;&#x96C6;&#x7FA4;&#x4E2D;&#x79FB;&#x9664;&#x7684;&#x65F6;&#x5019;&#x5176;pod&#x4E5F;&#x4F1A;&#x88AB;kubernetes&#x56DE;&#x6536;&#xFF0C;&#x4F46;&#x662F;&#x5220;&#x9664;DaemonSet&#x63A7;&#x5236;&#x5668;&#xFF0C;&#x5219;&#x5C06;&#x5220;&#x9664;&#x5176;&#x521B;&#x5EFA;&#x7684;&#x6240;&#x6709;pod&#x3002;&#x6BCF;&#x4E00;&#x4E2A;&#x8282;&#x70B9;&#x4E0A;&#x9762;&#x90FD;&#x9700;&#x8981;&#x8FD0;&#x884C;&#x67D0;&#x4E2A;&#x670D;&#x52A1;&#x7684;&#x65F6;&#x5019;&#xFF0C;&#x6211;&#x4EEC;&#x4F1A;&#x4F7F;&#x7528;DaemonSet&#x7684;&#x65B9;&#x5F0F;&#x6765;&#x5B9E;&#x73B0;&#xFF1B;</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">root@master1:~# kubectl get pod  -A</span><br><span class="line">NAMESPACE              NAME                                         READY   STATUS    RESTARTS   AGE</span><br><span class="line">kube-system            calico-node-2lzcn                            1/1     Running   5          43h</span><br><span class="line">kube-system            calico-node-d8kwg                            1/1     Running   5          43h</span><br><span class="line">kube-system            calico-node-dd9p6                            1/1     Running   4          43h</span><br><span class="line">kube-system            calico-node-zrvs5                            1/1     Running   3          43h</span><br></pre></td></tr></table></figure>
+
+<p>&#x6211;&#x4EEC;&#x53EF;&#x4EE5;&#x770B;&#x5230;calico&#x7684;&#x670D;&#x52A1;&#x5C31;&#x662F;&#x5728;&#x6BCF;&#x4E2A;node&#x8282;&#x70B9;&#x4E0A;&#x9762;&#x90FD;&#x9700;&#x8981;&#x542F;&#x52A8;&#x4E00;&#x4E2A;calico&#x670D;&#x52A1;&#xFF1B;&#x901A;&#x5E38;&#x60C5;&#x51B5;&#x4E0B;&#xFF0C;&#x65E5;&#x5FD7;&#x6536;&#x96C6;&#x3001;pod&#x76D1;&#x63A7;&#x3001;&#x4EE5;&#x53CA;&#x7F51;&#x7EDC;&#x7EC4;&#x4EF6;&#x90FD;&#x4F1A;&#x4F7F;&#x7528;&#x8FD9;&#x79CD;&#x65B9;&#x5F0F;&#x6765;&#x5B9E;&#x73B0;&#xFF1B;</p>
+<p>daemonset&#x7684;&#x5B98;&#x65B9;&#x6587;&#x6863;&#xFF1A;<a target="_blank" rel="noopener" href="https://kubernetes.io/zh/docs/concepts/workloads/controllers/daemonset/">https://kubernetes.io/zh/docs/concepts/workloads/controllers/daemonset/</a></p>
+<p>&#x5B98;&#x65B9;&#x6587;&#x6863;&#x793A;&#x4F8B;&#xFF1A;</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">apiVersion:</span> <span class="string">apps/v1</span></span><br><span class="line"><span class="attr">kind:</span> <span class="string">DaemonSet</span></span><br><span class="line"><span class="attr">metadata:</span></span><br><span class="line">  <span class="attr">name:</span> <span class="string">fluentd-elasticsearch</span></span><br><span class="line">  <span class="attr">namespace:</span> <span class="string">kube-system</span></span><br><span class="line">  <span class="attr">labels:</span></span><br><span class="line">    <span class="attr">k8s-app:</span> <span class="string">fluentd-logging</span></span><br><span class="line"><span class="attr">spec:</span></span><br><span class="line">  <span class="attr">selector:</span></span><br><span class="line">    <span class="attr">matchLabels:</span></span><br><span class="line">      <span class="attr">name:</span> <span class="string">fluentd-elasticsearch</span></span><br><span class="line">  <span class="attr">template:</span></span><br><span class="line">    <span class="attr">metadata:</span></span><br><span class="line">      <span class="attr">labels:</span></span><br><span class="line">        <span class="attr">name:</span> <span class="string">fluentd-elasticsearch</span></span><br><span class="line">    <span class="attr">spec:</span></span><br><span class="line">      <span class="attr">tolerations:</span></span><br><span class="line">      <span class="comment"># this toleration is to have the daemonset runnable on master nodes</span></span><br><span class="line">      <span class="comment"># remove it if your masters can&apos;t run pods</span></span><br><span class="line">      <span class="bullet">-</span> <span class="attr">key:</span> <span class="string">node-role.kubernetes.io/master</span></span><br><span class="line">        <span class="attr">operator:</span> <span class="string">Exists</span></span><br><span class="line">        <span class="attr">effect:</span> <span class="string">NoSchedule</span></span><br><span class="line">      <span class="attr">containers:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">fluentd-elasticsearch</span></span><br><span class="line">        <span class="attr">image:</span> <span class="string">quay.io/fluentd_elasticsearch/fluentd:v2.5.2</span></span><br><span class="line">        <span class="attr">resources:</span></span><br><span class="line">          <span class="attr">limits:</span></span><br><span class="line">            <span class="attr">memory:</span> <span class="string">200Mi</span></span><br><span class="line">          <span class="attr">requests:</span></span><br><span class="line">            <span class="attr">cpu:</span> <span class="string">100m</span></span><br><span class="line">            <span class="attr">memory:</span> <span class="string">200Mi</span></span><br><span class="line">        <span class="attr">volumeMounts:</span></span><br><span class="line">        <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">varlog</span></span><br><span class="line">          <span class="attr">mountPath:</span> <span class="string">/var/log</span>  <span class="comment"># &#x6302;&#x8F7D;&#x5230;&#x5BB9;&#x5668;&#x7684;/var/log&#x4E2D;</span></span><br><span class="line">        <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">varlibdockercontainers</span></span><br><span class="line">          <span class="attr">mountPath:</span> <span class="string">/var/lib/docker/containers</span>  <span class="comment"># &#x6302;&#x8F7D;&#x5BB9;&#x5668;&#x7684;container&#x76EE;&#x5F55;</span></span><br><span class="line">          <span class="attr">readOnly:</span> <span class="literal">true</span></span><br><span class="line">      <span class="attr">terminationGracePeriodSeconds:</span> <span class="number">30</span></span><br><span class="line">      <span class="attr">volumes:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">varlog</span></span><br><span class="line">        <span class="attr">hostPath:</span></span><br><span class="line">          <span class="attr">path:</span> <span class="string">/var/log</span>  <span class="comment"># &#x5BBF;&#x4E3B;&#x673A;&#x7684;/var/log&#x76EE;&#x5F55;</span></span><br><span class="line">      <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">varlibdockercontainers</span></span><br><span class="line">        <span class="attr">hostPath:</span></span><br><span class="line">          <span class="attr">path:</span> <span class="string">/var/lib/docker/containers</span>  <span class="comment"># &#x5BBF;&#x4E3B;&#x673A;&#x7684;container&#x76EE;&#x5F55;</span></span><br></pre></td></tr></table></figure>
+
+<p>&#x8FD9;&#x4E2A;&#x914D;&#x7F6E;&#x6587;&#x4EF6;&#x662F;&#x7528;&#x6765;&#x6536;&#x96C6;&#x6240;&#x6709;&#x5BB9;&#x5668;&#x7684;&#x65E5;&#x5FD7;&#x6587;&#x4EF6;&#x7684;&#xFF1B;&#x6211;&#x4EEC;&#x5148;&#x542F;&#x52A8;&#x8FD9;&#x4E2A;&#x5BB9;&#x5668;</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> &#x5C06;&#x6587;&#x4EF6;&#x5185;&#x5BB9;&#x7C98;&#x8D34;&#x8FDB;&#x6765;</span></span><br><span class="line">root@master1:~/yaml/20210115# vim varlog.yaml</span><br><span class="line"><span class="meta"></span></span><br><span class="line"><span class="meta">#</span><span class="bash"> &#x542F;&#x52A8;&#x5BB9;&#x5668;</span></span><br><span class="line">root@master1:~/yaml/20210115# kubectl apply -f varlog.yaml</span><br><span class="line">daemonset.apps/fluentd-elasticsearch created</span><br><span class="line">root@master1:~/yaml/20210115# kubectl get pod -A</span><br><span class="line">NAMESPACE              NAME                                         READY   STATUS    RESTARTS   AGE</span><br><span class="line">kube-system            fluentd-elasticsearch-6r6h8                  1/1     Running   0          2m4s</span><br><span class="line">kube-system            fluentd-elasticsearch-cpjbj                  1/1     Running   0          2m4s</span><br><span class="line">kube-system            fluentd-elasticsearch-d7m5b                  1/1     Running   0          2m4s</span><br><span class="line">kube-system            fluentd-elasticsearch-dldpw                  1/1     Running   0          2m4s</span><br></pre></td></tr></table></figure>
+
+<p>&#x8FD9;&#x6837;&#xFF0C;&#x6211;&#x4EEC;&#x5C31;&#x5728;&#x6BCF;&#x4E2A;&#x8282;&#x70B9;&#x4E0A;&#x9762;&#x542F;&#x52A8;&#x4E86;fluentd&#x8282;&#x70B9;&#xFF0C;&#x4E13;&#x95E8;&#x7528;&#x6765;&#x5B9E;&#x73B0;&#x65E5;&#x5FD7;&#x6536;&#x96C6;&#x4E86;&#xFF1B;</p>
+
+    </div>
+    
+    
+    
+    
+    
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/volumes/" rel="tag"># volumes</a>
+              <a href="/tags/configmap/" rel="tag"># configmap</a>
+          </div>
+    
+        
+
+    
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/cloud-native/kubernetes/11_k8s_%E4%BD%BF%E7%94%A8%E5%AD%98%E5%82%A8%E6%8E%A2%E9%92%88%E5%92%8C%E5%B0%B1%E7%BB%AA%E6%8E%A2%E9%92%88%E4%B8%BApod%E6%9C%8D%E5%8A%A1%E8%BF%9B%E8%A1%8C%E6%8E%A2%E6%B5%8B%EF%BC%88pod%E7%9A%84%E7%9B%91%E6%8E%A7%EF%BC%89/" rel="prev" title="存储探针和就绪探针介绍（pod的监控与恢复）">
+      <i class="fa fa-chevron-left"></i> 存储探针和就绪探针介绍（pod的监控与恢复）
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/cloud-native/kubernetes/09_k8s_deployment%E4%B8%8Eservice%E8%B5%84%E6%BA%90%E4%BB%8B%E7%BB%8D%EF%BC%88pod%E7%9A%84%E5%88%9B%E5%BB%BA%E4%B8%8E%E7%BD%91%E7%BB%9C%E8%AE%BF%E9%97%AE%EF%BC%89/" rel="next" title="deployment与service资源介绍（pod的创建于网络访问）">
+      deployment与service资源介绍（pod的创建于网络访问） <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+    <div>
+        
+        
+
+<div>
+    
+        <div style="text-align:center;color: #ccc;font-size:14px;">------ 版权声明：本文属于原创文章------</div>
+    	<div style="text-align:center;color: #FF0000;font-size:14px;">转载请注明：Burnov.github.io原创文章+本文链接，谢谢合作！！</i></div>
+    
+</div>
+
+
+        
+     </div>
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#pod%E7%9A%84%E6%95%B0%E6%8D%AE%E6%8C%81%E4%B9%85%E5%8C%96%E4%B8%8Econfigmap%E9%85%8D%E7%BD%AE%E7%AE%A1%E7%90%86"><span class="nav-number">1.</span> <span class="nav-text">pod的数据持久化与configmap配置管理</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9B%9E%E9%A1%BEservice%E7%BD%91%E7%BB%9C%E8%B5%84%E6%BA%90"><span class="nav-number">1.1.</span> <span class="nav-text">回顾service网络资源</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8D%B7%E5%AD%98%E5%82%A8-%E2%80%93-volume%EF%BC%88%E7%BB%A7%E7%BB%AD%E4%B8%8A%E4%B8%80%E8%8A%82%EF%BC%89"><span class="nav-number">1.2.</span> <span class="nav-text">卷存储 – volume（继续上一节）</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#volume%E5%9F%BA%E6%9C%AC%E4%BB%8B%E7%BB%8D"><span class="nav-number">1.2.1.</span> <span class="nav-text">volume基本介绍</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#emptyDir"><span class="nav-number">1.2.2.</span> <span class="nav-text">emptyDir</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#hostPath"><span class="nav-number">1.2.3.</span> <span class="nav-text">hostPath</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#nfs%E7%AD%89%E5%85%B1%E4%BA%AB%E5%AD%98%E5%82%A8"><span class="nav-number">1.2.4.</span> <span class="nav-text">nfs等共享存储</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%9C%BA%E6%99%AF%E4%B8%80%E3%80%81%E5%8D%95%E4%B8%AAnfs%E6%8C%82%E8%BD%BD"><span class="nav-number">1.2.4.1.</span> <span class="nav-text">场景一、单个nfs挂载</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%9C%BA%E6%99%AF%E4%BA%8C%E3%80%81%E5%A4%9A%E4%B8%AAnfs%E6%8C%82%E8%BD%BD"><span class="nav-number">1.2.4.2.</span> <span class="nav-text">场景二、多个nfs挂载</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#PV-PVC%EF%BC%88%E4%B9%8B%E5%90%8E%E5%86%8D%E4%BB%8B%E7%BB%8D%EF%BC%89"><span class="nav-number">1.2.5.</span> <span class="nav-text">PV&#x2F;PVC（之后再介绍）</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%85%8D%E7%BD%AE%E7%AE%A1%E7%90%86-%E2%80%93-configmap"><span class="nav-number">1.3.</span> <span class="nav-text">配置管理 – configmap</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#configmap%E5%9F%BA%E6%9C%AC%E4%BB%8B%E7%BB%8D"><span class="nav-number">1.3.1.</span> <span class="nav-text">configmap基本介绍</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%A4%BA%E4%BE%8B%EF%BC%9A%E6%BC%94%E7%A4%BAconfigmap%E7%9A%84%E5%9F%BA%E6%9C%AC%E9%85%8D%E7%BD%AE"><span class="nav-number">1.3.2.</span> <span class="nav-text">示例：演示configmap的基本配置</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%A4%BA%E4%BE%8B%EF%BC%9Aconfigmap%E4%BC%A0%E9%80%92%E7%8E%AF%E5%A2%83%E5%8F%98%E9%87%8F"><span class="nav-number">1.3.3.</span> <span class="nav-text">示例：configmap传递环境变量</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%85%B6%E4%BB%96%E8%B5%84%E6%BA%90%E6%9C%8D%E5%8A%A1"><span class="nav-number">1.4.</span> <span class="nav-text">其他资源服务</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#statefulset%EF%BC%88%E5%90%8E%E6%9C%9F%E6%BC%94%E7%A4%BA%EF%BC%89"><span class="nav-number">1.4.1.</span> <span class="nav-text">statefulset（后期演示）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#DaemonSet"><span class="nav-number">1.4.2.</span> <span class="nav-text">DaemonSet</span></a></li></ol></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Burnov"
+      src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">Burnov</p>
+  <div class="site-description" itemprop="description">No end for Learning</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">24</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">30</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/Burnov" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;Burnov" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:xials1990@gmail.com" title="E-Mail → mailto:xials1990@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://www.zhihu.com/people/xia-liang-shi-78" title="Skype → https:&#x2F;&#x2F;www.zhihu.com&#x2F;people&#x2F;xia-liang-shi-78" rel="noopener" target="_blank"><i class="fab fa-skype fa-fw"></i></a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class=""></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Burnov</span>
+</div>
+
+<!--
+  <div class="powered-by">Powered by <a href="https://github.com/Burnov" class="theme-link" rel="noopener" target="_blank">Burnov</a> & <a href="https://mist.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Mist</a>
+  </div>
+
+-->
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : false,
+      appId      : 'wIjFqGmEUzY7fpTNVHpKA0eH-gzGzoHsz',
+      appKey     : 'KdXueGM1xFH8pBVSO5SkFRKI',
+      placeholder: "Just go go",
+      avatar     : 'mm',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : false,
+      lang       : '' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : false,
+      serverURLs : ''
+    });
+  }, window.Valine);
+});
+</script>
+
+</body>
+</html>

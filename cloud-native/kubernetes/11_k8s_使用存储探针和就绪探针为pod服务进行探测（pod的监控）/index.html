@@ -1,0 +1,653 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-minimal.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Mist","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="&amp;#x4F7F;&amp;#x7528;&amp;#x5B58;&amp;#x50A8;&amp;#x63A2;&amp;#x9488;&amp;#x548C;&amp;#x5C31;&amp;#x7EEA;&amp;#x63A2;&amp;#x9488;&amp;#x4E3A;pod&amp;#x670D;&amp;#x52A1;&amp;#x8FDB;&amp;#x884C;&amp;#x63A2;&amp;#x6D4B;&amp;#xFF08;pod&amp;#x7684;&amp;#x76D1;&amp;#x63A7;&amp;#xFF09;pod&amp;#x7684">
+<meta property="og:type" content="article">
+<meta property="og:title" content="存储探针和就绪探针介绍（pod的监控与恢复）">
+<meta property="og:url" content="http://example.com/cloud-native/kubernetes/11_k8s_%E4%BD%BF%E7%94%A8%E5%AD%98%E5%82%A8%E6%8E%A2%E9%92%88%E5%92%8C%E5%B0%B1%E7%BB%AA%E6%8E%A2%E9%92%88%E4%B8%BApod%E6%9C%8D%E5%8A%A1%E8%BF%9B%E8%A1%8C%E6%8E%A2%E6%B5%8B%EF%BC%88pod%E7%9A%84%E7%9B%91%E6%8E%A7%EF%BC%89/index.html">
+<meta property="og:site_name" content="Burnov^-^Blog">
+<meta property="og:description" content="&amp;#x4F7F;&amp;#x7528;&amp;#x5B58;&amp;#x50A8;&amp;#x63A2;&amp;#x9488;&amp;#x548C;&amp;#x5C31;&amp;#x7EEA;&amp;#x63A2;&amp;#x9488;&amp;#x4E3A;pod&amp;#x670D;&amp;#x52A1;&amp;#x8FDB;&amp;#x884C;&amp;#x63A2;&amp;#x6D4B;&amp;#xFF08;pod&amp;#x7684;&amp;#x76D1;&amp;#x63A7;&amp;#xFF09;pod&amp;#x7684">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://example.com/cloud-native/kubernetes/11_k8s_%E4%BD%BF%E7%94%A8%E5%AD%98%E5%82%A8%E6%8E%A2%E9%92%88%E5%92%8C%E5%B0%B1%E7%BB%AA%E6%8E%A2%E9%92%88%E4%B8%BApod%E6%9C%8D%E5%8A%A1%E8%BF%9B%E8%A1%8C%E6%8E%A2%E6%B5%8B%EF%BC%88pod%E7%9A%84%E7%9B%91%E6%8E%A7%EF%BC%89/1642658776002.png">
+<meta property="og:image" content="http://example.com/cloud-native/kubernetes/11_k8s_%E4%BD%BF%E7%94%A8%E5%AD%98%E5%82%A8%E6%8E%A2%E9%92%88%E5%92%8C%E5%B0%B1%E7%BB%AA%E6%8E%A2%E9%92%88%E4%B8%BApod%E6%9C%8D%E5%8A%A1%E8%BF%9B%E8%A1%8C%E6%8E%A2%E6%B5%8B%EF%BC%88pod%E7%9A%84%E7%9B%91%E6%8E%A7%EF%BC%89/1642661529156.png">
+<meta property="article:published_time" content="2022-01-20T14:18:30.000Z">
+<meta property="article:modified_time" content="2022-01-20T14:24:36.503Z">
+<meta property="article:author" content="Burnov">
+<meta property="article:tag" content="livenessprobe">
+<meta property="article:tag" content="readinessprobe">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/cloud-native/kubernetes/11_k8s_%E4%BD%BF%E7%94%A8%E5%AD%98%E5%82%A8%E6%8E%A2%E9%92%88%E5%92%8C%E5%B0%B1%E7%BB%AA%E6%8E%A2%E9%92%88%E4%B8%BApod%E6%9C%8D%E5%8A%A1%E8%BF%9B%E8%A1%8C%E6%8E%A2%E6%B5%8B%EF%BC%88pod%E7%9A%84%E7%9B%91%E6%8E%A7%EF%BC%89/1642658776002.png">
+
+<link rel="canonical" href="http://example.com/cloud-native/kubernetes/11_k8s_%E4%BD%BF%E7%94%A8%E5%AD%98%E5%82%A8%E6%8E%A2%E9%92%88%E5%92%8C%E5%B0%B1%E7%BB%AA%E6%8E%A2%E9%92%88%E4%B8%BApod%E6%9C%8D%E5%8A%A1%E8%BF%9B%E8%A1%8C%E6%8E%A2%E6%B5%8B%EF%BC%88pod%E7%9A%84%E7%9B%91%E6%8E%A7%EF%BC%89/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>存储探针和就绪探针介绍（pod的监控与恢复） | Burnov^-^Blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="Burnov^-^Blog" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Burnov^-^Blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="Searching..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://example.com/cloud-native/kubernetes/11_k8s_%E4%BD%BF%E7%94%A8%E5%AD%98%E5%82%A8%E6%8E%A2%E9%92%88%E5%92%8C%E5%B0%B1%E7%BB%AA%E6%8E%A2%E9%92%88%E4%B8%BApod%E6%9C%8D%E5%8A%A1%E8%BF%9B%E8%A1%8C%E6%8E%A2%E6%B5%8B%EF%BC%88pod%E7%9A%84%E7%9B%91%E6%8E%A7%EF%BC%89/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="Burnov">
+      <meta itemprop="description" content="No end for Learning">
+    </span>
+    
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Burnov^-^Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          存储探针和就绪探针介绍（pod的监控与恢复）
+        </h1>
+    
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+              
+    
+              <time title="Created: 2022-01-20 22:18:30 / Modified: 22:24:36" itemprop="dateCreated datePublished" datetime="2022-01-20T22:18:30+08:00">2022-01-20</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/cloud-native/" itemprop="url" rel="index"><span itemprop="name">cloud native</span></a>
+                </span>
+                  , 
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/cloud-native/kubernetes/" itemprop="url" rel="index"><span itemprop="name">kubernetes</span></a>
+                </span>
+            </span>
+    
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Valine: </span>
+    
+    <a title="valine" href="/cloud-native/kubernetes/11_k8s_%E4%BD%BF%E7%94%A8%E5%AD%98%E5%82%A8%E6%8E%A2%E9%92%88%E5%92%8C%E5%B0%B1%E7%BB%AA%E6%8E%A2%E9%92%88%E4%B8%BApod%E6%9C%8D%E5%8A%A1%E8%BF%9B%E8%A1%8C%E6%8E%A2%E6%B5%8B%EF%BC%88pod%E7%9A%84%E7%9B%91%E6%8E%A7%EF%BC%89/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/cloud-native/kubernetes/11_k8s_%E4%BD%BF%E7%94%A8%E5%AD%98%E5%82%A8%E6%8E%A2%E9%92%88%E5%92%8C%E5%B0%B1%E7%BB%AA%E6%8E%A2%E9%92%88%E4%B8%BApod%E6%9C%8D%E5%8A%A1%E8%BF%9B%E8%A1%8C%E6%8E%A2%E6%B5%8B%EF%BC%88pod%E7%9A%84%E7%9B%91%E6%8E%A7%EF%BC%89/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+    
+        </div>
+      </header>
+    
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+    
+      
+        <h1 id="&#x4F7F;&#x7528;&#x5B58;&#x50A8;&#x63A2;&#x9488;&#x548C;&#x5C31;&#x7EEA;&#x63A2;&#x9488;&#x4E3A;pod&#x670D;&#x52A1;&#x8FDB;&#x884C;&#x63A2;&#x6D4B;&#xFF08;pod&#x7684;&#x76D1;&#x63A7;&#xFF09;"><a href="#&#x4F7F;&#x7528;&#x5B58;&#x50A8;&#x63A2;&#x9488;&#x548C;&#x5C31;&#x7EEA;&#x63A2;&#x9488;&#x4E3A;pod&#x670D;&#x52A1;&#x8FDB;&#x884C;&#x63A2;&#x6D4B;&#xFF08;pod&#x7684;&#x76D1;&#x63A7;&#xFF09;" class="headerlink" title="&#x4F7F;&#x7528;&#x5B58;&#x50A8;&#x63A2;&#x9488;&#x548C;&#x5C31;&#x7EEA;&#x63A2;&#x9488;&#x4E3A;pod&#x670D;&#x52A1;&#x8FDB;&#x884C;&#x63A2;&#x6D4B;&#xFF08;pod&#x7684;&#x76D1;&#x63A7;&#xFF09;"></a>&#x4F7F;&#x7528;&#x5B58;&#x50A8;&#x63A2;&#x9488;&#x548C;&#x5C31;&#x7EEA;&#x63A2;&#x9488;&#x4E3A;pod&#x670D;&#x52A1;&#x8FDB;&#x884C;&#x63A2;&#x6D4B;&#xFF08;pod&#x7684;&#x76D1;&#x63A7;&#xFF09;</h1><h2 id="pod&#x7684;&#x72B6;&#x6001;&#x4ECB;&#x7ECD;"><a href="#pod&#x7684;&#x72B6;&#x6001;&#x4ECB;&#x7ECD;" class="headerlink" title="pod&#x7684;&#x72B6;&#x6001;&#x4ECB;&#x7ECD;"></a>pod&#x7684;&#x72B6;&#x6001;&#x4ECB;&#x7ECD;</h2><p>pod&#x7684;&#x751F;&#x547D;&#x5468;&#x671F;&#x4ECB;&#x7ECD;&#xFF1A;<a target="_blank" rel="noopener" href="https://kubernetes.io/zh/docs/concepts/workloads/pods/pod-lifecycle/">https://kubernetes.io/zh/docs/concepts/workloads/pods/pod-lifecycle/</a></p>
+<p><img src="/cloud-native/kubernetes/11_k8s_%E4%BD%BF%E7%94%A8%E5%AD%98%E5%82%A8%E6%8E%A2%E9%92%88%E5%92%8C%E5%B0%B1%E7%BB%AA%E6%8E%A2%E9%92%88%E4%B8%BApod%E6%9C%8D%E5%8A%A1%E8%BF%9B%E8%A1%8C%E6%8E%A2%E6%B5%8B%EF%BC%88pod%E7%9A%84%E7%9B%91%E6%8E%A7%EF%BC%89/1642658776002.png" alt="&#x72B6;&#x6001;&#x53D8;&#x5316;&#x8FC7;&#x7A0B;"></p>
+<span id="more"></span>
+
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">&#x7B2C;&#x4E00;&#x9636;&#x6BB5;&#x2236;</span><br><span class="line">	Pending:</span><br><span class="line"><span class="meta">	#</span><span class="bash">&#x6B63;&#x5728;&#x521B;&#x5EFA;Pod&#x4F46;&#x662F;Pod&#x4E2D;&#x7684;&#x5BB9;&#x5668;&#x8FD8;&#x6CA1;&#x6709;&#x5168;&#x90E8;&#x88AB;&#x521B;&#x5EFA;&#x5B8C;&#x6210;=&#x3010;&#x5904;&#x4E8E;&#x6B64;&#x72B6;&#x6001;&#x7684;Pod&#x5E94;&#x8BE5;&#x68C0;&#x67E5;Pod&#x4F9D;&#x8D56;&#x7684;&#x5B58;&#x50A8;&#x662F;&#x5426;&#x6709;&#x6743;&#x9650;&#x6302;&#x8F7D;&#x3001;&#x955C;&#x50CF;&#x662F;&#x5426;&#x53EF;&#x4EE5;&#x4E0B;&#x8F7D;&#x3001;&#x8C03;&#x5EA6;&#x662F;&#x5426;&#x6B63;&#x5E38;&#x7B49;&#x3002;</span></span><br><span class="line">	Failed</span><br><span class="line"><span class="meta">	#</span><span class="bash">Pod&#x4E2D;&#x6709;&#x5BB9;&#x5668;&#x542F;&#x52A8;&#x5931;&#x8D25;&#x800C;&#x5BFC;&#x81F4;pod&#x5DE5;&#x4F5C;&#x5F02;&#x5E38;&#x3002;</span></span><br><span class="line">	Unknown</span><br><span class="line"><span class="meta">	#</span><span class="bash">&#x7531;&#x4E8E;&#x67D0;&#x79CD;&#x539F;&#x56E0;&#x65E0;&#x6CD5;&#x83B7;&#x5F97;pod&#x7684;&#x5F53;&#x524D;&#x72B6;&#x6001;&#xFF0C;&#x901A;&#x5E38;&#x662F;&#x7531;&#x4E8E;&#x4E0E;pod&#x6240;&#x5728;&#x7684;node&#x8282;&#x70B9;&#x901A;&#x4FE1;&#x9519;&#x8BEF;&#x3002;</span></span><br><span class="line">	Succeeded</span><br><span class="line"><span class="meta">	#</span><span class="bash">Pod&#x4E2D;&#x7684;&#x6240;&#x6709;&#x5BB9;&#x5668;&#x90FD;&#x88AB;&#x6210;&#x529F;&#x7EC8;&#x6B62;&#x5373;pod&#x91CC;&#x6240;&#x6709;&#x7684;containers&#x5747;&#x5DF2;terminated&#x3002;</span></span><br><span class="line">	</span><br><span class="line">&#x7B2C;&#x4E8C;&#x9636;&#x6BB5;&#x2236;</span><br><span class="line">    Unschedulable:</span><br><span class="line"><span class="meta">	#</span><span class="bash">Pod&#x4E0D;&#x80FD;&#x88AB;&#x8C03;&#x5EA6;&#xFF0C;kube-scheduler&#x6CA1;&#x6709;&#x5339;&#x914D;&#x5230;&#x5408;&#x9002;&#x7684;node&#x8282;&#x70B9;</span></span><br><span class="line">	PodScheduled</span><br><span class="line"><span class="meta">	#</span><span class="bash">pod&#x6B63;&#x5904;&#x4E8E;&#x8C03;&#x5EA6;&#x4E2D;&#xFF0C;&#x5728;kube-scheduler&#x521A;&#x5F00;&#x59CB;&#x8C03;&#x5EA6;&#x7684;&#x65F6;&#x5019;&#xFF0C;&#x8FD8;&#x6CA1;&#x6709;&#x5C06;pod&#x5206;&#x914D;&#x5230;&#x6307;&#x5B9A;&#x7684;node&#xFF0C;&#x5728;&#x7B5B;&#x9009;&#x51FA;&#x5408;&#x9002;&#x7684;&#x8282;&#x70B9;&#x540E;&#x5C31;&#x4F1A;&#x66F4;&#x65B0;etcd&#x6570;&#x636E;&#xFF0C;&#x5C06;pod&#x5206;&#x914D;&#x5230;&#x6307;&#x5B9A;&#x7684;node</span></span><br><span class="line">	Initialized</span><br><span class="line"><span class="meta">	#</span><span class="bash">&#x6240;&#x6709;pod&#x4E2D;&#x7684;&#x521D;&#x59CB;&#x5316;&#x5BB9;&#x5668;&#x5DF2;&#x7ECF;&#x5B8C;&#x6210;&#x4E86;</span></span><br><span class="line">	ImagePullBackOff:</span><br><span class="line"><span class="meta">	#</span><span class="bash">Pod&#x6240;&#x5728;&#x7684;node&#x8282;&#x70B9;&#x4E0B;&#x8F7D;&#x955C;&#x50CF;&#x5931;&#x8D25;</span></span><br><span class="line">	Running</span><br><span class="line"><span class="meta">	#</span><span class="bash">Pod&#x5185;&#x90E8;&#x7684;&#x5BB9;&#x5668;&#x5DF2;&#x7ECF;&#x88AB;&#x521B;&#x5EFA;&#x5E76;&#x4E14;&#x542F;&#x52A8;&#x3002;</span></span><br><span class="line">	Ready</span><br><span class="line"><span class="meta">	#</span><span class="bash">&#x8868;&#x793A;pod&#x4E2D;&#x7684;&#x5BB9;&#x5668;&#x5DF2;&#x7ECF;&#x53EF;&#x4EE5;&#x63D0;&#x4F9B;&#x8BBF;&#x95EE;&#x670D;&#x52A1;</span></span><br></pre></td></tr></table></figure>
+
+<p>&#x5728;&#x7B2C;&#x4E00;&#x9636;&#x6BB5;&#x4E2D;&#xFF0C;&#x6211;&#x4EEC;&#x901A;&#x8FC7;&#x201D;kubectl describe pod&#x201D;&#x6765;&#x67E5;&#x770B;&#x5BB9;&#x5668;&#x505C;&#x7559;&#x5728;&#x67D0;&#x4E2A;&#x72B6;&#x6001;&#x7684;&#x539F;&#x56E0;&#xFF1B;&#x5982;&#x679C;&#x662F;deployment&#x7684;&#x8D44;&#x6E90;&#x7684;&#x8BDD;&#xFF0C;&#x5219;&#x4E5F;&#x9700;&#x8981;&#x201D;kubectl describe deployment&#x201D;&#x6765;&#x67E5;&#x770B;&#x72B6;&#x6001;&#x662F;&#x5426;&#x6B63;&#x786E;&#xFF1B;</p>
+<p>&#x5177;&#x4F53;&#x7684;&#x72B6;&#x6001;&#x53D8;&#x5316;&#x8FC7;&#x7A0B;&#x5982;&#x4E0B;&#x56FE;&#x6240;&#x793A;&#xFF1A;</p>
+<p><img src="/cloud-native/kubernetes/11_k8s_%E4%BD%BF%E7%94%A8%E5%AD%98%E5%82%A8%E6%8E%A2%E9%92%88%E5%92%8C%E5%B0%B1%E7%BB%AA%E6%8E%A2%E9%92%88%E4%B8%BApod%E6%9C%8D%E5%8A%A1%E8%BF%9B%E8%A1%8C%E6%8E%A2%E6%B5%8B%EF%BC%88pod%E7%9A%84%E7%9B%91%E6%8E%A7%EF%BC%89/1642661529156.png" alt="&#x72B6;&#x6001;&#x53D8;&#x5316;&#x56FE;"></p>
+<p>&#x57FA;&#x4E8E;&#x4E0A;&#x9762;&#x7684;&#x72B6;&#x6001;&#x53D8;&#x5316;&#xFF0C;&#x6211;&#x4EEC;&#x5728;&#x5176;&#x4E2D;&#x5C31;&#x4F1A;&#x78B0;&#x5230;&#x5F88;&#x591A;&#x7684;&#x62A5;&#x9519;&#xFF1A;</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> &#x5E38;&#x89C1;&#x7684;&#x62A5;&#x9519;&#x72B6;&#x6001;</span></span><br><span class="line"></span><br><span class="line">Error&#x2236;#pod &#x542F;&#x52A8;&#x8FC7;&#x7A0B;&#x4E2D;&#x53D1;&#x751F;&#x9519;&#x8BEF;</span><br><span class="line">NodeLost&#x2236;#Pod &#x6240;&#x5728;&#x8282;&#x70B9;&#x5931;&#x8054;</span><br><span class="line">Unkown&#x2236;#Pod &#x6240;&#x5728;&#x8282;&#x70B9;&#x5931;&#x8054;&#x6216;&#x5176;&#x5B83;&#x672A;&#x77E5;&#x5F02;&#x5E38;</span><br><span class="line">Waiting&#x2236;#Pod &#x7B49;&#x5F85;&#x542F;&#x52A8;</span><br><span class="line">*Pending&#x2236;#Pod &#x7B49;&#x5F85;&#x88AB;&#x8C03;&#x5EA6;&#xFF1B;&#x505C;&#x7559;&#x5728;pending&#x72B6;&#x6001;&#x7684;&#x8BDD;&#x8868;&#x793A;&#x8D44;&#x6E90;&#x65E0;&#x6CD5;&#x8C03;&#x5EA6;&#xFF1B;</span><br><span class="line">Terminating&#x2236;#Pod &#x6B63;&#x5728;&#x88AB;&#x9500;&#x6BC1;</span><br><span class="line">CrashLoopBackOff&#x2236;#pod&#xFF0C;&#x4F46;&#x662F;kubelet&#x6B63;&#x5728;&#x5C06;&#x5B83;&#x91CD;&#x542F;</span><br><span class="line">InvalidImageName&#x2236;#node&#x8282;&#x70B9;&#x65E0;&#x6CD5;&#x89E3;&#x6790;&#x955C;&#x50CF;&#x540D;&#x79F0;&#x5BFC;&#x81F4;&#x7684;&#x955C;&#x50CF;&#x65E0;&#x6CD5;&#x4E0B;&#x8F7D;</span><br><span class="line">ImageInspectError&#x2236;#&#x65E0;&#x6CD5;&#x6821;&#x9A8C;&#x955C;&#x50CF;&#xFF0C;&#x955C;&#x50CF;&#x4E0D;&#x5B8C;&#x6574;&#x5BFC;&#x81F4;</span><br><span class="line">*ErrImageNeverPull&#x2236;#&#x7B56;&#x7565;&#x7981;&#x6B62;&#x62C9;&#x53D6;&#x955C;&#x50CF;&#xFF0C;&#x955C;&#x50CF;&#x4E2D;&#x5FC3;&#x6743;&#x9650;&#x662F;&#x79C1;&#x6709;&#x7B49;</span><br><span class="line">*ImagePullBackOff&#x2236;#&#x955C;&#x50CF;&#x62C9;&#x53D6;&#x5931;&#x8D25;&#xFF0C;&#x4F46;&#x662F;&#x6B63;&#x5728;&#x91CD;&#x65B0;&#x62C9;&#x53D6;</span><br><span class="line">RegistryUnavailable&#x2236;#&#x955C;&#x50CF;&#x670D;&#x52A1;&#x5668;&#x4E0D;&#x53EF;&#x7528;&#xFF0C;&#x7F51;&#x7EDC;&#x539F;&#x56E0;&#x6216;harbor&#x5B95;&#x673A;</span><br><span class="line">ErrImagePull&#x2236;#&#x955C;&#x50CF;&#x62C9;&#x53D6;&#x51FA;&#x9519;&#xFF0C;&#x8D85;&#x65F6;&#x6216;&#x4E0B;&#x8F7D;&#x88AB;&#x5F3A;&#x5236;&#x7EC8;&#x6B62;</span><br><span class="line">CreateContainerConfigError&#x2236;#&#x4E0D;&#x80FD;&#x521B;&#x5EFA;kubelet&#x4F7F;&#x7528;&#x7684;&#x5BB9;&#x5668;&#x914D;&#x7F6E;</span><br><span class="line">CreateContainerError&#x2236;#&#x521B;&#x5EFA;&#x5BB9;&#x5668;&#x5931;&#x8D25;</span><br><span class="line">PreStartContainer&#x2236; #&#x6267;&#x884C;preStart hook&#x62A5;&#x9519;&#xFF0C;Pod hook&#xFF08;&#x94A9;&#x5B50;&#xFF09;&#x662F;&#x7531; Kubernetes &#x7BA1;&#x7406;&#x7684; kubelet &#x53D1;&#x8D77;&#x7684;&#xFF0C;&#x5F53;&#x5BB9;&#x5668;&#x4E2D;&#x7684;&#x8FDB;&#x7A0B;&#x542F;&#x52A8;&#x524D;&#x6216;&#x8005;&#x5BB9;&#x5668;&#x4E2D;&#x7684;&#x8FDB;&#x7A0B;&#x7EC8;&#x6B62;&#x4E4B;&#x524D;&#x8FD0;&#x884C;&#xFF0C;&#x6BD4;&#x5982;&#x5BB9;&#x5668;&#x521B;&#x5EFA;&#x5B8C;&#x6210;&#x540E;&#x91CC;&#x9762;&#x7684;&#x670D;&#x52A1;&#x542F;&#x52A8;&#x4E4B;&#x524D;&#x53EF;&#x4EE5;&#x68C0;&#x67E5;&#x4E00;&#x4E0B;&#x4F9D;&#x8D56;&#x7684;&#x5176;&#x5B83;&#x670D;&#x52A1;&#x662F;&#x5426;&#x542F;&#x52A8;&#xFF0C;&#x6216;&#x8005;&#x5BB9;&#x5668;&#x9000;&#x51FA;&#x4E4B;&#x524D;&#x53EF;&#x4EE5;&#x628A;&#x5BB9;&#x5668;&#x4E2D;&#x7684;&#x670D;&#x52A1;&#x5148;&#x901A;&#x8FC7;&#x547D;&#x4EE4;&#x505C;&#x6B62;&#x3002;</span><br><span class="line">PostStartHookError&#x2236;#&#x6267;&#x884C; postStart hook &#x62A5;&#x9519;</span><br><span class="line">RunContainerError&#x2236;#pod&#x8FD0;&#x884C;&#x5931;&#x8D25;&#xFF0C;&#x5BB9;&#x5668;&#x4E2D;&#x6CA1;&#x6709;&#x521D;&#x59CB;&#x5316;PID&#x4E3A;1&#x7684;&#x5B88;&#x62A4;&#x8FDB;&#x7A0B;&#x7B49;</span><br><span class="line">ContainersNotInitialized&#x2236;#pod&#x6CA1;&#x6709;&#x521D;&#x59CB;&#x5316;&#x5B8C;&#x6BD5;</span><br><span class="line">ContainersNotReady&#x2236;#pod&#x6CA1;&#x6709;&#x51C6;&#x5907;&#x5B8C;&#x6BD5;</span><br><span class="line">ContainerCreating&#x2236;#pod&#x6B63;&#x5728;&#x521B;&#x5EFA;&#x4E2D;PodInitializing&#x2236;#pod&#x6B63;&#x5728;&#x521D;&#x59CB;&#x5316;&#x4E2D;</span><br><span class="line">DockerDaemonNotReady&#x2236;#node&#x8282;&#x70B9;decker&#x670D;&#x52A1;&#x6CA1;&#x6709;&#x542F;&#x52A8;</span><br><span class="line">NetworkPluginNotReady&#x2236; # &#x7F51;&#x7EDC;&#x63D2;&#x4EF6;&#x8FD8;&#x6709;&#x5B8C;&#x5168;&#x542F;&#x52A8;</span><br></pre></td></tr></table></figure>
+
+<h2 id="pod&#x7684;&#x8C03;&#x5EA6;&#x8FC7;&#x7A0B;"><a href="#pod&#x7684;&#x8C03;&#x5EA6;&#x8FC7;&#x7A0B;" class="headerlink" title="pod&#x7684;&#x8C03;&#x5EA6;&#x8FC7;&#x7A0B;"></a>pod&#x7684;&#x8C03;&#x5EA6;&#x8FC7;&#x7A0B;</h2><p>&#x89C1;k8s&#x5B9E;&#x6218;&#x6848;&#x4F8B;2.1.3&#xFF1A;kube-scheduler;</p>
+<h2 id="pod&#x63A2;&#x9488;"><a href="#pod&#x63A2;&#x9488;" class="headerlink" title="pod&#x63A2;&#x9488;"></a>pod&#x63A2;&#x9488;</h2><p>&#x5BB9;&#x5668;&#x63A2;&#x9488;&#x4ECB;&#x7ECD;&#x7684;&#x5B98;&#x65B9;&#x7AD9;&#x70B9;&#xFF1A;<a target="_blank" rel="noopener" href="https://kubernetes.io/zh/docs/concepts/workloads/pods/pod-lifecycle/">https://kubernetes.io/zh/docs/concepts/workloads/pods/pod-lifecycle/</a></p>
+<blockquote>
+<p>&#x9762;&#x8BD5;&#xFF1A;&#x5982;&#x4F55;&#x4FDD;&#x8BC1;k8s&#x67B6;&#x6784;&#x7684;&#x53EF;&#x7528;&#x6027;</p>
+<p>&#x7B54;&#xFF1A;&#x901A;&#x8FC7;&#x914D;&#x7F6E;pod&#x63A2;&#x9488;&#x6765;&#x5B9E;&#x73B0;pod&#x72B6;&#x6001;&#x7684;&#x81EA;&#x52A8;&#x68C0;&#x6D4B;&#xFF1B;</p>
+</blockquote>
+<h3 id="&#x63A2;&#x9488;&#x4ECB;&#x7ECD;"><a href="#&#x63A2;&#x9488;&#x4ECB;&#x7ECD;" class="headerlink" title="&#x63A2;&#x9488;&#x4ECB;&#x7ECD;"></a>&#x63A2;&#x9488;&#x4ECB;&#x7ECD;</h3><p>&#x63A2;&#x9488;&#x662F;&#x7531; kubelet &#x5BF9;&#x5BB9;&#x5668;&#x6267;&#x884C;&#x7684;&#x5B9A;&#x671F;&#x8BCA;&#x65AD;&#xFF0C;&#x4EE5;&#x4FDD;&#x8BC1;Pod&#x7684;&#x72B6;&#x6001;&#x59CB;&#x7EC8;&#x5904;&#x4E8E;&#x8FD0;&#x884C;&#x72B6;&#x6001;&#xFF0C;&#x8981;&#x6267;&#x884C;&#x8BCA;&#x65AD;&#xFF0C;kubelet &#x8C03;&#x7528;&#x7531;&#x5BB9;&#x5668;&#x5B9E;&#x73B0;&#x7684;Handler&#xFF08;&#x5904;&#x7406;&#x7A0B;&#x5E8F;&#xFF09;&#xFF0C;&#x6709;&#x4E09;&#x79CD;&#x7C7B;&#x578B;&#x7684;&#x5904;&#x7406;&#x7A0B;&#x5E8F;&#x2236;</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">ExecAction</span><br><span class="line"><span class="meta">#</span><span class="bash">&#x5728;&#x5BB9;&#x5668;&#x5185;&#x6267;&#x884C;&#x6307;&#x5B9A;&#x547D;&#x4EE4;&#xFF0C;&#x5982;&#x679C;&#x547D;&#x4EE4;&#x9000;&#x51FA;&#x65F6;&#x8FD4;&#x56DE;&#x7801;&#x4E3A;0&#x5219;&#x8BA4;&#x4E3A;&#x8BCA;&#x65AD;&#x6210;&#x529F;&#x3002;</span></span><br><span class="line"></span><br><span class="line">TCPSocketAction</span><br><span class="line"><span class="meta">#</span><span class="bash">&#x5BF9;&#x6307;&#x5B9A;&#x7AEF;&#x53E3;&#x4E0A;&#x7684;&#x5BB9;&#x5668;&#x7684;IP&#x5730;&#x5740;&#x8FDB;&#x884C;rCP&#x68C0;&#x67E5;&#xFF0C;&#x5982;&#x679C;&#x7AEF;&#x53E3;&#x6253;&#x5F00;&#xFF0C;&#x5219;&#x8BCA;&#x65AD;&#x88AB;&#x8BA4;&#x4E3A;&#x662F;&#x6210;&#x529F;&#x7684;&#x3002;</span></span><br><span class="line"></span><br><span class="line">HTTPGetAction</span><br><span class="line"><span class="meta">#</span><span class="bash">&#x5BF9;&#x6307;&#x5B9A;&#x7684;&#x7AEF;&#x53E3;&#x548C;&#x8DEF;&#x5F84;&#x4E0A;&#x7684;&#x5BB9;&#x5668;&#x7684;IP&#x5730;&#x5740;&#x6267;&#x884C;HrTPGet&#x8BF7;&#x6C42;&#xFF0C;&#x5982;&#x679C;&#x54CD;&#x5E94;&#x7684;&#x72B6;&#x6001;&#x7801;&#x5927;&#x4E8E;&#x7B49;&#x4E8E;200&#x4E14;&#x5C0F;&#x4E8E; 400&#xFF0C;&#x5219;&#x8BCA;&#x65AD;&#x88AB;&#x8BA4;&#x4E3A;&#x662F;&#x6210;&#x529F;&#x7684;&#x3002;</span></span><br></pre></td></tr></table></figure>
+
+<p>&#x6BCF;&#x6B21;&#x63A2;&#x6D4B;&#x90FD;&#x5C06;&#x83B7;&#x5F97;&#x4EE5;&#x4E0B;&#x4E09;&#x79CD;&#x7ED3;&#x679C;&#x4E4B;&#x4E00;&#x2236;</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Success&#xFF08;&#x6210;&#x529F;&#xFF09;&#xFF1A;&#x5BB9;&#x5668;&#x901A;&#x8FC7;&#x4E86;&#x8BCA;&#x65AD;&#x3002;</span><br><span class="line">Failure&#xFF08;&#x5931;&#x8D25;&#xFF09;&#xFF1A;&#x5BB9;&#x5668;&#x672A;&#x901A;&#x8FC7;&#x8BCA;&#x65AD;&#x3002;</span><br><span class="line">Unknown&#xFF08;&#x672A;&#x77E5;&#xFF09;&#xFF1A;&#x8BCA;&#x65AD;&#x5931;&#x8D25;&#xFF0C;&#x56E0;&#x6B64;&#x4E0D;&#x4F1A;&#x91C7;&#x53D6;&#x4EFB;&#x4F55;&#x884C;&#x52A8;&#x3002;</span><br></pre></td></tr></table></figure>
+
+<h3 id="&#x914D;&#x7F6E;&#x63A2;&#x9488;"><a href="#&#x914D;&#x7F6E;&#x63A2;&#x9488;" class="headerlink" title="&#x914D;&#x7F6E;&#x63A2;&#x9488;"></a>&#x914D;&#x7F6E;&#x63A2;&#x9488;</h3><p>&#x57FA;&#x4E8E;&#x63A2;&#x9488;&#x5B9E;&#x73B0;&#x5BF9;Pod&#x7684;&#x72B6;&#x6001;&#x68C0;&#x6D4B;</p>
+<h4 id="&#x63A2;&#x9488;&#x7C7B;&#x578B;"><a href="#&#x63A2;&#x9488;&#x7C7B;&#x578B;" class="headerlink" title="&#x63A2;&#x9488;&#x7C7B;&#x578B;"></a>&#x63A2;&#x9488;&#x7C7B;&#x578B;</h4><ul>
+<li><code>livenessProbe</code>&#xFF1A;&#x6307;&#x793A;&#x5BB9;&#x5668;&#x662F;&#x5426;&#x6B63;&#x5728;&#x8FD0;&#x884C;&#x3002;&#x5982;&#x679C;&#x5B58;&#x6D3B;&#x6001;&#x63A2;&#x6D4B;&#x5931;&#x8D25;&#xFF0C;&#x5219; kubelet &#x4F1A;&#x6740;&#x6B7B;&#x5BB9;&#x5668;&#xFF0C; &#x5E76;&#x4E14;&#x5BB9;&#x5668;&#x5C06;&#x6839;&#x636E;&#x5176;<a target="_blank" rel="noopener" href="https://kubernetes.io/zh/docs/concepts/workloads/pods/pod-lifecycle/#restart-policy">&#x91CD;&#x542F;&#x7B56;&#x7565;</a>&#x51B3;&#x5B9A;&#x672A;&#x6765;&#x3002;&#x5982;&#x679C;&#x5BB9;&#x5668;&#x4E0D;&#x63D0;&#x4F9B;&#x5B58;&#x6D3B;&#x63A2;&#x9488;&#xFF0C; &#x5219;&#x9ED8;&#x8BA4;&#x72B6;&#x6001;&#x4E3A; <code>Success</code>&#x3002;&#x3010;pod&#x68C0;&#x6D4B;&#x5931;&#x8D25;&#x540E;&#xFF0C;&#x662F;&#x5426;&#x5C06;pod&#x91CD;&#x542F;&#x3011;</li>
+<li><code>readinessProbe</code>&#xFF1A;&#x6307;&#x793A;&#x5BB9;&#x5668;&#x662F;&#x5426;&#x51C6;&#x5907;&#x597D;&#x4E3A;&#x8BF7;&#x6C42;&#x63D0;&#x4F9B;&#x670D;&#x52A1;&#x3002;&#x5982;&#x679C;&#x5C31;&#x7EEA;&#x6001;&#x63A2;&#x6D4B;&#x5931;&#x8D25;&#xFF0C; &#x7AEF;&#x70B9;&#x63A7;&#x5236;&#x5668;&#x5C06;&#x4ECE;&#x4E0E; Pod &#x5339;&#x914D;&#x7684;&#x6240;&#x6709;&#x670D;&#x52A1;&#x7684;&#x7AEF;&#x70B9;&#x5217;&#x8868;&#x4E2D;&#x5220;&#x9664;&#x8BE5; Pod &#x7684; IP &#x5730;&#x5740;&#x3002; <strong>&#x521D;&#x59CB;&#x5EF6;&#x8FDF;</strong>&#x4E4B;&#x524D;&#x7684;&#x5C31;&#x7EEA;&#x6001;&#x7684;&#x72B6;&#x6001;&#x503C;&#x9ED8;&#x8BA4;&#x4E3A; <code>Failure</code>&#x3002; &#x5982;&#x679C;&#x5BB9;&#x5668;&#x4E0D;&#x63D0;&#x4F9B;&#x5C31;&#x7EEA;&#x6001;&#x63A2;&#x9488;&#xFF0C;&#x5219;&#x9ED8;&#x8BA4;&#x72B6;&#x6001;&#x4E3A; <code>Success</code>&#x3002;&#x3010;pod&#x68C0;&#x6D4B;&#x5931;&#x8D25;&#x540E;&#xFF0C;&#x662F;&#x5426;&#x52A0;&#x5165;&#x5230;service&#x8D44;&#x6E90;&#x670D;&#x52A1;&#x6A21;&#x5757;&#x4E2D;&#x3011;</li>
+</ul>
+<h4 id="&#x63A2;&#x9488;&#x914D;&#x7F6E;"><a href="#&#x63A2;&#x9488;&#x914D;&#x7F6E;" class="headerlink" title="&#x63A2;&#x9488;&#x914D;&#x7F6E;"></a>&#x63A2;&#x9488;&#x914D;&#x7F6E;</h4><p>&#x63A2;&#x9488;&#x914D;&#x7F6E;&#x7AD9;&#x70B9;&#xFF1A;<a target="_blank" rel="noopener" href="https://kubernetes.io/zh/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/">https://kubernetes.io/zh/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/</a></p>
+<p>&#x63A2;&#x9488;&#x6709;&#x5F88;&#x591A;&#x914D;&#x7F6E;&#x5B57;&#x6BB5;&#xFF0C;&#x53EF;&#x4EE5;&#x4F7F;&#x7528;&#x8FD9;&#x4E9B;&#x5B57;&#x6BB5;&#x7CBE;&#x786E;&#x7684;&#x63A7;&#x5236;&#x5B58;&#x6D3B;&#x548C;&#x5C31;&#x7EEA;&#x68C0;&#x6D4B;&#x7684;&#x884C;&#x4E3A;&#x2236;</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">initialDelaySeconds:120</span><br><span class="line"><span class="meta">#</span><span class="bash"> &#x521D;&#x59CB;&#x5316;&#x5EF6;&#x8FDF;&#x65F6;&#x95F4;&#xFF0C;&#x544A;&#x8BC9;kubelet&#x5728;&#x6267;&#x884C;&#x7B2C;&#x4E00;&#x6B21;&#x63A2;&#x6D4B;&#x524D;&#x5E94;&#x8BE5;&#x7B49;&#x5F85;&#x591A;&#x5C11;&#x79D2;&#xFF0C;&#x9ED8;&#x8BA4;&#x662F;0&#x79D2;&#xFF0C;&#x6700;&#x5C0F;&#x503C;&#x662F;0</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> &#x8FD9;&#x4E2A;&#x5C31;&#x662F;&#x63A2;&#x9488;&#x5EF6;&#x8FDF;&#x65F6;&#x95F4;&#xFF1B;&#x5982;&#x679C;&#x7ED3;&#x6784;&#x662F;&#x5FAE;&#x670D;&#x52A1;&#x7684;&#x7ED3;&#x6784;&#xFF0C;&#x65F6;&#x95F4;&#x53EF;&#x4EE5;&#x65AD;&#x70B9;&#xFF1B;&#x4F46;&#x662F;&#x5982;&#x679C;&#x662F;&#x5355;&#x4F53;tomcat&#x8FD9;&#x6837;&#x7684;&#x670D;&#x52A1;&#xFF0C;&#x53EF;&#x80FD;&#x51E0;&#x5206;&#x949F;&#x90FD;&#x8D77;&#x4E0D;&#x6765;&#xFF1B;</span></span><br><span class="line"></span><br><span class="line">periodSeconds:60</span><br><span class="line"><span class="meta">#</span><span class="bash"> &#x63A2;&#x6D4B;&#x5468;&#x671F;&#x95F4;&#x9694;&#x65F6;&#x95F4;&#xFF0C;&#x6307;&#x5B9A;&#x4E86;kubelet&#x5E94;&#x8BE5;&#x6BCF;&#x591A;&#x5C11;&#x79D2;&#x79D2;&#x6267;&#x884C;&#x4E00;&#x6B21;&#x5B58;&#x6D3B;&#x63A2;&#x6D4B;&#xFF0C;&#x9ED8;&#x8BA4;&#x662F; 10 &#x79D2;&#x3002;&#x6700;&#x5C0F;&#x503C;&#x662F; 1</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> &#x8FD9;&#x4E2A;&#x5468;&#x671F;&#x4E0D;&#x8981;&#x592A;&#x5FEB;&#xFF0C;&#x4E0D;&#x8981;&#x8BBE;&#x7F6E;&#x4E3A;1s&#xFF0C;&#x56E0;&#x4E3A;&#x6709;&#x53EF;&#x80FD;&#x5BF9;&#x7AEF;&#x8FD8;&#x6CA1;&#x6643;&#x8FC7;&#x6765;&#xFF0C;&#x5C31;&#x5F00;&#x59CB;&#x4E0B;&#x4E00;&#x6B21;&#x68C0;&#x6D4B;&#x4E86;&#x3002;&#x4E00;&#x822C;3s&#x3001;5s&#x5C31;&#x53EF;&#x4EE5;&#x4E86;&#xFF1B;</span></span><br><span class="line"></span><br><span class="line">timeoutSeconds:5</span><br><span class="line"><span class="meta">#</span><span class="bash"> &#x5355;&#x6B21;&#x63A2;&#x6D4B;&#x8D85;&#x65F6;&#x65F6;&#x95F4;&#xFF0C;&#x63A2;&#x6D4B;&#x7684;&#x8D85;&#x65F6;&#x540E;&#x7B49;&#x5F85;&#x591A;&#x5C11;&#x79D2;&#xFF0C;&#x9ED8;&#x8BA4;&#x503C;&#x662F;1&#x79D2;&#xFF0C;&#x6700;&#x5C0F;&#x503C;&#x662F;1&#x3002;</span></span><br><span class="line"></span><br><span class="line">successThreshold: 1</span><br><span class="line"><span class="meta">#</span><span class="bash"> &#x4ECE;&#x5931;&#x8D25;&#x8F6C;&#x4E3A;&#x6210;&#x529F;&#x7684;&#x91CD;&#x8BD5;&#x6B21;&#x6570;&#xFF0C;&#x63A2;&#x6D4B;&#x5668;&#x5728;&#x5931;&#x8D25;&#x540E;&#xFF0C;&#x88AB;&#x89C6;&#x4E3A;&#x6210;&#x529F;&#x7684;&#x6700;&#x5C0F;&#x8FDE;&#x7EED;&#x6210;&#x529F;&#x6570;.&#x9ED8;&#x8BA4;&#x503C;&#x662F;1&#xFF0C;&#x5B58;&#x6D3B;&#x63A2;&#x6D4B;&#x7684;&#x8FD9;&#x4E2A;&#x503C;&#x5FC5;&#x987B;&#x662F;1&#xFF0C;&#x6700;&#x5C0F;&#x503C;&#x662F; 1&#x3002;</span></span><br><span class="line"></span><br><span class="line">failureThreshold: 3</span><br><span class="line"><span class="meta">#</span><span class="bash"> &#x4ECE;&#x6210;&#x529F;&#x8F6C;&#x4E3A;&#x5931;&#x8D25;&#x7684;&#x91CD;&#x8BD5;&#x6B21;&#x6570;&#xFF0C;&#x5F53;Pod&#x542F;&#x52A8;&#x4E86;&#x5E76;&#x4E14;&#x63A2;&#x6D4B;&#x5230;&#x5931;&#x8D25;&#xFF0C;Kubernetes&#x7684;&#x91CD;&#x8BD5;&#x6B21;&#x6570;&#xFF0C;&#x5B58;&#x6D3B;&#x63A2;&#x6D4B;&#x60C5;&#x51B5;&#x4E0B;&#x7684;&#x653E;&#x5F03;&#x5C31;&#x610F;&#x5473;&#x7740;&#x91CD;&#x65B0;&#x542F;&#x52A8;&#x5BB9;&#x5668;&#xFF0C;&#x5C31;&#x7EEA;&#x63A2;&#x6D4B;&#x60C5;&#x51B5;&#x4E0B;&#x7684;&#x653E;&#x5F03;Pod &#x4F1A;&#x88AB;&#x6253;&#x4E0A;&#x672A;&#x5C31;&#x7EEA;&#x7684;&#x6807;&#x7B7E;&#xFF0C;&#x9ED8;&#x8BA4;&#x503C;&#x662F;3&#xFF0C;&#x6700;&#x5C0F;&#x503C;&#x662F;1&#x3002;</span></span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>&#x7C7B;&#x6BD4;&#xFF1A;&#x548C;haproxy&#x76F8;&#x6BD4;&#xFF0C;&#x8FD9;&#x91CC;&#x597D;&#x51E0;&#x4E2A;&#x53C2;&#x6570;&#x90FD;&#x662F;&#x529F;&#x80FD;&#x7C7B;&#x4F3C;&#xFF1B;</p>
+<p>&#x200B;    inter 2s = periodSeconds</p>
+<p>&#x200B;    fall 3 = failureThreshold</p>
+<p>&#x200B;    rise 3 = successThreshold</p>
+</blockquote>
+<h4 id="http&#x63A2;&#x9488;&#x4ECB;&#x7ECD;&#x4E0E;&#x793A;&#x4F8B;"><a href="#http&#x63A2;&#x9488;&#x4ECB;&#x7ECD;&#x4E0E;&#x793A;&#x4F8B;" class="headerlink" title="http&#x63A2;&#x9488;&#x4ECB;&#x7ECD;&#x4E0E;&#x793A;&#x4F8B;"></a>http&#x63A2;&#x9488;&#x4ECB;&#x7ECD;&#x4E0E;&#x793A;&#x4F8B;</h4><p>HTTP&#x63A2;&#x6D4B;&#x5668;&#x53EF;&#x4EE5;&#x5728; httpGet &#x4E0A;&#x914D;&#x7F6E;&#x989D;&#x5916;&#x7684;&#x5B57;&#x6BB5;&#x2236;</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">host:</span><br><span class="line"><span class="meta">#</span><span class="bash"> &#x8FDE;&#x63A5;&#x4F7F;&#x7528;&#x7684;&#x4E3B;&#x673A;&#x540D;&#xFF0C;&#x9ED8;&#x8BA4;&#x662F;Pod&#x7684; IP&#xFF0C;&#x4E5F;&#x53EF;&#x4EE5;&#x5728;HTPP&#x5934;&#x4E2D;&#x8BBE;&#x7F6E;<span class="string">&quot;Host&quot;</span>&#x6765;&#x4EE3;&#x66FF;&#x3002;</span></span><br><span class="line"></span><br><span class="line">scheme: http</span><br><span class="line"><span class="meta">#</span><span class="bash"> &#x7528;&#x4E8E;&#x8BBE;&#x7F6E;&#x8FDE;&#x63A5;&#x4E3B;&#x673A;&#x7684;&#x65B9;&#x5F0F;&#xFF08;HPPP &#x8FD8;&#x662F; HPPPS&#xFF09;&#xFF0C;&#x9ED8;&#x8BA4;&#x662F; HPPP&#x3002;</span></span><br><span class="line"></span><br><span class="line">path:/monitor/index.html </span><br><span class="line"><span class="meta">#</span><span class="bash"> &#x8BBF;&#x95EE;HTTP&#x670D;&#x52A1;&#x7684;&#x8DEF;&#x5F84;&#x3002;&#x5728;&#x4E00;&#x4E9B;&#x89C4;&#x8303;&#x4E00;&#x70B9;&#x7684;&#x516C;&#x53F8;&#x4E2D;&#xFF0C;&#x4F1A;&#x914D;&#x7F6E;&#x56FA;&#x5B9A;&#x7684;&#x76EE;&#x5F55;&#x8D44;&#x6E90;&#x7528;&#x4E8E;&#x68C0;&#x6D4B;&#xFF1B;</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> &#x4F8B;&#x5982;&#xFF0C;www.test.com/monitor/index.html&#x9875;&#x9762;&#x4E13;&#x95E8;&#x7528;&#x4F5C;url&#x68C0;&#x6D4B;&#xFF1B;</span></span><br><span class="line"></span><br><span class="line">httpHeaders:</span><br><span class="line"><span class="meta">#</span><span class="bash"> &#x8BF7;&#x6C42;&#x4E2D;&#x81EA;&#x5B9A;&#x4E49;&#x7684;HTPP&#x5934;&#xFF0C;HTTP&#x5934;&#x5B57;&#x6BB5;&#x5141;&#x8BB8;&#x91CD;&#x590D;&#x3002;</span></span><br><span class="line"></span><br><span class="line">port: 80</span><br><span class="line"><span class="meta">#</span><span class="bash"> &#x8BBF;&#x95EE;&#x5BB9;&#x5668;&#x7684;&#x7AEF;&#x53E3;&#x53F7;&#x6216;&#x8005;&#x7AEF;&#x53E3;&#x540D;&#xFF0C;&#x5982;&#x679C;&#x6570;&#x5B57;&#x5FC5;&#x987B;&#x5728;1&#xFF5E;65535&#x4E4B;&#x95F4;&#x3002;</span></span><br></pre></td></tr></table></figure>
+
+<p>&#x793A;&#x4F8B;&#x5982;&#x4E0B;&#xFF1A;</p>
+<h5 id="&#x5B58;&#x6D3B;&#x63A2;&#x9488;&#x793A;&#x4F8B;"><a href="#&#x5B58;&#x6D3B;&#x63A2;&#x9488;&#x793A;&#x4F8B;" class="headerlink" title="&#x5B58;&#x6D3B;&#x63A2;&#x9488;&#x793A;&#x4F8B;"></a>&#x5B58;&#x6D3B;&#x63A2;&#x9488;&#x793A;&#x4F8B;</h5><figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># cat nginx.yaml</span></span><br><span class="line"><span class="comment"># apiVersion: extensions/v1betal</span></span><br><span class="line"><span class="attr">apiVersion:</span> <span class="string">apps/v1</span></span><br><span class="line"><span class="attr">kind:</span> <span class="string">Deployment</span> </span><br><span class="line"><span class="attr">metadata:</span></span><br><span class="line">  <span class="attr">name:</span> <span class="string">nginx-deployment</span></span><br><span class="line"><span class="attr">spec:</span></span><br><span class="line">  <span class="attr">replicas:</span> <span class="number">1</span> </span><br><span class="line">  <span class="attr">selector:</span></span><br><span class="line">    <span class="attr">matchLabels:</span> <span class="comment">#rs or deployment</span></span><br><span class="line">      <span class="attr">app:</span> <span class="string">ng-deploy-80</span> </span><br><span class="line">      <span class="comment">#matchExpressions:</span></span><br><span class="line">      <span class="comment">#-{key: app,operator: In,values:[ng-deploy-80,ng-rs-81]}</span></span><br><span class="line">  <span class="attr">template:</span></span><br><span class="line">    <span class="attr">metadata:</span></span><br><span class="line">      <span class="attr">labels:</span></span><br><span class="line">        <span class="attr">app:</span> <span class="string">ng-deploy-80</span></span><br><span class="line">    <span class="attr">spec:</span></span><br><span class="line">      <span class="attr">containers:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">ng-deploy-80</span></span><br><span class="line">        <span class="attr">image:</span> <span class="string">nginx:1.17.5</span> </span><br><span class="line">        <span class="attr">ports:</span></span><br><span class="line">        <span class="bullet">-</span> <span class="attr">containerPort:</span> <span class="number">80</span> </span><br><span class="line">        <span class="comment">#readinessProbe:</span></span><br><span class="line">        <span class="attr">livenessProbe:</span>  <span class="comment"># &#x4F7F;&#x7528;&#x5B58;&#x6D3B;&#x63A2;&#x9488;</span></span><br><span class="line">          <span class="attr">httpGet:</span>  <span class="comment"># &#x8BBF;&#x95EE;&#x6307;&#x5B9A;&#x9875;&#x9762;</span></span><br><span class="line">          <span class="comment">#path:/monitor/monitor.html</span></span><br><span class="line">            <span class="attr">path:</span> <span class="string">/index.html</span></span><br><span class="line">            <span class="attr">port:</span> <span class="number">80</span></span><br><span class="line">          <span class="attr">initialDelaySeconds:</span> <span class="number">5</span></span><br><span class="line">          <span class="attr">periodSeconds:</span> <span class="number">3</span> </span><br><span class="line">          <span class="attr">timeoutSeconds:</span> <span class="number">5</span></span><br><span class="line">          <span class="attr">successThreshold:</span> <span class="number">1</span> </span><br><span class="line">          <span class="attr">failureThreshold:</span> <span class="number">3</span></span><br><span class="line">      </span><br><span class="line"><span class="meta">---</span></span><br><span class="line"><span class="attr">apiVersion:</span> <span class="string">v1</span></span><br><span class="line"><span class="attr">kind:</span> <span class="string">Service</span> </span><br><span class="line"><span class="attr">metadata:</span></span><br><span class="line">  <span class="attr">name:</span> <span class="string">ng-deploy-80</span></span><br><span class="line"><span class="attr">spec:</span></span><br><span class="line">  <span class="attr">ports:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">http</span></span><br><span class="line">    <span class="attr">port:</span> <span class="number">81</span> </span><br><span class="line">    <span class="attr">targetPort:</span> <span class="number">80</span> </span><br><span class="line">    <span class="attr">nodePort:</span> <span class="number">30030</span></span><br><span class="line">    <span class="attr">protocol:</span> <span class="string">TCP</span></span><br><span class="line">  <span class="attr">type:</span> <span class="string">NodePort</span></span><br><span class="line">  <span class="attr">selector:</span></span><br><span class="line">    <span class="attr">app:</span> <span class="string">ng-deploy-80</span></span><br></pre></td></tr></table></figure>
+
+<p>&#x521B;&#x5EFA;&#x5BB9;&#x5668;</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">root@master1:~/yaml/20210115/case# kubectl apply -f http-period1.yaml</span><br><span class="line">deployment.apps/nginx-deployment unchanged</span><br><span class="line">service/ng-deploy-80 configured</span><br><span class="line">root@master1:~/yaml/20210115/case# kubectl get pod</span><br><span class="line">NAME                                READY   STATUS    RESTARTS   AGE</span><br><span class="line">nginx-deployment-5d7bd8df47-6qw74   1/1     Running   0          2m37s</span><br><span class="line"><span class="meta">#</span><span class="bash"> &#x8FD9;&#x4E2A;&#x5BB9;&#x5668;&#x5C31;&#x80FD;&#x6B63;&#x5E38;&#x8D77;&#x6765;&#x4E86;&#xFF1B;</span></span><br></pre></td></tr></table></figure>
+
+<p>&#x5199;&#x4E2A;&#x811A;&#x672C;&#x6765;curl&#x9875;&#x9762;&#xFF0C;&#x6765;&#x5FAA;&#x73AF;&#x68C0;&#x6D4B;&#xFF0C;&#x4E00;&#x65E6;&#x65E0;&#x6CD5;curl&#x5230;&#x9875;&#x9762;&#x7684;&#x65F6;&#x5019;&#x5B58;&#x6D3B;&#x63A2;&#x9488;&#x5C31;&#x4F1A;&#x5F00;&#x59CB;&#x5DE5;&#x4F5C;</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">root@node2:~# while true;do curl http://192.168.0.23:30030;sleep 2;done</span><br></pre></td></tr></table></figure>
+
+<p>&#x4FEE;&#x6539;&#x4E3B;&#x9875;&#x9762;&#xFF0C;&#x8BA9;curl&#x6D4B;&#x8BD5;&#x65E0;&#x6CD5;&#x8BBF;&#x95EE;&#xFF1B;&#x8FD9;&#x91CC;&#x5C06;index&#x4E3B;&#x9875;&#x9762;&#x5220;&#x9664;&#x4E86;&#xFF1B;</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">root@nginx-deployment-5d7bd8df47-6qw74:/# cd /usr/share/nginx/html</span><br><span class="line">root@nginx-deployment-5d7bd8df47-6qw74:/usr/share/nginx/html# rm -rf index.html </span><br></pre></td></tr></table></figure>
+
+<p>pod&#x4F1A;&#x91CD;&#x542F;&#x4E00;&#x6B21;&#xFF0C;&#x7136;&#x540E;&#x670D;&#x52A1;&#x5C31;&#x53C8;&#x8D77;&#x6765;&#x4E86;&#xFF1B;</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">root@master1:~/yaml/20210115/case# kubectl get pod</span><br><span class="line">NAME                                READY   STATUS    RESTARTS   AGE</span><br><span class="line">nginx-deployment-5d7bd8df47-6qw74   1/1     Running   1          13m</span><br><span class="line"><span class="meta">#</span><span class="bash"> &#x8FD9;&#x91CC;&#x7684;RESTARTS&#x53C2;&#x6570;&#x5C31;&#x4F1A;&#x4ECE;0&#x53D8;&#x4E3A;1&#xFF0C;&#x8BF4;&#x660E;&#x91CD;&#x542F;&#x4E86;&#x5BB9;&#x5668;</span></span><br></pre></td></tr></table></figure>
+
+<p>&#x67E5;&#x770B;&#x8BE6;&#x7EC6;&#x4FE1;&#x606F;</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">root@master1:~/yaml/20210115/case# kubectl describe pod nginx-deployment-5d7bd8df47-6qw74 -n default</span><br><span class="line">Events:</span><br><span class="line">  Type     Reason     Age                    From               Message</span><br><span class="line">  ----     ------     ----                   ----               -------</span><br><span class="line">  Normal   Scheduled  15m                    default-scheduler  Successfully assigned default/nginx-deployment-5d7bd8df47-6qw74 to 192.168.0.23</span><br><span class="line">  Normal   Pulled     14m                    kubelet            Successfully pulled image &quot;nginx:1.17.5&quot; in 15.983983928s</span><br><span class="line">  Normal   Pulling    2m50s (x2 over 15m)    kubelet            Pulling image &quot;nginx:1.17.5&quot;</span><br><span class="line">  Warning  Unhealthy  2m50s (x3 over 2m56s)  kubelet            Liveness probe failed: HTTP probe failed with statuscode: 404</span><br><span class="line">  Normal   Killing    2m50s                  kubelet            Container ng-deploy-80 failed liveness probe, will be restarted</span><br><span class="line">  Normal   Created    2m34s (x2 over 14m)    kubelet            Created container ng-deploy-80</span><br><span class="line">  Normal   Pulled     2m34s                  kubelet            Successfully pulled image &quot;nginx:1.17.5&quot; in 16.053250027s</span><br><span class="line">  Normal   Started    2m32s (x2 over 14m)    kubelet            Started container ng-deploy-80</span><br></pre></td></tr></table></figure>
+
+<p>&#x8FD9;&#x91CC;&#x6211;&#x4EEC;&#x5C31;&#x80FD;&#x770B;&#x5230;&#x56E0;&#x4E3A;&#x5B58;&#x6D3B;&#x63A2;&#x9488;&#x7684;&#x76D1;&#x6D4B;&#x5931;&#x8D25;&#x7684;&#x539F;&#x56E0;&#xFF0C;&#x5BFC;&#x81F4;&#x4E86;&#x5BB9;&#x5668;&#x91CD;&#x542F;&#xFF1B;&#x800C;&#x91CD;&#x542F;&#x7684;&#x5BB9;&#x5668;&#x662F;&#x4E00;&#x76F4;&#x6302;&#x5728;service&#x670D;&#x52A1;&#x540E;&#x9762;&#x7684;&#xFF1B;</p>
+<h5 id="&#x5C31;&#x7EEA;&#x63A2;&#x9488;&#x793A;&#x4F8B;"><a href="#&#x5C31;&#x7EEA;&#x63A2;&#x9488;&#x793A;&#x4F8B;" class="headerlink" title="&#x5C31;&#x7EEA;&#x63A2;&#x9488;&#x793A;&#x4F8B;"></a>&#x5C31;&#x7EEA;&#x63A2;&#x9488;&#x793A;&#x4F8B;</h5><p>&#x5C31;&#x7EEA;&#x63A2;&#x9488;&#x76D1;&#x6D4B;&#x5931;&#x8D25;&#x4EE5;&#x540E;&#xFF0C;&#x5C31;&#x4F1A;&#x5C06;pod&#x4ECE;service&#x540E;&#x9762;&#x62FF;&#x6389;&#xFF1B;&#x914D;&#x7F6E;&#x793A;&#x4F8B;&#x5982;&#x4E0B;&#xFF1A;</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">        <span class="attr">readinessProbe:</span>  <span class="comment"># &#x4F7F;&#x7528;&#x5C31;&#x7EEA;&#x63A2;&#x9488;</span></span><br><span class="line">        <span class="comment"># livenessProbe:  # &#x4F7F;&#x7528;&#x5B58;&#x50A8;&#x63A2;&#x9488;</span></span><br><span class="line">          <span class="attr">httpGet:</span>  <span class="comment"># &#x8BBF;&#x95EE;&#x6307;&#x5B9A;&#x9875;&#x9762;</span></span><br><span class="line">          <span class="comment">#path:/monitor/monitor.html</span></span><br><span class="line">            <span class="attr">path:</span> <span class="string">/index.html</span></span><br><span class="line">            <span class="attr">port:</span> <span class="number">80</span></span><br><span class="line">          <span class="attr">initialDelaySeconds:</span> <span class="number">5</span></span><br><span class="line">          <span class="attr">periodSeconds:</span> <span class="number">3</span> </span><br><span class="line">          <span class="attr">timeoutSeconds:</span> <span class="number">5</span></span><br><span class="line">          <span class="attr">successThreshold:</span> <span class="number">1</span> </span><br><span class="line">          <span class="attr">failureThreshold:</span> <span class="number">3</span></span><br><span class="line">          </span><br><span class="line"><span class="comment"># &#x5C31;&#x7EEA;&#x63A2;&#x9488;&#x7684;&#x914D;&#x7F6E;&#x548C;&#x5B58;&#x6D3B;&#x63A2;&#x9488;&#x7684;&#x914D;&#x7F6E;&#x4E00;&#x6837;</span></span><br></pre></td></tr></table></figure>
+
+<p>&#x5728;&#x91CD;&#x65B0;&#x521B;&#x5EFA;pod</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">root@master1:~/yaml/20210115/case# kubectl apply -f http-period1.yaml</span><br><span class="line">deployment.apps/nginx-deployment created</span><br><span class="line">service/ng-deploy-80 created</span><br><span class="line">root@master1:~/yaml/20210115/case# kubectl get pod</span><br><span class="line">NAME                               READY   STATUS    RESTARTS   AGE</span><br><span class="line">nginx-deployment-f79b8c579-65f4l   1/1     Running   0          54s</span><br></pre></td></tr></table></figure>
+
+<p>&#x7136;&#x540E;&#x6211;&#x4EEC;&#x518D;&#x53BB;&#x5220;&#x9664;index.html&#x6587;&#x4EF6;&#xFF1B;&#x6A21;&#x62DF;&#x8BBF;&#x95EE;&#x6D4B;&#x8BD5;&#x95EE;&#x9898;&#xFF1B;</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">root@nginx-deployment-f79b8c579-65f4l:~# cd /usr/share/nginx/html</span><br><span class="line">root@nginx-deployment-f79b8c579-65f4l:/usr/share/nginx/html# rm -rf index.html</span><br></pre></td></tr></table></figure>
+
+<p>&#x8FD9;&#x6837;&#x7684;&#x8BDD;&#xFF0C;pod&#x5C31;&#x4F1A;&#x88AB;&#x62FF;&#x6389;&#x4E86;&#xFF1B;&#x800C;pod&#x662F;&#x4E0D;&#x4F1A;&#x91CD;&#x542F;&#x7684;&#xFF1B;&#x7136;&#x540E;&#x5C31;&#x4FDD;&#x6301;&#x73B0;&#x72B6;&#x4E86;&#xFF1B;</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">root@master1:~/yaml/20210115/case# kubectl get ep</span><br><span class="line">NAME           ENDPOINTS                             AGE</span><br><span class="line">ng-deploy-80                                         5m50s</span><br><span class="line"><span class="meta">#</span><span class="bash"> &#x8FD9;&#x91CC;&#x9762;&#x5C31;&#x6CA1;&#x6709;</span></span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>&#x6CE8;&#x610F;&#xFF1A;&#x5B9E;&#x9645;&#x4E0A;&#x6211;&#x4EEC;&#x518D;&#x914D;&#x7F6E;&#x63A2;&#x9488;&#x7684;&#x65F6;&#x5019;&#x5B58;&#x6D3B;&#x63A2;&#x9488;&#x548C;&#x5C31;&#x7EEA;&#x63A2;&#x9488;&#x90FD;&#x4F1A;&#x540C;&#x65F6;&#x914D;&#x7F6E;&#xFF0C;&#x8FD9;&#x6837;&#x7684;&#x8BDD;&#x5C31;&#x53EF;&#x4EE5;&#x53CA;&#x5220;&#x9664;&#x6389;&#x539F;pod&#xFF0C;&#x53C8;&#x80FD;&#x91CD;&#x542F;&#x65B0;&#x7684;pod&#x8282;&#x70B9;&#xFF1B;</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">readinessProbe:</span>  <span class="comment"># &#x4F7F;&#x7528;&#x5C31;&#x7EEA;&#x63A2;&#x9488;</span></span><br><span class="line">  <span class="attr">httpGet:</span>  <span class="comment"># &#x8BBF;&#x95EE;&#x6307;&#x5B9A;&#x9875;&#x9762;</span></span><br><span class="line">  <span class="comment"># path:/monitor/monitor.html</span></span><br><span class="line">    <span class="attr">path:</span> <span class="string">/index.html</span></span><br><span class="line">    <span class="attr">port:</span> <span class="number">80</span></span><br><span class="line">  <span class="attr">initialDelaySeconds:</span> <span class="number">5</span></span><br><span class="line">  <span class="attr">periodSeconds:</span> <span class="number">3</span> </span><br><span class="line">  <span class="attr">timeoutSeconds:</span> <span class="number">5</span></span><br><span class="line">  <span class="attr">successThreshold:</span> <span class="number">1</span> </span><br><span class="line">  <span class="attr">failureThreshold:</span> <span class="number">3</span></span><br><span class="line">  </span><br><span class="line"><span class="attr">livenessProbe:</span>  <span class="comment"># &#x4F7F;&#x7528;&#x5B58;&#x6D3B;&#x63A2;&#x9488;</span></span><br><span class="line">  <span class="attr">httpGet:</span>  <span class="comment"># &#x8BBF;&#x95EE;&#x6307;&#x5B9A;&#x9875;&#x9762;</span></span><br><span class="line">  <span class="comment"># path:/monitor/monitor.html</span></span><br><span class="line">    <span class="attr">path:</span> <span class="string">/index.html</span></span><br><span class="line">    <span class="attr">port:</span> <span class="number">80</span></span><br><span class="line">  <span class="attr">initialDelaySeconds:</span> <span class="number">5</span></span><br><span class="line">  <span class="attr">periodSeconds:</span> <span class="number">3</span> </span><br><span class="line">  <span class="attr">timeoutSeconds:</span> <span class="number">5</span></span><br><span class="line">  <span class="attr">successThreshold:</span> <span class="number">1</span> </span><br><span class="line">  <span class="attr">failureThreshold:</span> <span class="number">3</span></span><br></pre></td></tr></table></figure>
+
+<p>&#x518D;&#x6B21;&#x6267;&#x884C;&#x5C31;&#x80FD;&#x63D0;&#x4F9B;&#x4E24;&#x4E2A;&#x63A2;&#x9488;&#x7684;&#x529F;&#x80FD;&#x4E86;&#xFF1B;</p>
+</blockquote>
+<h4 id="tcp&#x63A2;&#x9488;&#x4ECB;&#x7ECD;"><a href="#tcp&#x63A2;&#x9488;&#x4ECB;&#x7ECD;" class="headerlink" title="tcp&#x63A2;&#x9488;&#x4ECB;&#x7ECD;"></a>tcp&#x63A2;&#x9488;&#x4ECB;&#x7ECD;</h4><p>&#x5982;&#x679C;&#x662F;&#x6CA1;&#x6709;url&#x68C0;&#x6D4B;&#x7684;&#xFF0C;&#x53EF;&#x4EE5;&#x4F7F;&#x7528;tcp&#x63A2;&#x9488;&#x6765;&#x5B9E;&#x73B0;&#x68C0;&#x6D4B;&#xFF0C;yaml&#x6587;&#x4EF6;&#x5982;&#x4E0B;&#xFF1A;</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># cat nginx.yaml</span></span><br><span class="line"><span class="comment"># apiVersion: extensions/v1betal</span></span><br><span class="line"><span class="attr">apiVersion:</span> <span class="string">apps/v1</span></span><br><span class="line"><span class="attr">kind:</span> <span class="string">Deployment</span> </span><br><span class="line"><span class="attr">metadata:</span></span><br><span class="line">  <span class="attr">name:</span> <span class="string">nginx-deployment</span></span><br><span class="line"><span class="attr">spec:</span></span><br><span class="line">  <span class="attr">replicas:</span> <span class="number">1</span> </span><br><span class="line">  <span class="attr">selector:</span></span><br><span class="line">    <span class="attr">matchLabels:</span> <span class="comment">#rs or deployment</span></span><br><span class="line">      <span class="attr">app:</span> <span class="string">ng-deploy-80</span> </span><br><span class="line">      <span class="comment">#matchExpressions:</span></span><br><span class="line">      <span class="comment">#-{key: app,operator: In,values:[ng-deploy-80,ng-rs-81]}</span></span><br><span class="line">  <span class="attr">template:</span></span><br><span class="line">    <span class="attr">metadata:</span></span><br><span class="line">      <span class="attr">labels:</span></span><br><span class="line">        <span class="attr">app:</span> <span class="string">ng-deploy-80</span></span><br><span class="line">    <span class="attr">spec:</span></span><br><span class="line">      <span class="attr">containers:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">ng-deploy-80</span></span><br><span class="line">        <span class="attr">image:</span> <span class="string">nginx:1.17.5</span> </span><br><span class="line">        <span class="attr">ports:</span></span><br><span class="line">        <span class="bullet">-</span> <span class="attr">containerPort:</span> <span class="number">80</span> </span><br><span class="line">        <span class="comment">#readinessProbe:  # &#x4E00;&#x822C;&#x8FD8;&#x662F;&#x4E24;&#x4E2A;&#x63A2;&#x9488;&#x90FD;&#x662F;&#x9700;&#x8981;&#x7684;</span></span><br><span class="line">        <span class="attr">livenessProbe:</span>  <span class="comment"># &#x4F7F;&#x7528;&#x5B58;&#x6D3B;&#x63A2;&#x9488;</span></span><br><span class="line">          <span class="attr">tcpSocket:</span>  <span class="comment"># &#x6307;&#x5B9A;&#x4E3A;tcp&#x63A2;&#x9488;</span></span><br><span class="line">            <span class="attr">port:</span> <span class="number">80</span>  <span class="comment"># &#x8FD9;&#x91CC;&#x6307;&#x5B9A;&#x68C0;&#x6D4B;&#x7684;&#x7AEF;&#x53E3;</span></span><br><span class="line">            <span class="comment"># port: 8080</span></span><br><span class="line">          <span class="attr">initialDelaySeconds:</span> <span class="number">5</span></span><br><span class="line">          <span class="attr">periodSeconds:</span> <span class="number">3</span> </span><br><span class="line">          <span class="attr">timeoutSeconds:</span> <span class="number">5</span></span><br><span class="line">          <span class="attr">successThreshold:</span> <span class="number">1</span> </span><br><span class="line">          <span class="attr">failureThreshold:</span> <span class="number">3</span></span><br><span class="line">      </span><br><span class="line"><span class="meta">---</span></span><br><span class="line"><span class="attr">apiVersion:</span> <span class="string">v1</span></span><br><span class="line"><span class="attr">kind:</span> <span class="string">Service</span> </span><br><span class="line"><span class="attr">metadata:</span></span><br><span class="line">  <span class="attr">name:</span> <span class="string">ng-deploy-80</span></span><br><span class="line"><span class="attr">spec:</span></span><br><span class="line">  <span class="attr">ports:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">http</span></span><br><span class="line">    <span class="attr">port:</span> <span class="number">81</span> </span><br><span class="line">    <span class="attr">targetPort:</span> <span class="number">80</span> </span><br><span class="line">    <span class="attr">nodePort:</span> <span class="number">30030</span></span><br><span class="line">    <span class="attr">protocol:</span> <span class="string">TCP</span></span><br><span class="line">  <span class="attr">type:</span> <span class="string">NodePort</span></span><br><span class="line">  <span class="attr">selector:</span></span><br><span class="line">    <span class="attr">app:</span> <span class="string">ng-deploy-80</span></span><br></pre></td></tr></table></figure>
+
+<p>&#x4E5F;&#x662F;&#x5EFA;&#x8BAE;&#x4F7F;&#x7528;&#x4E24;&#x4E2A;&#x63A2;&#x9488;&#xFF0C;&#x65B9;&#x4FBF;&#x5B9E;&#x73B0;pod&#x4ECE;service&#x4E2D;&#x5220;&#x9664;&#xFF0C;&#x4E5F;&#x65B9;&#x4FBF;&#x65B0;&#x8D77;pod&#x5BB9;&#x5668;&#xFF1B;&#x6D4B;&#x8BD5;&#x7684;&#x65F6;&#x5019;&#xFF0C;&#x6211;&#x4EEC;&#x901A;&#x8FC7;&#x547D;&#x4EE4;&#x201D;nginx -s stop&#x201D;&#x505C;&#x6B62;&#x8FD9;&#x4E2A;&#x670D;&#x52A1;&#x5C31;&#x53EF;&#x4EE5;&#x4E86;&#xFF0C;&#x8FD9;&#x6837;80&#x7AEF;&#x53E3;&#x5C31;&#x4E0D;&#x80FD;&#x5907;&#x4EFD;&#x8BBF;&#x95EE;&#x4E86;&#xFF0C;&#x8FD9;&#x6837;&#x5C31;&#x53EF;&#x4EE5;&#x91CD;&#x5EFA;pod&#x5BB9;&#x5668;&#x4E86;&#xFF1B;</p>
+<h4 id="ExecAction&#x63A2;&#x9488;"><a href="#ExecAction&#x63A2;&#x9488;" class="headerlink" title="ExecAction&#x63A2;&#x9488;"></a>ExecAction&#x63A2;&#x9488;</h4><p>&#x5982;&#x679C;&#x6709;&#x4E9B;&#x670D;&#x52A1;&#x6CA1;&#x6709;&#x4E03;&#x5C42;&#x5E94;&#x7528;&#x8BBF;&#x95EE;&#xFF0C;&#x7136;&#x540E;&#x53C8;&#x4E0D;&#x60F3;&#x4F7F;&#x7528;TCP&#x68C0;&#x6D4B;&#xFF0C;&#x56E0;&#x4E3A;TCP&#x68C0;&#x6D4B;&#x4E0D;&#x592A;&#x51C6;&#x786E;&#xFF0C;&#x4F8B;&#x5982;mysql&#x3001;redis&#x3001;kafka&#x3001;es&#x7B49;&#x670D;&#x52A1;&#xFF1B;&#x6211;&#x4EEC;&#x5C31;&#x901A;&#x8FC7;&#x8BBF;&#x95EE;&#x5BA2;&#x6237;&#x7AEF;&#x7684;&#x65B9;&#x5F0F;&#x6765;&#x68C0;&#x6D4B;&#x670D;&#x52A1;&#x662F;&#x5426;&#x8FD8;&#x5728;&#x7EBF;&#xFF1B;&#x6211;&#x4EEC;&#x53EF;&#x4EE5;&#x901A;&#x8FC7;execaction&#x6765;&#x81EA;&#x5B9A;&#x4E49;&#x547D;&#x4EE4;&#x8BBF;&#x95EE;&#x670D;&#x52A1;&#xFF0C;&#x786E;&#x8BA4;&#x670D;&#x52A1;&#x662F;&#x5426;&#x8FD8;&#x5728;&#x7EBF;&#xFF1B;</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># execaction&#x63A2;&#x9488;&#x7684;yaml&#x6587;&#x4EF6;</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># docker pull redis</span></span><br><span class="line"><span class="comment"># </span></span><br><span class="line"><span class="comment"># cat redis.yaml</span></span><br><span class="line"><span class="comment"># apiVersion: extensions/v1betal</span></span><br><span class="line"><span class="attr">apiVersion:</span> <span class="string">apps/v1</span></span><br><span class="line"><span class="attr">kind:</span> <span class="string">Deployment</span> </span><br><span class="line"><span class="attr">metadata:</span></span><br><span class="line">  <span class="attr">name:</span> <span class="string">redis-deployment</span></span><br><span class="line"><span class="attr">spec:</span></span><br><span class="line">  <span class="attr">replicas:</span> <span class="number">1</span> </span><br><span class="line">  <span class="attr">selector:</span></span><br><span class="line">    <span class="attr">matchLabels:</span> <span class="comment">#rs or deployment</span></span><br><span class="line">      <span class="attr">app:</span> <span class="string">redis-deploy-6379</span> </span><br><span class="line">    <span class="comment"># matchExpressions:</span></span><br><span class="line">    <span class="comment"># - {key: app,operator: In,values: [redis-deploy-6379,ng-rs-81]}</span></span><br><span class="line">  <span class="attr">template:</span></span><br><span class="line">    <span class="attr">metadata:</span></span><br><span class="line">      <span class="attr">labels:</span></span><br><span class="line">        <span class="attr">app:</span> <span class="string">redis-deploy-6379</span></span><br><span class="line">    <span class="attr">spec:</span></span><br><span class="line">      <span class="attr">containers:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">redis-deploy-6379</span></span><br><span class="line">        <span class="attr">image:</span> <span class="string">redis</span></span><br><span class="line">        <span class="attr">ports:</span></span><br><span class="line">        <span class="bullet">-</span> <span class="attr">containerPort:</span> <span class="number">6379</span></span><br><span class="line">        <span class="comment">#readinessProbe:  # &#x4E00;&#x822C;&#x8FD8;&#x662F;&#x4E24;&#x4E2A;&#x63A2;&#x9488;&#x90FD;&#x662F;&#x9700;&#x8981;&#x7684;</span></span><br><span class="line">        <span class="attr">livenessProbe:</span>  <span class="comment"># &#x4F7F;&#x7528;&#x5B58;&#x6D3B;&#x63A2;&#x9488;</span></span><br><span class="line">          <span class="attr">exec:</span>  <span class="comment"># &#x6307;&#x5B9A;&#x4E3A;tcp&#x63A2;&#x9488;</span></span><br><span class="line">            <span class="attr">command:</span>   <span class="comment"># &#x6307;&#x5B9A;&#x81EA;&#x5B9A;&#x4E49;&#x547D;&#x4EE4;&#x3001;&#x8FD9;&#x91CC;&#x5177;&#x4F53;&#x4F7F;&#x7528;&#x4EC0;&#x4E48;&#x64CD;&#x4F5C;&#x6765;&#x68C0;&#x6D4B;&#xFF0C;&#x8981;&#x770B;&#x662F;&#x4EC0;&#x4E48;&#x670D;&#x52A1;&#xFF1B;</span></span><br><span class="line">            <span class="comment"># - /apps/redis/bin/redis-cli</span></span><br><span class="line">            <span class="bullet">-</span> <span class="string">/usr/local/bin/redis-cli</span>  <span class="comment"># &#x6267;&#x884C;&#x547D;&#x4EE4;&#xFF0C;&#x7136;&#x540E;&#x83B7;&#x53D6;&#x6267;&#x884C;&#x72B6;&#x6001;&#x7801;&#xFF0C;&#x7C7B;&#x4F3C;&#x4E8E;shell&#x4E2D;&#x7684;$?&#x65B9;&#x5F0F;&#x6765;&#x8FDB;&#x884C;&#x670D;&#x52A1;&#x68C0;&#x6D4B;&#xFF1B;</span></span><br><span class="line">            <span class="bullet">-</span> <span class="string">quit</span></span><br><span class="line">          <span class="attr">initialDelaySeconds:</span> <span class="number">5</span></span><br><span class="line">          <span class="attr">periodSeconds:</span> <span class="number">3</span> </span><br><span class="line">          <span class="attr">timeoutSeconds:</span> <span class="number">5</span></span><br><span class="line">          <span class="attr">successThreshold:</span> <span class="number">1</span> </span><br><span class="line">          <span class="attr">failureThreshold:</span> <span class="number">3</span></span><br><span class="line">      </span><br><span class="line"><span class="meta">---</span></span><br><span class="line"><span class="attr">apiVersion:</span> <span class="string">v1</span></span><br><span class="line"><span class="attr">kind:</span> <span class="string">Service</span> </span><br><span class="line"><span class="attr">metadata:</span></span><br><span class="line">  <span class="attr">name:</span> <span class="string">redis-deploy-6379</span></span><br><span class="line"><span class="attr">spec:</span></span><br><span class="line">  <span class="attr">ports:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">http</span></span><br><span class="line">    <span class="attr">port:</span> <span class="number">6379</span></span><br><span class="line">    <span class="attr">targetPort:</span> <span class="number">6379</span> </span><br><span class="line">    <span class="attr">nodePort:</span> <span class="number">30031</span></span><br><span class="line">    <span class="attr">protocol:</span> <span class="string">TCP</span></span><br><span class="line">  <span class="attr">type:</span> <span class="string">NodePort</span></span><br><span class="line">  <span class="attr">selector:</span></span><br><span class="line">    <span class="attr">app:</span> <span class="string">redis-deploy-6379</span></span><br></pre></td></tr></table></figure>
+
+<p>&#x521B;&#x5EFA;pod&#x5982;&#x4E0B;&#xFF1A;</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">root@master1:~/yaml/20210115/case# kubectl apply -f exec.yaml</span><br><span class="line">deployment.apps/redis-deployment created</span><br><span class="line">service/redis-deploy-6379 created</span><br><span class="line">root@master1:~/yaml/20210115/case# kubectl get pod</span><br><span class="line">NAME                                READY   STATUS    RESTARTS   AGE</span><br><span class="line">redis-deployment-84b954879f-zq94s   1/1     Running   0          93s</span><br></pre></td></tr></table></figure>
+
+<p>&#x5728;&#x5176;&#x4ED6;&#x673A;&#x5668;&#x5B89;&#x88C5;&#x4E00;&#x4E2A;&#x5BA2;&#x6237;&#x7AEF;&#xFF0C;&#x6765;&#x8FDB;&#x884C;&#x6D4B;&#x8BD5;&#xFF1B;</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">root@node2:~# apt update</span><br><span class="line"><span class="meta">#</span><span class="bash"> &#x5B89;&#x88C5;redis&#x5BA2;&#x6237;&#x7AEF;</span></span><br><span class="line">root@node2:~# apt install redis-tools -y</span><br><span class="line"><span class="meta"></span></span><br><span class="line"><span class="meta">#</span><span class="bash"> node&#x66B4;&#x9732;&#x7684;&#x7AEF;&#x53E3;&#x662F;30031&#x7AEF;&#x53E3;</span></span><br><span class="line">root@node2:~# redis-cli -h 192.168.0.23 -p 30031</span><br><span class="line">192.168.0.23:30031&gt;</span><br><span class="line"><span class="meta">#</span><span class="bash"> &#x8FD9;&#x6837;&#x5C31;&#x8FDE;&#x63A5;&#x5230;k8s&#x4E2D;&#x7684;redis&#x670D;&#x52A1;&#x4E2D;&#x53BB;&#x4E86;&#xFF1B;</span></span><br><span class="line"><span class="meta"></span></span><br><span class="line"><span class="meta">#</span><span class="bash"> &#x68C0;&#x6D4B;&#x7684;&#x673A;&#x5236;&#x7C7B;&#x4F3C;&#x4E8E;&#x5728;&#x5BB9;&#x5668;&#x4E2D;&#x8F93;&#x5165;&#x5982;&#x4E0B;&#x547D;&#x4EE4;</span></span><br><span class="line">root@redis-deployment-84b954879f-zq94s:/data# /usr/local/bin/redis-cli</span><br><span class="line">127.0.0.1:6379&gt; quit</span><br><span class="line">root@redis-deployment-84b954879f-zq94s:/data# echo $?</span><br><span class="line">0</span><br><span class="line"><span class="meta">#</span><span class="bash"> &#x8FD9;&#x6837;&#x5C31;&#x8868;&#x793A;&#x72B6;&#x6001;&#x6B63;&#x5E38;&#xFF0C;&#x68C0;&#x6D4B;&#x901A;&#x8FC7;</span></span><br></pre></td></tr></table></figure>
+
+<p>&#x5173;&#x95ED;&#x670D;&#x52A1;&#xFF0C;&#x6D4B;&#x8BD5;&#x63A2;&#x9488;&#x7684;&#x529F;&#x80FD;</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> &#x6211;&#x4EEC;&#x5728;&#x5BB9;&#x5668;&#x4E2D;&#x5173;&#x95ED;&#x670D;&#x52A1;</span></span><br><span class="line">root@redis-deployment-84b954879f-zq94s:/data# /usr/local/bin/redis-cli</span><br><span class="line">127.0.0.1:6379&gt; SHUTDOWN</span><br><span class="line">not connected&gt; </span><br><span class="line"><span class="meta"></span></span><br><span class="line"><span class="meta">#</span><span class="bash"> &#x6B64;&#x65F6;&#xFF0C;&#x5BF9;&#x4E8E;&#x5BB9;&#x5668;&#x800C;&#x8A00;&#x5C31;&#x4F1A;&#x91CD;&#x542F;pod</span></span><br><span class="line">root@master1:~/yaml/20210115/case# kubectl get pod</span><br><span class="line">NAME                                READY   STATUS      RESTARTS   AGE</span><br><span class="line">redis-deployment-84b954879f-zq94s   0/1     Completed   0          12m</span><br><span class="line">root@master1:~/yaml/20210115/case# kubectl get pod</span><br><span class="line">NAME                                READY   STATUS    RESTARTS   AGE</span><br><span class="line">redis-deployment-84b954879f-zq94s   1/1     Running   1          12m</span><br></pre></td></tr></table></figure>
+
+<p>&#x8FD9;&#x91CC;&#x53EA;&#x914D;&#x7F6E;&#x4E86;&#x5B58;&#x6D3B;&#x63A2;&#x9488;&#xFF0C;&#x6B63;&#x5E38;&#x60C5;&#x51B5;&#x4E0B;&#x8FD8;&#x662F;&#x5B58;&#x8D27;&#x63A2;&#x9488;&#x548C;&#x5C31;&#x7EEA;&#x63A2;&#x9488;&#x90FD;&#x662F;&#x9700;&#x8981;&#x914D;&#x7F6E;&#x7684;&#xFF1B;</p>
+<blockquote>
+<p>&#x6CE8;&#x610F;&#xFF1A;&#x5982;&#x679C;&#x63A2;&#x9488;&#x76D1;&#x6D4B;&#x7684;&#x670D;&#x52A1;&#x6839;&#x672C;&#x5C31;&#x6CA1;&#x6709;&#x5F00;&#x542F;&#xFF0C;&#x4F8B;&#x5982;&#x672C;&#x6765;http&#x670D;&#x52A1;&#x68C0;&#x6D4B;80&#x7AEF;&#x53E3;&#xFF0C;&#x800C;&#x56E0;&#x4E3A;&#x914D;&#x7F6E;&#x9519;&#x8BEF;&#x68C0;&#x6D4B;&#x4E86;81&#x7AEF;&#x53E3;&#xFF0C;&#x8FDE;&#x7EED;&#x4ECE;&#x8D77;&#x4E09;&#x6B21;&#x540E;pod&#x5C31;&#x4F1A;&#x8FDB;&#x5165;&#x5230;<strong>CrashLoopBackOff</strong>&#x7684;&#x72B6;&#x6001;&#xFF1B;</p>
+</blockquote>
+<h4 id="livenessProbe&#x548C;readinessProbe&#x7684;&#x5BF9;&#x6BD4;"><a href="#livenessProbe&#x548C;readinessProbe&#x7684;&#x5BF9;&#x6BD4;" class="headerlink" title="livenessProbe&#x548C;readinessProbe&#x7684;&#x5BF9;&#x6BD4;"></a>livenessProbe&#x548C;readinessProbe&#x7684;&#x5BF9;&#x6BD4;</h4><p>&#x4E24;&#x8005;&#x7684;&#x914D;&#x7F6E;&#x53C2;&#x6570;&#x4E00;&#x6837;&#xFF0C;&#x5176;&#x7279;&#x70B9;&#x5982;&#x4E0B;&#xFF1A;</p>
+<ul>
+<li><p>livenessProbe&#x8FDE;&#x7EED;&#x63A2;&#x6D4B;&#x5931;&#x8D25;&#x4F1A;&#x91CD;&#x542F;&#x3001;&#x91CD;&#x5EFA;pod&#xFF0C;readinessProbe&#x4E0D;&#x4F1A;&#x6267;&#x884C;&#x91CD;&#x542F;&#x6216;&#x8005;&#x91CD;&#x5EFA;Pod&#x64CD;&#x4F5C;</p>
+</li>
+<li><p>livenessProbe&#x8FDE;&#x7EED;&#x68C0;&#x6D4B;&#x6307;&#x5B9A;&#x6B21;&#x6570;&#x5931;&#x8D25;&#x540E;&#x4F1A;&#x5C06;&#x5BB9;&#x5668;&#x7F6E;&#x4E8E;&#xFF08;Crash Loop BackOff&#xFF09;&#x4E14;&#x4E0D;&#x53EF;&#x7528;&#xFF0C;readinessProbe&#x4E0D;&#x4F1A;</p>
+</li>
+<li><p>readinessProbe &#x8FDE;&#x7EED;&#x63A2;&#x6D4B;&#x5931;&#x8D25;&#x4F1A;&#x4ECE;service&#x7684;endpointd&#x4E2D;&#x5220;&#x9664;&#x8BE5;Pod&#xFF0C;livenessProbe&#x4E0D;&#x5177;&#x5907;&#x6B64;&#x529F;&#x80FD;&#xFF0C;&#x4F46;&#x662F;&#x4F1A;&#x5C06;&#x5BB9;&#x5668;&#x6302;&#x8D77;livenessProbe</p>
+</li>
+<li><p>livenessProbe&#x7528;&#x6237;&#x63A7;&#x5236;&#x662F;&#x5426;&#x91CD;&#x542F;pod&#xFF0C;readinessProbe&#x7528;&#x4E8E;&#x63A7;&#x5236;pod&#x662F;&#x5426;&#x6DFB;&#x52A0;&#x81F3;seryice</p>
+</li>
+</ul>
+<p>&#x5EFA;&#x8BAE;&#x2236;</p>
+<ul>
+<li><strong>&#x4E24;&#x4E2A;&#x63A2;&#x9488;&#x90FD;&#x914D;&#x7F6E;</strong></li>
+</ul>
+<h2 id="pod&#x91CD;&#x542F;&#x7B56;&#x7565;"><a href="#pod&#x91CD;&#x542F;&#x7B56;&#x7565;" class="headerlink" title="pod&#x91CD;&#x542F;&#x7B56;&#x7565;"></a>pod&#x91CD;&#x542F;&#x7B56;&#x7565;</h2><p>k8s&#x5728;Pod&#x51FA;&#x73B0;&#x5F02;&#x5E38;&#x7684;&#x65F6;&#x5019;&#x4F1A;&#x81EA;&#x52A8;&#x5C06;Pod&#x91CD;&#x542F;&#x4EE5;&#x6062;&#x590D;Pod&#x4E2D;&#x7684;&#x670D;&#x52A1;&#x3002;</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">restartPolicy:</span><br><span class="line">	Always&#x2236;&#x5F53;&#x5BB9;&#x5668;&#x5F02;&#x5E38;&#x65F6;&#xFF0C;k8s&#x81EA;&#x52A8;&#x91CD;&#x542F;&#x8BE5;&#x5BB9;&#x5668;&#xFF0C;ReplicationController/Replicaset/Deployment&#x3002;		OnFailure&#x2236;&#x5F53;&#x5BB9;&#x5668;&#x5931;&#x8D25;&#x65F6;&#xFF08;&#x5BB9;&#x5668;&#x505C;&#x6B62;&#x8FD0;&#x884C;&#x4E14;&#x9000;&#x51FA;&#x7801;&#x4E0D;&#x4E3A;0&#xFF09;&#xFF0C;k8s&#x81EA;&#x52A8;&#x91CD;&#x542F;&#x8BE5;&#x5BB9;&#x5668;&#x3002;</span><br><span class="line">	Never&#x2236;&#x4E0D;&#x8BBA;&#x5BB9;&#x5668;&#x8FD0;&#x884C;&#x72B6;&#x6001;&#x5982;&#x4F55;&#x90FD;&#x4E0D;&#x4F1A;&#x91CD;&#x542F;&#x8BE5;&#x5BB9;&#x5668;&#xFF0C; Job&#x6216;CronJob&#x3002;</span><br></pre></td></tr></table></figure>
+
+
+
+<p>&#x3002;</p>
+
+    </div>
+    
+    
+    
+    
+    
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/livenessprobe/" rel="tag"># livenessprobe</a>
+              <a href="/tags/readinessprobe/" rel="tag"># readinessprobe</a>
+          </div>
+    
+        
+
+    
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/cloud-native/kubernetes/04_k8s_k8s%E5%AE%89%E8%A3%85%E5%90%8E%E7%BB%AD%EF%BC%88corednsdashboard%E9%83%A8%E7%BD%B2%EF%BC%89/" rel="prev" title="k8s安装后续（coredns dashboard部署）">
+      <i class="fa fa-chevron-left"></i> k8s安装后续（coredns dashboard部署）
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/cloud-native/kubernetes/10_k8s_%E6%8C%81%E4%B9%85%E5%8C%96%E5%AD%98%E5%82%A8%E4%B8%8Econfigmap%E8%B5%84%E6%BA%90%E4%BB%8B%E7%BB%8D%EF%BC%88pod%E7%9A%84%E6%95%B0%E6%8D%AE%E5%AD%98%E5%82%A8%E4%B8%8E%E9%85%8D%E7%BD%AE%E7%AE%A1%E7%90%86%EF%BC%89/" rel="next" title="持久化存储与configmap资源介绍（pod的数据存储与配置管理）">
+      持久化存储与configmap资源介绍（pod的数据存储与配置管理） <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+    <div>
+        
+        
+
+<div>
+    
+        <div style="text-align:center;color: #ccc;font-size:14px;">------ 版权声明：本文属于原创文章------</div>
+    	<div style="text-align:center;color: #FF0000;font-size:14px;">转载请注明：Burnov.github.io原创文章+本文链接，谢谢合作！！</i></div>
+    
+</div>
+
+
+        
+     </div>
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8%E5%AD%98%E5%82%A8%E6%8E%A2%E9%92%88%E5%92%8C%E5%B0%B1%E7%BB%AA%E6%8E%A2%E9%92%88%E4%B8%BApod%E6%9C%8D%E5%8A%A1%E8%BF%9B%E8%A1%8C%E6%8E%A2%E6%B5%8B%EF%BC%88pod%E7%9A%84%E7%9B%91%E6%8E%A7%EF%BC%89"><span class="nav-number">1.</span> <span class="nav-text">使用存储探针和就绪探针为pod服务进行探测（pod的监控）</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#pod%E7%9A%84%E7%8A%B6%E6%80%81%E4%BB%8B%E7%BB%8D"><span class="nav-number">1.1.</span> <span class="nav-text">pod的状态介绍</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#pod%E7%9A%84%E8%B0%83%E5%BA%A6%E8%BF%87%E7%A8%8B"><span class="nav-number">1.2.</span> <span class="nav-text">pod的调度过程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#pod%E6%8E%A2%E9%92%88"><span class="nav-number">1.3.</span> <span class="nav-text">pod探针</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%8E%A2%E9%92%88%E4%BB%8B%E7%BB%8D"><span class="nav-number">1.3.1.</span> <span class="nav-text">探针介绍</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%85%8D%E7%BD%AE%E6%8E%A2%E9%92%88"><span class="nav-number">1.3.2.</span> <span class="nav-text">配置探针</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%8E%A2%E9%92%88%E7%B1%BB%E5%9E%8B"><span class="nav-number">1.3.2.1.</span> <span class="nav-text">探针类型</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%8E%A2%E9%92%88%E9%85%8D%E7%BD%AE"><span class="nav-number">1.3.2.2.</span> <span class="nav-text">探针配置</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#http%E6%8E%A2%E9%92%88%E4%BB%8B%E7%BB%8D%E4%B8%8E%E7%A4%BA%E4%BE%8B"><span class="nav-number">1.3.2.3.</span> <span class="nav-text">http探针介绍与示例</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%AD%98%E6%B4%BB%E6%8E%A2%E9%92%88%E7%A4%BA%E4%BE%8B"><span class="nav-number">1.3.2.3.1.</span> <span class="nav-text">存活探针示例</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%B0%B1%E7%BB%AA%E6%8E%A2%E9%92%88%E7%A4%BA%E4%BE%8B"><span class="nav-number">1.3.2.3.2.</span> <span class="nav-text">就绪探针示例</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#tcp%E6%8E%A2%E9%92%88%E4%BB%8B%E7%BB%8D"><span class="nav-number">1.3.2.4.</span> <span class="nav-text">tcp探针介绍</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#ExecAction%E6%8E%A2%E9%92%88"><span class="nav-number">1.3.2.5.</span> <span class="nav-text">ExecAction探针</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#livenessProbe%E5%92%8CreadinessProbe%E7%9A%84%E5%AF%B9%E6%AF%94"><span class="nav-number">1.3.2.6.</span> <span class="nav-text">livenessProbe和readinessProbe的对比</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#pod%E9%87%8D%E5%90%AF%E7%AD%96%E7%95%A5"><span class="nav-number">1.4.</span> <span class="nav-text">pod重启策略</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Burnov"
+      src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">Burnov</p>
+  <div class="site-description" itemprop="description">No end for Learning</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">24</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">30</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/Burnov" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;Burnov" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:xials1990@gmail.com" title="E-Mail → mailto:xials1990@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://www.zhihu.com/people/xia-liang-shi-78" title="Skype → https:&#x2F;&#x2F;www.zhihu.com&#x2F;people&#x2F;xia-liang-shi-78" rel="noopener" target="_blank"><i class="fab fa-skype fa-fw"></i></a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class=""></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Burnov</span>
+</div>
+
+<!--
+  <div class="powered-by">Powered by <a href="https://github.com/Burnov" class="theme-link" rel="noopener" target="_blank">Burnov</a> & <a href="https://mist.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Mist</a>
+  </div>
+
+-->
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : false,
+      appId      : 'wIjFqGmEUzY7fpTNVHpKA0eH-gzGzoHsz',
+      appKey     : 'KdXueGM1xFH8pBVSO5SkFRKI',
+      placeholder: "Just go go",
+      avatar     : 'mm',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : false,
+      lang       : '' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : false,
+      serverURLs : ''
+    });
+  }, window.Valine);
+});
+</script>
+
+</body>
+</html>

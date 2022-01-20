@@ -1,0 +1,796 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-minimal.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Mist","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="k8s&amp;#x7684;&amp;#x67B6;&amp;#x6784;&amp;#x4E0E;&amp;#x670D;&amp;#x52A1;&amp;#x6982;&amp;#x5FF5;&amp;#x7684;&amp;#x4ECB;&amp;#x7ECD;k8s&amp;#x7684;&amp;#x57FA;&amp;#x672C;&amp;#x67B6;&amp;#x6784;  &amp;#x57FA;&amp;#x7840;&amp;#x5E95;&amp;#x5C42;&amp;#xFF1A;&amp;#x5728;&amp;#x8FD9;&amp;#x4E2A;">
+<meta property="og:type" content="article">
+<meta property="og:title" content="deployment与service资源介绍（pod的创建于网络访问）">
+<meta property="og:url" content="http://example.com/cloud-native/kubernetes/09_k8s_deployment%E4%B8%8Eservice%E8%B5%84%E6%BA%90%E4%BB%8B%E7%BB%8D%EF%BC%88pod%E7%9A%84%E5%88%9B%E5%BB%BA%E4%B8%8E%E7%BD%91%E7%BB%9C%E8%AE%BF%E9%97%AE%EF%BC%89/index.html">
+<meta property="og:site_name" content="Burnov^-^Blog">
+<meta property="og:description" content="k8s&amp;#x7684;&amp;#x67B6;&amp;#x6784;&amp;#x4E0E;&amp;#x670D;&amp;#x52A1;&amp;#x6982;&amp;#x5FF5;&amp;#x7684;&amp;#x4ECB;&amp;#x7ECD;k8s&amp;#x7684;&amp;#x57FA;&amp;#x672C;&amp;#x67B6;&amp;#x6784;  &amp;#x57FA;&amp;#x7840;&amp;#x5E95;&amp;#x5C42;&amp;#xFF1A;&amp;#x5728;&amp;#x8FD9;&amp;#x4E2A;">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://example.com/cloud-native/kubernetes/09_k8s_deployment%E4%B8%8Eservice%E8%B5%84%E6%BA%90%E4%BB%8B%E7%BB%8D%EF%BC%88pod%E7%9A%84%E5%88%9B%E5%BB%BA%E4%B8%8E%E7%BD%91%E7%BB%9C%E8%AE%BF%E9%97%AE%EF%BC%89/1642557782860.png">
+<meta property="og:image" content="http://example.com/cloud-native/kubernetes/09_k8s_deployment%E4%B8%8Eservice%E8%B5%84%E6%BA%90%E4%BB%8B%E7%BB%8D%EF%BC%88pod%E7%9A%84%E5%88%9B%E5%BB%BA%E4%B8%8E%E7%BD%91%E7%BB%9C%E8%AE%BF%E9%97%AE%EF%BC%89/1642559279481.png">
+<meta property="og:image" content="http://example.com/cloud-native/kubernetes/09_k8s_deployment%E4%B8%8Eservice%E8%B5%84%E6%BA%90%E4%BB%8B%E7%BB%8D%EF%BC%88pod%E7%9A%84%E5%88%9B%E5%BB%BA%E4%B8%8E%E7%BD%91%E7%BB%9C%E8%AE%BF%E9%97%AE%EF%BC%89/1642571962133.png">
+<meta property="og:image" content="http://example.com/cloud-native/kubernetes/09_k8s_deployment%E4%B8%8Eservice%E8%B5%84%E6%BA%90%E4%BB%8B%E7%BB%8D%EF%BC%88pod%E7%9A%84%E5%88%9B%E5%BB%BA%E4%B8%8E%E7%BD%91%E7%BB%9C%E8%AE%BF%E9%97%AE%EF%BC%89/1642573850051.png">
+<meta property="og:image" content="http://example.com/cloud-native/kubernetes/09_k8s_deployment%E4%B8%8Eservice%E8%B5%84%E6%BA%90%E4%BB%8B%E7%BB%8D%EF%BC%88pod%E7%9A%84%E5%88%9B%E5%BB%BA%E4%B8%8E%E7%BD%91%E7%BB%9C%E8%AE%BF%E9%97%AE%EF%BC%89/1642575447004.png">
+<meta property="og:image" content="http://example.com/cloud-native/kubernetes/09_k8s_deployment%E4%B8%8Eservice%E8%B5%84%E6%BA%90%E4%BB%8B%E7%BB%8D%EF%BC%88pod%E7%9A%84%E5%88%9B%E5%BB%BA%E4%B8%8E%E7%BD%91%E7%BB%9C%E8%AE%BF%E9%97%AE%EF%BC%89/1642579176432.png">
+<meta property="og:image" content="http://example.com/cloud-native/kubernetes/09_k8s_deployment%E4%B8%8Eservice%E8%B5%84%E6%BA%90%E4%BB%8B%E7%BB%8D%EF%BC%88pod%E7%9A%84%E5%88%9B%E5%BB%BA%E4%B8%8E%E7%BD%91%E7%BB%9C%E8%AE%BF%E9%97%AE%EF%BC%89/1642583244946.png">
+<meta property="og:image" content="http://example.com/cloud-native/kubernetes/09_k8s_deployment%E4%B8%8Eservice%E8%B5%84%E6%BA%90%E4%BB%8B%E7%BB%8D%EF%BC%88pod%E7%9A%84%E5%88%9B%E5%BB%BA%E4%B8%8E%E7%BD%91%E7%BB%9C%E8%AE%BF%E9%97%AE%EF%BC%89/1642583303542.png">
+<meta property="og:image" content="http://example.com/cloud-native/kubernetes/09_k8s_deployment%E4%B8%8Eservice%E8%B5%84%E6%BA%90%E4%BB%8B%E7%BB%8D%EF%BC%88pod%E7%9A%84%E5%88%9B%E5%BB%BA%E4%B8%8E%E7%BD%91%E7%BB%9C%E8%AE%BF%E9%97%AE%EF%BC%89/1642593483907.png">
+<meta property="og:image" content="http://example.com/cloud-native/kubernetes/09_k8s_deployment%E4%B8%8Eservice%E8%B5%84%E6%BA%90%E4%BB%8B%E7%BB%8D%EF%BC%88pod%E7%9A%84%E5%88%9B%E5%BB%BA%E4%B8%8E%E7%BD%91%E7%BB%9C%E8%AE%BF%E9%97%AE%EF%BC%89/1642593866142.png">
+<meta property="article:published_time" content="2022-01-20T14:18:30.000Z">
+<meta property="article:modified_time" content="2022-01-20T14:19:29.757Z">
+<meta property="article:author" content="Burnov">
+<meta property="article:tag" content="deployment">
+<meta property="article:tag" content="service">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/cloud-native/kubernetes/09_k8s_deployment%E4%B8%8Eservice%E8%B5%84%E6%BA%90%E4%BB%8B%E7%BB%8D%EF%BC%88pod%E7%9A%84%E5%88%9B%E5%BB%BA%E4%B8%8E%E7%BD%91%E7%BB%9C%E8%AE%BF%E9%97%AE%EF%BC%89/1642557782860.png">
+
+<link rel="canonical" href="http://example.com/cloud-native/kubernetes/09_k8s_deployment%E4%B8%8Eservice%E8%B5%84%E6%BA%90%E4%BB%8B%E7%BB%8D%EF%BC%88pod%E7%9A%84%E5%88%9B%E5%BB%BA%E4%B8%8E%E7%BD%91%E7%BB%9C%E8%AE%BF%E9%97%AE%EF%BC%89/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>deployment与service资源介绍（pod的创建于网络访问） | Burnov^-^Blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="Burnov^-^Blog" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Burnov^-^Blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="Searching..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://example.com/cloud-native/kubernetes/09_k8s_deployment%E4%B8%8Eservice%E8%B5%84%E6%BA%90%E4%BB%8B%E7%BB%8D%EF%BC%88pod%E7%9A%84%E5%88%9B%E5%BB%BA%E4%B8%8E%E7%BD%91%E7%BB%9C%E8%AE%BF%E9%97%AE%EF%BC%89/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="Burnov">
+      <meta itemprop="description" content="No end for Learning">
+    </span>
+    
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Burnov^-^Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          deployment与service资源介绍（pod的创建于网络访问）
+        </h1>
+    
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+              
+    
+              <time title="Created: 2022-01-20 22:18:30 / Modified: 22:19:29" itemprop="dateCreated datePublished" datetime="2022-01-20T22:18:30+08:00">2022-01-20</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/cloud-native/" itemprop="url" rel="index"><span itemprop="name">cloud native</span></a>
+                </span>
+                  , 
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/cloud-native/kubernetes/" itemprop="url" rel="index"><span itemprop="name">kubernetes</span></a>
+                </span>
+            </span>
+    
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Valine: </span>
+    
+    <a title="valine" href="/cloud-native/kubernetes/09_k8s_deployment%E4%B8%8Eservice%E8%B5%84%E6%BA%90%E4%BB%8B%E7%BB%8D%EF%BC%88pod%E7%9A%84%E5%88%9B%E5%BB%BA%E4%B8%8E%E7%BD%91%E7%BB%9C%E8%AE%BF%E9%97%AE%EF%BC%89/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/cloud-native/kubernetes/09_k8s_deployment%E4%B8%8Eservice%E8%B5%84%E6%BA%90%E4%BB%8B%E7%BB%8D%EF%BC%88pod%E7%9A%84%E5%88%9B%E5%BB%BA%E4%B8%8E%E7%BD%91%E7%BB%9C%E8%AE%BF%E9%97%AE%EF%BC%89/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+    
+        </div>
+      </header>
+    
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+    
+      
+        <h2 id="k8s&#x7684;&#x67B6;&#x6784;&#x4E0E;&#x670D;&#x52A1;&#x6982;&#x5FF5;&#x7684;&#x4ECB;&#x7ECD;"><a href="#k8s&#x7684;&#x67B6;&#x6784;&#x4E0E;&#x670D;&#x52A1;&#x6982;&#x5FF5;&#x7684;&#x4ECB;&#x7ECD;" class="headerlink" title="k8s&#x7684;&#x67B6;&#x6784;&#x4E0E;&#x670D;&#x52A1;&#x6982;&#x5FF5;&#x7684;&#x4ECB;&#x7ECD;"></a>k8s&#x7684;&#x67B6;&#x6784;&#x4E0E;&#x670D;&#x52A1;&#x6982;&#x5FF5;&#x7684;&#x4ECB;&#x7ECD;</h2><h3 id="k8s&#x7684;&#x57FA;&#x672C;&#x67B6;&#x6784;"><a href="#k8s&#x7684;&#x57FA;&#x672C;&#x67B6;&#x6784;" class="headerlink" title="k8s&#x7684;&#x57FA;&#x672C;&#x67B6;&#x6784;"></a>k8s&#x7684;&#x57FA;&#x672C;&#x67B6;&#x6784;</h3><p><img src="/cloud-native/kubernetes/09_k8s_deployment%E4%B8%8Eservice%E8%B5%84%E6%BA%90%E4%BB%8B%E7%BB%8D%EF%BC%88pod%E7%9A%84%E5%88%9B%E5%BB%BA%E4%B8%8E%E7%BD%91%E7%BB%9C%E8%AE%BF%E9%97%AE%EF%BC%89/1642557782860.png" alt="k8s&#x67B6;&#x6784;&#x56FE;"></p>
+<ul>
+<li>&#x57FA;&#x7840;&#x5E95;&#x5C42;&#xFF1A;&#x5728;&#x8FD9;&#x4E2A;&#x7ED3;&#x6784;&#x56FE;&#x4E2D;&#xFF0C;&#x5BB9;&#x5668;&#x5C31;&#x5C5E;&#x4E8E;CRI&#xFF08;containered runtime interface-docker&#xFF09;&#x3001;CNI&#xFF08;containered network inferface-calico&#xFF09;&#x548C;CSI&#xFF08;containered storge interface&#x2013;ceph&#xFF09;&#x7684;&#x7ED3;&#x6784;&#xFF0C;&#x7136;&#x540E;harbor&#x63D0;&#x4F9B;&#x955C;&#x50CF;&#x4ED3;&#x5E93;&#xFF0C;&#x518D;&#x52A0;&#x4E0A;&#x4E91;&#x4F9B;&#x5E94;&#x5546;&#x548C;&#x8EAB;&#x4EFD;&#x8BA4;&#x8BC1;&#x7684;&#x4F9B;&#x5E94;&#x5546;&#xFF0C;&#x8FD9;&#x6837;&#x5C31;&#x6784;&#x6210;&#x4E86;&#x5E95;&#x5C42;&#x670D;&#x52A1;&#xFF1B;</li>
+</ul>
+<span id="more"></span>
+
+<ul>
+<li>&#x6838;&#x5FC3;&#x5C42;&#xFF1A;&#x6574;&#x4E2A;API&#x7684;&#x6267;&#x884C;&#x73AF;&#x5883;&#xFF0C;&#x5B83;&#x7684;&#x6838;&#x5FC3;&#x7EC4;&#x4EF6;&#x90FD;&#x662F;&#x5C5E;&#x4E8E;&#x8FD9;&#x4E00;&#x5C42;&#x7684;&#xFF0C;&#x5305;&#x62EC;apiserver&#x7B49;&#x6838;&#x5FC3;&#x7EC4;&#x4EF6;&#xFF1B;</li>
+<li>&#x5E94;&#x7528;&#x5C42;&#xFF1A;&#x57FA;&#x4E8E;pod&#x521B;&#x5EFA;&#x7684;&#x670D;&#x52A1;&#x5C31;&#x662F;&#x5E94;&#x7528;&#x5C42;</li>
+<li>&#x7BA1;&#x7406;&#x5C42;&#xFF1A;&#x8D44;&#x6E90;&#x548C;&#x7B56;&#x7565;&#x7BA1;&#x7406;&#xFF0C;&#x4F8B;&#x5982;&#x5BB9;&#x5668;&#x7684;&#x6279;&#x91CF;&#x7BA1;&#x7406;&#xFF08;&#x6279;&#x91CF;&#x6DFB;&#x52A0;&#x5BB9;&#x5668;&#x6216;&#x8005;&#x6279;&#x91CF;&#x5220;&#x9664;&#x5BB9;&#x5668;&#xFF09;</li>
+<li>&#x63A5;&#x53E3;&#x5C42;&#xFF1A;&#x4F8B;&#x5982;kubectl&#x5C31;&#x662F;&#x8C03;&#x7528;&#x7684;&#x63A5;&#x53E3;&#x6765;&#x5BF9;k8s&#x5E73;&#x53F0;&#x8FDB;&#x884C;&#x7BA1;&#x7406;&#x7684;&#xFF0C;&#x8FD8;&#x6709;&#x5E38;&#x89C1;&#x7684;&#x56FE;&#x5F62;&#x754C;&#x9762;&#x5DE5;&#x5177;&#x4E5F;&#x662F;&#x5982;&#x6B64;&#xFF1B;</li>
+</ul>
+<p>&#x8FD9;&#x5C31;&#x662F;k8s&#x7684;&#x4E00;&#x4E2A;&#x751F;&#x6001;&#xFF1B;&#x67B6;&#x6784;&#x4ECB;&#x7ECD;&#x7684;&#x5B98;&#x65B9;&#x5730;&#x5740;&#xFF1A;<a target="_blank" rel="noopener" href="http://docs.kubernetes.org.cn/251.html">http://docs.kubernetes.org.cn/251.html</a></p>
+<h3 id="api&#x7684;&#x8BBE;&#x8BA1;&#x539F;&#x5219;"><a href="#api&#x7684;&#x8BBE;&#x8BA1;&#x539F;&#x5219;" class="headerlink" title="api&#x7684;&#x8BBE;&#x8BA1;&#x539F;&#x5219;"></a>api&#x7684;&#x8BBE;&#x8BA1;&#x539F;&#x5219;</h3><p>&#x9664;&#x6B64;&#x4EE5;&#x5916;&#xFF0C;&#x5BF9;&#x4E8E;k8s&#x800C;&#x8A00;&#xFF0C;&#x5176;&#x8BBE;&#x8BA1;&#x7406;&#x5FF5;&#x4E3A;&#x57FA;&#x4E8E;API&#x63A5;&#x53E3;&#x7684;&#x8BBE;&#x8BA1;&#x7406;&#x5FF5;&#xFF0C;&#x8FD9;&#x4E5F;&#x662F;&#x4E3A;&#x4EC0;&#x4E48;&#x6211;&#x4EEC;&#x53EA;&#x7528;&#x5199;yaml&#x7684;&#x6587;&#x4EF6;&#x5219;&#x53EF;&#x4EE5;&#x8BA9;pod&#x8FD0;&#x884C;&#x8D77;&#x6765;&#xFF0C;&#x5E76;&#x5B9E;&#x73B0;&#x5404;&#x79CD;&#x5404;&#x6837;&#x7684;&#x529F;&#x80FD;&#x4E86;&#xFF1B;&#x8FD9;&#x91CC;&#x6211;&#x4EEC;&#x7B80;&#x5355;&#x8BF4;&#x4E00;&#x4E0B;<strong>api&#x7684;&#x8BBE;&#x8BA1;&#x539F;&#x5219;</strong>&#xFF1A;<a target="_blank" rel="noopener" href="http://docs.kubernetes.org.cn/249.html#API">http://docs.kubernetes.org.cn/249.html#API</a></p>
+<ul>
+<li>&#x6240;&#x6709;API&#x90FD;&#x662F;&#x58F0;&#x660E;&#x5F0F;&#x7684;&#xFF1B;&#x4E0E;&#x4E4B;&#x5BF9;&#x5E94;&#x7684;&#x5C31;&#x662F;<strong>&#x547D;&#x4EE4;&#x5F0F;&#x7684;API</strong>&#x63A5;&#x53E3;&#xFF0C;&#x5982;&#x679C;&#x4F7F;&#x7528;&#x547D;&#x4EE4;&#x5F0F;&#x7684;API&#x63A5;&#x53E3;&#xFF0C;&#x5219;&#x6211;&#x4EEC;&#x6240;&#x6709;&#x7684;&#x64CD;&#x4F5C;&#x5747;&#x9700;&#x8981;&#x901A;&#x8FC7;&#x547D;&#x4EE4;&#x6765;&#x5B8C;&#x6210;&#xFF0C;&#x4F8B;&#x5982;&#x521B;&#x5EFA;&#x4E00;&#x4E2A;&#x5BB9;&#x5668;&#x5C31;&#x4F1A;&#x4F7F;&#x7528;&#x5230;&#x201D;docker run&#x201D;&#xFF0C;&#x800C;&#x4E0D;&#x662F;&#x76F4;&#x63A5;&#x7F16;&#x5199;yaml&#x6587;&#x4EF6;&#xFF0C;&#x7136;&#x540E;&#x76F4;&#x63A5;&#x201D;kubectl apply&#x201D;&#x5C31;&#x53EF;&#x4EE5;&#x4E86;&#xFF1B;</li>
+</ul>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># &#x4F8B;&#x5982;&#x8FD9;&#x91CC;&#x63D0;&#x4F9B;&#x7684;&#x4E00;&#x4E2A;yaml&#x6587;&#x4EF6;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#apiVersion: extensions/v1beta1</span></span><br><span class="line"><span class="attr">apiVersion:</span> <span class="string">apps/v1</span></span><br><span class="line"><span class="attr">kind:</span> <span class="string">Deployment</span>  <span class="comment"># &#x6307;&#x5B9A;&#x8BE5;&#x8D44;&#x6E90;&#x7684;&#x7C7B;&#x578B;&#xFF0C;&#x76EE;&#x524D;&#x6700;&#x4E3B;&#x8981;&#x7684;&#x63A7;&#x5236;&#x5668;&#x7C7B;&#x578B;</span></span><br><span class="line"><span class="attr">metadata:</span></span><br><span class="line">  <span class="attr">name:</span> <span class="string">nginx-deployment</span></span><br><span class="line"><span class="attr">spec:</span></span><br><span class="line">  <span class="attr">replicas:</span> <span class="number">2</span>  <span class="comment"># &#x6307;&#x5B9A;&#x526F;&#x672C;&#x6570;&#x4E3A;2&#x4E2A;&#x5C31;&#x53EF;&#x4EE5;</span></span><br><span class="line">  <span class="attr">selector:</span></span><br><span class="line">    <span class="comment">#app: ng-deploy-80 #rc</span></span><br><span class="line">    <span class="attr">matchLabels:</span> <span class="comment">#rs or deployment</span></span><br><span class="line">      <span class="attr">app:</span> <span class="string">ng-deploy-80</span></span><br><span class="line"><span class="comment">#    matchExpressions:</span></span><br><span class="line"><span class="comment">#      - {key: app, operator: In, values: [ng-deploy-80,ng-rs-81]}</span></span><br><span class="line">  <span class="attr">template:</span></span><br><span class="line">    <span class="attr">metadata:</span></span><br><span class="line">      <span class="attr">labels:</span></span><br><span class="line">        <span class="attr">app:</span> <span class="string">ng-deploy-80</span></span><br><span class="line">    <span class="attr">spec:</span></span><br><span class="line">      <span class="attr">containers:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">ng-deploy-80</span></span><br><span class="line">        <span class="attr">image:</span> <span class="string">nginx</span>  <span class="comment"># &#x6307;&#x5B9A;&#x955C;&#x50CF;&#x4E3A;nginx</span></span><br><span class="line">        <span class="attr">ports:</span></span><br><span class="line">        <span class="bullet">-</span> <span class="attr">containerPort:</span> <span class="number">80</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>API&#x5BF9;&#x8C61;&#x662F;&#x5F7C;&#x6B64;&#x4E92;&#x8865;&#x800C;&#x4E14;&#x53EF;&#x4EE5;&#x7EC4;&#x5408;&#x7684;&#xFF1B;&#x8FD9;&#x91CC;&#x5E76;&#x4E0D;&#x662F;&#x53EF;&#x4EE5;&#x7EC4;&#x5408;&#xFF0C;&#x800C;&#x662F;&#x5FC5;&#x987B;&#x7EC4;&#x5408;&#xFF0C;&#x4F8B;&#x5982;&#xFF1A;&#x521B;&#x5EFA;&#x5BB9;&#x5668;&#x5C31;&#x5FC5;&#x987B;&#x88AB;&#x8BBF;&#x95EE;&#xFF1B;&#x56E0;&#x6B64;&#xFF0C;&#x8FD9;&#x6837;&#x6211;&#x4EEC;&#x7ED3;&#x5408;&#x5404;&#x79CD;&#x670D;&#x52A1;&#x8D44;&#x6E90;&#x7EC4;&#x5408;&#x5B8C;&#x6210;&#x5404;&#x79CD;&#x529F;&#x80FD;&#xFF1B;</li>
+</ul>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># &#x8FD9;&#x91CC;&#x5C31;&#x662F;pod&#x7684;Deployment&#x7C7B;&#x578B;&#x521B;&#x5EFA;&#x5BB9;&#x5668;&#xFF0C;&#x5982;&#x679C;&#x8FD8;&#x9700;&#x8981;&#x8BBF;&#x95EE;&#xFF0C;&#x5C31;&#x9700;&#x8981;&#x5173;&#x8054;service&#x8D44;&#x6E90;</span></span><br><span class="line"></span><br><span class="line"><span class="attr">apiVersion:</span> <span class="string">v1</span></span><br><span class="line"><span class="attr">kind:</span> <span class="string">Service</span>  <span class="comment"># &#x6307;&#x5B9A;service&#x8D44;&#x6E90;&#x7C7B;&#x578B;</span></span><br><span class="line"><span class="attr">metadata:</span></span><br><span class="line">  <span class="attr">name:</span> <span class="string">ng-deploy-80-service</span></span><br><span class="line"><span class="attr">spec:</span></span><br><span class="line">  <span class="attr">ports:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">http</span></span><br><span class="line">    <span class="attr">port:</span> <span class="number">80</span></span><br><span class="line">    <span class="attr">targetPort:</span> <span class="number">80</span></span><br><span class="line">    <span class="attr">protocol:</span> <span class="string">TCP</span></span><br><span class="line">  <span class="attr">type:</span> <span class="string">ClusterIP</span></span><br><span class="line">  <span class="attr">selector:</span></span><br><span class="line">    <span class="attr">app:</span> <span class="string">ng-deploy-80</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>&#x9AD8;&#x5C42;API&#x4EE5;&#x64CD;&#x4F5C;&#x610F;&#x56FE;&#x4E3A;&#x57FA;&#x7840;&#x8BBE;&#x8BA1;&#xFF1B;&#x5C31;&#x662F;&#x548C;&#x9AD8;&#x7EA7;&#x8BED;&#x8A00;&#x7C7B;&#x4F3C;&#xFF0C;&#x6211;&#x4EEC;&#x90FD;&#x662F;&#x4E3A;&#x4E86;&#x5B9E;&#x73B0;&#x4EC0;&#x4E48;&#x5185;&#x5BB9;&#xFF0C;&#x8FD9;&#x624D;&#x662F;&#x9AD8;&#x5C42;API&#x7684;&#x76EE;&#x7684;&#xFF1B;</li>
+<li>&#x5E95;&#x5C42;API&#x6839;&#x636E;&#x9AD8;&#x5C42;API&#x7684;&#x63A7;&#x5236;&#x9700;&#x8981;&#x8BBE;&#x8BA1;&#xFF1B;&#x8FD9;&#x4E00;&#x70B9;&#x548C;&#x4E0A;&#x9762;&#x7684;&#x610F;&#x601D;&#x662F;&#x76F8;&#x540C;&#x7684;&#xFF1B;&#x5E95;&#x5C42;&#x7684;API&#x6839;&#x636E;&#x9AD8;&#x5C42;API&#x9700;&#x6C42;&#x6765;&#x8FDB;&#x884C;&#x8BBE;&#x8BA1;&#xFF1B;</li>
+<li>&#x5C3D;&#x91CF;&#x907F;&#x514D;&#x7B80;&#x5355;&#x5C01;&#x88C5;&#xFF0C;&#x4E0D;&#x8981;&#x6709;&#x5728;&#x5916;&#x90E8;API&#x65E0;&#x6CD5;&#x663E;&#x5F0F;&#x77E5;&#x9053;&#x7684;&#x5185;&#x90E8;&#x9690;&#x85CF;&#x7684;&#x673A;&#x5236;&#xFF1B;API&#x80FD;&#x4E0D;&#x5C01;&#x88C5;&#x5C31;&#x4E0D;&#x8981;&#x5C01;&#x88C5;&#xFF0C;&#x5982;&#x679C;&#x516C;&#x53F8;&#x5185;&#x90E8;&#x81EA;&#x5DF1;&#x4F7F;&#x7528;&#xFF0C;&#x6700;&#x597D;&#x5C31;&#x4E0D;&#x8981;&#x5C01;&#x88C5;&#x4E86;&#x3002;&#x56E0;&#x4E3A;&#x5C01;&#x88C5;&#x8FC7;&#x591A;&#x5BB9;&#x6613;&#x51FA;&#x73B0;&#x4E0D;&#x517C;&#x5BB9;&#x7684;&#x95EE;&#x9898;&#xFF1B;&#x3010;&#x79C1;&#x6709;&#x4E91;&#x7684;&#x8BDD;&#x6700;&#x597D;&#x5C31;&#x4F7F;&#x7528;&#x539F;&#x751F;&#x7684;k8s&#x3011;</li>
+<li>API&#x64CD;&#x4F5C;&#x590D;&#x6742;&#x5EA6;&#x4E0E;&#x5BF9;&#x8C61;&#x6570;&#x91CF;&#x6210;&#x6B63;&#x6BD4;&#xFF1B;&#x64CD;&#x4F5C;&#x7684;API&#x8D8A;&#x591A;&#xFF0C;&#x7BA1;&#x7406;&#x8D77;&#x6765;&#x5C31;&#x8D8A;&#x56F0;&#x96BE;&#xFF1B;</li>
+<li>API&#x5BF9;&#x8C61;&#x72B6;&#x6001;&#x4E0D;&#x80FD;&#x4F9D;&#x8D56;&#x4E8E;&#x7F51;&#x7EDC;&#x72B6;&#x6001;&#xFF1B;</li>
+<li>&#x5C3D;&#x91CF;&#x907F;&#x514D;&#x8BA9;&#x64CD;&#x4F5C;&#x673A;&#x5236;&#x4F9D;&#x8D56;&#x4E8E;&#x5168;&#x5C40;&#x72B6;&#x6001;&#xFF0C;&#x56E0;&#x4E3A;&#x5728;&#x5206;&#x5E03;&#x5F0F;&#x7CFB;&#x7EDF;&#x4E2D;&#x8981;&#x4FDD;&#x8BC1;&#x5168;&#x5C40;&#x72B6;&#x6001;&#x7684;&#x540C;&#x6B65;&#x5F0F;&#x975E;&#x5E38;&#x56F0;&#x96BE;&#x7684;&#xFF1B;&#x5206;&#x5E03;&#x5F0F;&#x7684;&#x67B6;&#x6784;&#x4E0B;&#x9762;&#x53EF;&#x4EE5;&#x5B9E;&#x73B0;&#x6570;&#x636E;&#x7684;&#x5F02;&#x6B65;&#x64CD;&#x4F5C;&#xFF1B;</li>
+</ul>
+<p><img src="/cloud-native/kubernetes/09_k8s_deployment%E4%B8%8Eservice%E8%B5%84%E6%BA%90%E4%BB%8B%E7%BB%8D%EF%BC%88pod%E7%9A%84%E5%88%9B%E5%BB%BA%E4%B8%8E%E7%BD%91%E7%BB%9C%E8%AE%BF%E9%97%AE%EF%BC%89/1642559279481.png" alt="api&#x63A5;&#x53E3;&#x663E;&#x793A;"></p>
+<blockquote>
+<p>&#x6CE8;&#x610F;&#xFF1A;&#x8DE8;&#x7248;&#x672C;&#x7684;&#x5347;&#x7EA7;&#x4E00;&#x5B9A;&#x8981;&#x6CE8;&#x610F;&#x662F;&#x5426;&#x517C;&#x5BB9;&#x4F4E;&#x7248;&#x672C;&#x7684;API&#x63A5;&#x53E3;&#xFF0C;&#x5426;&#x5219;&#x5F88;&#x5BB9;&#x6613;&#x51FA;&#x73B0;&#x65B0;&#x5347;&#x7EA7;&#x7684;&#x7248;&#x672C;&#x4E0D;&#x652F;&#x6301;&#x539F;&#x7248;&#x672C;&#x7684;API&#xFF1B;</p>
+</blockquote>
+<h3 id="api&#x7684;&#x8D44;&#x6E90;&#x5BF9;&#x8C61;"><a href="#api&#x7684;&#x8D44;&#x6E90;&#x5BF9;&#x8C61;" class="headerlink" title="api&#x7684;&#x8D44;&#x6E90;&#x5BF9;&#x8C61;"></a>api&#x7684;&#x8D44;&#x6E90;&#x5BF9;&#x8C61;</h3><p>&#x6211;&#x4EEC;&#x6240;&#x6709;&#x7684;k8s&#x64CD;&#x4F5C;&#x6700;&#x7EC8;&#x90FD;&#x662F;&#x8C03;&#x7528;api&#x6765;&#x5B9E;&#x73B0;&#x7684;&#xFF1B;&#x5B83;&#x5230;&#x5E95;&#x662F;&#x5982;&#x4F55;&#x5B9E;&#x73B0;&#x7684;&#x5462;&#xFF1F;</p>
+<p><img src="/cloud-native/kubernetes/09_k8s_deployment%E4%B8%8Eservice%E8%B5%84%E6%BA%90%E4%BB%8B%E7%BB%8D%EF%BC%88pod%E7%9A%84%E5%88%9B%E5%BB%BA%E4%B8%8E%E7%BD%91%E7%BB%9C%E8%AE%BF%E9%97%AE%EF%BC%89/1642571962133.png" alt="apiserver&#x7684;&#x8BBF;&#x95EE;"></p>
+<p>&#x8D44;&#x6E90;&#x5BF9;&#x8C61;&#x7684;&#x5206;&#x7C7B;</p>
+<table>
+<thead>
+<tr>
+<th>&#x7C7B;&#x522B;</th>
+<th>&#x540D;&#x79F0;</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>&#x8D44;&#x6E90;&#x5BF9;&#x8C61;</td>
+<td>Pod&#x3001;ReplicaSet&#x3001;ReplicationController&#x3001;Deployment&#x3001;StatefulSet&#x3001;DaemonSet&#x3001;Job&#x3001;CronJob&#x3001;HorizontalPodAutoscaling&#x3001;Node&#x3001;Namespace&#x3001;Service&#x3001;Ingress&#x3001;Label&#x3001;CustomResourceDefinition</td>
+</tr>
+<tr>
+<td>&#x5B58;&#x50A8;&#x5BF9;&#x8C61;</td>
+<td>Volume&#x3001;PersistentVolume&#x3001;Secret&#x3001;CongfigMap</td>
+</tr>
+<tr>
+<td>&#x7B56;&#x7565;&#x5BF9;&#x8C61;</td>
+<td>SecurityContext&#x3001;ResourceQuota&#x3001;LimitRange</td>
+</tr>
+<tr>
+<td>&#x8EAB;&#x4EFD;&#x5BF9;&#x8C61;</td>
+<td>ServiceAccount&#x3001;Role&#x3001;ClusterRole</td>
+</tr>
+</tbody></table>
+<ul>
+<li>Pod &#x2013; &#x5355;&#x72EC;&#x521B;&#x5EFA;&#x7684;pod&#x5728;&#x88AB;&#x5220;&#x9664;&#x4E86;&#x4EE5;&#x540E;&#xFF0C;&#x662F;&#x4E0D;&#x4F1A;&#x91CD;&#x5EFA;&#x7684;&#xFF0C;&#x7528;&#x7684;&#x6BD4;&#x8F83;&#x5C11;&#xFF0C;&#x6211;&#x4EEC;&#x4E00;&#x822C;&#x4F7F;&#x7528;&#x5E26;&#x63A7;&#x5236;&#x5668;&#x7684;&#xFF1B;</li>
+<li>ReplicaSet&#x3001;ReplicationController &#x2013; &#x8FD9;&#x662F;&#x4E24;&#x4E2A;&#x65E9;&#x671F;&#x7684;&#x63A7;&#x5236;&#x5668;&#xFF1B;</li>
+<li>Deployment &#x2013; &#x63A7;&#x5236;&#x5668;&#xFF0C;&#x5B83;&#x6709;&#x526F;&#x672C;&#x6570;&#x673A;&#x5236;&#xFF0C;&#x5982;&#x679C;&#x5C11;&#x4E8E;&#x526F;&#x672C;&#x6570;&#x5C31;&#x4F1A;&#x91CD;&#x5EFA;&#x3002;&#x591A;&#x4F59;&#x526F;&#x672C;&#x6570;&#x7684;&#x8BDD;&#x5C31;&#x4F1A;&#x5220;&#x9664;&#xFF1B;<a target="_blank" rel="noopener" href="https://kubernetes.io/zh/docs/concepts/workloads/controllers/deployment/">https://kubernetes.io/zh/docs/concepts/workloads/controllers/deployment/</a></li>
+<li>StatefulSet &#x2013; &#x90E8;&#x7F72;&#x6709;&#x72B6;&#x6001;&#x670D;&#x52A1;&#x7684;&#x8D44;&#x6E90;&#x5BF9;&#x8C61;&#xFF1B;&#x6BD4;&#x5982;&#xFF0C;&#x6709;master/slave&#x3001;leader/backup&#x8FD9;&#x6837;&#x5173;&#x7CFB;&#x7684;&#x670D;&#x52A1;&#x3002;&#x8FD9;&#x6837;&#x7684;&#x670D;&#x52A1;&#x5C31;&#x9700;&#x8981;&#x4F7F;&#x7528;StatefulSet&#x8D44;&#x6E90;&#x5BF9;&#x8C61;&#xFF1B;</li>
+<li>DaemonSet &#x2013; &#x5728;&#x6574;&#x4E2A;k8s&#x7684;&#x6BCF;&#x4E2A;node&#x4E0A;&#x9762;&#x90FD;&#x9700;&#x8981;&#x8FD0;&#x884C;&#x540C;&#x6837;&#x7684;&#x8FDB;&#x7A0B;&#x6216;&#x8005;pod&#xFF1B;&#x4F8B;&#x5982;&#x76D1;&#x63A7;&#x670D;&#x52A1;&#x7684;&#x5BA2;&#x6237;&#x7AEF;&#x7A0B;&#x5E8F;&#xFF0C;&#x8FD9;&#x5C31;&#x9700;&#x8981;&#x5728;&#x6240;&#x6709;&#x7684;node&#x670D;&#x52A1;&#x5668;&#x4E0A;&#x4F7F;&#x7528;&#x8FD9;&#x4E2A;&#x8D44;&#x6E90;&#x5BF9;&#x8C61;&#xFF1B;&#x65E5;&#x5FD7;&#x6536;&#x96C6;&#x4E5F;&#x4F1A;&#x4F7F;&#x7528;&#x8FD9;&#x79CD;&#x8D44;&#x6E90;&#x5BF9;&#x8C61;&#x7684;&#xFF1B;</li>
+<li>Job&#x3001;CronJob &#x2013; Job&#x4E3A;&#x5355;&#x6B21;&#x7684;&#x4EFB;&#x52A1;&#xFF0C;CronJob&#x4E3A;&#x5468;&#x671F;&#x6027;&#x7684;&#x4EFB;&#x52A1;&#xFF1B;&#x4F8B;&#x5982;&#x6570;&#x636E;&#x7684;&#x5468;&#x671F;&#x6027;&#x7684;&#x5F52;&#x6863;&#xFF1B;job&#x6709;&#x65F6;&#x4F1A;&#x8FDB;&#x884C;&#x6570;&#x636E;&#x7684;&#x521D;&#x59CB;&#x5316;&#x7684;&#x65F6;&#x5019;&#x4F1A;&#x4F7F;&#x7528;&#xFF1B;</li>
+<li>HorizontalPodAutoscaling &#x2013; &#x63A7;&#x5236;&#x5668;&#xFF0C;&#x7B80;&#x79F0;&#x4E3A;HPA&#xFF0C;&#x5B83;&#x662F;&#x5B9E;&#x73B0;pod&#x5F39;&#x6027;&#x4F38;&#x7F29;&#x7684;&#x529F;&#x80FD;&#xFF1B;</li>
+<li>Node &#x2013; &#x8282;&#x70B9;&#x7684;&#x786C;&#x4EF6;&#x8D44;&#x6E90;</li>
+<li>Namespace &#x2013; &#x63D0;&#x4F9B;&#x7684;&#x662F;&#x8D44;&#x6E90;&#x9694;&#x79BB;&#x7684;&#x529F;&#x80FD;&#xFF1B;&#x6211;&#x4EEC;&#x4E00;&#x5E2E;&#x901A;&#x8FC7;namespace&#x6765;&#x57FA;&#x4E8E;&#x4E1A;&#x52A1;&#x9694;&#x79BB;&#xFF1B;</li>
+<li>Service&#x3001;Ingress &#x2013; &#x66B4;&#x9732;&#x670D;&#x52A1;&#x7684;&#x4E00;&#x79CD;&#x65B9;&#x5F0F;&#xFF1B;service&#x6709;&#x56DB;&#x79CD;&#x66B4;&#x9732;&#x670D;&#x52A1;&#x7684;&#x65B9;&#x5F0F;&#xFF1B;ingress&#x53EF;&#x4EE5;&#x66B4;&#x9732;&#x591A;&#x4E2A;&#x670D;&#x52A1;&#xFF0C;&#x5B83;&#x662F;&#x8FD0;&#x884C;&#x5728;7&#x5C42;&#x7684;&#xFF0C;&#x5B83;&#x53EF;&#x4EE5;&#x57FA;&#x4E8E;uri&#x6765;&#x5339;&#x914D;&#x8F6C;&#x53D1;&#xFF1B;</li>
+<li>Label &#x2013; &#x6807;&#x7B7E;&#xFF0C;&#x5B9E;&#x73B0;&#x8D44;&#x6E90;&#x4EB2;&#x548C;&#x7684;&#xFF1B;</li>
+<li>CustomResourceDefinition</li>
+<li>Volume &#x2013; &#x5377;&#x670D;&#x52A1;&#xFF0C;&#x7C7B;&#x4F3C;&#x4E8E;docker&#x7684;&#x5377;&#xFF1B;&#x5B83;&#x901A;&#x5E38;&#x6307;&#x5B9A;&#x7684;&#x662F;&#x672C;&#x5730;&#x5B58;&#x50A8;&#xFF1B;</li>
+<li>PersistentVolume &#x2013; &#x5B83;&#x53EB;&#x505A;PV&#xFF0C;&#x4E5F;&#x5C31;&#x662F;&#x6301;&#x4E45;&#x5316;&#x7684;&#x5377;&#xFF1B;&#x5B83;&#x9700;&#x8981;&#x4F9D;&#x8D56;&#x4E8E;&#x7B2C;&#x4E09;&#x65B9;&#x7684;&#x5B58;&#x50A8;&#xFF1B;</li>
+<li>Secret &#x2013; &#x5BC6;&#x94A5;&#x8D44;&#x6E90;&#xFF1B;</li>
+<li>CongfigMap &#x2013; &#x914D;&#x7F6E;&#x6587;&#x4EF6;&#xFF1B;&#x7C7B;&#x4F3C;&#x4E8E;nginx&#x7684;&#x914D;&#x7F6E;&#x6587;&#x4EF6;&#xFF0C;&#x4EE5;&#x8D44;&#x6E90;&#x7684;&#x5F62;&#x5F0F;&#x5199;&#x5728;&#x4E00;&#x8FB9;&#xFF0C;&#x7136;&#x540E;&#x518D;&#x53BB;&#x5173;&#x8054;pod&#xFF1B;&#x8FD9;&#x5C31;&#x5B9E;&#x73B0;&#x4E86;&#x914D;&#x7F6E;&#x4E8E;&#x955C;&#x50CF;&#x6587;&#x4EF6;&#x7684;&#x89E3;&#x8026;&#xFF1B;</li>
+<li>SecurityContext&#x3001;ResourceQuota&#x3001;LimitRange &#x2013; &#x5B9E;&#x73B0;&#x5B89;&#x5168;&#x8D44;&#x6E90;&#x9650;&#x5236;&#x7684;&#xFF1B;</li>
+<li>ServiceAccount &#x2013; &#x79DF;&#x6237;&#x6982;&#x5FF5;&#xFF0C;&#x548C;openstack&#x7684;&#x79DF;&#x6237;&#x7C7B;&#x4F3C;&#xFF0C;&#x5B9E;&#x73B0;&#x6743;&#x9650;&#x5206;&#x914D;&#x7684;&#xFF1B;</li>
+<li>Role&#x3001;ClusterRole &#x2013; &#x5BF9;&#x8D44;&#x6E90;&#x5BF9;&#x8C61;&#x7684;&#x6743;&#x9650;&#x3001;ClusterRole&#x5BF9;k8s&#x5BF9;&#x8C61;&#x7684;&#x6743;&#x9650;&#xFF1B;</li>
+</ul>
+<h3 id="&#x5E38;&#x89C1;&#x7684;&#x4E1A;&#x52A1;&#x547D;&#x4EE4;"><a href="#&#x5E38;&#x89C1;&#x7684;&#x4E1A;&#x52A1;&#x547D;&#x4EE4;" class="headerlink" title="&#x5E38;&#x89C1;&#x7684;&#x4E1A;&#x52A1;&#x547D;&#x4EE4;"></a>&#x5E38;&#x89C1;&#x7684;&#x4E1A;&#x52A1;&#x547D;&#x4EE4;</h3><p>&#x5E38;&#x89C1;&#x7684;api&#x8C03;&#x7528;&#x547D;&#x4EE4;&#x5982;&#x4E0B;&#x8868;&#x6240;&#x793A;&#xFF1A;</p>
+<p><img src="/cloud-native/kubernetes/09_k8s_deployment%E4%B8%8Eservice%E8%B5%84%E6%BA%90%E4%BB%8B%E7%BB%8D%EF%BC%88pod%E7%9A%84%E5%88%9B%E5%BB%BA%E4%B8%8E%E7%BD%91%E7%BB%9C%E8%AE%BF%E9%97%AE%EF%BC%89/1642573850051.png" alt="&#x5E38;&#x89C1;API&#x547D;&#x4EE4;&#x8C03;&#x7528;"></p>
+<p>&#x4E4B;&#x524D;&#x6709;&#x4ECB;&#x7ECD;&#x8FC7;&#x4E86;&#x5927;&#x90E8;&#x5206;&#x7684;&#x547D;&#x4EE4;&#x4E86;&#xFF0C;&#x8FD9;&#x91CC;&#x8FD8;&#x6709;&#x4E00;&#x4E2A;<strong>edit&#x7684;&#x547D;&#x4EE4;</strong>&#xFF1B;</p>
+<p>edit &#x2013; &#x5B83;&#x662F;&#x7528;&#x6765;&#x4E34;&#x65F6;&#x4FEE;&#x6539;&#x914D;&#x7F6E;&#x7684;&#xFF0C;&#x56E0;&#x4E3A;&#x4EFB;&#x4F55;&#x914D;&#x7F6E;&#x7684;&#x4FEE;&#x6539;&#x90FD;&#x8981;&#x57FA;&#x4E8E;&#x6587;&#x4EF6;&#xFF0C;&#x4FEE;&#x6539;yaml&#x6587;&#x4EF6;&#x6216;&#x8005;&#x914D;&#x7F6E;&#x6587;&#x4EF6;&#xFF0C;&#x800C;edit&#x7684;&#x914D;&#x7F6E;&#x4FEE;&#x6539;&#x540E;pod&#x91CD;&#x5EFA;&#x4E86;&#x5C31;&#x6CA1;&#x6709;&#x4E86;&#xFF1B;</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">root@master1:~# kubectl get deployments.apps -A</span><br><span class="line">NAMESPACE              NAME                        READY   UP-TO-DATE   AVAILABLE   AGE</span><br><span class="line">default                nginx-deployment            2/2     2            0           27s</span><br><span class="line"><span class="meta">#</span><span class="bash"> &#x8FD9;&#x91CC;&#x6709;&#x4E24;&#x4E2A;nginx&#x7684;deployments.apps</span></span><br><span class="line"><span class="meta"></span></span><br><span class="line"><span class="meta">#</span><span class="bash"> &#x901A;&#x8FC7;edit&#x7F16;&#x8F91;&#x5BB9;&#x5668;&#x914D;&#x7F6E;</span></span><br><span class="line">root@master1:~# kubectl edit deployments.apps nginx-deployment -n default</span><br><span class="line"><span class="meta">#</span><span class="bash"> -n &#x6307;&#x5B9A;namespace</span></span><br></pre></td></tr></table></figure>
+
+<p>&#x8FD9;&#x4E2A;&#x662F;&#x52A8;&#x6001;&#x4FEE;&#x6539;&#xFF0C;&#x4FEE;&#x6539;&#x5B8C;&#x6210;&#x4EE5;&#x540E;&#x5C31;&#x7ACB;&#x5373;&#x751F;&#x6548;&#x4E86;&#xFF0C;&#x4F46;&#x662F;&#x5982;&#x679C;pod&#x91CD;&#x5EFA;&#x4EE5;&#x540E;&#x5C31;&#x4F1A;&#x5931;&#x6548;&#xFF1B;</p>
+<p>cluster-info &#x2013; &#x5B83;&#x662F;&#x7528;&#x6765;&#x67E5;&#x770B;&#x96C6;&#x7FA4;&#x4FE1;&#x606F;&#x7684;&#xFF1B;</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">root@master1:~# kubectl cluster-info</span><br><span class="line">Kubernetes control plane is running at https://192.168.0.20:6443  # api&#x7684;&#x63A5;&#x53E3;&#x5730;&#x5740;</span><br><span class="line">CoreDNS is running at https://192.168.0.20:6443/api/v1/namespaces/kube-system/services/kube-dns:dns/proxy</span><br><span class="line"></span><br><span class="line">To further debug and diagnose cluster problems, use &apos;kubectl cluster-info dump&apos;.</span><br></pre></td></tr></table></figure>
+
+<p>top &#x2013; &#x67E5;&#x770B;node&#x6216;&#x8005;&#x662F;pod&#x8D1F;&#x8F7D;&#x7684;&#xFF1B;</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">root@master1:~# kubectl top node</span><br><span class="line">error: Metrics API not available</span><br><span class="line"><span class="meta">#</span><span class="bash"> &#x8FD9;&#x4E2A;&#x5730;&#x65B9;&#x7F3A;&#x5C11;&#x76D1;&#x63A7;&#x6A21;&#x5757;&#xFF0C;&#x6240;&#x4EE5;&#x65E0;&#x6CD5;&#x67E5;&#x770B;</span></span><br></pre></td></tr></table></figure>
+
+<p>cordon &#x2013; &#x6807;&#x8BB0;&#x8282;&#x70B9;&#x4E0D;&#x88AB;&#x8C03;&#x5EA6;&#xFF0C;&#x5982;&#x679C;node&#x8282;&#x70B9;&#x8FC7;&#x4FDD;&#x4E86;&#xFF0C;&#x8981;&#x4E0B;&#x7EBF;&#xFF0C;&#x4E0D;&#x80FD;&#x518D;&#x8BA9;node&#x5728;&#x4E0A;&#x9762;&#x521B;&#x5EFA;&#xFF0C;&#x5C31;&#x9700;&#x8981;&#x6307;&#x5B9A;&#x4E3A;cordon&#x8B66;&#x6212;&#x7EBF;&#xFF1B;&#x5728;&#x516C;&#x53F8;&#x670D;&#x52A1;&#x5668;&#x67B6;&#x6784;&#x4E2D;&#xFF0C;&#x9664;&#x4E86;master&#x8282;&#x70B9;&#x4E0D;&#x7528;&#x8C03;&#x5EA6;pod&#x4EE5;&#x5916;&#xFF0C;&#x8FD8;&#x6709;&#x4E00;&#x4E9B;node&#x8282;&#x70B9;&#x662F;&#x4E0D;&#x88AB;&#x8C03;&#x5EA6;pod&#x4E1A;&#x52A1;&#x7684;&#xFF0C;&#x4F8B;&#x5982;LB&#x7684;&#x8D1F;&#x8F7D;&#x5747;&#x8861;&#x5206;&#x914D;&#x7684;&#x8282;&#x70B9;&#xFF0C;&#x6240;&#x4EE5;&#x53EF;&#x4EE5;&#x624B;&#x52A8;&#x6807;&#x8BB0;&#x4E3A;&#x4E0D;&#x88AB;&#x8C03;&#x5EA6;&#x8282;&#x70B9;&#xFF1B;</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">root@master1:~# kubectl cordon 192.168.0.24</span><br><span class="line">node/192.168.0.24 cordoned</span><br><span class="line">root@master1:~# kubectl get node</span><br><span class="line">NAME           STATUS                     ROLES    AGE   VERSION</span><br><span class="line">192.168.0.20   Ready,SchedulingDisabled   master   21h   v1.20.5</span><br><span class="line">192.168.0.21   Ready,SchedulingDisabled   master   21h   v1.20.5</span><br><span class="line">192.168.0.23   Ready                      node     21h   v1.20.5</span><br><span class="line">192.168.0.24   Ready,SchedulingDisabled   node     21h   v1.20.5</span><br><span class="line"><span class="meta"></span></span><br><span class="line"><span class="meta">#</span><span class="bash"> &#x8FD9;&#x6837;&#x7684;&#x8BDD;192.168.0.24&#x5C31;&#x4E0D;&#x4F1A;&#x88AB;&#x8C03;&#x5EA6;&#x4E1A;&#x52A1;pod&#x4E86;&#xFF1B;</span></span><br></pre></td></tr></table></figure>
+
+<p><img src="/cloud-native/kubernetes/09_k8s_deployment%E4%B8%8Eservice%E8%B5%84%E6%BA%90%E4%BB%8B%E7%BB%8D%EF%BC%88pod%E7%9A%84%E5%88%9B%E5%BB%BA%E4%B8%8E%E7%BD%91%E7%BB%9C%E8%AE%BF%E9%97%AE%EF%BC%89/1642575447004.png" alt="&#x670D;&#x52A1;&#x5668;&#x67B6;&#x6784;"></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">root@master1:~# kubectl uncordon 192.168.0.24</span><br><span class="line">node/192.168.0.24 uncordoned</span><br><span class="line">root@master1:~# kubectl get node</span><br><span class="line">NAME           STATUS                     ROLES    AGE   VERSION</span><br><span class="line">192.168.0.20   Ready,SchedulingDisabled   master   21h   v1.20.5</span><br><span class="line">192.168.0.21   Ready,SchedulingDisabled   master   21h   v1.20.5</span><br><span class="line">192.168.0.23   Ready                      node     21h   v1.20.5</span><br><span class="line">192.168.0.24   Ready                      node     21h   v1.20.5</span><br><span class="line"><span class="meta"></span></span><br><span class="line"><span class="meta">#</span><span class="bash"> &#x5982;&#x679C;&#x53C8;&#x60F3;&#x8C03;&#x5EA6;&#x4E86;&#xFF0C;&#x5C31;&#x76F4;&#x63A5;&#x4F7F;&#x7528;uncordon&#x5C31;&#x53EF;&#x4EE5;&#x4E86;</span></span><br></pre></td></tr></table></figure>
+
+<p>drain &#x2013; &#x9A71;&#x9010;&#x8282;&#x70B9;&#xFF1B;&#x5C06;&#x672C;node&#x4E0A;&#x9762;&#x7684;pod&#x5168;&#x90E8;&#x9A71;&#x9010;&#x5230;&#x5176;&#x4ED6;node&#x4E0A;&#x9762;&#x91CD;&#x5EFA;&#xFF1B;&#x8FD9;&#x79CD;&#x64CD;&#x4F5C;&#x90FD;&#x5728;&#x665A;&#x4E0A;&#x4E1A;&#x52A1;&#x91CF;&#x4F4E;&#x7684;&#x65F6;&#x5019;&#x64CD;&#x4F5C;&#xFF1B;</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">root@master1:~# kubectl drain 192.168.0.24 --ignore-daemonsets</span><br><span class="line"><span class="meta">#</span><span class="bash"> &#x8FD9;&#x6837;&#x5C31;&#x53EF;&#x4EE5;&#x9A71;&#x9010;&#x5728;192.168.0.24&#x7684;pod</span></span><br></pre></td></tr></table></figure>
+
+<p>taint &#x2013; &#x7ED9;node&#x6807;&#x8BB0;&#x6C61;&#x70B9;&#x7684;&#xFF0C;&#x5B83;&#x662F;&#x7528;&#x6765;&#x5B9E;&#x73B0;&#x53CD;&#x4EB2;&#x548C;&#x7684;&#xFF1B;&#x5B83;&#x548C;<strong>label</strong>&#x6B63;&#x597D;&#x76F8;&#x53CD;&#xFF0C;label&#x662F;&#x7528;&#x6765;&#x5B9E;&#x73B0;&#x53CD;&#x4EB2;&#x548C;&#x7684;&#xFF1B;taint&#x8BF4;&#x660E;pod&#x7EDD;&#x5BF9;&#x4E0D;&#x4F1A;&#x521B;&#x5EFA;&#x5728;&#x8FD9;&#x4E9B;&#x8282;&#x70B9;&#x4E0A;&#x9762;&#xFF0C;&#x800C;label&#x8868;&#x793A;pod&#x53EA;&#x4F1A;&#x521B;&#x5EFA;&#x8FD9;&#x4E9B;&#x8282;&#x70B9;&#x4E0A;&#xFF1B;</p>
+<p>api-resources/api-versions/version &#x2013; &#x67E5;&#x770B;&#x76F8;&#x5173;&#x8D44;&#x6E90;&#x4FE1;&#x606F;&#xFF1B;</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">root@master1:~# kubectl api-resources</span><br><span class="line">NAME                              SHORTNAMES   APIVERSION                             NAMESPACED   KIND</span><br><span class="line">bindings                                       v1                                     true         Binding</span><br><span class="line">componentstatuses                 cs           v1                                     false        ComponentStatus</span><br><span class="line">configmaps                        cm           v1                                     true         ConfigMap</span><br><span class="line">endpoints                         ep           v1                                     true         Endpoints</span><br><span class="line"><span class="meta">#</span><span class="bash"> &#x67E5;&#x770B;&#x8D44;&#x6E90;&#x5BF9;&#x8C61;&#xFF0C;&#x8FD9;&#x91CC;&#x6709;&#x4E00;&#x4E9B;&#x7F29;&#x5199;&#xFF0C;&#x4F8B;&#x5982;<span class="string">&quot;kubectl get service&quot;</span>&#x548C;<span class="string">&quot;kubectl get svc&quot;</span>&#x662F;&#x4E00;&#x6837;&#x7684;&#xFF1B;</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> &#x4E0D;&#x5C5E;&#x4E8E;namespace&#x7684;&#x5C31;&#x662F;&#x5168;&#x5C40;&#x8D44;&#x6E90;&#xFF1B;</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> kind&#x662F;&#x7C7B;&#x578B;&#xFF0C;&#x8FD9;&#x4E2A;&#x9700;&#x8981;&#x5199;&#x5728;yaml&#x6587;&#x4EF6;&#x4E2D;&#xFF1B;</span></span><br><span class="line"></span><br><span class="line">root@master1:~# kubectl version</span><br><span class="line">Client Version: version.Info{Major:&quot;1&quot;, Minor:&quot;20&quot;, GitVersion:&quot;v1.20.5&quot;, GitCommit:&quot;6b1d87acf3c8253c123756b9e61dac642678305f&quot;, GitTreeState:&quot;clean&quot;, BuildDate:&quot;2021-03-18T01:10:43Z&quot;, GoVersion:&quot;go1.15.8&quot;, Compiler:&quot;gc&quot;, Platform:&quot;linux/amd64&quot;}</span><br><span class="line">Server Version: version.Info{Major:&quot;1&quot;, Minor:&quot;20&quot;, GitVersion:&quot;v1.20.5&quot;, GitCommit:&quot;6b1d87acf3c8253c123756b9e61dac642678305f&quot;, GitTreeState:&quot;clean&quot;, BuildDate:&quot;2021-03-18T01:02:01Z&quot;, GoVersion:&quot;go1.15.8&quot;, Compiler:&quot;gc&quot;, Platform:&quot;linux/amd64&quot;}</span><br><span class="line"><span class="meta">#</span><span class="bash"> &#x67E5;&#x770B;&#x7248;&#x672C;</span></span><br></pre></td></tr></table></figure>
+
+<p>config &#x2013; &#x914D;&#x7F6E;&#x6587;&#x4EF6;&#xFF0C;&#x5728;/root/.kube/config&#x4E0B;&#xFF0C;&#x5C31;&#x662F;&#x8FD9;&#x4E2A;&#x914D;&#x7F6E;&#x6587;&#x4EF6;&#xFF0C;&#x8FD9;&#x4E2A;&#x6587;&#x4EF6;&#x662F;k8s&#x7684;&#x7BA1;&#x7406;&#x6587;&#x4EF6;&#xFF1B;</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">root@master1:~# cat /root/.kube/config</span><br><span class="line">apiVersion: v1</span><br><span class="line">clusters:</span><br><span class="line">- cluster:</span><br><span class="line">    certificate-authority-data: LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUR1RENDQXFDZ0F3SUJBZ0lVY1BTWldQcjJqemQySEFIR0xFc</span><br><span class="line">    ...</span><br></pre></td></tr></table></figure>
+
+<h2 id="K8S&#x7684;&#x57FA;&#x672C;&#x6982;&#x5FF5;&#x4E0E;&#x8D44;&#x6E90;&#x5BF9;&#x8C61;&#x8BE6;&#x89E3;"><a href="#K8S&#x7684;&#x57FA;&#x672C;&#x6982;&#x5FF5;&#x4E0E;&#x8D44;&#x6E90;&#x5BF9;&#x8C61;&#x8BE6;&#x89E3;" class="headerlink" title="K8S&#x7684;&#x57FA;&#x672C;&#x6982;&#x5FF5;&#x4E0E;&#x8D44;&#x6E90;&#x5BF9;&#x8C61;&#x8BE6;&#x89E3;"></a>K8S&#x7684;&#x57FA;&#x672C;&#x6982;&#x5FF5;&#x4E0E;&#x8D44;&#x6E90;&#x5BF9;&#x8C61;&#x8BE6;&#x89E3;</h2><h3 id="K8S&#x5E38;&#x89C1;&#x7684;&#x57FA;&#x672C;&#x6982;&#x5FF5;"><a href="#K8S&#x5E38;&#x89C1;&#x7684;&#x57FA;&#x672C;&#x6982;&#x5FF5;" class="headerlink" title="K8S&#x5E38;&#x89C1;&#x7684;&#x57FA;&#x672C;&#x6982;&#x5FF5;"></a>K8S&#x5E38;&#x89C1;&#x7684;&#x57FA;&#x672C;&#x6982;&#x5FF5;</h3><ul>
+<li>&#x5BF9;&#x8C61; &#x2013; &#x7528;k8s&#x662F;&#x548C;&#x4EC0;&#x4E48;&#x6253;&#x4EA4;&#x9053;&#xFF1F;</li>
+<li>yaml&#x6587;&#x4EF6; &#x2013; &#x600E;&#x4E48;&#x548C;k8s&#x6253;&#x4EA4;&#x9053;&#xFF1F;</li>
+<li>&#x5FC5;&#x987B;&#x5B57;&#x6BB5; &#x2013; &#x600E;&#x4E48;&#x58F0;&#x660E;&#x5B57;&#x6BB5;&#x5462;&#xFF1F;<ul>
+<li>apiVersion &#x2013; &#x62C6;&#x529F;&#x80FD;&#x952E;&#x8BE5;&#x5BF9;&#x8C61;&#x6240;&#x4F7F;&#x7528;&#x7684;kubernetes API&#x7248;&#x672C;</li>
+<li>kind &#x2013; &#x60F3;&#x8981;&#x521B;&#x5EFA;&#x7684;&#x5BF9;&#x8C61;&#x7684;&#x7C7B;&#x578B;</li>
+<li>metadata &#x2013; &#x5E2E;&#x52A9;&#x8BC6;&#x522B;&#x5BF9;&#x8C61;&#x552F;&#x4E00;&#x6027;&#x7684;&#x6570;&#x636E;&#xFF0C;&#x5305;&#x62EC;&#x4E00;&#x4E2A;name&#x540D;&#x79F0;&#x3001;&#x53EF;&#x9009;&#x7684;namespace&#xFF1B;</li>
+<li>spec &#x2013; &#x6307;&#x5B9A;&#x8D44;&#x6E90;&#x5BF9;&#x8C61;&#x7684;&#x76F8;&#x5173;&#x914D;&#x7F6E;&#xFF1B;&#x4F8B;&#x5982;&#x6307;&#x5B9A;&#x9009;&#x62E9;&#x5668;&#x3001;&#x6307;&#x5B9A;pord&#x5BF9;&#x8C61;&#x7B49;&#xFF1B;deployment&#x7684;spec&#x5C31;&#x6709;replicas&#x3001;selector&#x3001;templolate&#xFF08;&#x6A21;&#x677F;&#x4E0B;&#x6709;&#x6709;spec&#x9009;&#x9879;&#xFF09;&#xFF0C;&#x5176;&#x4E2D;&#xFF0C;selector&#x662F;&#x7528;&#x6765;&#x8D5B;&#x9009;&#x7684;&#xFF0C;&#x800C;templolate&#x662F;&#x7528;&#x6765;&#x7EE7;&#x627F;&#x7684;&#xFF1B;&#x5B83;&#x6307;&#x5B9A;&#x662F;&#x4E00;&#x4E2A;<strong>&#x671F;&#x671B;&#x503C;</strong>&#xFF0C;&#x6267;&#x884C;&#x5B8C;&#x6210;&#x4EE5;&#x540E;&#x4F1A;&#x5B9E;&#x73B0;&#x7684;&#x7ED3;&#x679C;&#xFF1B;</li>
+<li>status &#x2013; pod&#x521B;&#x5EFA;&#x5B8C;&#x6210;&#x540E;k8s&#x81EA;&#x52A8;&#x751F;&#x6210;&#x7684;status&#x7684;&#x72B6;&#x6001;&#x53D8;&#x5316;&#x8FC7;&#x7A0B;&#xFF1B;&#x5B83;&#x8868;&#x793A;&#x7684;&#x662F;<strong>&#x6700;&#x540E;&#x8FD0;&#x884C;&#x5B8C;&#x6210;&#x7684;&#x72B6;&#x6001;</strong>&#xFF1B;</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># &#x4F8B;&#x5982;&#x6709;&#x4EE5;&#x4E0B;&#x4E00;&#x4E2A;yaml&#x7684;&#x6587;&#x4EF6;</span></span><br><span class="line"><span class="attr">apiVersion:</span> <span class="string">v1</span>  <span class="comment"># &#x6307;&#x5B9A;apiVerion&#x7684;&#x7248;&#x672C;</span></span><br><span class="line"><span class="attr">kind:</span> <span class="string">Service</span>  <span class="comment"># &#x6307;&#x5B9A;&#x9700;&#x8981;&#x521B;&#x5EFA;&#x7684;&#x8D44;&#x6E90;&#x5BF9;&#x8C61;</span></span><br><span class="line"><span class="attr">metadata:</span>  <span class="comment"># &#x6BCF;&#x4E00;&#x4E2A;pod&#x7684;metadata&#x5143;&#x6570;&#x636E;&#x662F;&#x4E0D;&#x4E00;&#x6837;&#x7684;&#xFF0C;&#x5B83;&#x7528;&#x6765;&#x552F;&#x4E00;&#x6807;&#x8BC6;&#x8BE5;pod&#xFF0C;&#x91CC;&#x9762;&#x4E3B;&#x8981;&#x6709;&#x540D;&#x79F0;&#x548C;&#x6807;&#x7B7E;&#xFF1B;</span></span><br><span class="line">  <span class="attr">name:</span> <span class="string">ng-deploy-80</span>  <span class="comment"># pod&#x7684;&#x540D;&#x5B57;</span></span><br><span class="line"><span class="attr">spec:</span>  <span class="comment"># &#x8FD9;&#x662F;Service&#x7684;&#x76F8;&#x5173;&#x914D;&#x7F6E;&#xFF0C;&#x8FD9;&#x91CC;&#x5C31;&#x662F;ports&#x4EE5;&#x53CA;&#x9009;&#x62E9;&#x5668;&#x7B49;</span></span><br><span class="line">  <span class="attr">ports:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">http</span></span><br><span class="line">    <span class="attr">port:</span> <span class="number">81</span></span><br><span class="line">    <span class="attr">targetPort:</span> <span class="number">80</span></span><br><span class="line">    <span class="attr">nodePort:</span> <span class="number">30012</span></span><br><span class="line">    <span class="attr">protocol:</span> <span class="string">TCP</span></span><br><span class="line">  <span class="attr">type:</span> <span class="string">NodePort</span></span><br><span class="line">  <span class="attr">selector:</span>  <span class="comment"># &#x9009;&#x62E9;&#x5668;&#xFF1B;&#x9009;&#x62E9;&#x90A3;&#x4E9B;service&#xFF0C;&#x4E0B;&#x9762;&#x8DDF;&#x7684;&#x5C31;&#x662F;&#x6807;&#x7B7E;&#xFF1B;</span></span><br><span class="line">    <span class="attr">app:</span> <span class="string">ng-deploy-80</span>  <span class="comment"># &#x8FD9;&#x91CC;&#x6307;&#x5B9A;service&#x7684;&#x6807;&#x7B7E;&#xFF1B;&#x8FD9;&#x91CC;&#x901A;&#x8FC7;matchExpressions&#x7684;&#x8BDD;&#xFF0C;&#x53EF;&#x4EE5;&#x5199;&#x6B63;&#x5219;&#x8868;&#x8FBE;&#x5F0F;&#xFF1B;</span></span><br><span class="line">    </span><br><span class="line"><span class="comment"># &#x5728;&#x4E0A;&#x9762;&#x4E5F;&#x6709;&#x4E00;&#x4E2A;deployment&#x7684;yaml&#x6587;&#x4EF6;&#x793A;&#x4F8B;&#xFF0C;&#x53EF;&#x4EE5;&#x7528;&#x4F5C;&#x53C2;&#x8003;</span></span><br></pre></td></tr></table></figure>
+
+<p>status&#x7684;&#x72B6;&#x6001;&#x53EF;&#x4EE5;&#x901A;&#x8FC7;describe&#x76F4;&#x63A5;&#x67E5;&#x770B;&#xFF1A;</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">root@master1:~# kubectl describe pod net-test1</span><br><span class="line">Name:         net-test1</span><br><span class="line">Namespace:    default</span><br><span class="line">Priority:     0</span><br><span class="line">Node:         192.168.0.24/192.168.0.24</span><br><span class="line">Start Time:   Tue, 18 Jan 2022 10:49:38 +0000</span><br><span class="line">Labels:       run=net-test1</span><br><span class="line">Annotations:  &lt;none&gt;</span><br><span class="line">Status:       Running  # status&#x7684;&#x72B6;&#x6001;&#xFF0C;&#x8FD9;&#x662F;pod&#x6240;&#x5904;&#x7684;&#x5F53;&#x524D;&#x72B6;&#x6001;&#xFF1B;</span><br></pre></td></tr></table></figure>
+
+<h3 id="k8s&#x6700;&#x5C0F;&#x5355;&#x5143;-&#x2013;-pod&#x7684;&#x4ECB;&#x7ECD;"><a href="#k8s&#x6700;&#x5C0F;&#x5355;&#x5143;-&#x2013;-pod&#x7684;&#x4ECB;&#x7ECD;" class="headerlink" title="k8s&#x6700;&#x5C0F;&#x5355;&#x5143; &#x2013; pod&#x7684;&#x4ECB;&#x7ECD;"></a>k8s&#x6700;&#x5C0F;&#x5355;&#x5143; &#x2013; pod&#x7684;&#x4ECB;&#x7ECD;</h3><ul>
+<li>pod&#x662F;k8s&#x4E2D;&#x7684;&#x6700;&#x5C0F;&#x5355;&#x5143;</li>
+<li>&#x4E00;&#x4E2A;pod&#x4E2D;&#x53EF;&#x4EE5;&#x8FD0;&#x884C;&#x4E00;&#x4E2A;&#x5BB9;&#x5668;&#xFF0C;&#x4E5F;&#x53EF;&#x4EE5;&#x8FD0;&#x884C;&#x591A;&#x4E2A;&#x5BB9;&#x5668;</li>
+<li>&#x8FD0;&#x884C;&#x591A;&#x4E2A;&#x5BB9;&#x5668;&#x7684;&#x8BDD;&#xFF0C;&#x8FD9;&#x4E9B;&#x5BB9;&#x5668;&#x662F;&#x4E00;&#x8D77;&#x88AB;&#x8C03;&#x5EA6;&#x7684;</li>
+<li>pod&#x7684;&#x751F;&#x547D;&#x5468;&#x671F;&#x662F;&#x77ED;&#x6682;&#x7684;&#xFF0C;&#x4E0D;&#x4F1A;&#x81EA;&#x6108;&#xFF0C;&#x662F;&#x7528;&#x5B8C;&#x5C31;&#x9500;&#x6BC1;&#x7684;&#x5B9E;&#x4F53;&#xFF1B;&#x4E00;&#x65E6;&#x88AB;&#x5220;&#x9664;&#x5C31;&#x6CA1;&#x6709;&#x4E86;&#xFF1B;</li>
+<li>&#x4E00;&#x822C;&#x6211;&#x4EEC;&#x662F;&#x901A;&#x8FC7;controller&#x6765;&#x521B;&#x5EFA;&#x548C;&#x7BA1;&#x7406;pod</li>
+</ul>
+<p>&#x56E0;&#x6B64;&#xFF0C;&#x6211;&#x4EEC;&#x5F88;&#x5C11;&#x901A;&#x8FC7;&#x201D;kubectl run&#x201D;&#x6765;&#x521B;&#x5EFA;pod&#xFF0C;&#x4E00;&#x822C;&#x901A;&#x8FC7;&#x63A7;&#x5236;&#x5668;&#x6765;&#x521B;&#x5EFA;&#xFF1B;</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">root@master1:~# kubectl run net-test2 --image=alpine sleep 500000</span><br><span class="line">pod/net-test2 created</span><br></pre></td></tr></table></figure>
+
+<p>pod&#x7684;&#x751F;&#x547D;&#x5468;&#x671F;&#xFF1A;</p>
+<p>&#x521D;&#x59CB;&#x5316;&#x5BB9;&#x5668;-&gt; &#x542F;&#x52A8;&#x524D;&#x64CD;&#x4F5C;-&gt; &#x5C31;&#x7EEA;&#x63A2;&#x9488;-&gt; &#x5B58;&#x6D3B;&#x63A2;&#x9488;-&gt; &#x5220;&#x9664;pod&#x64CD;&#x4F5C;</p>
+<p><img src="/cloud-native/kubernetes/09_k8s_deployment%E4%B8%8Eservice%E8%B5%84%E6%BA%90%E4%BB%8B%E7%BB%8D%EF%BC%88pod%E7%9A%84%E5%88%9B%E5%BB%BA%E4%B8%8E%E7%BD%91%E7%BB%9C%E8%AE%BF%E9%97%AE%EF%BC%89/1642579176432.png" alt="pod&#x7684;&#x751F;&#x547D;&#x5468;&#x671F;"></p>
+<h3 id="&#x63A2;&#x9488;-&#x2013;-livenessProbe&#x548C;readinessProbe&#xFF08;&#x540E;&#x9762;&#x8BE6;&#x7EC6;&#x8BF4;&#x660E;&#xFF09;"><a href="#&#x63A2;&#x9488;-&#x2013;-livenessProbe&#x548C;readinessProbe&#xFF08;&#x540E;&#x9762;&#x8BE6;&#x7EC6;&#x8BF4;&#x660E;&#xFF09;" class="headerlink" title="&#x63A2;&#x9488; &#x2013; livenessProbe&#x548C;readinessProbe&#xFF08;&#x540E;&#x9762;&#x8BE6;&#x7EC6;&#x8BF4;&#x660E;&#xFF09;"></a>&#x63A2;&#x9488; &#x2013; livenessProbe&#x548C;readinessProbe&#xFF08;&#x540E;&#x9762;&#x8BE6;&#x7EC6;&#x8BF4;&#x660E;&#xFF09;</h3><ul>
+<li>livenessProbe &#x5B58;&#x6D3B;&#x63A2;&#x9488;</li>
+</ul>
+<p>&#x68C0;&#x6D4B;&#x5E94;&#x7528;&#x53D1;&#x751F;&#x6545;&#x969C;&#x7684;&#x65F6;&#x5019;&#x4F7F;&#x7528;&#xFF0C;&#x4E0D;&#x80FD;&#x63D0;&#x4F9B;&#x670D;&#x52A1;&#x3001;&#x8D85;&#x65F6;&#x7B49;&#x3002;&#x68C0;&#x6D4B;&#x5931;&#x8D25;&#x91CD;&#x542F;pod&#x3002;</p>
+<ul>
+<li>readinessProbe &#x5C31;&#x7EEA;&#x8C2D;&#x653F;</li>
+</ul>
+<p>&#x68C0;&#x6D4B;pod&#x542F;&#x52A8;&#x4E4B;&#x540E;&#x5E94;&#x7528;&#x662F;&#x5426;&#x5C31;&#x7EEA;&#xFF0C;&#x662F;&#x5426;&#x53EF;&#x4EE5;&#x63D0;&#x4F9B;&#x670D;&#x52A1;&#x3002;&#x68C0;&#x6D4B;&#x6210;&#x529F;&#xFF0C;pod&#x624D;&#x5F00;&#x59CB;&#x63A5;&#x53D7;&#x6D41;&#x91CF;&#x3002;</p>
+<h3 id="&#x63A7;&#x5236;&#x5668;-&#x2013;-controller"><a href="#&#x63A7;&#x5236;&#x5668;-&#x2013;-controller" class="headerlink" title="&#x63A7;&#x5236;&#x5668; &#x2013; controller"></a>&#x63A7;&#x5236;&#x5668; &#x2013; controller</h3><h4 id="replication-controller-&#x2013;-&#x7B2C;&#x4E00;&#x4EE3;pod&#x526F;&#x672C;&#x63A7;&#x5236;&#x5668;"><a href="#replication-controller-&#x2013;-&#x7B2C;&#x4E00;&#x4EE3;pod&#x526F;&#x672C;&#x63A7;&#x5236;&#x5668;" class="headerlink" title="replication controller &#x2013; &#x7B2C;&#x4E00;&#x4EE3;pod&#x526F;&#x672C;&#x63A7;&#x5236;&#x5668;"></a>replication controller &#x2013; &#x7B2C;&#x4E00;&#x4EE3;pod&#x526F;&#x672C;&#x63A7;&#x5236;&#x5668;</h4><ul>
+<li>&#x5B83;&#x5728;&#x5339;&#x914D;&#x76EE;&#x7684;&#x526F;&#x672C;&#x7684;&#x65F6;&#x5019;&#x662F;&#x80FD;&#x901A;&#x8FC7;&#x201D;=&#x201D;&#x548C;&#x201D;!=&#x201D;&#x6765;&#x8FDB;&#x884C;&#x5339;&#x914D;&#xFF1B;</li>
+<li><a target="_blank" rel="noopener" href="https://kubernetes.io/zh/docs/concepts/workloads/controllers/replicationcontroller/">https://kubernetes.io/zh/docs/concepts/workloads/controllers/replicationcontroller/</a></li>
+</ul>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># ReplicationController&#x7684;yaml&#x6587;&#x4EF6;</span></span><br><span class="line"></span><br><span class="line"><span class="attr">apiVersion:</span> <span class="string">v1</span></span><br><span class="line"><span class="attr">kind:</span> <span class="string">ReplicationController</span>  <span class="comment"># &#x63A7;&#x5236;&#x5668;&#x7C7B;&#x578B;</span></span><br><span class="line"><span class="attr">metadata:</span></span><br><span class="line">  <span class="attr">name:</span> <span class="string">ng-rc</span>  <span class="comment"># &#x5BB9;&#x5668;&#x7684;&#x540D;&#x5B57;</span></span><br><span class="line"><span class="attr">spec:</span></span><br><span class="line">  <span class="attr">replicas:</span> <span class="number">2</span>  <span class="comment"># &#x526F;&#x672C;&#x6570;</span></span><br><span class="line">  <span class="attr">selector:</span></span><br><span class="line">    <span class="attr">app:</span> <span class="string">ng-rc-80</span>  <span class="comment"># &#x8FD9;&#x91CC;&#x6307;&#x5B9A;&#x4E00;&#x4E2A;&#x6807;&#x7B7E;</span></span><br><span class="line">    <span class="comment">#app1: ng-rc-81</span></span><br><span class="line">  <span class="attr">template:</span>  <span class="comment"># &#x6307;&#x5B9A;&#x6A21;&#x677F;</span></span><br><span class="line">    <span class="attr">metadata:</span></span><br><span class="line">      <span class="attr">labels:</span></span><br><span class="line">        <span class="attr">app:</span> <span class="string">ng-rc-80</span></span><br><span class="line">        <span class="comment">#app1: ng-rc-81</span></span><br><span class="line">    <span class="attr">spec:</span></span><br><span class="line">      <span class="attr">containers:</span>  <span class="comment"># &#x8FD9;&#x4E2A;&#x5BB9;&#x5668;&#x521B;&#x5EFA;&#x7684;&#x65F6;&#x5019;&#x5C31;&#x4F1A;&#x7EE7;&#x627F;&#x4E0A;&#x9762;&#x6A21;&#x677F;&#x7684;&#x5185;&#x5BB9;&#xFF1B;</span></span><br><span class="line">      <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">ng-rc-80</span></span><br><span class="line">        <span class="attr">image:</span> <span class="string">nginx</span></span><br><span class="line">        <span class="attr">ports:</span></span><br><span class="line">        <span class="bullet">-</span> <span class="attr">containerPort:</span> <span class="number">80</span></span><br></pre></td></tr></table></figure>
+
+<p>&#x7136;&#x540E;&#x6211;&#x4EEC;&#x521B;&#x5EFA;&#x5BB9;&#x5668;&#xFF1A;</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> &#x521B;&#x5EFA;&#x5BB9;&#x5668;</span></span><br><span class="line">root@master1:~/yaml/20210115/case/case1# kubectl apply -f rc.yml</span><br><span class="line">replicationcontroller/ng-rc created</span><br><span class="line">root@master1:~/yaml/20210115/case/case1# kubectl get pod</span><br><span class="line">NAME                                READY   STATUS              RESTARTS   AGE</span><br><span class="line">ng-rc-6n4km                         0/1     ContainerCreating   0          5s</span><br><span class="line">ng-rc-wn78f                         0/1     ContainerCreating   0          5s</span><br><span class="line"><span class="meta">#</span><span class="bash"> &#x8FD9;&#x91CC;&#x5BB9;&#x5668;&#x540D;&#x662F;&#x4E0D;&#x4E00;&#x6837;&#x7684;&#xFF1B;&#x56E0;&#x4E3A;&#x6211;&#x4EEC;&#x901A;&#x8FC7;&#x6700;&#x540E;&#x4E00;&#x4F4D;&#x7684;&#x968F;&#x673A;&#x5B57;&#x7B26;&#x4E32;&#x6765;&#x533A;&#x5206;&#x4E0D;&#x540C;&#x7684;pod&#xFF1B;</span></span><br><span class="line"><span class="meta"></span></span><br><span class="line"><span class="meta">#</span><span class="bash"> &#x5220;&#x9664;pod&#x4EE5;&#x540E;&#xFF0C;&#x80FD;&#x591F;&#x88AB;&#x91CD;&#x5EFA;&#x7684;&#xFF1B;</span></span><br><span class="line">root@master1:~/yaml/20210115/case/case1# kubectl delete pod ng-rc-6n4km</span><br><span class="line">pod &quot;ng-rc-6n4km&quot; deleted</span><br><span class="line">root@master1:~/yaml/20210115/case/case1# kubectl get pod</span><br><span class="line">NAME                                READY   STATUS              RESTARTS   AGE</span><br><span class="line">ng-rc-lqbhb                         0/1     ContainerCreating   0          11s</span><br><span class="line"><span class="meta">#</span><span class="bash"> &#x5220;&#x9664;&#x4EE5;&#x540E;&#x7ACB;&#x523B;&#x5C31;&#x4F1A;&#x91CD;&#x5EFA;&#x4E86;&#xFF1B;&#x8FD9;&#x6837;&#x5C31;&#x4F1A;&#x4E00;&#x76F4;&#x7EF4;&#x6301;&#x4F60;&#x7684;pod&#x662F;yaml&#x6587;&#x4EF6;&#x4E2D;&#x6307;&#x5B9A;&#x7684;&#x72B6;&#x6001;&#xFF1B;</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> &#x5982;&#x679C;&#x662F;&#x6CA1;&#x6709;&#x63A7;&#x5236;&#x5668;&#x7EF4;&#x62A4;&#x7684;pod&#xFF0C;&#x5220;&#x9664;&#x4EE5;&#x540E;&#x5C31;&#x4E0D;&#x4F1A;&#x91CD;&#x5EFA;&#x7684;&#xFF1B;</span></span><br><span class="line"><span class="meta"></span></span><br><span class="line"><span class="meta">#</span><span class="bash"> &#x5220;&#x9664;yaml&#x6587;&#x4EF6;</span></span><br><span class="line">root@master1:~/yaml/20210115/case/case1# kubectl delete -f rc.yml</span><br><span class="line"><span class="meta">#</span><span class="bash"> 1.5&#x3001;1.6&#x7684;&#x65F6;&#x5019;&#x4F7F;&#x7528;&#x7684;&#x662F;rc.yaml</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="replicaSet-&#x2013;-&#x7B2C;&#x4E8C;&#x4EE3;pod&#x526F;&#x672C;&#x63A7;&#x5236;&#x5668;"><a href="#replicaSet-&#x2013;-&#x7B2C;&#x4E8C;&#x4EE3;pod&#x526F;&#x672C;&#x63A7;&#x5236;&#x5668;" class="headerlink" title="replicaSet &#x2013; &#x7B2C;&#x4E8C;&#x4EE3;pod&#x526F;&#x672C;&#x63A7;&#x5236;&#x5668;"></a>replicaSet &#x2013; &#x7B2C;&#x4E8C;&#x4EE3;pod&#x526F;&#x672C;&#x63A7;&#x5236;&#x5668;</h4><ul>
+<li>&#x5B83;&#x5728;&#x5339;&#x914D;&#x76EE;&#x7684;&#x526F;&#x672C;&#x7684;&#x65F6;&#x5019;&#x662F;&#x80FD;&#x901A;&#x8FC7;&#x201D;selector&#x201D;&#x6765;&#x8FDB;&#x884C;&#x5339;&#x914D;&#xFF0C;&#x770B;&#x5BB9;&#x5668;&#x662F;&#x5426;&#x652F;&#x6301;&#x5C97;&#x201D;in/not in&#x201D;&#xFF1B;</li>
+<li><a target="_blank" rel="noopener" href="https://kubernetes.io/zh/docs/concepts/workloads/controllers/replicaset/">https://kubernetes.io/zh/docs/concepts/workloads/controllers/replicaset/</a></li>
+<li>&#x5B83;&#x548C;rc&#x7684;&#x65B9;&#x5F0F;&#x672C;&#x8D28;&#x4E0A;&#x9762;&#x4E5F;&#x6CA1;&#x6709;&#x4EC0;&#x4E48;&#x533A;&#x522B;&#xFF1B;&#x90FD;&#x662F;&#x7528;&#x6765;&#x7EF4;&#x62A4;pod&#x7684;&#x526F;&#x672C;&#x6570;&#x7684;&#xFF1B;</li>
+</ul>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># replicaSet&#x7684;yaml&#x6587;&#x4EF6;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#apiVersion: extensions/v1beta1</span></span><br><span class="line"><span class="attr">apiVersion:</span> <span class="string">apps/v1</span> </span><br><span class="line"><span class="attr">kind:</span> <span class="string">ReplicaSet</span></span><br><span class="line"><span class="attr">metadata:</span></span><br><span class="line">  <span class="attr">name:</span> <span class="string">frontend</span>  <span class="comment"># frontend -- &#x8868;&#x793A;&#x4E3A;&#x524D;&#x7AEF;&#x670D;&#x52A1;</span></span><br><span class="line"><span class="attr">spec:</span></span><br><span class="line">  <span class="attr">replicas:</span> <span class="number">2</span></span><br><span class="line">  <span class="attr">selector:</span></span><br><span class="line">    <span class="attr">matchLabels:</span>  <span class="comment"># &#x6307;&#x5B9A;&#x5339;&#x914D;&#x7684;label</span></span><br><span class="line">      <span class="attr">app:</span> <span class="string">ng-rs-80</span></span><br><span class="line">    <span class="comment"># matchExpressions:  # &#x6B63;&#x5219;&#x7684;&#x5199;&#x6CD5;&#xFF0C;&#x652F;&#x6301;in&#x548C;not in&#x7684;&#x5199;&#x6CD5;&#xFF1B;</span></span><br><span class="line">    <span class="comment">#   - {key: app, operator: In, values: [ng-rs-80,ng-rs-81]}</span></span><br><span class="line">  <span class="attr">template:</span></span><br><span class="line">    <span class="attr">metadata:</span></span><br><span class="line">      <span class="attr">labels:</span></span><br><span class="line">        <span class="attr">app:</span> <span class="string">ng-rs-80</span></span><br><span class="line">    <span class="attr">spec:</span>  </span><br><span class="line">      <span class="attr">containers:</span>  </span><br><span class="line">      <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">ng-rs-80</span> </span><br><span class="line">        <span class="attr">image:</span> <span class="string">nginx</span>  </span><br><span class="line">        <span class="attr">ports:</span>  </span><br><span class="line">        <span class="bullet">-</span> <span class="attr">containerPort:</span> <span class="number">80</span></span><br></pre></td></tr></table></figure>
+
+<p>&#x542F;&#x52A8;&#x5BB9;&#x5668;</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">root@master1:~/yaml/20210115/case/case1# kubectl apply -f rs.yml</span><br><span class="line">replicaset.apps/frontend created</span><br><span class="line">root@master1:~/yaml/20210115/case/case1# kubectl get pod</span><br><span class="line">NAME                                READY   STATUS              RESTARTS   AGE</span><br><span class="line">frontend-c2dj9                      0/1     ContainerCreating   0          3s</span><br><span class="line">frontend-rpzqc                      0/1     ContainerCreating   0          3s</span><br><span class="line"><span class="meta"></span></span><br><span class="line"><span class="meta">#</span><span class="bash"> &#x518D;&#x6B21;&#x5220;&#x9664;&#x5C31;&#x4F1A;&#x91CD;&#x65B0;&#x521B;&#x5EFA;</span></span><br><span class="line">root@master1:~/yaml/20210115/case/case1# kubectl delete pod frontend-c2dj9</span><br><span class="line">pod &quot;frontend-c2dj9&quot; deleted</span><br><span class="line">root@master1:~/yaml/20210115/case/case1# kubectl get pod</span><br><span class="line">NAME                                READY   STATUS              RESTARTS   AGE</span><br><span class="line">frontend-b6vpm                      0/1     ContainerCreating   0          11s</span><br><span class="line">frontend-rpzqc                      1/1     Running             0          94s</span><br><span class="line"><span class="meta">#</span><span class="bash"> &#x8FD9;&#x91CC;&#x7ACB;&#x523B;&#x5C31;&#x4F1A;&#x521B;&#x5EFA;&#x65B0;&#x7684;pod&#xFF0C;&#x4FDD;&#x8BC1;&#x526F;&#x672C;&#x6570;&#x91CF;&#xFF0C;&#x4FDD;&#x8BC1;&#x670D;&#x52A1;&#x53EF;&#x7528;&#xFF1B;</span></span><br><span class="line"><span class="meta"></span></span><br><span class="line"><span class="meta">#</span><span class="bash"> &#x5220;&#x9664;yaml&#x6587;&#x4EF6;</span></span><br><span class="line">root@master1:~/yaml/20210115/case/case1# kubectl delete -f rs.yml</span><br></pre></td></tr></table></figure>
+
+<p>&#x5173;&#x4E8E;rs&#x548C;rc&#x4E24;&#x79CD;&#x63A7;&#x5236;&#x5668;&#x7684;&#x540D;&#x5B57;&#x8BF4;&#x660E;&#xFF1A;&#x8FD9;&#x4E24;&#x79CD;&#x63A7;&#x5236;&#x5668;&#x90FD;&#x662F;&#x7531;<strong>&#x63A7;&#x5236;&#x5668;&#x7684;&#x540D;&#x5B57;</strong>&#x52A0;&#x4E0A;&#x4E00;&#x4E9B;<strong>&#x968F;&#x673A;&#x5B57;&#x7B26;&#x4E32;</strong>&#x7EC4;&#x6210;&#xFF1B;</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">frontend-b6vpm   # rs&#x7684;&#x540D;&#x5B57;</span><br><span class="line">ng-rc-lqbhb  # rc&#x7684;&#x540D;&#x5B57;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>deployment &#x2013; &#x7B2C;&#x4E09;&#x4EE3;pod&#x63A7;&#x5236;&#x5668;<ul>
+<li>&#x6BD4;rs&#x66F4;&#x9AD8;&#x7EA7;&#x7684;&#x63A7;&#x5236;&#x5668;&#xFF0C;&#x9664;&#x4E86;&#x6709;rs&#x7684;&#x529F;&#x80FD;&#x4EE5;&#x5916;&#x8FD8;&#x6709;&#x66F4;&#x591A;&#x9AD8;&#x7EA7;&#x7684;&#x529F;&#x80FD;&#xFF0C;&#x6BD4;&#x5982;&#x8BF4;&#xFF1A;&#x6EDA;&#x52A8;&#x5347;&#x7EA7;&#x3001;&#x56DE;&#x6EDA;&#x7B49;</li>
+<li><a target="_blank" rel="noopener" href="https://kubernetes.io/zh/docs/concepts/workloads/controllers/deployment/">https://kubernetes.io/zh/docs/concepts/workloads/controllers/deployment/</a></li>
+</ul>
+</li>
+</ul>
+<h4 id="deployment&#x63A7;&#x5236;&#x5668;"><a href="#deployment&#x63A7;&#x5236;&#x5668;" class="headerlink" title="deployment&#x63A7;&#x5236;&#x5668;"></a>deployment&#x63A7;&#x5236;&#x5668;</h4><p>&#x5F53;&#x524D;&#x66F4;&#x591A;&#x7684;&#x5C31;&#x662F;&#x4F7F;&#x7528;deployment&#x63A7;&#x5236;&#x5668;&#x6765;&#x5B9E;&#x73B0;&#x7684;&#x8D44;&#x6E90;&#x7BA1;&#x7406;&#xFF1B;&#x5B83;&#x8FD8;&#x63D0;&#x4F9B;&#x4E86;&#x66F4;&#x591A;&#x66F4;&#x9AD8;&#x7EA7;&#x7684;&#x529F;&#x80FD;&#xFF1B;&#x5728;&#x672C;&#x6587;&#x6700;&#x521D;&#x63D0;&#x4F9B;&#x4E86;deployment&#x7684;yaml&#x793A;&#x4F8B;&#xFF0C;&#x8FD9;&#x91CC;&#x4E0D;&#x518D;&#x91CD;&#x590D;&#x7ED9;&#x51FA;&#x4E86;&#xFF1B;</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> &#x57FA;&#x4E8E;deployment.yaml&#x6587;&#x4EF6;&#x6765;&#x521B;&#x5EFA;&#x8D44;&#x6E90;</span></span><br><span class="line">root@master1:~/yaml/20210115/case/case1# kubectl apply -f deployment.yml</span><br><span class="line">deployment.apps/nginx-deployment created</span><br><span class="line">root@master1:~/yaml/20210115/case/case1# kubectl get pod</span><br><span class="line">NAME                                READY   STATUS    RESTARTS   AGE</span><br><span class="line">nginx-deployment-6b9f6c7549-slknb   1/1     Running   0          145m</span><br><span class="line">nginx-deployment-6b9f6c7549-w4rb4   1/1     Running   0          145m</span><br></pre></td></tr></table></figure>
+
+<p>deployment&#x540D;&#x5B57;&#x548C;rc&#x548C;rs&#x7684;&#x540D;&#x5B57;&#x4E0D;&#x4E00;&#x6837;&#xFF0C;&#x5B83;&#x7684;&#x540D;&#x5B57;&#x7531;<strong>&#x63A7;&#x5236;&#x5668;&#x540D;&#x5B57;+rs&#x540D;&#x5B57;+&#x968F;&#x673A;&#x5B57;&#x7B26;&#x4E32;</strong>&#x7EC4;&#x6210;&#xFF1B;</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">root@master1:~/yaml/20210115/case/case1# kubectl get rs</span><br><span class="line">NAME                          DESIRED   CURRENT   READY   AGE</span><br><span class="line">nginx-deployment-6b9f6c7549   2         2         2       148m</span><br><span class="line"><span class="meta">#</span><span class="bash"> &#x8FD9;&#x4E2A;&#x5C31;&#x662F;&#x521B;&#x5EFA;deployment&#x7684;&#x65F6;&#x5019;&#x521B;&#x5EFA;&#x7684;rs&#x63A7;&#x5236;&#x5668;</span></span><br></pre></td></tr></table></figure>
+
+<p>&#x8FD9;&#x6837;&#x7684;&#x8BDD;&#xFF0C;&#x5C31;&#x65B9;&#x4FBF;&#x540E;&#x671F;&#x7684;&#x65F6;&#x5019;&#x8FDB;&#x884C;&#x4EE3;&#x7801;&#x5347;&#x7EA7;&#xFF1B;rc&#x548C;rs&#x90FD;&#x76F4;&#x63A5;&#x7BA1;&#x7406;pod&#x526F;&#x672C;&#xFF0C;&#x5982;&#x4E0B;&#x56FE;&#xFF1A;</p>
+<p><img src="/cloud-native/kubernetes/09_k8s_deployment%E4%B8%8Eservice%E8%B5%84%E6%BA%90%E4%BB%8B%E7%BB%8D%EF%BC%88pod%E7%9A%84%E5%88%9B%E5%BB%BA%E4%B8%8E%E7%BD%91%E7%BB%9C%E8%AE%BF%E9%97%AE%EF%BC%89/1642583244946.png" alt="rc&#x548C;rs&#x7684;&#x7BA1;&#x7406;pod&#x7684;&#x65B9;&#x5F0F;"></p>
+<p>&#x800C;deployment&#x7684;pod&#x7BA1;&#x7406;&#x65B9;&#x5F0F;&#x5982;&#x4E0B;&#x56FE;&#x6240;&#x793A;&#xFF1A;</p>
+<p><img src="/cloud-native/kubernetes/09_k8s_deployment%E4%B8%8Eservice%E8%B5%84%E6%BA%90%E4%BB%8B%E7%BB%8D%EF%BC%88pod%E7%9A%84%E5%88%9B%E5%BB%BA%E4%B8%8E%E7%BD%91%E7%BB%9C%E8%AE%BF%E9%97%AE%EF%BC%89/1642583303542.png" alt="deployment&#x7684;&#x7BA1;&#x7406;&#x65B9;&#x5F0F;"></p>
+<p>&#x4ED6;&#x53EF;&#x4EE5;&#x57FA;&#x4E8E;rs&#x6765;&#x5B9E;&#x73B0;pod&#x7684;&#x6EDA;&#x52A8;&#x7BA1;&#x7406;&#xFF0C;&#x4E5F;&#x5C31;&#x5B9E;&#x73B0;&#x4E86;&#x6EDA;&#x52A8;&#x5347;&#x7EA7;&#xFF1B;</p>
+<p>&#x8FD9;&#x91CC;&#xFF0C;&#x6211;&#x4EEC;&#x4FEE;&#x6539;&#x4E00;&#x4E0B;deployment&#x7684;yaml&#x6587;&#x4EF6;&#xFF0C;&#x6A21;&#x62DF;&#x5347;&#x7EA7;&#x64CD;&#x4F5C;&#xFF1A;</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">image:</span> <span class="string">tomcat</span>  <span class="comment"># &#x6307;&#x5B9A;&#x955C;&#x50CF;&#x4E3A;nginx</span></span><br></pre></td></tr></table></figure>
+
+<p>&#x7136;&#x540E;&#x91CD;&#x65B0;&#x6784;&#x5EFA;pod&#xFF0C;&#x76F8;&#x5F53;&#x4E8E;&#x6EDA;&#x52A8;&#x5347;&#x7EA7;&#xFF0C;&#x8FD9;&#x65F6;&#x5019;&#x6211;&#x4EEC;&#x5C31;&#x53EF;&#x4EE5;&#x770B;&#x5230;&#x4E24;&#x4E2A;rs&#xFF0C;&#x8FD9;&#x5C31;&#x4EE3;&#x8868;&#x4E86;&#x6EDA;&#x52A8;&#x5347;&#x7EA7;&#xFF1B;</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">root@master1:~/yaml/20210115/case/case1# kubectl apply -f deployment.yml</span><br><span class="line">deployment.apps/tomcat-deployment created</span><br><span class="line">root@master1:~/yaml/20210115/case/case1# kubectl get rs</span><br><span class="line">NAME                           DESIRED   CURRENT   READY   AGE</span><br><span class="line">nginx-deployment-6b9f6c7549    2         2         2       155m</span><br><span class="line">nginx-deployment-5555886cc9   2         2         0       7s</span><br><span class="line"><span class="meta">#</span><span class="bash"> &#x8FD9;&#x91CC;&#x5C31;&#x521B;&#x5EFA;&#x4E86;&#x4E24;&#x4E2A;rs&#x4E86;&#xFF1B;</span></span><br><span class="line">root@master1:~/yaml/20210115/case/case1# kubectl get pod</span><br><span class="line">NAME                                 READY   STATUS              RESTARTS   AGE</span><br><span class="line">nginx-deployment-6b9f6c7549-slknb    1/1     Running             0          158m</span><br><span class="line">nginx-deployment-6b9f6c7549-w4rb4    1/1     Running             0          158m</span><br><span class="line">nginx-deployment-5555886cc9-8bfqc   0/1     ContainerCreating   0          3m5s</span><br><span class="line">nginx-deployment-5555886cc9-8nfr7   0/1     ContainerCreating   0          3m5s</span><br><span class="line"><span class="meta">#</span><span class="bash"> &#x5728;&#x65B0;&#x7684;&#x63A7;&#x5236;&#x5668;&#x6CA1;&#x6709;&#x8D77;&#x6765;&#x7684;&#x65F6;&#x5019;&#x539F;&#x6765;&#x7684;&#x670D;&#x52A1;&#x662F;&#x4E0D;&#x4F1A;&#x88AB;&#x5220;&#x9664;&#x7684;&#xFF1B;</span></span><br></pre></td></tr></table></figure>
+
+<p>&#x5982;&#x679C;pod&#x8282;&#x70B9;&#x6BD4;&#x8F83;&#x591A;&#xFF0C;&#x6211;&#x4EEC;&#x4F1A;&#x901A;&#x8FC7;&#x811A;&#x672C;&#x6765;&#x5B9E;&#x73B0;&#xFF1B;&#x4F46;&#x662F;&#x5B9E;&#x9645;&#x4E0A;&#xFF0C;&#x539F;&#x6765;&#x7248;&#x672C;&#x7684;rs&#x4E5F;&#x662F;&#x4E0D;&#x4F1A;&#x5220;&#x9664;&#x4E86;&#xFF0C;&#x56E0;&#x4E3A;&#x6700;&#x540E;&#x6211;&#x4EEC;&#x6709;&#x65F6;&#x5019;&#x8FD8;&#x9700;&#x8981;&#x5B9E;&#x73B0;&#x56DE;&#x6EDA;&#xFF0C;&#x6240;&#x4EE5;&#x4E0D;&#x4F1A;&#x5220;&#x9664;&#x4EE5;&#x524D;&#x7684;pod&#xFF1B;</p>
+<h3 id="&#x7F51;&#x7EDC;&#x670D;&#x52A1;-&#x2013;-service"><a href="#&#x7F51;&#x7EDC;&#x670D;&#x52A1;-&#x2013;-service" class="headerlink" title="&#x7F51;&#x7EDC;&#x670D;&#x52A1; &#x2013; service"></a>&#x7F51;&#x7EDC;&#x670D;&#x52A1; &#x2013; service</h3><ul>
+<li>why &#x2013; pod&#x91CD;&#x5EFA;&#x4E4B;&#x540E;ip&#x5C31;&#x53D8;&#x4E86;&#xFF0C;pod&#x4E4B;&#x95F4;&#x76F4;&#x63A5;&#x8BBF;&#x95EE;&#x4F1A;&#x6709;&#x95EE;&#x9898;</li>
+<li>what &#x2013; &#x89E3;&#x8026;&#x4E86;&#x670D;&#x52A1;&#x548C;&#x5E94;&#x7528;</li>
+<li>how &#x2013; &#x58F0;&#x660E;&#x4E00;&#x4E2A;service&#x5BF9;&#x8C61;</li>
+</ul>
+<p>service&#x4E00;&#x822C;&#x6709;&#x4E24;&#x79CD;&#xFF1A;</p>
+<ul>
+<li>k8s&#x96C6;&#x7FA4;&#x5185;&#x7684;service&#xFF1A;selector&#x6307;&#x5B9A;pod&#xFF0C;&#x81EA;&#x52A8;&#x521B;&#x5EFA;endpoints</li>
+<li>k8s&#x96C6;&#x7FA4;&#x5916;&#x7684;service&#xFF1A;&#x624B;&#x52A8;&#x521B;&#x5EFA;endpoints&#xFF0C;&#x6307;&#x5B9A;&#x5916;&#x90E8;&#x670D;&#x52A1;&#x7684;ip&#xFF0C;&#x7AEF;&#x53E3;&#x548C;&#x534F;&#x8BAE;</li>
+</ul>
+<p>&#x5728;k8s&#x96C6;&#x7FA4;&#x4E2D;&#xFF0C;&#x603B;&#x5171;&#x6709;&#x4E09;&#x5C42;&#x7F51;&#x7EDC;&#xFF1A;</p>
+<p>&#x7B2C;&#x4E00;&#x5C42;&#x4E3A;pod&#x7F51;&#x7EDC;&#x3001;&#x6BCF;&#x6B21;&#x518D;&#x91CD;&#x542F;pod&#x7684;&#x65F6;&#x5019;&#xFF0C;&#x6211;&#x4EEC;&#x7684;pod&#x7684;IP&#x5730;&#x5740;&#x662F;&#x4F1A;&#x53D8;&#x5316;&#x7684;&#xFF0C;&#x901A;&#x8FC7;&#x201D;-o wide&#x201D;&#x7684;&#x65B9;&#x5F0F;&#x53EF;&#x4EE5;&#x770B;&#x5230;&#xFF1B;</p>
+<p>&#x7B2C;&#x4E8C;&#x5C42;&#x4E3A;service&#x7F51;&#x7EDC;&#x3001;&#x4E3A;&#x4E86;&#x89E3;&#x51B3;&#x4E0A;&#x8FF0;&#x95EE;&#x9898;&#xFF0C;k8s&#x6DFB;&#x52A0;&#x4E00;&#x5C42;service&#x7F51;&#x7EDC;&#x3002;&#x5B83;&#x5B58;&#x5728;&#x7684;&#x76EE;&#x7684;&#x5C31;&#x662F;&#x6253;&#x901A;node&#x8282;&#x70B9;&#x5230;pod&#x7684;&#x7F51;&#x7EDC;&#xFF0C;service&#x9700;&#x8981;&#x7EF4;&#x62A4;&#x4E00;&#x4E2A;&#x6E05;&#x5355;&#xFF0C;&#x6765;&#x57FA;&#x4E8E;&#x6E05;&#x5355;&#x6765;&#x534F;&#x52A9;&#x8FDB;&#x884C;&#x6570;&#x636E;&#x8F6C;&#x53D1;&#xFF1B;&#x4E14;&#xFF0C;&#x6240;&#x6709;&#x7684;node&#x90FD;&#x4F1A;&#x76D1;&#x542C;&#x76F8;&#x540C;&#x7684;&#x5916;&#x63A5;port&#x7AEF;&#x53E3;&#xFF1B;service&#x8D44;&#x6E90;&#x9700;&#x8981;&#x518D;pod&#x53EF;&#x7528;&#x7684;&#x60C5;&#x51B5;&#x4E0B;&#x624D;&#x4F1A;&#x9700;&#x8981;&#x53BB;&#x521B;&#x5EFA;&#x7684;&#xFF0C;&#x5426;&#x5219;&#x5355;&#x72EC;&#x521B;&#x5EFA;service&#x662F;&#x6CA1;&#x4EC0;&#x4E48;&#x4F5C;&#x7528;&#x7684;&#xFF1B;service&#x7F51;&#x7EDC;&#x5206;&#x4E3A;&#x56DB;&#x79CD;&#x7C7B;&#x578B;&#xFF1A;&#x201D;kubectl explain service.spec&#x201D;</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">type &lt;string&gt;</span><br><span class="line">    type determines how the Service is exposed. Defaults to ClusterIP. Valid</span><br><span class="line">    options are ExternalName, ClusterIP, NodePort, and LoadBalancer.</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>ExternalName &#x2013; &#x8FD9;&#x662F;&#x5C06;&#x5916;&#x90E8;&#x670D;&#x52A1;&#x66B4;&#x9732;&#x7ED9;K8S&#x5185;&#x90E8;&#x7684;&#x5BA2;&#x6237;&#x7AEF;&#x8FDB;&#x884C;&#x8BBF;&#x95EE;&#xFF1B;</li>
+<li>ClusterIP &#x2013; &#x5B9E;&#x73B0;k8s&#x5E73;&#x53F0;&#x7684;&#x5185;&#x90E8;&#x901A;&#x4FE1;&#xFF1B;A&#x670D;&#x52A1;&#x6389;B&#x670D;&#x52A1;&#x7B49;&#xFF1B;&#x8BF7;&#x6C42;&#x4E0D;&#x4F1A;&#x51FA;K8S&#x7684;&#x73AF;&#x5883;&#xFF1B;</li>
+<li>NodePort &#x2013; &#x53EF;&#x4EE5;&#x518D;K8S&#x7684;&#x5916;&#x90E8;&#x8BBF;&#x95EE;&#xFF0C;&#x9700;&#x8981;&#x81EA;&#x5DF1;&#x5236;&#x5B9A;&#x7AEF;&#x53E3;&#xFF0C;&#x5426;&#x5219;&#x7AEF;&#x53E3;&#x4F1A;&#x968F;&#x673A;&#x751F;&#x6210;&#xFF1B;</li>
+<li>LoadBalancer &#x2013; &#x8FD9;&#x4E2A;&#x662F;&#x516C;&#x6709;&#x4E91;&#x7684;&#x73AF;&#x5883;&#x4E0B;&#x624D;&#x80FD;&#x4F7F;&#x7528;&#xFF0C;&#x5C06;&#x516C;&#x6709;&#x4E91;&#x7684;&#x8D1F;&#x8F7D;&#x5747;&#x8861;&#x5668;&#x4F5C;&#x4E3A;&#x8BBF;&#x95EE;&#x5165;&#x53E3;&#xFF1B;</li>
+</ul>
+<p>&#x7B2C;&#x4E09;&#x5C42;&#x4E3A;node&#x7F51;&#x7EDC;&#x3001;&#x8FD9;&#x4E2A;&#x4E5F;&#x5C31;&#x662F;&#x6211;&#x4EEC;node&#x8282;&#x70B9;&#x4E92;&#x8054;&#xFF0C;&#x4EE5;&#x53CA;&#x8FDE;&#x63A5;&#x5916;&#x7F51;&#x7684;&#x4E86;&#xFF1B;</p>
+<p>&#x793A;&#x4F8B;&#xFF1A;&#x5148;&#x542F;&#x901A;&#x8FC7;deployment&#x542F;&#x52A8;yaml&#x6587;&#x4EF6;&#xFF0C;&#x7136;&#x540E;&#x542F;&#x52A8;service&#x670D;&#x52A1;</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># deployment&#x7684;yaml&#x6587;&#x4EF6;&#xFF0C;&#x521B;&#x5EFA;pod</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#apiVersion: extensions/v1beta1</span></span><br><span class="line"><span class="attr">apiVersion:</span> <span class="string">apps/v1</span></span><br><span class="line"><span class="attr">kind:</span> <span class="string">Deployment</span></span><br><span class="line"><span class="attr">metadata:</span></span><br><span class="line">  <span class="attr">name:</span> <span class="string">nginx-deployment</span></span><br><span class="line"><span class="attr">spec:</span></span><br><span class="line">  <span class="attr">replicas:</span> <span class="number">1</span></span><br><span class="line">  <span class="attr">selector:</span></span><br><span class="line">    <span class="attr">matchLabels:</span> <span class="comment">#rs or deployment</span></span><br><span class="line">      <span class="attr">app:</span> <span class="string">ng-deploy-80</span></span><br><span class="line"><span class="comment">#    matchExpressions:</span></span><br><span class="line"><span class="comment">#      - {key: app, operator: In, values: [ng-deploy-80,ng-rs-81]}</span></span><br><span class="line">  <span class="attr">template:</span></span><br><span class="line">    <span class="attr">metadata:</span></span><br><span class="line">      <span class="attr">labels:</span></span><br><span class="line">        <span class="attr">app:</span> <span class="string">ng-deploy-80</span></span><br><span class="line">    <span class="attr">spec:</span></span><br><span class="line">      <span class="attr">containers:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">ng-deploy-80</span></span><br><span class="line">        <span class="attr">image:</span> <span class="string">nginx:1.17.5</span> </span><br><span class="line">        <span class="attr">ports:</span></span><br><span class="line">        <span class="bullet">-</span> <span class="attr">containerPort:</span> <span class="number">80</span></span><br><span class="line">      <span class="comment">#nodeSelector:</span></span><br><span class="line">      <span class="comment">#  env: group1</span></span><br></pre></td></tr></table></figure>
+
+<p>&#x7136;&#x540E;&#x5BF9;&#x5BB9;&#x5668;&#x8FDB;&#x884C;&#x64CD;&#x4F5C;</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">root@master1:~/yaml/20210115/case/case2# kubectl apply -f 1-deploy_node.yml</span><br><span class="line">deployment.apps/nginx-deployment created</span><br><span class="line">root@master1:~/yaml/20210115/case/case2# kubectl get pod</span><br><span class="line">NAME                                READY   STATUS              RESTARTS   AGE</span><br><span class="line">nginx-deployment-7995c5f5fc-64k6d   0/1     ContainerCreating   0          9s</span><br></pre></td></tr></table></figure>
+
+<p>&#x521B;&#x5EFA;service&#x670D;&#x52A1;&#x8D44;&#x6E90;&#xFF1A;</p>
+<h4 id="&#x7B2C;&#x4E00;&#x79CD;&#x3001;&#x57FA;&#x4E8E;ClusterIP&#x7684;&#x5F62;&#x5F0F;"><a href="#&#x7B2C;&#x4E00;&#x79CD;&#x3001;&#x57FA;&#x4E8E;ClusterIP&#x7684;&#x5F62;&#x5F0F;" class="headerlink" title="&#x7B2C;&#x4E00;&#x79CD;&#x3001;&#x57FA;&#x4E8E;ClusterIP&#x7684;&#x5F62;&#x5F0F;"></a>&#x7B2C;&#x4E00;&#x79CD;&#x3001;&#x57FA;&#x4E8E;ClusterIP&#x7684;&#x5F62;&#x5F0F;</h4><figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># service&#x670D;&#x52A1;&#x8D44;&#x6E90;&#x6587;&#x4EF6;&#x5982;&#x4E0B;&#xFF1A;</span></span><br><span class="line"><span class="attr">apiVersion:</span> <span class="string">v1</span></span><br><span class="line"><span class="attr">kind:</span> <span class="string">Service</span></span><br><span class="line"><span class="attr">metadata:</span></span><br><span class="line">  <span class="attr">name:</span> <span class="string">ng-deploy-80-service</span></span><br><span class="line"><span class="attr">spec:</span></span><br><span class="line">  <span class="attr">ports:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">http</span></span><br><span class="line">    <span class="attr">port:</span> <span class="number">80</span>  <span class="comment"># service&#x63D0;&#x4F9B;&#x7684;&#x7AEF;&#x53E3;</span></span><br><span class="line">    <span class="attr">targetPort:</span> <span class="number">80</span>  <span class="comment"># pod&#x63D0;&#x4F9B;&#x7684;&#x670D;&#x52A1;&#x7AEF;&#x53E3;&#xFF0C;&#x5982;&#x679C;&#x662F;tomcat&#x4E00;&#x5B9A;&#x662F;8080</span></span><br><span class="line">    <span class="attr">protocol:</span> <span class="string">TCP</span>  <span class="comment"># &#x4E0D;&#x5199;&#x9ED8;&#x8BA4;&#x662F;TCP&#x534F;&#x8BAE;</span></span><br><span class="line">  <span class="attr">type:</span> <span class="string">ClusterIP</span>  <span class="comment"># &#x6307;&#x5B9A;service&#x7684;&#x7C7B;&#x578B;&#x4E3A;ClusterIP&#x7C7B;&#x578B;</span></span><br><span class="line">  <span class="attr">selector:</span></span><br><span class="line">    <span class="attr">app:</span> <span class="string">ng-deploy-80</span>  <span class="comment"># &#x5BFB;&#x627E;&#xFF0C;&#x5728;&#x5F53;&#x524D;&#x6240;&#x6709;&#x7684;pod&#x91CC;&#x9762;&#xFF0C;&#x90A3;&#x4E2A;pod&#x6709;&#x6807;&#x7B7E;app&#x503C;&#x4E3A;ng-deploy-80&#x7684;</span></span><br></pre></td></tr></table></figure>
+
+<p>&#x67E5;&#x770B;&#x6807;&#x7B7E;</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">root@master1:~/yaml/20210115/case/case2# kubectl get pod</span><br><span class="line">NAME                                READY   STATUS    RESTARTS   AGE</span><br><span class="line">nginx-deployment-7995c5f5fc-64k6d   1/1     Running   0          28m</span><br><span class="line">root@master1:~/yaml/20210115/case/case2# kubectl describe pod nginx-deployment-7995c5f5fc-64k6d -n default</span><br><span class="line">Labels:       app=ng-deploy-80  # &#x8FD9;&#x6837;&#x5C31;&#x53EF;&#x4EE5;&#x627E;&#x5230;&#x8FD9;&#x4E2A;&#x6807;&#x7B7E;</span><br><span class="line"><span class="meta">#</span><span class="bash"> &#x7136;&#x540E;&#x52A0;&#x5165;&#x5230;&#x8FD9;&#x4E2A;service&#x91CC;&#x9762;&#x6765;&#xFF1B;</span></span><br></pre></td></tr></table></figure>
+
+<p>&#x521B;&#x5EFA;&#x5E76;&#x67E5;&#x770B;service&#x670D;&#x52A1;&#x5BF9;&#x8C61;</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">root@master1:~/yaml/20210115/case/case2# kubectl apply -f 2-svc_service.yml</span><br><span class="line">service/ng-deploy-80-service created</span><br><span class="line">root@master1:~/yaml/20210115/case/case2# kubectl get svc</span><br><span class="line">NAME                   TYPE        CLUSTER-IP     EXTERNAL-IP   PORT(S)   AGE</span><br><span class="line">ng-deploy-80-service   ClusterIP   10.100.53.28   &lt;none&gt;        80/TCP    5s</span><br></pre></td></tr></table></figure>
+
+<p>&#x8FD9;&#x6837;&#x7684;&#x8BDD;&#xFF0C;k8s&#x4E2D;&#x5176;&#x4ED6;&#x7684;&#x670D;&#x52A1;&#x7684;pod&#x5C31;&#x53EF;&#x4EE5;&#x901A;&#x8FC7;&#x5730;&#x5740;&#x6765;&#x8FDB;&#x884C;&#x8BBF;&#x95EE;&#x4E86;&#xFF1B;</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> &#x8FDB;&#x5165;&#x5176;&#x4ED6;&#x5BB9;&#x5668;</span></span><br><span class="line">root@master1:~/yaml/20210115/case/case2# kubectl exec -it net-test1 sh</span><br><span class="line"><span class="meta">#</span><span class="bash"> &#x5B89;&#x88C5;curl&#x5DE5;&#x5177;</span></span><br><span class="line">/ # apk add curl</span><br><span class="line">/ # curl 10.100.53.28  # &#x8FD9;&#x6837;&#x5C31;&#x53EF;&#x4EE5;&#x8BBF;&#x95EE;&#x4E86;&#xFF1B;</span><br><span class="line">&lt;h1&gt;Welcome to nginx!&lt;/h1&gt;</span><br></pre></td></tr></table></figure>
+
+<p>&#x8FD9;&#x91CC;&#x8BBF;&#x95EE;&#x7684;&#x5C31;&#x662F;service&#x5730;&#x5740;&#xFF0C;&#x8FD9;&#x65F6;&#x5019;service&#x5C31;&#x4F1A;&#x5C06;&#x8BF7;&#x6C42;&#x8F6C;&#x6362;&#x4E3A;&#x540E;&#x7AEF;pod&#x7684;&#x670D;&#x52A1;&#x7AEF;&#x5730;&#x5740;&#x548C;&#x7AEF;&#x53E3;&#x4E86;&#xFF1B;&#x8FD9;&#x91CC;&#x8BBF;&#x95EE;&#x7684;&#x65F6;&#x5019;&#x53EF;&#x4EE5;&#x4F7F;&#x7528;&#x57DF;&#x540D;&#x4E5F;&#x53EF;&#x4EE5;&#xFF1B;&#x5EFA;&#x8BAE;&#x4F7F;&#x7528;&#x57DF;&#x540D;&#x8BBF;&#x95EE;&#x7684;&#x65B9;&#x5F0F;&#xFF0C;&#x56E0;&#x4E3A;&#x8FD9;&#x6837;&#x7684;&#x8BDD;&#x5373;&#x4F7F;service&#x91CD;&#x5EFA;&#xFF0C;&#x5730;&#x5740;&#x91CD;&#x65B0;&#x5206;&#x914D;&#x4E86;&#xFF0C;service&#x540D;&#x5B57;&#x6CA1;&#x6709;&#x53D8;&#xFF0C;&#x4E5F;&#x662F;&#x4F9D;&#x7136;&#x53EF;&#x4EE5;&#x8BBF;&#x95EE;&#x7684;&#xFF1B;</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">/ # curl ng-deploy-80-service.default.test.local </span><br><span class="line">&lt;h1&gt;Welcome to nginx!&lt;/h1&gt;</span><br></pre></td></tr></table></figure>
+
+<p>&#x521B;&#x5EFA;service&#x670D;&#x52A1;&#x8D44;&#x6E90;&#xFF1A;</p>
+<h4 id="&#x7B2C;&#x4E8C;&#x79CD;&#x3001;&#x57FA;&#x4E8E;NodePort&#x7684;&#x65B9;&#x5F0F;"><a href="#&#x7B2C;&#x4E8C;&#x79CD;&#x3001;&#x57FA;&#x4E8E;NodePort&#x7684;&#x65B9;&#x5F0F;" class="headerlink" title="&#x7B2C;&#x4E8C;&#x79CD;&#x3001;&#x57FA;&#x4E8E;NodePort&#x7684;&#x65B9;&#x5F0F;"></a>&#x7B2C;&#x4E8C;&#x79CD;&#x3001;&#x57FA;&#x4E8E;NodePort&#x7684;&#x65B9;&#x5F0F;</h4><p>&#x5F53;k8s&#x63D0;&#x4F9B;pod&#x9700;&#x8981;&#x5916;&#x7F51;&#x8BBF;&#x95EE;&#x7684;&#x65F6;&#x5019;&#x9700;&#x8981;&#x901A;&#x8FC7;NodePort&#x65B9;&#x5F0F;&#x6765;&#x5B9E;&#x73B0;&#xFF1B;</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># NodePort&#x65B9;&#x5F0F;&#x7684;yaml&#x6587;&#x4EF6;</span></span><br><span class="line"><span class="attr">apiVersion:</span> <span class="string">v1</span></span><br><span class="line"><span class="attr">kind:</span> <span class="string">Service</span></span><br><span class="line"><span class="attr">metadata:</span></span><br><span class="line">  <span class="attr">name:</span> <span class="string">ng-deploy-80</span> </span><br><span class="line"><span class="attr">spec:</span></span><br><span class="line">  <span class="attr">ports:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">http</span></span><br><span class="line">    <span class="attr">port:</span> <span class="number">81</span></span><br><span class="line">    <span class="attr">targetPort:</span> <span class="number">80</span></span><br><span class="line">    <span class="attr">nodePort:</span> <span class="number">30012</span>  <span class="comment"># &#x7AEF;&#x53E3;&#x4E0D;&#x6307;&#x5B9A;&#xFF0C;&#x5C31;&#x81EA;&#x52A8;&#x751F;&#x6210;&#xFF0C;&#x4E14;&#x6BCF;&#x6B21;&#x91CD;&#x5EFA;&#x7AEF;&#x53E3;&#x90FD;&#x4F1A;&#x53D8;&#xFF1B;&#x4E0D;&#x5EFA;&#x8BAE;&#xFF1B;</span></span><br><span class="line">    <span class="attr">protocol:</span> <span class="string">TCP</span></span><br><span class="line">  <span class="attr">type:</span> <span class="string">NodePort</span></span><br><span class="line">  <span class="attr">selector:</span></span><br><span class="line">    <span class="attr">app:</span> <span class="string">ng-deploy-80</span></span><br><span class="line"><span class="comment"># &#x8FD9;&#x6837;&#x7684;&#x8BDD;&#xFF0C;&#x8BBF;&#x95EE;node&#x8282;&#x70B9;&#x7684;30012&#x7AEF;&#x53E3;&#xFF0C;&#x5C31;&#x80FD;&#x8BBF;&#x95EE;&#x5230;service&#x7684;81&#x7AEF;&#x53E3;&#xFF0C;&#x7136;&#x540E;&#x901A;&#x8FC7;81&#x7AEF;&#x53E3;&#x8F6C;&#x53D1;&#x7ED9;80&#x7AEF;&#x53E3;&#x5373;&#x53EF;&#xFF1B;</span></span><br></pre></td></tr></table></figure>
+
+<p>&#x521B;&#x5EFA;&#x8FD9;&#x4E2A;service&#x6A21;&#x5757;&#xFF1B;</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">root@master1:~/yaml/20210115/case/case2# kubectl apply -f 3-svc_NodePort.yml</span><br><span class="line">service/ng-deploy-80 created</span><br><span class="line">root@master1:~/yaml/20210115/case/case2# kubectl get svc</span><br><span class="line">NAME                   TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)        AGE</span><br><span class="line">ng-deploy-80           NodePort    10.100.148.164   &lt;none&gt;        81:30012/TCP   6s</span><br><span class="line"><span class="meta"></span></span><br><span class="line"><span class="meta">#</span><span class="bash"> &#x67E5;&#x770B;&#x7AEF;&#x53E3;&#x8F6C;&#x6362;&#x8FC7;&#x7A0B;</span></span><br><span class="line">root@master1:~/yaml/20210115/case/case2# kubectl get ep</span><br><span class="line">NAME                   ENDPOINTS                             AGE</span><br><span class="line">ng-deploy-80           10.200.166.135:80                     2m3s</span><br><span class="line">root@master1:~/yaml/20210115/case/case2# kubectl get pod -o wide</span><br><span class="line">NAME                                READY   STATUS    RESTARTS   AGE     IP               NODE           NOMINATED NODE   READINESS GATES</span><br><span class="line">nginx-deployment-7995c5f5fc-64k6d   1/1     Running   0          53m     10.200.166.135   192.168.0.23   &lt;none&gt;           &lt;none&gt;</span><br><span class="line"><span class="meta">#</span><span class="bash"> &#x5C31;&#x662F;nginx&#x7684;&#x5730;&#x5740;&#xFF0C;&#x56E0;&#x4E3A;app&#x7684;&#x6807;&#x7B7E;&#x662F;&#x5339;&#x914D;&#x6210;&#x529F;&#x7684;&#xFF1B;</span></span><br></pre></td></tr></table></figure>
+
+<p>&#x8BBF;&#x95EE;&#x6D4B;&#x8BD5;&#x7684;&#x65F6;&#x5019;&#xFF0C;&#x5982;&#x679C;&#x662F;&#x5185;&#x90E8;&#x8BBF;&#x95EE;&#xFF0C;&#x5219;&#x9700;&#x8981;&#x8BBF;&#x95EE;service&#x7684;81&#x7AEF;&#x53E3;&#xFF0C;&#x800C;&#x5916;&#x90E8;&#x8BBF;&#x95EE;&#x7684;&#x65F6;&#x5019;&#x9700;&#x8981;&#x8BBF;&#x95EE;node&#x8282;&#x70B9;&#x7684;30012&#x7AEF;&#x53E3;&#x5C31;&#x53EF;&#x4EE5;&#x4E86;&#xFF0C;&#x6D4B;&#x8BD5;&#x5982;&#x4E0B;&#xFF1A;</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">root@master1:~/yaml/20210115/case/case2# kubectl exec -it net-test1 sh</span><br><span class="line">/ # curl ng-deploy-80:81</span><br><span class="line">&lt;h1&gt;Welcome to nginx!&lt;/h1&gt;</span><br><span class="line"><span class="meta"></span></span><br><span class="line"><span class="meta">#</span><span class="bash"> &#x5982;&#x679C;&#x662F;&#x5916;&#x90E8;&#x8BBF;&#x95EE;&#x7684;&#x8BDD;&#xFF0C;&#x9700;&#x8981;&#x8BBF;&#x95EE;30012&#x7AEF;&#x53E3;</span></span><br></pre></td></tr></table></figure>
+
+<p><img src="/cloud-native/kubernetes/09_k8s_deployment%E4%B8%8Eservice%E8%B5%84%E6%BA%90%E4%BB%8B%E7%BB%8D%EF%BC%88pod%E7%9A%84%E5%88%9B%E5%BB%BA%E4%B8%8E%E7%BD%91%E7%BB%9C%E8%AE%BF%E9%97%AE%EF%BC%89/1642593483907.png" alt="&#x5916;&#x90E8;&#x8BBF;&#x95EE;&#x6D4B;&#x8BD5;"></p>
+<p>&#x8BBF;&#x95EE;&#x4EFB;&#x4F55;&#x4E00;&#x4E2A;node&#x8282;&#x70B9;&#x90FD;&#x53EF;&#x4EE5;&#xFF0C;&#x8BBF;&#x95EE;master&#x4E5F;&#x662F;&#x53EF;&#x4EE5;&#xFF0C;&#x4F46;&#x662F;&#x4E0D;&#x5EFA;&#x8BAE;&#x8BBF;&#x95EE;master&#x8282;&#x70B9;&#xFF1B;</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> &#x770B;&#x4E00;&#x4E0B;&#x5BB9;&#x5668;&#x8BBF;&#x95EE;&#x7684;&#x65E5;&#x5FD7;</span></span><br><span class="line">root@master1:~/yaml/20210115/case/case2# kubectl logs -f nginx-deployment-7995c5f5fc-64k6d</span><br><span class="line">192.168.0.23 - - [19/Jan/2022:11:57:51 +0000] &quot;GET /favicon.ico HTTP/1.1&quot; 404 555 &quot;http://192.168.0.23:30012/&quot; &quot;Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/72.0.3626.121 Safari/537.36&quot; &quot;-&quot;</span><br><span class="line"><span class="meta">#</span><span class="bash"> &#x4E00;&#x76F4;&#x5237;&#x65B0;&#x8BBF;&#x95EE;&#x4E00;&#x76F4;&#x663E;&#x793A;&#x65B0;&#x7684;&#x65E5;&#x5FD7;&#xFF1B;</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="service&#x603B;&#x7ED3;"><a href="#service&#x603B;&#x7ED3;" class="headerlink" title="service&#x603B;&#x7ED3;"></a>service&#x603B;&#x7ED3;</h4><p>&#x4E09;&#x5C42;&#x7F51;&#x7EDC;&#x67B6;&#x6784;&#x5982;&#x4E0B;&#x56FE;&#x6240;&#x793A;&#xFF1A;</p>
+<p><img src="/cloud-native/kubernetes/09_k8s_deployment%E4%B8%8Eservice%E8%B5%84%E6%BA%90%E4%BB%8B%E7%BB%8D%EF%BC%88pod%E7%9A%84%E5%88%9B%E5%BB%BA%E4%B8%8E%E7%BD%91%E7%BB%9C%E8%AE%BF%E9%97%AE%EF%BC%89/1642593866142.png" alt="&#x8FD9;&#x5C31;&#x662F;k8s&#x7684;&#x4E09;&#x5C42;&#x7F51;&#x7EDC;&#x4E86;"></p>
+<p>&#x5728;&#x5B9E;&#x9645;&#x7684;&#x751F;&#x4EA7;&#x4E2D;&#xFF0C;node&#x8282;&#x70B9;&#x7F51;&#x7EDC;&#x3001;service&#x7F51;&#x7EDC;&#x548C;pod&#x7F51;&#x7EDC;&#x5730;&#x5740;&#x662F;&#x5343;&#x4E07;&#x4E0D;&#x80FD;&#x51B2;&#x7A81;&#x7684;&#xFF1B;&#x7136;&#x540E;&#x901A;&#x8FC7;nodeport&#x66B4;&#x9732;&#x7684;&#x7AEF;&#x53E3;&#x9700;&#x8981;&#x901A;&#x8FC7;&#x8868;&#x683C;&#x7684;&#x5F62;&#x5F0F;&#x8BB0;&#x5F55;&#x4E0B;&#x6765;&#xFF1B;&#x5BA2;&#x6237;&#x8BBF;&#x95EE;&#x7684;&#x65F6;&#x5019;&#xFF0C;&#x80AF;&#x5B9A;&#x4E0D;&#x662F;&#x76F4;&#x63A5;&#x8BBF;&#x95EE;nodeport&#x66B4;&#x9732;&#x7684;30000&#x591A;&#x7684;&#x5927;&#x7AEF;&#x53E3;&#xFF0C;&#x4E00;&#x5B9A;&#x662F;&#x6DFB;&#x52A0;&#x4E00;&#x4E2A;LB&#x7684;&#x8D1F;&#x8F7D;&#x5747;&#x8861;&#xFF0C;&#x6216;&#x8F6C;&#x6362;&#x4E3A;&#x57DF;&#x540D;&#x6765;&#x8FDB;&#x884C;&#x8BBF;&#x95EE;&#xFF1B;&#x5982;&#x4E0A;&#x56FE;&#x6240;&#x793A;&#xFF1B;</p>
+
+    </div>
+    
+    
+    
+    
+    
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/deployment/" rel="tag"># deployment</a>
+              <a href="/tags/service/" rel="tag"># service</a>
+          </div>
+    
+        
+
+    
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/cloud-native/kubernetes/10_k8s_%E6%8C%81%E4%B9%85%E5%8C%96%E5%AD%98%E5%82%A8%E4%B8%8Econfigmap%E8%B5%84%E6%BA%90%E4%BB%8B%E7%BB%8D%EF%BC%88pod%E7%9A%84%E6%95%B0%E6%8D%AE%E5%AD%98%E5%82%A8%E4%B8%8E%E9%85%8D%E7%BD%AE%E7%AE%A1%E7%90%86%EF%BC%89/" rel="prev" title="持久化存储与configmap资源介绍（pod的数据存储与配置管理）">
+      <i class="fa fa-chevron-left"></i> 持久化存储与configmap资源介绍（pod的数据存储与配置管理）
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+    <div>
+        
+        
+
+<div>
+    
+        <div style="text-align:center;color: #ccc;font-size:14px;">------ 版权声明：本文属于原创文章------</div>
+    	<div style="text-align:center;color: #FF0000;font-size:14px;">转载请注明：Burnov.github.io原创文章+本文链接，谢谢合作！！</i></div>
+    
+</div>
+
+
+        
+     </div>
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#k8s%E7%9A%84%E6%9E%B6%E6%9E%84%E4%B8%8E%E6%9C%8D%E5%8A%A1%E6%A6%82%E5%BF%B5%E7%9A%84%E4%BB%8B%E7%BB%8D"><span class="nav-number">1.</span> <span class="nav-text">k8s的架构与服务概念的介绍</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#k8s%E7%9A%84%E5%9F%BA%E6%9C%AC%E6%9E%B6%E6%9E%84"><span class="nav-number">1.1.</span> <span class="nav-text">k8s的基本架构</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#api%E7%9A%84%E8%AE%BE%E8%AE%A1%E5%8E%9F%E5%88%99"><span class="nav-number">1.2.</span> <span class="nav-text">api的设计原则</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#api%E7%9A%84%E8%B5%84%E6%BA%90%E5%AF%B9%E8%B1%A1"><span class="nav-number">1.3.</span> <span class="nav-text">api的资源对象</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B8%B8%E8%A7%81%E7%9A%84%E4%B8%9A%E5%8A%A1%E5%91%BD%E4%BB%A4"><span class="nav-number">1.4.</span> <span class="nav-text">常见的业务命令</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#K8S%E7%9A%84%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5%E4%B8%8E%E8%B5%84%E6%BA%90%E5%AF%B9%E8%B1%A1%E8%AF%A6%E8%A7%A3"><span class="nav-number">2.</span> <span class="nav-text">K8S的基本概念与资源对象详解</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#K8S%E5%B8%B8%E8%A7%81%E7%9A%84%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5"><span class="nav-number">2.1.</span> <span class="nav-text">K8S常见的基本概念</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#k8s%E6%9C%80%E5%B0%8F%E5%8D%95%E5%85%83-%E2%80%93-pod%E7%9A%84%E4%BB%8B%E7%BB%8D"><span class="nav-number">2.2.</span> <span class="nav-text">k8s最小单元 – pod的介绍</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%8E%A2%E9%92%88-%E2%80%93-livenessProbe%E5%92%8CreadinessProbe%EF%BC%88%E5%90%8E%E9%9D%A2%E8%AF%A6%E7%BB%86%E8%AF%B4%E6%98%8E%EF%BC%89"><span class="nav-number">2.3.</span> <span class="nav-text">探针 – livenessProbe和readinessProbe（后面详细说明）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%8E%A7%E5%88%B6%E5%99%A8-%E2%80%93-controller"><span class="nav-number">2.4.</span> <span class="nav-text">控制器 – controller</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#replication-controller-%E2%80%93-%E7%AC%AC%E4%B8%80%E4%BB%A3pod%E5%89%AF%E6%9C%AC%E6%8E%A7%E5%88%B6%E5%99%A8"><span class="nav-number">2.4.1.</span> <span class="nav-text">replication controller – 第一代pod副本控制器</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#replicaSet-%E2%80%93-%E7%AC%AC%E4%BA%8C%E4%BB%A3pod%E5%89%AF%E6%9C%AC%E6%8E%A7%E5%88%B6%E5%99%A8"><span class="nav-number">2.4.2.</span> <span class="nav-text">replicaSet – 第二代pod副本控制器</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#deployment%E6%8E%A7%E5%88%B6%E5%99%A8"><span class="nav-number">2.4.3.</span> <span class="nav-text">deployment控制器</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BD%91%E7%BB%9C%E6%9C%8D%E5%8A%A1-%E2%80%93-service"><span class="nav-number">2.5.</span> <span class="nav-text">网络服务 – service</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%AC%AC%E4%B8%80%E7%A7%8D%E3%80%81%E5%9F%BA%E4%BA%8EClusterIP%E7%9A%84%E5%BD%A2%E5%BC%8F"><span class="nav-number">2.5.1.</span> <span class="nav-text">第一种、基于ClusterIP的形式</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%AC%AC%E4%BA%8C%E7%A7%8D%E3%80%81%E5%9F%BA%E4%BA%8ENodePort%E7%9A%84%E6%96%B9%E5%BC%8F"><span class="nav-number">2.5.2.</span> <span class="nav-text">第二种、基于NodePort的方式</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#service%E6%80%BB%E7%BB%93"><span class="nav-number">2.5.3.</span> <span class="nav-text">service总结</span></a></li></ol></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Burnov"
+      src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">Burnov</p>
+  <div class="site-description" itemprop="description">No end for Learning</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">24</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">30</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/Burnov" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;Burnov" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:xials1990@gmail.com" title="E-Mail → mailto:xials1990@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://www.zhihu.com/people/xia-liang-shi-78" title="Skype → https:&#x2F;&#x2F;www.zhihu.com&#x2F;people&#x2F;xia-liang-shi-78" rel="noopener" target="_blank"><i class="fab fa-skype fa-fw"></i></a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class=""></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Burnov</span>
+</div>
+
+<!--
+  <div class="powered-by">Powered by <a href="https://github.com/Burnov" class="theme-link" rel="noopener" target="_blank">Burnov</a> & <a href="https://mist.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Mist</a>
+  </div>
+
+-->
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : false,
+      appId      : 'wIjFqGmEUzY7fpTNVHpKA0eH-gzGzoHsz',
+      appKey     : 'KdXueGM1xFH8pBVSO5SkFRKI',
+      placeholder: "Just go go",
+      avatar     : 'mm',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : false,
+      lang       : '' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : false,
+      serverURLs : ''
+    });
+  }, window.Valine);
+});
+</script>
+
+</body>
+</html>
