@@ -6,7 +6,7 @@
   <link href="http://example.com/atom.xml" rel="self"/>
   
   <link href="http://example.com/"/>
-  <updated>2022-01-27T02:28:44.406Z</updated>
+  <updated>2022-01-27T02:33:39.993Z</updated>
   <id>http://example.com/</id>
   
   <author>
@@ -21,13 +21,13 @@
     <link href="http://example.com/development/python/python%E5%9F%BA%E7%A1%80_01_%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/"/>
     <id>http://example.com/development/python/python%E5%9F%BA%E7%A1%80_01_%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/</id>
     <published>2022-01-27T02:28:50.000Z</published>
-    <updated>2022-01-27T02:28:44.406Z</updated>
+    <updated>2022-01-27T02:33:39.993Z</updated>
     
     
-      
-      
-    <summary type="html">&lt;h1 id=&quot;1&amp;#x3001;&amp;#x8BA1;&amp;#x7B97;&amp;#x673A;&amp;#x57FA;&amp;#x7840;&quot;&gt;&lt;a href=&quot;#1&amp;#x3001;&amp;#x8BA1;&amp;#x7B97;&amp;#x673A;&amp;#x57FA;&amp;#x7840;&quot; class=&quot;headerlink&quot; t</summary>
-      
+    <summary type="html">&lt;h1 id=&quot;1&amp;#x3001;&amp;#x8BA1;&amp;#x7B97;&amp;#x673A;&amp;#x57FA;&amp;#x7840;&quot;&gt;&lt;a href=&quot;#1&amp;#x3001;&amp;#x8BA1;&amp;#x7B97;&amp;#x673A;&amp;#x57FA;&amp;#x7840;&quot; class=&quot;headerlink&quot; title=&quot;1&amp;#x3001;&amp;#x8BA1;&amp;#x7B97;&amp;#x673A;&amp;#x57FA;&amp;#x7840;&quot;&gt;&lt;/a&gt;&lt;strong&gt;1&amp;#x3001;&amp;#x8BA1;&amp;#x7B97;&amp;#x673A;&amp;#x57FA;&amp;#x7840;&lt;/strong&gt;&lt;/h1&gt;&lt;h2 id=&quot;1-1&amp;#x3001;&amp;#x786C;&amp;#x4EF6;&amp;#x8BBE;&amp;#x5907;&amp;#x4ECB;&amp;#x7ECD;&quot;&gt;&lt;a href=&quot;#1-1&amp;#x3001;&amp;#x786C;&amp;#x4EF6;&amp;#x8BBE;&amp;#x5907;&amp;#x4ECB;&amp;#x7ECD;&quot; class=&quot;headerlink&quot; title=&quot;1.1&amp;#x3001;&amp;#x786C;&amp;#x4EF6;&amp;#x8BBE;&amp;#x5907;&amp;#x4ECB;&amp;#x7ECD;&quot;&gt;&lt;/a&gt;&lt;strong&gt;1.1&amp;#x3001;&amp;#x786C;&amp;#x4EF6;&amp;#x8BBE;&amp;#x5907;&amp;#x4ECB;&amp;#x7ECD;&lt;/strong&gt;&lt;/h2&gt;&lt;p&gt;&lt;strong&gt;CPU&lt;/strong&gt;    &amp;#x4E2D;&amp;#x592E;&amp;#x5904;&amp;#x7406;&amp;#x5668; &amp;#x2013; &amp;#x4EBA;&amp;#x7684;&amp;#x5927;&amp;#x8111;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;&amp;#x5185;&amp;#x5B58;&lt;/strong&gt;    &amp;#x8FDB;&amp;#x884C;&amp;#x6570;&amp;#x636E;&amp;#x7684;&amp;#x4E34;&amp;#x65F6;&amp;#x5B58;&amp;#x50A8;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;IO&lt;/strong&gt;    &amp;#x786C;&amp;#x76D8;&amp;#xFF1A;&amp;#x8FDB;&amp;#x884C;&amp;#x6570;&amp;#x636E;&amp;#x7684;&amp;#x6301;&amp;#x4E45;&amp;#x5316;&amp;#x5B58;&amp;#x50A8;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;&amp;#x7F51;&amp;#x7EDC;&amp;#x9002;&amp;#x914D;&amp;#x5668;&lt;/strong&gt;    &amp;#x7F51;&amp;#x5361;&amp;#xFF1A;&amp;#x8FDB;&amp;#x884C;&amp;#x6570;&amp;#x636E;&amp;#x7684;&amp;#x4F20;&amp;#x8F93;&lt;/p&gt;</summary>
     
     
     
@@ -45,13 +45,12 @@
     <link href="http://example.com/development/python/python%E5%9F%BA%E7%A1%80_02_python%E7%9A%84%E5%9F%BA%E7%A1%80%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B/"/>
     <id>http://example.com/development/python/python%E5%9F%BA%E7%A1%80_02_python%E7%9A%84%E5%9F%BA%E7%A1%80%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B/</id>
     <published>2022-01-27T02:28:50.000Z</published>
-    <updated>2022-01-27T02:29:10.578Z</updated>
+    <updated>2022-01-27T02:36:56.513Z</updated>
     
     
-      
-      
-    <summary type="html">&lt;h1 id=&quot;2&amp;#x3001;&amp;#x53D8;&amp;#x91CF;&amp;#x4E0E;&amp;#x5E38;&amp;#x91CF;&quot;&gt;&lt;a href=&quot;#2&amp;#x3001;&amp;#x53D8;&amp;#x91CF;&amp;#x4E0E;&amp;#x5E38;&amp;#x91CF;&quot; class=&quot;headerlink&quot; t</summary>
-      
+    <summary type="html">&lt;h1 id=&quot;2&amp;#x3001;&amp;#x53D8;&amp;#x91CF;&amp;#x4E0E;&amp;#x5E38;&amp;#x91CF;&quot;&gt;&lt;a href=&quot;#2&amp;#x3001;&amp;#x53D8;&amp;#x91CF;&amp;#x4E0E;&amp;#x5E38;&amp;#x91CF;&quot; class=&quot;headerlink&quot; title=&quot;2&amp;#x3001;&amp;#x53D8;&amp;#x91CF;&amp;#x4E0E;&amp;#x5E38;&amp;#x91CF;&quot;&gt;&lt;/a&gt;&lt;strong&gt;2&amp;#x3001;&amp;#x53D8;&amp;#x91CF;&amp;#x4E0E;&amp;#x5E38;&amp;#x91CF;&lt;/strong&gt;&lt;/h1&gt;&lt;h2 id=&quot;2-1&amp;#x3001;&amp;#x53D8;&amp;#x91CF;&amp;#x5B9A;&amp;#x4E49;&quot;&gt;&lt;a href=&quot;#2-1&amp;#x3001;&amp;#x53D8;&amp;#x91CF;&amp;#x5B9A;&amp;#x4E49;&quot; class=&quot;headerlink&quot; title=&quot;2.1&amp;#x3001;&amp;#x53D8;&amp;#x91CF;&amp;#x5B9A;&amp;#x4E49;&quot;&gt;&lt;/a&gt;&lt;strong&gt;2.1&amp;#x3001;&amp;#x53D8;&amp;#x91CF;&amp;#x5B9A;&amp;#x4E49;&lt;/strong&gt;&lt;/h2&gt;&lt;p&gt;&amp;#x200B;    &amp;#x53D8;&amp;#x91CF;&amp;#xFF1A;&amp;#x5C06;&amp;#x4E00;&amp;#x4E9B;&amp;#x8FD0;&amp;#x7B97;&amp;#x7684;&amp;#x4E2D;&amp;#x95F4;&amp;#x7ED3;&amp;#x679C;&amp;#x6682;&amp;#x5B58;&amp;#x5230;&amp;#x5185;&amp;#x5B58;&amp;#x4E2D;&amp;#xFF0C;&amp;#x4EE5;&amp;#x4FBF;&amp;#x540E;&amp;#x7EED;&amp;#x4EE3;&amp;#x7801;&amp;#x8C03;&amp;#x7528;&amp;#xFF1B;&amp;#x5B83;&amp;#x662F;&amp;#x4E00;&amp;#x6BB5;&amp;#x88AB;&amp;#x547D;&amp;#x540D;&amp;#x7684;&amp;#x5185;&amp;#x5B58;&amp;#x7A7A;&amp;#x95F4;&amp;#xFF1B;&lt;/p&gt;
+&lt;h3 id=&quot;2-1-1&amp;#x3001;&amp;#x53D8;&amp;#x91CF;&amp;#x7684;&amp;#x547D;&amp;#x540D;&amp;#x89C4;&amp;#x5219;&quot;&gt;&lt;a href=&quot;#2-1-1&amp;#x3001;&amp;#x53D8;&amp;#x91CF;&amp;#x7684;&amp;#x547D;&amp;#x540D;&amp;#x89C4;&amp;#x5219;&quot; class=&quot;headerlink&quot; title=&quot;2.1.1&amp;#x3001;&amp;#x53D8;&amp;#x91CF;&amp;#x7684;&amp;#x547D;&amp;#x540D;&amp;#x89C4;&amp;#x5219;&quot;&gt;&lt;/a&gt;&lt;strong&gt;2.1.1&amp;#x3001;&amp;#x53D8;&amp;#x91CF;&amp;#x7684;&amp;#x547D;&amp;#x540D;&amp;#x89C4;&amp;#x5219;&lt;/strong&gt;&lt;/h3&gt;&lt;p&gt;&amp;#x200B;    &amp;#x53D8;&amp;#x91CF;&amp;#x7684;&amp;#x8D4B;&amp;#x503C;&amp;#xFF1A;&lt;/p&gt;
+&lt;figure class=&quot;highlight python&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;3&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;a = &lt;span class=&quot;number&quot;&gt;100&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;a,b = &lt;span class=&quot;number&quot;&gt;100&lt;/span&gt;,&lt;span class=&quot;number&quot;&gt;200&lt;/span&gt;  &lt;span class=&quot;comment&quot;&gt;# &amp;#x8FD9;&amp;#x79CD;&amp;#x8D4B;&amp;#x503C;&amp;#x65B9;&amp;#x5F0F;&amp;#xFF0C;&amp;#x4E00;&amp;#x5B9A;&amp;#x8981;&amp;#x524D;&amp;#x540E;&amp;#x6570;&amp;#x91CF;&amp;#x5339;&amp;#x914D;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;built_in&quot;&gt;print&lt;/span&gt;(a, b)&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;</summary>
     
     
     
@@ -69,13 +68,10 @@
     <link href="http://example.com/development/python/python%E5%9F%BA%E7%A1%80_03_%E6%B5%81%E7%A8%8B%E6%8E%A7%E5%88%B6%E8%AF%AD%E5%8F%A5/"/>
     <id>http://example.com/development/python/python%E5%9F%BA%E7%A1%80_03_%E6%B5%81%E7%A8%8B%E6%8E%A7%E5%88%B6%E8%AF%AD%E5%8F%A5/</id>
     <published>2022-01-27T02:28:50.000Z</published>
-    <updated>2022-01-27T02:29:31.966Z</updated>
+    <updated>2022-01-27T02:37:08.054Z</updated>
     
     
-      
-      
-    <summary type="html">&lt;h1 id=&quot;3&amp;#x3001;&amp;#x6D41;&amp;#x7A0B;&amp;#x63A7;&amp;#x5236;&amp;#x8BED;&amp;#x53E5;&quot;&gt;&lt;a href=&quot;#3&amp;#x3001;&amp;#x6D41;&amp;#x7A0B;&amp;#x63A7;&amp;#x5236;&amp;#x8BED;&amp;#x53E5;&quot; clas</summary>
-      
+    <summary type="html">&lt;h1 id=&quot;3&amp;#x3001;&amp;#x6D41;&amp;#x7A0B;&amp;#x63A7;&amp;#x5236;&amp;#x8BED;&amp;#x53E5;&quot;&gt;&lt;a href=&quot;#3&amp;#x3001;&amp;#x6D41;&amp;#x7A0B;&amp;#x63A7;&amp;#x5236;&amp;#x8BED;&amp;#x53E5;&quot; class=&quot;headerlink&quot; title=&quot;3&amp;#x3001;&amp;#x6D41;&amp;#x7A0B;&amp;#x63A7;&amp;#x5236;&amp;#x8BED;&amp;#x53E5;&quot;&gt;&lt;/a&gt;3&amp;#x3001;&amp;#x6D41;&amp;#x7A0B;&amp;#x63A7;&amp;#x5236;&amp;#x8BED;&amp;#x53E5;&lt;/h1&gt;&lt;h2 id=&quot;3-1&amp;#x3001;&amp;#x987A;&amp;#x5E8F;&amp;#x6267;&amp;#x884C;&quot;&gt;&lt;a href=&quot;#3-1&amp;#x3001;&amp;#x987A;&amp;#x5E8F;&amp;#x6267;&amp;#x884C;&quot; class=&quot;headerlink&quot; title=&quot;3.1&amp;#x3001;&amp;#x987A;&amp;#x5E8F;&amp;#x6267;&amp;#x884C;&quot;&gt;&lt;/a&gt;&lt;strong&gt;3.1&amp;#x3001;&amp;#x987A;&amp;#x5E8F;&amp;#x6267;&amp;#x884C;&lt;/strong&gt;&lt;/h2&gt;&lt;p&gt;&amp;#x200B;    &amp;#x4E0D;&amp;#x5149;&amp;#x53EA;&amp;#x6709;python&amp;#x8BED;&amp;#x53E5;&amp;#xFF0C;&amp;#x5176;&amp;#x4ED6;&amp;#x7684;&amp;#x7F16;&amp;#x7A0B;&amp;#x8BED;&amp;#x8A00;&amp;#x4E5F;&amp;#x662F;&amp;#x4E00;&amp;#x6837;&amp;#xFF1B;&amp;#x5982;&amp;#x679C;&amp;#x5BF9;&amp;#x8BED;&amp;#x53E5;&amp;#x4E0D;&amp;#x8FDB;&amp;#x884C;&amp;#x4EFB;&amp;#x4F55;&amp;#x63A7;&amp;#x5236;&amp;#x7684;&amp;#x60C5;&amp;#x51B5;&amp;#x4E0B;&amp;#x662F;&amp;#x9ED8;&amp;#x8BA4;&amp;#x4F9D;&amp;#x6B21;&amp;#x4ECE;&amp;#x4E0A;&amp;#x5411;&amp;#x4E0B;&amp;#x6267;&amp;#x884C;&amp;#x7684;&amp;#xFF01;&amp;#x4F46;&amp;#x662F;&amp;#xFF0C;&amp;#x8FD9;&amp;#x4E2A;&amp;#x601D;&amp;#x60F3;&amp;#x4E5F;&amp;#x4EC5;&amp;#x4EC5;&amp;#x53EA;&amp;#x662F;&amp;#x8BF4;&amp;#x660E;&amp;#x4E3A;&lt;strong&gt;&amp;#x9762;&amp;#x5411;&amp;#x8FC7;&amp;#x7A0B;&amp;#x7684;&amp;#x7F16;&amp;#x7A0B;&amp;#x601D;&amp;#x60F3;&lt;/strong&gt;&amp;#xFF1B;&amp;#x5728;&amp;#x540E;&amp;#x9762;&amp;#x63A5;&amp;#x89E6;&lt;strong&gt;&amp;#x9762;&amp;#x5411;&amp;#x51FD;&amp;#x6570;&amp;#x7F16;&amp;#x7A0B;&lt;/strong&gt;&amp;#x3001;&amp;#x548C;&lt;strong&gt;&amp;#x9762;&amp;#x5411;&amp;#x5BF9;&amp;#x8C61;&amp;#x7F16;&amp;#x7A0B;&lt;/strong&gt;&amp;#x5C31;&amp;#x4E0D;&amp;#x662F;&amp;#x5982;&amp;#x6B64;&amp;#x4E86;&amp;#xFF01;&amp;#x8FD9;&amp;#x70B9;&amp;#x4E00;&amp;#x5B9A;&amp;#x8981;&amp;#x6E05;&amp;#x695A;&lt;/p&gt;</summary>
     
     
     
@@ -93,13 +89,10 @@
     <link href="http://example.com/development/python/python%E5%9F%BA%E7%A1%80_04_%E6%96%87%E6%9C%AC%E5%A4%84%E7%90%86/"/>
     <id>http://example.com/development/python/python%E5%9F%BA%E7%A1%80_04_%E6%96%87%E6%9C%AC%E5%A4%84%E7%90%86/</id>
     <published>2022-01-27T02:28:50.000Z</published>
-    <updated>2022-01-27T02:29:49.522Z</updated>
+    <updated>2022-01-27T02:37:20.914Z</updated>
     
     
-      
-      
-    <summary type="html">&lt;h1 id=&quot;4&amp;#x3001;&amp;#x6587;&amp;#x672C;&amp;#x5904;&amp;#x7406;&quot;&gt;&lt;a href=&quot;#4&amp;#x3001;&amp;#x6587;&amp;#x672C;&amp;#x5904;&amp;#x7406;&quot; class=&quot;headerlink&quot; title=&quot;4&amp;#x3001;&amp;</summary>
-      
+    <summary type="html">&lt;h1 id=&quot;4&amp;#x3001;&amp;#x6587;&amp;#x672C;&amp;#x5904;&amp;#x7406;&quot;&gt;&lt;a href=&quot;#4&amp;#x3001;&amp;#x6587;&amp;#x672C;&amp;#x5904;&amp;#x7406;&quot; class=&quot;headerlink&quot; title=&quot;4&amp;#x3001;&amp;#x6587;&amp;#x672C;&amp;#x5904;&amp;#x7406;&quot;&gt;&lt;/a&gt;4&amp;#x3001;&amp;#x6587;&amp;#x672C;&amp;#x5904;&amp;#x7406;&lt;/h1&gt;&lt;h2 id=&quot;4-1&amp;#x3001;&amp;#x6587;&amp;#x672C;&amp;#x5904;&amp;#x7406;&amp;#x7684;&amp;#x7B80;&amp;#x5355;&amp;#x4ECB;&amp;#x7ECD;&quot;&gt;&lt;a href=&quot;#4-1&amp;#x3001;&amp;#x6587;&amp;#x672C;&amp;#x5904;&amp;#x7406;&amp;#x7684;&amp;#x7B80;&amp;#x5355;&amp;#x4ECB;&amp;#x7ECD;&quot; class=&quot;headerlink&quot; title=&quot;4.1&amp;#x3001;&amp;#x6587;&amp;#x672C;&amp;#x5904;&amp;#x7406;&amp;#x7684;&amp;#x7B80;&amp;#x5355;&amp;#x4ECB;&amp;#x7ECD;&quot;&gt;&lt;/a&gt;&lt;strong&gt;4.1&amp;#x3001;&amp;#x6587;&amp;#x672C;&amp;#x5904;&amp;#x7406;&amp;#x7684;&amp;#x7B80;&amp;#x5355;&amp;#x4ECB;&amp;#x7ECD;&lt;/strong&gt;&lt;/h2&gt;&lt;p&gt;&amp;#x200B;    &amp;#x4E00;&amp;#x822C;&amp;#xFF0C;&amp;#x6211;&amp;#x4EEC;&amp;#x9996;&amp;#x5148;&amp;#x8981;&amp;#x77E5;&amp;#x9053;&amp;#x8BE5;&amp;#x6587;&amp;#x4EF6;&amp;#x5B58;&amp;#x653E;&amp;#x7684;&amp;#x76EE;&amp;#x5F55;&amp;#xFF0C;&amp;#x5176;&amp;#x6B21;&amp;#x9700;&amp;#x8981;&amp;#x6709;&amp;#x6253;&amp;#x5F00;&amp;#x8FD9;&amp;#x4E2A;&amp;#x6587;&amp;#x672C;&amp;#x6240;&amp;#x9700;&amp;#x8981;&amp;#x5BF9;&amp;#x5E94;&amp;#x7684;&amp;#x8F6F;&amp;#x4EF6;&amp;#x7A0B;&amp;#x5E8F;&amp;#x624D;&amp;#x884C;&amp;#xFF1B;&amp;#x800C;&amp;#xFF0C;&amp;#x5BF9;&amp;#x5E94;&amp;#x7684;&amp;#x8F6F;&amp;#x4EF6;&amp;#x7A0B;&amp;#x5E8F;&amp;#x4E00;&amp;#x5B9A;&amp;#x8981;&amp;#x80FD;&amp;#x8BC6;&amp;#x522B;&amp;#x8BE5;&amp;#x6587;&amp;#x4EF6;&amp;#x7684;&amp;#x7F16;&amp;#x7801;&amp;#x7C7B;&amp;#x578B;&amp;#xFF0C;&amp;#x5426;&amp;#x5219;&amp;#x5373;&amp;#x4F7F;&amp;#x662F;&amp;#x8BFB;&amp;#x51FA;&amp;#x6765;&amp;#x4E5F;&amp;#x662F;&amp;#x4E71;&amp;#x7801;&amp;#xFF1B;&amp;#x6240;&amp;#x4EE5;&amp;#xFF0C;&amp;#x6253;&amp;#x5F00;&amp;#x4E00;&amp;#x4E2A;&amp;#x6587;&amp;#x4EF6;&amp;#x5C31;&amp;#x6709;&amp;#x5982;&amp;#x4E0B;&amp;#x56DB;&amp;#x4E2A;&amp;#x65B9;&amp;#x9762;&amp;#x9700;&amp;#x8981;&amp;#x6CE8;&amp;#x610F;&amp;#xFF1A;&lt;/p&gt;</summary>
     
     
     
@@ -117,13 +110,10 @@
     <link href="http://example.com/development/python/python%E5%9F%BA%E7%A1%80_05_%E5%87%BD%E6%95%B0/"/>
     <id>http://example.com/development/python/python%E5%9F%BA%E7%A1%80_05_%E5%87%BD%E6%95%B0/</id>
     <published>2022-01-27T02:28:50.000Z</published>
-    <updated>2022-01-27T02:30:07.757Z</updated>
+    <updated>2022-01-27T02:37:30.654Z</updated>
     
     
-      
-      
-    <summary type="html">&lt;h1 id=&quot;5&amp;#x3001;&amp;#x51FD;&amp;#x6570;&quot;&gt;&lt;a href=&quot;#5&amp;#x3001;&amp;#x51FD;&amp;#x6570;&quot; class=&quot;headerlink&quot; title=&quot;5&amp;#x3001;&amp;#x51FD;&amp;#x6570;&quot;&gt;&lt;/a&gt;5&amp;#x3001;&amp;#</summary>
-      
+    <summary type="html">&lt;h1 id=&quot;5&amp;#x3001;&amp;#x51FD;&amp;#x6570;&quot;&gt;&lt;a href=&quot;#5&amp;#x3001;&amp;#x51FD;&amp;#x6570;&quot; class=&quot;headerlink&quot; title=&quot;5&amp;#x3001;&amp;#x51FD;&amp;#x6570;&quot;&gt;&lt;/a&gt;5&amp;#x3001;&amp;#x51FD;&amp;#x6570;&lt;/h1&gt;&lt;h2 id=&quot;5-1&amp;#x3001;&amp;#x51FD;&amp;#x6570;&amp;#x7684;&amp;#x5B9A;&amp;#x4E49;&amp;#x4E0E;&amp;#x4F5C;&amp;#x7528;&quot;&gt;&lt;a href=&quot;#5-1&amp;#x3001;&amp;#x51FD;&amp;#x6570;&amp;#x7684;&amp;#x5B9A;&amp;#x4E49;&amp;#x4E0E;&amp;#x4F5C;&amp;#x7528;&quot; class=&quot;headerlink&quot; title=&quot;5.1&amp;#x3001;&amp;#x51FD;&amp;#x6570;&amp;#x7684;&amp;#x5B9A;&amp;#x4E49;&amp;#x4E0E;&amp;#x4F5C;&amp;#x7528;&quot;&gt;&lt;/a&gt;&lt;strong&gt;5.1&amp;#x3001;&amp;#x51FD;&amp;#x6570;&amp;#x7684;&amp;#x5B9A;&amp;#x4E49;&amp;#x4E0E;&amp;#x4F5C;&amp;#x7528;&lt;/strong&gt;&lt;/h2&gt;&lt;h3 id=&quot;5-1-1&amp;#x3001;&amp;#x51FD;&amp;#x6570;&amp;#x7684;&amp;#x57FA;&amp;#x672C;&amp;#x4ECB;&amp;#x7ECD;&quot;&gt;&lt;a href=&quot;#5-1-1&amp;#x3001;&amp;#x51FD;&amp;#x6570;&amp;#x7684;&amp;#x57FA;&amp;#x672C;&amp;#x4ECB;&amp;#x7ECD;&quot; class=&quot;headerlink&quot; title=&quot;5.1.1&amp;#x3001;&amp;#x51FD;&amp;#x6570;&amp;#x7684;&amp;#x57FA;&amp;#x672C;&amp;#x4ECB;&amp;#x7ECD;&quot;&gt;&lt;/a&gt;5.1.1&amp;#x3001;&amp;#x51FD;&amp;#x6570;&amp;#x7684;&amp;#x57FA;&amp;#x672C;&amp;#x4ECB;&amp;#x7ECD;&lt;/h3&gt;&lt;p&gt;&amp;#x200B;    &amp;#x4ECE;&amp;#x51FD;&amp;#x6570;&amp;#x5F00;&amp;#x59CB;&amp;#xFF0C;&amp;#x6240;&amp;#x6709;&amp;#x7684;&amp;#x7F16;&amp;#x7A0B;&amp;#x4E0D;&amp;#x518D;&amp;#x4EC5;&amp;#x4EC5;&amp;#x503C;&amp;#x9762;&amp;#x5411;&amp;#x8FC7;&amp;#x7A0B;&amp;#x7684;&amp;#x7F16;&amp;#x7A0B;&amp;#xFF0C;&amp;#x4E3A;&amp;#x4E86;&lt;strong&gt;&amp;#x7B80;&amp;#x5316;&amp;#x4EE3;&amp;#x7801;&lt;/strong&gt;&amp;#xFF0C;&amp;#x6211;&amp;#x4EEC;&amp;#x53EF;&amp;#x4EE5;&amp;#x4F7F;&amp;#x7528;&amp;#x9762;&amp;#x5411;&amp;#x51FD;&amp;#x6570;&amp;#x7684;&amp;#x7F16;&amp;#x7A0B;&amp;#x601D;&amp;#x60F3;&amp;#xFF0C;&amp;#x5C06;&amp;#x529F;&amp;#x80FD;&amp;#x5199;&amp;#x5165;&amp;#x5230;&amp;#x51FD;&amp;#x6570;&amp;#xFF0C;&amp;#x6700;&amp;#x540E;&amp;#x8C03;&amp;#x7528;&amp;#x51FD;&amp;#x6570;&amp;#x5373;&amp;#x53EF;&amp;#xFF1B;&amp;#x5728;&amp;#x8FD9;&amp;#x79CD;&amp;#x601D;&amp;#x60F3;&amp;#x4E0B;&amp;#xFF0C;&amp;#x6211;&amp;#x4EEC;&amp;#x7684;&amp;#x4EE3;&amp;#x7801;&amp;#x4E0D;&amp;#x4F1A;&amp;#x518D;&amp;#x8BD5;&amp;#x7B80;&amp;#x5355;&amp;#x7684;&amp;#x987A;&amp;#x5E8F;&amp;#x6267;&amp;#x884C;&amp;#x4E86;&amp;#xFF0C;&amp;#x800C;&amp;#x662F;&amp;#x57FA;&amp;#x4E8E;&amp;#x51FD;&amp;#x6570;&amp;#x6765;&amp;#x6267;&amp;#x884C;&amp;#xFF1B;&lt;/p&gt;</summary>
     
     
     
@@ -141,13 +131,14 @@
     <link href="http://example.com/development/python/python%E5%9F%BA%E7%A1%80_06_%E5%B8%B8%E8%A7%81%E6%A8%A1%E5%9D%97%E4%BB%8B%E7%BB%8D/"/>
     <id>http://example.com/development/python/python%E5%9F%BA%E7%A1%80_06_%E5%B8%B8%E8%A7%81%E6%A8%A1%E5%9D%97%E4%BB%8B%E7%BB%8D/</id>
     <published>2022-01-27T02:28:50.000Z</published>
-    <updated>2022-01-27T02:30:29.734Z</updated>
+    <updated>2022-01-27T02:37:40.569Z</updated>
     
     
-      
-      
-    <summary type="html">&lt;h1 id=&quot;6&amp;#x3001;&amp;#x5E38;&amp;#x89C1;&amp;#x6A21;&amp;#x5757;&amp;#x4ECB;&amp;#x7ECD;&quot;&gt;&lt;a href=&quot;#6&amp;#x3001;&amp;#x5E38;&amp;#x89C1;&amp;#x6A21;&amp;#x5757;&amp;#x4ECB;&amp;#x7ECD;&quot; clas</summary>
-      
+    <summary type="html">&lt;h1 id=&quot;6&amp;#x3001;&amp;#x5E38;&amp;#x89C1;&amp;#x6A21;&amp;#x5757;&amp;#x4ECB;&amp;#x7ECD;&quot;&gt;&lt;a href=&quot;#6&amp;#x3001;&amp;#x5E38;&amp;#x89C1;&amp;#x6A21;&amp;#x5757;&amp;#x4ECB;&amp;#x7ECD;&quot; class=&quot;headerlink&quot; title=&quot;6&amp;#x3001;&amp;#x5E38;&amp;#x89C1;&amp;#x6A21;&amp;#x5757;&amp;#x4ECB;&amp;#x7ECD;&quot;&gt;&lt;/a&gt;6&amp;#x3001;&amp;#x5E38;&amp;#x89C1;&amp;#x6A21;&amp;#x5757;&amp;#x4ECB;&amp;#x7ECD;&lt;/h1&gt;&lt;h2 id=&quot;6-1&amp;#x3001;&amp;#x6A21;&amp;#x5757;&amp;#x4E0E;&amp;#x5305;&quot;&gt;&lt;a href=&quot;#6-1&amp;#x3001;&amp;#x6A21;&amp;#x5757;&amp;#x4E0E;&amp;#x5305;&quot; class=&quot;headerlink&quot; title=&quot;6.1&amp;#x3001;&amp;#x6A21;&amp;#x5757;&amp;#x4E0E;&amp;#x5305;&quot;&gt;&lt;/a&gt;&lt;strong&gt;6.1&amp;#x3001;&amp;#x6A21;&amp;#x5757;&amp;#x4E0E;&amp;#x5305;&lt;/strong&gt;&lt;/h2&gt;&lt;h3 id=&quot;6-1-1&amp;#x3001;&amp;#x4EC0;&amp;#x4E48;&amp;#x662F;&amp;#x6A21;&amp;#x5757;&quot;&gt;&lt;a href=&quot;#6-1-1&amp;#x3001;&amp;#x4EC0;&amp;#x4E48;&amp;#x662F;&amp;#x6A21;&amp;#x5757;&quot; class=&quot;headerlink&quot; title=&quot;6.1.1&amp;#x3001;&amp;#x4EC0;&amp;#x4E48;&amp;#x662F;&amp;#x6A21;&amp;#x5757;&quot;&gt;&lt;/a&gt;&lt;strong&gt;6.1.1&amp;#x3001;&amp;#x4EC0;&amp;#x4E48;&amp;#x662F;&amp;#x6A21;&amp;#x5757;&lt;/strong&gt;&lt;/h3&gt;&lt;p&gt;&amp;#x200B;    &amp;#x5E38;&amp;#x89C1;&amp;#x7684;&amp;#x573A;&amp;#x666F;&amp;#xFF1A;&amp;#x4E00;&amp;#x4E2A;&amp;#x6A21;&amp;#x5757;&amp;#x5C31;&amp;#x662F;&amp;#x4E00;&amp;#x4E2A;&amp;#x5305;&amp;#x542B;&amp;#x4E86;python&amp;#x5B9A;&amp;#x4E49;&amp;#x548C;&amp;#x58F0;&amp;#x660E;&amp;#x7684;&amp;#x6587;&amp;#x4EF6;&amp;#xFF0C;&amp;#x6587;&amp;#x4EF6;&amp;#x540D;&amp;#x5C31;&amp;#x662F;&amp;#x6A21;&amp;#x5757;&amp;#x540D;&amp;#x5B57;&amp;#x52A0;&amp;#x4E0A;.py&amp;#x7684;&amp;#x540E;&amp;#x7F00;&amp;#x3002;&amp;#x4F46;&amp;#x5176;&amp;#x5B9E;import&amp;#x52A0;&amp;#x8F7D;&amp;#x7684;&amp;#x6A21;&amp;#x5757;&amp;#x5206;&amp;#x4E3A;&amp;#x56DB;&amp;#x4E2A;&amp;#x901A;&amp;#x7528;&amp;#x7C7B;&amp;#x522B;&amp;#xFF1A;&amp;#x3000;&lt;/p&gt;
+&lt;p&gt;&amp;#x200B;        1&amp;#x3001;&amp;#x4F7F;&amp;#x7528;python&amp;#x7F16;&amp;#x5199;&amp;#x7684;&amp;#x4EE3;&amp;#x7801;&amp;#xFF08;.py&amp;#x6587;&amp;#x4EF6;&amp;#xFF09;&lt;/p&gt;
+&lt;p&gt;&amp;#x200B;        2&amp;#x3001;&amp;#x5DF2;&amp;#x88AB;&amp;#x7F16;&amp;#x8BD1;&amp;#x4E3A;&amp;#x5171;&amp;#x4EAB;&amp;#x5E93;&amp;#x6216;DLL&amp;#x7684;C&amp;#x6216;C++&amp;#x6269;&amp;#x5C55;&lt;/p&gt;
+&lt;p&gt;&amp;#x200B;        3&amp;#x3001;&amp;#x5305;&amp;#x597D;&amp;#x4E00;&amp;#x7EC4;&amp;#x6A21;&amp;#x5757;&amp;#x7684;&amp;#x5305;&lt;/p&gt;
+&lt;p&gt;&amp;#x200B;        4&amp;#x3001;&amp;#x4F7F;&amp;#x7528;C&amp;#x7F16;&amp;#x5199;&amp;#x5E76;&amp;#x94FE;&amp;#x63A5;&amp;#x5230;python&amp;#x89E3;&amp;#x91CA;&amp;#x5668;&amp;#x7684;&amp;#x5185;&amp;#x7F6E;&amp;#x6A21;&amp;#x5757;&lt;/p&gt;</summary>
     
     
     
@@ -165,13 +156,14 @@
     <link href="http://example.com/development/python/python%E5%9F%BA%E7%A1%80_07_%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1%E4%BB%8B%E7%BB%8D/"/>
     <id>http://example.com/development/python/python%E5%9F%BA%E7%A1%80_07_%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1%E4%BB%8B%E7%BB%8D/</id>
     <published>2022-01-27T02:28:50.000Z</published>
-    <updated>2022-01-27T02:30:46.238Z</updated>
+    <updated>2022-01-27T02:37:49.244Z</updated>
     
     
-      
-      
-    <summary type="html">&lt;h1 id=&quot;7&amp;#x3001;&amp;#x9762;&amp;#x5411;&amp;#x5BF9;&amp;#x8C61;&amp;#x4ECB;&amp;#x7ECD;&quot;&gt;&lt;a href=&quot;#7&amp;#x3001;&amp;#x9762;&amp;#x5411;&amp;#x5BF9;&amp;#x8C61;&amp;#x4ECB;&amp;#x7ECD;&quot; clas</summary>
-      
+    <summary type="html">&lt;h1 id=&quot;7&amp;#x3001;&amp;#x9762;&amp;#x5411;&amp;#x5BF9;&amp;#x8C61;&amp;#x4ECB;&amp;#x7ECD;&quot;&gt;&lt;a href=&quot;#7&amp;#x3001;&amp;#x9762;&amp;#x5411;&amp;#x5BF9;&amp;#x8C61;&amp;#x4ECB;&amp;#x7ECD;&quot; class=&quot;headerlink&quot; title=&quot;7&amp;#x3001;&amp;#x9762;&amp;#x5411;&amp;#x5BF9;&amp;#x8C61;&amp;#x4ECB;&amp;#x7ECD;&quot;&gt;&lt;/a&gt;7&amp;#x3001;&amp;#x9762;&amp;#x5411;&amp;#x5BF9;&amp;#x8C61;&amp;#x4ECB;&amp;#x7ECD;&lt;/h1&gt;&lt;h2 id=&quot;7-1&amp;#x3001;&amp;#x9762;&amp;#x5411;&amp;#x8FC7;&amp;#x7A0B;&amp;#x4E0E;&amp;#x9762;&amp;#x5411;&amp;#x5BF9;&amp;#x8C61;&quot;&gt;&lt;a href=&quot;#7-1&amp;#x3001;&amp;#x9762;&amp;#x5411;&amp;#x8FC7;&amp;#x7A0B;&amp;#x4E0E;&amp;#x9762;&amp;#x5411;&amp;#x5BF9;&amp;#x8C61;&quot; class=&quot;headerlink&quot; title=&quot;7.1&amp;#x3001;&amp;#x9762;&amp;#x5411;&amp;#x8FC7;&amp;#x7A0B;&amp;#x4E0E;&amp;#x9762;&amp;#x5411;&amp;#x5BF9;&amp;#x8C61;&quot;&gt;&lt;/a&gt;&lt;strong&gt;7.1&amp;#x3001;&amp;#x9762;&amp;#x5411;&amp;#x8FC7;&amp;#x7A0B;&amp;#x4E0E;&amp;#x9762;&amp;#x5411;&amp;#x5BF9;&amp;#x8C61;&lt;/strong&gt;&lt;/h2&gt;&lt;p&gt;&lt;strong&gt;&amp;#x9762;&amp;#x5411;&amp;#x8FC7;&amp;#x7A0B;&amp;#xFF1A;&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&amp;#x200B;    &amp;#x9762;&amp;#x5411;&amp;#x8FC7;&amp;#x7A0B;&amp;#x7684;&amp;#x7A0B;&amp;#x5E8F;&amp;#x8BBE;&amp;#x8BA1;&amp;#x7684;&amp;#x6838;&amp;#x5FC3;&amp;#x662F;&amp;#x8FC7;&amp;#x7A0B;&amp;#xFF08;&amp;#x6D41;&amp;#x6C34;&amp;#x7EBF;&amp;#x5F0F;&amp;#x601D;&amp;#x7EF4;&amp;#xFF09;&amp;#xFF0C;&amp;#x8FC7;&amp;#x7A0B;&amp;#x5373;&amp;#x89E3;&amp;#x51B3;&amp;#x95EE;&amp;#x9898;&amp;#x7684;&amp;#x6B65;&amp;#x9AA4;&amp;#xFF0C;&amp;#x9762;&amp;#x5411;&amp;#x8FC7;&amp;#x7A0B;&amp;#x7684;&amp;#x8BBE;&amp;#x8BA1;&amp;#x5C31;&amp;#x597D;&amp;#x6BD4;&amp;#x7CBE;&amp;#x5FC3;&amp;#x8BBE;&amp;#x8BA1;&amp;#x597D;&amp;#x4E00;&amp;#x6761;&amp;#x6D41;&amp;#x6C34;&amp;#x7EBF;&amp;#xFF0C;&amp;#x8003;&amp;#x8651;&amp;#x5468;&amp;#x5168;&amp;#x4EC0;&amp;#x4E48;&amp;#x65F6;&amp;#x5019;&amp;#x5904;&amp;#x7406;&amp;#x4EC0;&amp;#x4E48;&amp;#x4E1C;&amp;#x897F;&amp;#x3002;&lt;/p&gt;
+&lt;p&gt;&amp;#x200B;    &lt;strong&gt;&amp;#x4F18;&amp;#x70B9;&amp;#x662F;&lt;/strong&gt;&amp;#xFF1A;&amp;#x6781;&amp;#x5927;&amp;#x7684;&amp;#x964D;&amp;#x4F4E;&amp;#x4E86;&amp;#x5199;&amp;#x7A0B;&amp;#x5E8F;&amp;#x7684;&amp;#x590D;&amp;#x6742;&amp;#x5EA6;&amp;#xFF0C;&amp;#x53EA;&amp;#x9700;&amp;#x8981;&amp;#x987A;&amp;#x7740;&amp;#x8981;&amp;#x6267;&amp;#x884C;&amp;#x7684;&amp;#x6B65;&amp;#x9AA4;&amp;#xFF0C;&amp;#x5806;&amp;#x53E0;&amp;#x4EE3;&amp;#x7801;&amp;#x5373;&amp;#x53EF;&amp;#x3002;&lt;/p&gt;
+&lt;p&gt;&amp;#x200B;    &lt;strong&gt;&amp;#x7F3A;&amp;#x70B9;&amp;#x662F;&lt;/strong&gt;&amp;#xFF1A;&amp;#x4E00;&amp;#x5957;&amp;#x6D41;&amp;#x6C34;&amp;#x7EBF;&amp;#x6216;&amp;#x8005;&amp;#x6D41;&amp;#x7A0B;&amp;#x5C31;&amp;#x662F;&amp;#x7528;&amp;#x6765;&amp;#x89E3;&amp;#x51B3;&amp;#x4E00;&amp;#x4E2A;&amp;#x95EE;&amp;#x9898;&amp;#xFF0C;&amp;#x4EE3;&amp;#x7801;&amp;#x7275;&amp;#x4E00;&amp;#x53D1;&amp;#x800C;&amp;#x52A8;&amp;#x5168;&amp;#x8EAB;&amp;#x3002;&lt;/p&gt;
+&lt;p&gt;&amp;#x200B;    &amp;#x5E94;&amp;#x7528;&amp;#x573A;&amp;#x666F;&amp;#xFF1A;&amp;#x4E00;&amp;#x65E6;&amp;#x5B8C;&amp;#x6210;&amp;#x57FA;&amp;#x672C;&amp;#x5F88;&amp;#x5C11;&amp;#x6539;&amp;#x53D8;&amp;#x7684;&amp;#x573A;&amp;#x666F;&amp;#xFF0C;&amp;#x8457;&amp;#x540D;&amp;#x7684;&amp;#x4F8B;&amp;#x5B50;&amp;#x6709;Linux&amp;#x5167;&amp;#x6838;&amp;#xFF0C;git&amp;#xFF0C;&amp;#x4EE5;&amp;#x53CA;Apache HTTP Server&amp;#x7B49;&amp;#x3002;&lt;/p&gt;</summary>
     
     
     
