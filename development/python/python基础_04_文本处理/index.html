@@ -1,0 +1,750 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-minimal.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Mist","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="4&amp;#x3001;&amp;#x6587;&amp;#x672C;&amp;#x5904;&amp;#x7406;4.1&amp;#x3001;&amp;#x6587;&amp;#x672C;&amp;#x5904;&amp;#x7406;&amp;#x7684;&amp;#x7B80;&amp;#x5355;&amp;#x4ECB;&amp;#x7ECD;&amp;#x200B;    &amp;#x4E00;&amp;#x822C;&amp;#xFF0C;&amp;#x6211;&amp;#x4EEC;&amp;#x9996;&amp;#x5148;&amp;#x8981;">
+<meta property="og:type" content="article">
+<meta property="og:title" content="文本处理">
+<meta property="og:url" content="http://example.com/development/python/python%E5%9F%BA%E7%A1%80_04_%E6%96%87%E6%9C%AC%E5%A4%84%E7%90%86/index.html">
+<meta property="og:site_name" content="Burnov^-^Blog">
+<meta property="og:description" content="4&amp;#x3001;&amp;#x6587;&amp;#x672C;&amp;#x5904;&amp;#x7406;4.1&amp;#x3001;&amp;#x6587;&amp;#x672C;&amp;#x5904;&amp;#x7406;&amp;#x7684;&amp;#x7B80;&amp;#x5355;&amp;#x4ECB;&amp;#x7ECD;&amp;#x200B;    &amp;#x4E00;&amp;#x822C;&amp;#xFF0C;&amp;#x6211;&amp;#x4EEC;&amp;#x9996;&amp;#x5148;&amp;#x8981;">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://example.com/development/python/python%E5%9F%BA%E7%A1%80_04_%E6%96%87%E6%9C%AC%E5%A4%84%E7%90%86/image-20211127173347616.png">
+<meta property="og:image" content="http://example.com/development/python/python%E5%9F%BA%E7%A1%80_04_%E6%96%87%E6%9C%AC%E5%A4%84%E7%90%86/image-20211127173413335.png">
+<meta property="og:image" content="http://example.com/development/python/python%E5%9F%BA%E7%A1%80_04_%E6%96%87%E6%9C%AC%E5%A4%84%E7%90%86/image-20211127173456318.png">
+<meta property="og:image" content="http://example.com/development/python/python%E5%9F%BA%E7%A1%80_04_%E6%96%87%E6%9C%AC%E5%A4%84%E7%90%86/image-20211127173702694.png">
+<meta property="og:image" content="http://example.com/development/python/python%E5%9F%BA%E7%A1%80_04_%E6%96%87%E6%9C%AC%E5%A4%84%E7%90%86/image-20211127174009832.png">
+<meta property="og:image" content="http://example.com/development/python/python%E5%9F%BA%E7%A1%80_04_%E6%96%87%E6%9C%AC%E5%A4%84%E7%90%86/image-20211127174036157.png">
+<meta property="og:image" content="http://example.com/development/python/python%E5%9F%BA%E7%A1%80_04_%E6%96%87%E6%9C%AC%E5%A4%84%E7%90%86/image-20211127174224868.png">
+<meta property="og:image" content="http://example.com/development/python/python%E5%9F%BA%E7%A1%80_04_%E6%96%87%E6%9C%AC%E5%A4%84%E7%90%86/image-20211127174241088.png">
+<meta property="og:image" content="http://example.com/development/python/python%E5%9F%BA%E7%A1%80_04_%E6%96%87%E6%9C%AC%E5%A4%84%E7%90%86/image-20211127174342364.png">
+<meta property="article:published_time" content="2022-01-27T02:28:50.000Z">
+<meta property="article:modified_time" content="2022-01-27T02:29:49.522Z">
+<meta property="article:author" content="Burnov">
+<meta property="article:tag" content="python basic knowledge">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/development/python/python%E5%9F%BA%E7%A1%80_04_%E6%96%87%E6%9C%AC%E5%A4%84%E7%90%86/image-20211127173347616.png">
+
+<link rel="canonical" href="http://example.com/development/python/python%E5%9F%BA%E7%A1%80_04_%E6%96%87%E6%9C%AC%E5%A4%84%E7%90%86/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>文本处理 | Burnov^-^Blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="Burnov^-^Blog" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Burnov^-^Blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="Searching..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://example.com/development/python/python%E5%9F%BA%E7%A1%80_04_%E6%96%87%E6%9C%AC%E5%A4%84%E7%90%86/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="Burnov">
+      <meta itemprop="description" content="No end for Learning">
+    </span>
+    
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Burnov^-^Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          文本处理
+        </h1>
+    
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+              
+    
+              <time title="Created: 2022-01-27 10:28:50 / Modified: 10:29:49" itemprop="dateCreated datePublished" datetime="2022-01-27T10:28:50+08:00">2022-01-27</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/development/" itemprop="url" rel="index"><span itemprop="name">development</span></a>
+                </span>
+                  , 
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/development/python/" itemprop="url" rel="index"><span itemprop="name">python</span></a>
+                </span>
+            </span>
+    
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Valine: </span>
+    
+    <a title="valine" href="/development/python/python%E5%9F%BA%E7%A1%80_04_%E6%96%87%E6%9C%AC%E5%A4%84%E7%90%86/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/development/python/python%E5%9F%BA%E7%A1%80_04_%E6%96%87%E6%9C%AC%E5%A4%84%E7%90%86/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+    
+        </div>
+      </header>
+    
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+    
+      
+        <h1 id="4&#x3001;&#x6587;&#x672C;&#x5904;&#x7406;"><a href="#4&#x3001;&#x6587;&#x672C;&#x5904;&#x7406;" class="headerlink" title="4&#x3001;&#x6587;&#x672C;&#x5904;&#x7406;"></a>4&#x3001;&#x6587;&#x672C;&#x5904;&#x7406;</h1><h2 id="4-1&#x3001;&#x6587;&#x672C;&#x5904;&#x7406;&#x7684;&#x7B80;&#x5355;&#x4ECB;&#x7ECD;"><a href="#4-1&#x3001;&#x6587;&#x672C;&#x5904;&#x7406;&#x7684;&#x7B80;&#x5355;&#x4ECB;&#x7ECD;" class="headerlink" title="4.1&#x3001;&#x6587;&#x672C;&#x5904;&#x7406;&#x7684;&#x7B80;&#x5355;&#x4ECB;&#x7ECD;"></a><strong>4.1&#x3001;&#x6587;&#x672C;&#x5904;&#x7406;&#x7684;&#x7B80;&#x5355;&#x4ECB;&#x7ECD;</strong></h2><p>&#x200B;    &#x4E00;&#x822C;&#xFF0C;&#x6211;&#x4EEC;&#x9996;&#x5148;&#x8981;&#x77E5;&#x9053;&#x8BE5;&#x6587;&#x4EF6;&#x5B58;&#x653E;&#x7684;&#x76EE;&#x5F55;&#xFF0C;&#x5176;&#x6B21;&#x9700;&#x8981;&#x6709;&#x6253;&#x5F00;&#x8FD9;&#x4E2A;&#x6587;&#x672C;&#x6240;&#x9700;&#x8981;&#x5BF9;&#x5E94;&#x7684;&#x8F6F;&#x4EF6;&#x7A0B;&#x5E8F;&#x624D;&#x884C;&#xFF1B;&#x800C;&#xFF0C;&#x5BF9;&#x5E94;&#x7684;&#x8F6F;&#x4EF6;&#x7A0B;&#x5E8F;&#x4E00;&#x5B9A;&#x8981;&#x80FD;&#x8BC6;&#x522B;&#x8BE5;&#x6587;&#x4EF6;&#x7684;&#x7F16;&#x7801;&#x7C7B;&#x578B;&#xFF0C;&#x5426;&#x5219;&#x5373;&#x4F7F;&#x662F;&#x8BFB;&#x51FA;&#x6765;&#x4E5F;&#x662F;&#x4E71;&#x7801;&#xFF1B;&#x6240;&#x4EE5;&#xFF0C;&#x6253;&#x5F00;&#x4E00;&#x4E2A;&#x6587;&#x4EF6;&#x5C31;&#x6709;&#x5982;&#x4E0B;&#x56DB;&#x4E2A;&#x65B9;&#x9762;&#x9700;&#x8981;&#x6CE8;&#x610F;&#xFF1A;</p>
+<p>&#x200B;    1&#x3001;&#x77E5;&#x9053;&#x6587;&#x4EF6;&#x6240;&#x5728;&#x7684;&#x4F4D;&#x7F6E;&#x2013;&#x4E5F;&#x5C31;&#x662F;&#x6587;&#x672C;&#x8DEF;&#x5F84;&#xFF1B;</p>
+<p>&#x200B;    2&#x3001;&#x6587;&#x672C;&#x7684;&#x4FDD;&#x5B58;&#x7F16;&#x7801;&#x2013;gdk&#x3001;utf-8&#x2026;</p>
+<p>&#x200B;    3&#x3001;&#x7528;&#x4EC0;&#x4E48;&#x8F6F;&#x4EF6;&#x7A0B;&#x5E8F;&#xFF08;&#x4E5F;&#x5C31;&#x662F;&#x4EC0;&#x4E48;&#x65B9;&#x6CD5;&#xFF09;&#x6765;&#x6253;&#x5F00;&#x8FD9;&#x4E2A;&#x6587;&#x4EF6;</p>
+<p>&#x200B;    4&#x3001;&#x6253;&#x5F00;&#x6587;&#x4EF6;&#x540E;&#xFF0C;&#x662F;&#x4EC5;&#x4EC5;&#x8BFB;&#x53D6;&#x8FD8;&#x662F;&#x8FD8;&#x9700;&#x8981;&#x4FEE;&#x6539;&#x5462;&#xFF1F;&#xFF08;&#x6743;&#x9650;&#xFF09;</p>
+<p><img src="/development/python/python%E5%9F%BA%E7%A1%80_04_%E6%96%87%E6%9C%AC%E5%A4%84%E7%90%86/image-20211127173347616.png" alt="image-20211127173347616"></p>
+<p>&#x200B;    &#x9996;&#x5148;&#x5148;&#x65B0;&#x5EFA;&#x4E00;&#x4E2A;&#x6587;&#x672C;&#x6587;&#x6863;&#xFF1A;</p>
+<p><img src="/development/python/python%E5%9F%BA%E7%A1%80_04_%E6%96%87%E6%9C%AC%E5%A4%84%E7%90%86/image-20211127173413335.png" alt="image-20211127173413335"></p>
+<p>&#x200B;    &#x518D;&#x901A;&#x8FC7;&#x547D;&#x4EE4;&#x6253;&#x5F00;&#x67E5;&#x770B;&#xFF1A;</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">f = <span class="built_in">open</span>(<span class="string">&apos;test.txt&apos;</span>,mode=<span class="string">&apos;r&apos;</span>,encoding=utf-<span class="number">8</span>)</span><br><span class="line">content = f.read()</span><br><span class="line"><span class="built_in">print</span>(content)</span><br><span class="line">f.close()</span><br></pre></td></tr></table></figure>
+
+<p>&#x200B;    &#x8FD0;&#x884C;&#x7A0B;&#x5E8F;&#x540E;&#x8BFB;&#x53D6;&#x5230;&#x6587;&#x4EF6;&#x5185;&#x90E8;&#x5185;&#x5BB9;&#x5982;&#x4E0B;&#xFF1A;</p>
+<p><img src="/development/python/python%E5%9F%BA%E7%A1%80_04_%E6%96%87%E6%9C%AC%E5%A4%84%E7%90%86/image-20211127173456318.png" alt="image-20211127173456318"></p>
+<p>&#x200B;    &#x6587;&#x672C;&#x5904;&#x7406;&#x7684;&#x8FC7;&#x7A0B;&#x5982;&#x4E0B;&#xFF1A;</p>
+<p>&#x200B;        1&#x3001;&#x6307;&#x5B9A;f&#xFF0C;&#x4E5F;&#x5C31;&#x662F;<strong>&#x6587;&#x4EF6;&#x53E5;&#x67C4;</strong>&#xFF0C;&#x4F9D;&#x636E;&#x8FD9;&#x4E2A;&#x6587;&#x4EF6;&#x53E5;&#x67C4;&#xFF0C;&#x5C31;&#x53EF;&#x4EE5;&#x5BF9;&#x6587;&#x672C;&#x8FDB;&#x884C;&#x64CD;&#x4F5C;&#xFF1B;</p>
+<p>&#x200B;        2&#x3001;&#x4F7F;&#x7528;read()&#x65B9;&#x6CD5;&#x53BB;&#x8BFB;&#x53D6;&#x6587;&#x672C;&#x5185;&#x5BB9;&#xFF1B;</p>
+<p>&#x200B;        3&#x3001;&#x6253;&#x5370;&#x6587;&#x672C;&#x5185;&#x5BB9;&#xFF1B;</p>
+<p>&#x200B;        4&#x3001;&#x5173;&#x95ED;&#x6587;&#x672C;</p>
+<pre><code> &#x8FD9;&#x91CC;&#x8981;&#x6CE8;&#x610F;&#x4E00;&#x4E9B;&#x95EE;&#x9898;&#xFF1A;
+</code></pre>
+<p>&#x200B;        1&#x3001;&#x9996;&#x5148;&#xFF0C;&#x6587;&#x4EF6;&#x53E5;&#x67C4;&#x901A;&#x8FC7;open()&#x51FD;&#x6570;&#x6765;&#x83B7;&#x53D6;&#xFF0C;&#x5176;&#x4E2D;&#x2019;test.txt&#x2019;&#x8868;&#x793A;&#x7684;<strong>&#x76F8;&#x5BF9;&#x8DEF;&#x5F84;</strong>&#xFF0C;&#x8FD9;&#x4E2A;&#x76F8;&#x5BF9;&#x8DEF;&#x5F84;&#x5C31;&#x662F;&#x4EE3;&#x7801;&#x6587;&#x4EF6;&#x6240;&#x5728;&#x76EE;&#x5F55;&#xFF08;&#x8FD9;&#x91CC;&#x4E5F;&#x53EF;&#x4EE5;&#x4F7F;&#x7528;&#x7EDD;&#x5BF9;&#x8DEF;&#x5F84;&#xFF09;&#xFF1B;</p>
+<p>&#x200B;        2&#x3001;&#x5176;&#x6B21;&#xFF0C;mode= &#x53C2;&#x6570;&#x6307;&#x5B9A;&#x6253;&#x5F00;&#x6587;&#x4EF6;&#x7684;&#x6743;&#x9650;&#xFF0C;&#x9ED8;&#x8BA4;&#x5C31;&#x662F;r&#x8BFB;&#x53D6;&#xFF0C;&#x8FD8;&#x6709;&#x5176;&#x4ED6;&#x7684;&#x6743;&#x9650;&#xFF0C;&#x6211;&#x4EEC;&#x5728;&#x4E0B;&#x9762;&#x8BE6;&#x7EC6;&#x8BF4;&#x660E;&#xFF1B;</p>
+<p>&#x200B;        3&#x3001;&#x6700;&#x540E;&#xFF0C;&#x5C31;&#x662F; encoding= &#x4E5F;&#x5C31;&#x662F;&#x6587;&#x4EF6;&#x7F16;&#x7801;&#x7684;&#x95EE;&#x9898;&#xFF0C;&#x4E00;&#x822C;<strong>&#x4F7F;&#x7528;&#x4EC0;&#x4E48;&#x7F16;&#x7801;&#x5199;&#x5165;&#x7684;&#xFF0C;&#x5C31;&#x9700;&#x8981;&#x4F7F;&#x7528;&#x4EC0;&#x4E48;&#x7F16;&#x7801;&#x6765;&#x6253;&#x5F00;</strong>&#xFF01;&#xFF01;&#xFF01;&#x8FD9;&#x70B9;&#x975E;&#x5E38;&#x91CD;&#x8981;&#xFF1B;</p>
+<h2 id="4-2&#x3001;&#x6587;&#x4EF6;&#x76EE;&#x5F55;&#x4ECB;&#x7ECD;"><a href="#4-2&#x3001;&#x6587;&#x4EF6;&#x76EE;&#x5F55;&#x4ECB;&#x7ECD;" class="headerlink" title="4.2&#x3001;&#x6587;&#x4EF6;&#x76EE;&#x5F55;&#x4ECB;&#x7ECD;"></a><strong>4.2&#x3001;&#x6587;&#x4EF6;&#x76EE;&#x5F55;&#x4ECB;&#x7ECD;</strong></h2><p>&#x200B;    &#x6211;&#x4EEC;&#x77E5;&#x9053;&#xFF0C;&#x901A;&#x8FC7;f = open(&#x201C;&#x6587;&#x672C;&#x6587;&#x4EF6;.txt&#x201D;,&#x201D;&#x6743;&#x9650;&#x201D;&#xFF0C;&#x201D;&#x7F16;&#x7801;&#x201D;)&#x8FD9;&#x6837;&#x7684;&#x683C;&#x5F0F;&#x6765;&#x6253;&#x5F00;&#x6587;&#x4EF6;&#x3002;&#x5176;&#x4E2D;&#xFF0C;&#x6587;&#x672C;&#x6587;&#x4EF6;&#x662F;&#x9ED8;&#x8BA4;&#x6CA1;&#x6709;&#x6DFB;&#x52A0;&#x6587;&#x4EF6;&#x8DEF;&#x5F84;&#x7684;&#xFF0C;&#x8FD9;&#x91CC;&#x6211;&#x4EEC;&#x8981;&#x77E5;&#x9053;&#xFF0C;&#x5728;&#x6253;&#x5F00;&#x6587;&#x4EF6;&#x7684;&#x65F6;&#x5019;&#xFF0C;&#x6211;&#x4EEC;&#x9ED8;&#x8BA4;&#x662F;&#x6709;&#x4E24;&#x79CD;&#x65B9;&#x5F0F;&#x53BB;&#x627E;&#x5230;&#x8FD9;&#x4E2A;&#x201C;&#x6587;&#x672C;&#x6587;&#x4EF6;.txt&#x201D;&#x7684;&#xFF1B;</p>
+<p>&#x200B;    1&#x3001;<strong>&#x76F8;&#x5BF9;&#x8DEF;&#x5F84;</strong></p>
+<p>&#x200B;        &#x9ED8;&#x8BA4;&#x60C5;&#x51B5;&#x4E0B;&#x4F7F;&#x7528;&#x7684;&#x76F8;&#x5BF9;&#x8DEF;&#x5F84;&#xFF0C;&#x800C;&#x8FD9;&#x4E2A;&#x76F8;&#x5BF9;&#x8DEF;&#x5F84;&#x5C31;&#x662F;&#x6253;&#x5F00;&#x6587;&#x4EF6;&#x7A0B;&#x5E8F;&#x6240;&#x5728;&#x7684;&#x76EE;&#x5F55;&#xFF0C;&#x5C31;&#x662F;&#x76F8;&#x5BF9;&#x8DEF;&#x5F84;&#xFF1B;</p>
+<p>&#x200B;    2&#x3001;<strong>&#x7EDD;&#x5BF9;&#x8DEF;&#x5F84;</strong></p>
+<p>&#x200B;        &#x5982;&#x679C;&#x662F;&#x9700;&#x8981;&#x6253;&#x5F00;&#x7684;&#x6587;&#x4EF6;&#x5E76;&#x4E0D;&#x662F;&#x548C;&#x6240;&#x8FD0;&#x884C;&#x7A0B;&#x5E8F;&#x518D;&#x540C;&#x4E00;&#x4E2A;&#x76EE;&#x5F55;&#x3002;&#x5219;&#x5FC5;&#x987B;&#x4F7F;&#x7528;&#x5168;&#x8DEF;&#x5F84;&#x7684;&#x65B9;&#x5F0F;&#x53BB;&#x6253;&#x5F00;&#x6587;&#x4EF6;&#xFF1B;</p>
+<blockquote>
+<p>&#x6CE8;&#x610F;&#xFF1A;&#x518D;&#x4F7F;&#x7528;&#x8DEF;&#x5F84;&#x7684;&#x65F6;&#x5019;&#xFF0C;&#x9700;&#x8981;&#x8FDB;&#x884C;&#x201D;&quot;&#x7684;&#x8F6C;&#x4E49;&#xFF0C;&#x6216;&#x8005;&#x4F7F;&#x7528;r&#x201D;&#x8DEF;&#x5F84;&#x201D;&#x7684;&#x65B9;&#x5F0F;&#x8FDB;&#x884C;&#x7EDF;&#x4E00;&#x8F6C;&#x4E49;&#xFF1B;</p>
+</blockquote>
+<h2 id="4-3&#x3001;&#x6587;&#x4EF6;&#x6743;&#x9650;&#x64CD;&#x4F5C;"><a href="#4-3&#x3001;&#x6587;&#x4EF6;&#x6743;&#x9650;&#x64CD;&#x4F5C;" class="headerlink" title="4.3&#x3001;&#x6587;&#x4EF6;&#x6743;&#x9650;&#x64CD;&#x4F5C;"></a><strong>4.3&#x3001;&#x6587;&#x4EF6;&#x6743;&#x9650;&#x64CD;&#x4F5C;</strong></h2><p>&#x200B;    &#x5E38;&#x89C1;&#x7684;&#x6743;&#x9650;&#x5982;&#x4E0B;&#xFF1A;</p>
+<table>
+<thead>
+<tr>
+<th>r</th>
+<th>&#x53EA;&#x8BFB;</th>
+<th>rb</th>
+<th>&#x4EE5;&#x4E8C;&#x8FDB;&#x5236;&#x65B9;&#x5F0F;&#x8BFB;&#x53D6;</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>w</td>
+<td>&#x53EA;&#x5199;</td>
+<td>wb</td>
+<td>&#x4EE5;&#x4E8C;&#x8FDB;&#x5236;&#x65B9;&#x5F0F;&#x5199;&#x5165;</td>
+</tr>
+<tr>
+<td>a</td>
+<td>&#x8FFD;&#x52A0;&#x6587;&#x672C;</td>
+<td>ab</td>
+<td>&#x4EE5;&#x4E8C;&#x8FDB;&#x5236;&#x65B9;&#x5F0F;&#x8FDB;&#x884C;&#x6587;&#x672C;&#x5185;&#x5BB9;&#x8FFD;&#x52A0;</td>
+</tr>
+<tr>
+<td>r+</td>
+<td>&#x8BFB;&#x5199;&#x6743;&#x9650;&#xFF08;&#x6700;&#x5E38;&#x7528;&#xFF09;</td>
+<td>r+b</td>
+<td>&#x4EE5;&#x4E8C;&#x8FDB;&#x5236;&#x65B9;&#x5F0F;&#x8FDB;&#x884C;&#x8BFB;&#x5199;&#x4FEE;&#x6539;&#xFF08;&#x56FE;&#x7247;&#x4F7F;&#x7528;&#x8FD9;&#x79CD;&#x65B9;&#x5F0F;&#xFF09;</td>
+</tr>
+<tr>
+<td>w+</td>
+<td>&#x5199;&#x8BFB;&#x6743;&#x9650;&#xFF08;&#x5F88;&#x5C11;&#x4F7F;&#x7528;&#xFF09;</td>
+<td>w+b</td>
+<td>&#x4EE5;&#x4E8C;&#x8FDB;&#x5236;&#x65B9;&#x5F0F;&#x8FDB;&#x884C;&#x5199;&#x8BFB;&#x4FEE;&#x6539;&#xFF08;&#x5F88;&#x5C11;&#x4F7F;&#x7528;&#xFF09;</td>
+</tr>
+<tr>
+<td>a+</td>
+<td>&#x5199;&#x8BFB;&#x6743;&#x9650;</td>
+<td>a+b</td>
+<td>&#x4EE5;&#x4E8C;&#x8FDB;&#x5236;&#x65B9;&#x5F0F;&#x8FDB;&#x884C;&#x5199;&#x8BFB;&#x4FEE;&#x6539;</td>
+</tr>
+</tbody></table>
+<p><strong>1&#x3001;&#x53EA;&#x8BFB;-r&#x3001;rb&#xFF1A;</strong></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">f = <span class="built_in">open</span>(<span class="string">&apos;text.txt&apos;</span>, mode=<span class="string">&apos;r&apos;</span>, encoding=<span class="string">&apos;utf-8&apos;</span>)</span><br><span class="line">content = f.read()</span><br><span class="line"><span class="built_in">print</span>(content)</span><br><span class="line">f.close()</span><br></pre></td></tr></table></figure>
+
+<p>&#x200B;    &#x518D;&#x8FDB;&#x884C;&#x6570;&#x636E;&#x4E0A;&#x4F20;&#x4E0B;&#x8F7D;&#x7684;&#x65F6;&#x5019;&#xFF0C;&#x6700;&#x597D;&#x90FD;&#x4F7F;&#x7528;byte&#x7C7B;&#x578B;&#x6765;&#x8FDB;&#x884C;&#x3002;&#x4E14;&#xFF0C;&#x975E;&#x6587;&#x672C;&#x6587;&#x4EF6;&#x5747;&#x4F7F;&#x7528;byte&#x7C7B;&#x578B;&#x8FDB;&#x884C;&#x5904;&#x7406;&#xFF1B;</p>
+<blockquote>
+<p>&#x6CE8;&#x610F;&#xFF1A;&#x518D;&#x8BFB;&#x53D6;&#x6216;&#x8005;&#x4E4B;&#x540E;&#x5199;&#x5165;&#x6587;&#x4EF6;&#x7684;&#x65F6;&#x5019;&#xFF0C;&#x4E0D;&#x6307;&#x5B9A;encoding=&#x2019;utf-8&#x2019;&#xFF0C;&#x5C31;&#x4F1A;&#x62A5;&#x9519;&#x5982;&#x4E0B;&#x3002;&#x544A;&#x77E5;&#x6307;&#x5B9A;&#x7684;&#x7F16;&#x7801;&#x4E0D;&#x5339;&#x914D;&#xFF0C;&#x6240;&#x4EE5;&#x8981;&#x6CE8;&#x610F;&#xFF1B;</p>
+</blockquote>
+<p><img src="/development/python/python%E5%9F%BA%E7%A1%80_04_%E6%96%87%E6%9C%AC%E5%A4%84%E7%90%86/image-20211127173702694.png" alt="image-20211127173702694"></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">f = <span class="built_in">open</span>(<span class="string">&apos;text.txt&apos;</span>, <span class="string">&apos;rb&apos;</span>)</span><br><span class="line">content = f.read()</span><br><span class="line"><span class="built_in">print</span>(content)</span><br><span class="line">f.close()</span><br></pre></td></tr></table></figure>
+
+<p>&#x200B;    &#x518D;&#x4F7F;&#x7528;utf-8&#x7F16;&#x7801;&#x7684;&#x65F6;&#x5019;&#x8FDB;&#x884C;&#x8F6C;&#x6362;&#xFF0C;&#x9ED8;&#x8BA4;Python&#x7528;&#x7684;Unicode&#xFF0C;&#x5B83;&#x5185;&#x90E8;&#x4E3A;&#x6211;&#x4EEC;&#x8FDB;&#x884C;&#x4E86;&#x4E00;&#x6B21;&#x7F16;&#x7801;&#x8F6C;&#x6362;&#xFF1B;</p>
+<p><strong>2&#x3001;&#x53EA;&#x5199;-w&#x3001;wb&#xFF1A;</strong></p>
+<p>&#x200B;    &#x6307;&#x5B9A;http.log&#x6587;&#x4EF6;&#x4E2D;&#x5199;&#x5165;&#xFF0C;&#x518D;&#x6CA1;&#x6709;&#x8BE5;&#x6587;&#x4EF6;&#x7684;&#x65F6;&#x5019;&#xFF0C;&#x518D;&#x76F8;&#x5BF9;&#x76EE;&#x5F55;&#x4E2D;&#x4F1A;&#x521B;&#x5EFA;&#x8FD9;&#x4E2A;&#x6587;&#x4EF6;</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">f = <span class="built_in">open</span>(<span class="string">&apos;http.log&apos;</span>, <span class="string">&apos;w&apos;</span>, encoding=<span class="string">&apos;utf-8&apos;</span>)</span><br><span class="line"><span class="comment"># &#x5199;&#x5165;&#x5BF9;&#x5E94;&#x7684;&#x5185;&#x5BB9;</span></span><br><span class="line">f.write(<span class="string">&apos;Apache request www.baidu.com&apos;</span>)</span><br><span class="line">f.close()</span><br></pre></td></tr></table></figure>
+
+<p>&#x200B;    &#x8FD9;&#x91CC;&#x8981;&#x6CE8;&#x610F;&#xFF0C;&#x5982;&#x679C;&#x6587;&#x4EF6;&#x5B58;&#x5728;&#xFF0C;&#x5199;&#x5165;&#x7684;&#x5185;&#x5BB9;&#x4F1A;&#x5C06;&#x539F;&#x6709;&#x5185;&#x5BB9;&#x8986;&#x76D6;&#x6389;&#xFF01;</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">f = <span class="built_in">open</span>(<span class="string">&apos;http.log&apos;</span>, <span class="string">&apos;wb&apos;</span>)</span><br><span class="line">f.wirte(<span class="string">&apos;&#x8FD9;&#x662F;http&#x7684;&#x65E5;&#x5FD7;&#x4FE1;&#x606F;&apos;</span>.encode(<span class="string">&apos;utf-8&apos;</span>))  <span class="comment"># &#x6307;&#x5B9A;&#x5199;&#x5165;&#x7F16;&#x7801;&#x7684;&#x65B9;&#x5F0F;</span></span><br><span class="line"><span class="comment"># f.write(&apos;&#x8FD9;&#x662F;http&#x7684;&#x65E5;&#x5FD7;&#x4FE1;&#x606F;&apos;.encode(&apos;gbk&apos;))  # &#x6307;&#x5B9A;gbk&#x7684;&#x683C;&#x5F0F;&#x7F16;&#x7801;</span></span><br><span class="line">f.close()</span><br></pre></td></tr></table></figure>
+
+<p>&#x200B;    &#x793A;&#x4F8B;&#xFF1A;&#x6211;&#x4EEC;&#x4F7F;&#x7528;requests&#x6A21;&#x5757;&#xFF0C;&#x8BF7;&#x6C42;&#x201C;&#x7CD7;&#x4E8B;&#x767E;&#x79D1;&#x201D;&#x7F51;&#x7AD9;&#x6570;&#x636E;&#xFF0C;&#x5199;&#x5165;&#x5230;&#x672C;&#x5730;&#xFF1A;</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> requests</span><br><span class="line"></span><br><span class="line">url_temp = <span class="string">&quot;https://www.qiushibaike.com/text/&quot;</span></span><br><span class="line">headers = {<span class="string">&quot;User_Agents&quot;</span>: <span class="string">&quot;Mozilla/5.0 (Linux; Android 5.0; SM-G900P Build/LRX21T) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/72.0.3626.121 Mobile Safari/537.36&quot;</span>}</span><br><span class="line"></span><br><span class="line"><span class="comment"># &#x53D1;&#x8D77;get&#x8BF7;&#x6C42;</span></span><br><span class="line">responses = requests.get(url_temp)</span><br><span class="line"></span><br><span class="line"><span class="comment"># print(responses.content)</span></span><br><span class="line"><span class="comment"># &#x5C06;&#x8BF7;&#x6C42;&#x5230;&#x7684;&#x5185;&#x5BB9;&#x5199;&#x5165;&#x5230;&#x672C;&#x5730;&#x6587;&#x4EF6;&#x4E2D;&#x53BB;</span></span><br><span class="line"><span class="keyword">with</span> <span class="built_in">open</span>(<span class="string">&apos;save_content_qiushi.txt&apos;</span>,<span class="string">&apos;w&apos;</span>,encoding=<span class="string">&apos;utf-8&apos;</span>) <span class="keyword">as</span> f:</span><br><span class="line">	f.write(responses.text)</span><br><span class="line">	<span class="built_in">print</span>(<span class="string">&quot;save ok!&quot;</span>)</span><br></pre></td></tr></table></figure>
+
+<p>&#x200B;    &#x67E5;&#x770B;&#x4FDD;&#x5B58;&#x7684;&#x6587;&#x4EF6;</p>
+<p><img src="/development/python/python%E5%9F%BA%E7%A1%80_04_%E6%96%87%E6%9C%AC%E5%A4%84%E7%90%86/image-20211127174009832.png" alt="image-20211127174009832"></p>
+<p>&#x200B;    &#x9009;&#x4E2D;&#x914D;&#x7F6E;&#x6587;&#x4EF6;&#x7684;&#x540C;&#x4E00;&#x7EA7;&#x76EE;&#x5F55;&#x6253;&#x5F00;&#x5373;&#x53EF;&#x770B;&#x5230;&#x4FDD;&#x5B58;&#x7684;&#x6587;&#x4EF6;&#x4E86;&#xFF0C;&#x5982;&#x4E0B;&#x56FE;&#x6240;&#x793A;&#xFF1A;</p>
+<p><img src="/development/python/python%E5%9F%BA%E7%A1%80_04_%E6%96%87%E6%9C%AC%E5%A4%84%E7%90%86/image-20211127174036157.png" alt="image-20211127174036157"></p>
+<p>&#x200B;    &#x770B;&#x5230;save_content_qiushi.txt&#x6587;&#x4EF6;&#x5C31;&#x4FDD;&#x5B58;&#x518D;&#x8FD9;&#x91CC;&#x4E86;&#xFF1B;</p>
+<p><strong>3&#x3001;&#x8FFD;&#x52A0;-a&#x3001;ab</strong></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">f = <span class="built_in">open</span>(<span class="string">&apos;log.txt&apos;</span>, mode=<span class="string">&apos;a&apos;</span>, encoding=<span class="string">&apos;utf-8&apos;</span>)</span><br><span class="line">f.write(<span class="string">&apos;first row&apos;</span>)</span><br><span class="line">f.close()</span><br><span class="line"></span><br><span class="line"><span class="comment"># &#x8FD9;&#x91CC;&#x5149;&#x6807;&#x4F1A;&#x7559;&#x5728;&#x6307;&#x5B9A;&#x4F4D;&#x7F6E;&#xFF0C;&#x7EE7;&#x7EED;&#x8FDB;&#x884C;&#x5185;&#x5BB9;&#x6DFB;&#x52A0;&#xFF1B;</span></span><br><span class="line">f = <span class="built_in">open</span>(<span class="string">&apos;log.txt&apos;</span>, <span class="string">&apos;ab&apos;</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># &#x8FD9;&#x91CC;&#x56E0;&#x4E3A;&#x5199;&#x5165;&#x662F;&#x4E8C;&#x8FDB;&#x5236;&#x65B9;&#x5F0F;&#xFF0C;&#x4F1A;&#x62A5;&#x9519;&#xFF0C;&#x6240;&#x4EE5;&#x9700;&#x8981;&#x8F6C;&#x4E3A;utf-8&#x683C;&#x5F0F;&#xFF1B;</span></span><br><span class="line">f.write(<span class="string">&apos;second row\n&apos;</span>.encode(<span class="string">&quot;utf-8&quot;</span>))</span><br><span class="line">f.close()</span><br></pre></td></tr></table></figure>
+
+<p>&#x200B;    &#x8FD9;&#x91CC;&#x6CE8;&#x610F;&#x4E00;&#x4E2A;&#x95EE;&#x9898;&#xFF0C;&#x56E0;&#x4E3A;&#x8FFD;&#x52A0;&#x6587;&#x4EF6;&#x7684;&#x65F6;&#x5019;&#x5149;&#x6807;&#x90FD;&#x5728;&#x672B;&#x5C3E;&#xFF0C;&#x4F46;&#x662F;&#x8BFB;&#x53D6;&#x6587;&#x4EF6;&#x5185;&#x5BB9;&#x7684;&#x65F6;&#x5019;&#x53EA;&#x80FD;&#x8BFB;&#x53D6;&#x6700;&#x540E;&#x7684;&#x5185;&#x5BB9;&#xFF0C;&#x5982;&#x4E0B;&#xFF1A;</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">f = <span class="built_in">open</span>(<span class="string">&apos;log.txt&apos;</span>, <span class="string">&apos;r&apos;</span>, encoding=<span class="string">&apos;utf-8&apos;</span>)</span><br><span class="line">content = f.read()</span><br><span class="line"><span class="built_in">print</span>(content)</span><br><span class="line">f.close()</span><br></pre></td></tr></table></figure>
+
+<p><strong>4&#x3001;&#x8BFB;&#x5199;-r+&#x3001;r+b</strong></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">f = <span class="built_in">open</span>(<span class="string">&apos;log.txt&apos;</span>, <span class="string">&apos;r+&apos;</span>, encoding=<span class="string">&apos;utf-8&apos;</span>)</span><br><span class="line">context = f.read()</span><br><span class="line"><span class="built_in">print</span>(context)</span><br><span class="line">f.write(<span class="string">&apos;last row&apos;</span>)  <span class="comment"># &#x8FFD;&#x52A0;&#x5199;&#x5165;&#x5185;&#x5BB9;</span></span><br><span class="line"><span class="built_in">print</span>(context)</span><br><span class="line">f.close()</span><br></pre></td></tr></table></figure>
+
+<p>&#x200B;    &#x663E;&#x793A;&#x5185;&#x5BB9;&#x4E2D;&#xFF0C;&#x6CA1;&#x80FD;&#x663E;&#x793A;&#x5904;&#x6700;&#x65B0;&#x5199;&#x5165;&#x7684;&#x884C;&#x5185;&#x5BB9;&#xFF0C;&#x5982;&#x4E0B;&#x56FE;&#x6240;&#x793A;&#xFF1A;</p>
+<p><img src="/development/python/python%E5%9F%BA%E7%A1%80_04_%E6%96%87%E6%9C%AC%E5%A4%84%E7%90%86/image-20211127174224868.png" alt="image-20211127174224868"></p>
+<p>&#x200B;    &#x6587;&#x4EF6;&#x4E2D;&#x786E;&#x5B9E;&#x5199;&#x5165;&#x4E86;&#x201C;last row&#x201D;&#x884C;&#xFF1B;</p>
+<p><img src="/development/python/python%E5%9F%BA%E7%A1%80_04_%E6%96%87%E6%9C%AC%E5%A4%84%E7%90%86/image-20211127174241088.png" alt="image-20211127174241088"></p>
+<p>&#x200B;    &#x6240;&#x4EE5;&#xFF0C;&#x8FD9;&#x91CC;&#x5B58;&#x5728;&#x4E00;&#x4E2A;&#x5149;&#x6807;&#x7684;&#x95EE;&#x9898;&#xFF0C;&#x56E0;&#x4E3A;&#x7EE7;&#x7EED;&#x5199;&#x5165;&#x6587;&#x4EF6;&#x5185;&#x5BB9;&#x7684;&#x65F6;&#x5019;&#xFF0C;&#x662F;&#x4ECE;&#x5149;&#x6807;&#x5904;&#x7EE7;&#x7EED;&#x5411;&#x540E;&#x5199;&#x3002;</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># &#x201C;r+b&#x201D;&#x5BF9;&#x6587;&#x4EF6;&#x8FDB;&#x884C;&#x4E8C;&#x8FDB;&#x5236;&#x6587;&#x4EF6;&#x6765;&#x8BFB;&#x53D6;&#x5199;&#x5165;</span></span><br><span class="line">f = <span class="built_in">open</span>(<span class="string">&apos;log.txt&apos;</span>, <span class="string">&apos;r+b&apos;</span>)</span><br><span class="line">content = f.read()</span><br><span class="line">f.write(<span class="string">&apos;the second line of bottom row&apos;</span>.encode(<span class="string">&apos;utf-8&apos;</span>))</span><br><span class="line">f.close()</span><br></pre></td></tr></table></figure>
+
+<p><strong>5&#x3001;&#x5199;&#x8BFB;-w+&#x3001;w+b:</strong></p>
+<p>&#x200B;    w+b&#x7528;&#x7684;&#x5F88;&#x5C11;&#xFF1B;</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">f = <span class="built_in">open</span>(<span class="string">&apos;log.txt&apos;</span>, <span class="string">&apos;w+&apos;</span>, encoding=<span class="string">&apos;utf-8&apos;</span>)</span><br><span class="line">f.write(<span class="string">&apos;end&apos;</span>)</span><br><span class="line">f.seek(<span class="number">0</span>)  <span class="comment"># &#x5C06;&#x5149;&#x6807;&#x8C03;&#x6574;&#x5230;&#x5F00;&#x5934;&#x7684;&#x5730;&#x65B9;&#x53BB;</span></span><br><span class="line">context = f.read()</span><br><span class="line"><span class="built_in">print</span>(context)  <span class="comment"># &#x8FD9;&#x4E2A;&#x5730;&#x65B9;&#x662F;&#x65E0;&#x6CD5;&#x8BFB;&#x53D6;&#x5230;&#x5185;&#x5BB9;&#x7684;&#xFF1B;</span></span><br><span class="line">f.close()</span><br></pre></td></tr></table></figure>
+
+<p>&#x200B;    &#x4F46;&#x662F;&#x6587;&#x4EF6;&#x4E2D;&#x786E;&#x5B9E;&#x5199;&#x5165;&#x4E86;&#x5BF9;&#x5E94;&#x7684;&#x5185;&#x5BB9;&#xFF1A;</p>
+<p><img src="/development/python/python%E5%9F%BA%E7%A1%80_04_%E6%96%87%E6%9C%AC%E5%A4%84%E7%90%86/image-20211127174342364.png" alt="image-20211127174342364"></p>
+<p>&#x200B;    &#x56E0;&#x4E3A;&#x5149;&#x6807;&#x7684;&#x7F18;&#x6545;&#xFF0C;&#x6211;&#x4EEC;&#x65E0;&#x6CD5;&#x8BFB;&#x53D6;&#x5230;&#x5BF9;&#x5E94;&#x7684;&#x5185;&#x5BB9;&#x3002;&#x6240;&#x4EE5;&#xFF0C;&#x6211;&#x4EEC;&#x9700;&#x8981;&#x79FB;&#x52A8;&#x5149;&#x6807;&#x5230;&#x6587;&#x4EF6;&#x5F00;&#x5934;&#xFF1B;&#x8FD9;&#x65F6;&#x5019;&#x4F7F;&#x7528;seek()&#x51FD;&#x6570;&#x6765;&#x79FB;&#x52A8;&#x5149;&#x6807;&#xFF1B;</p>
+<p><strong>6&#x3001;&#x8FFD;&#x52A0;&#x8BFB;-a+&#x3001;a+b:</strong></p>
+<p>&#x200B;    &#x8FFD;&#x52A0;&#x6587;&#x4EF6;&#x5185;&#x5BB9;&#xFF1B;</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">f = <span class="built_in">open</span>(<span class="string">&apos;log.txt&apos;</span>, <span class="string">&apos;a+&apos;</span>, encoding=<span class="string">&apos;utf-8&apos;</span>)</span><br><span class="line">f.write(<span class="string">&apos;end the end&apos;</span>)</span><br><span class="line">f.seek(<span class="number">0</span>)  <span class="comment"># &#x5149;&#x6807;&#x79FB;&#x52A8;&#x5230;&#x6700;&#x524D;&#x9762;&#x548C; w+ &#x662F;&#x4E00;&#x6837;&#x7684;</span></span><br><span class="line"><span class="built_in">print</span>(f.read())  <span class="comment"># &#x8FD9;&#x6837;&#x624D;&#x80FD;&#x8BFB;&#x53D6;&#x5230;&#x6587;&#x4EF6;&#x5185;&#x90E8;&#x7684;&#x5185;&#x5BB9;</span></span><br><span class="line">f.close()</span><br></pre></td></tr></table></figure>
+
+<h2 id="4-4&#x3001;&#x5E38;&#x89C1;&#x529F;&#x80FD;&#x65B9;&#x6CD5;&#x4ECB;&#x7ECD;"><a href="#4-4&#x3001;&#x5E38;&#x89C1;&#x529F;&#x80FD;&#x65B9;&#x6CD5;&#x4ECB;&#x7ECD;" class="headerlink" title="4.4&#x3001;&#x5E38;&#x89C1;&#x529F;&#x80FD;&#x65B9;&#x6CD5;&#x4ECB;&#x7ECD;"></a><strong>4.4&#x3001;&#x5E38;&#x89C1;&#x529F;&#x80FD;&#x65B9;&#x6CD5;&#x4ECB;&#x7ECD;</strong></h2><p>&#x200B;    &#x5BF9;&#x4E8E;&#x6587;&#x4EF6;&#x53E5;&#x67C4;&#x7684;&#x64CD;&#x4F5C;&#x53EF;&#x4EE5;&#x6709;&#x5982;&#x4E0B;&#x65B9;&#x6CD5;&#xFF1A;</p>
+<table>
+<thead>
+<tr>
+<th>&#x8BFB;&#x53D6;&#x6587;&#x4EF6;</th>
+<th>&#x79FB;&#x52A8;&#x5149;&#x6807;</th>
+<th>&#x83B7;&#x53D6;&#x5149;&#x6807;&#x4F4D;&#x7F6E;</th>
+<th>&#x5224;&#x65AD;&#x662F;&#x5426;&#x53EF;&#x8BFB;&#xFF08;&#x8FD4;&#x56DE;bool&#x503C;&#xFF09;</th>
+<th>&#x5173;&#x95ED;&#x6587;&#x4EF6;</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>read()</td>
+<td>seek()</td>
+<td>tell()</td>
+<td>readable()</td>
+<td>close()</td>
+</tr>
+<tr>
+<td>&#x5199;&#x5165;&#x5185;&#x5BB9;</td>
+<td>&#x4E00;&#x884C;&#x4E00;&#x884C;&#x8BFB;&#x53D6;</td>
+<td>&#x8BFB;&#x53D6;&#x6240;&#x6709;&#x884C;&#xFF0C;&#x5E76;&#x653E;&#x5165;&#x5217;&#x8868;&#x4E4B;&#x4E2D;</td>
+<td>&#x8BFB;&#x53D6;&#x4E00;&#x7AEF;&#x5185;&#x5BB9;&#xFF08;&#x76F4;&#x63A5;&#x5728;&#x6587;&#x4EF6;&#x4E2D;&#x4FEE;&#x6539;&#xFF09;</td>
+<td></td>
+</tr>
+<tr>
+<td>write()</td>
+<td>readline()</td>
+<td>readlines()</td>
+<td>truncate()</td>
+<td></td>
+</tr>
+</tbody></table>
+<p>&#x200B;    <strong>read()</strong>&#x2013;&#x8BFB;&#x53D6;&#x6587;&#x4EF6;&#x5185;&#x5BB9;&#xFF0C;&#x8FD9;&#x91CC;&#x5C31;&#x4E0D;&#x518D;&#x4E3E;&#x4F8B;&#xFF1B;</p>
+<p>&#x200B;    <strong>write()</strong>&#x2013;&#x5199;&#x5165;&#x6570;&#x636E;&#x5185;&#x5BB9;&#xFF0C;&#x8FD9;&#x91CC;&#x4E0D;&#x518D;&#x4E3E;&#x4F8B;&#xFF1B;</p>
+<p>&#x200B;    <strong>seek()</strong>&#x2013;&#x79FB;&#x52A8;&#x5149;&#x6807;&#xFF1B;(&#x8FD9;&#x91CC;&#x4E5F;&#x662F;&#x4EE5;byte&#x4E3A;&#x5355;&#x4F4D;&#x7684;)</p>
+<p>&#x200B;        &#x8FD9;&#x4E2A;&#x53C2;&#x6570;&#x5BF9;&#x4E8E;<strong>&#x201C;&#x65AD;&#x70B9;&#x7EED;&#x4F20;&#x201D;</strong>&#x529F;&#x80FD;&#x975E;&#x5E38;&#x91CD;&#x8981;&#xFF1B;</p>
+<p>&#x200B;    <strong>tell()</strong>&#x2013;&#x83B7;&#x53D6;&#x5149;&#x6807;&#x7684;&#x4F4D;&#x7F6E;&#xFF1B;&#xFF08;&#x8FD9;&#x91CC;&#x662F;&#x4EE5;byte&#x5355;&#x4F4D;&#x6765;&#x8861;&#x91CF;&#xFF09;</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">f = <span class="built_in">open</span>(<span class="string">&apos;log.txt&apos;</span>, <span class="string">&apos;w+&apos;</span>, encoding=<span class="string">&apos;utf-8&apos;</span>)</span><br><span class="line">f.write(<span class="string">&apos;i love you!&apos;</span>)</span><br><span class="line">context = f.read()</span><br><span class="line"><span class="built_in">print</span>(context)</span><br><span class="line"><span class="built_in">print</span>(f.tell())  <span class="comment"># &#x83B7;&#x53D6;&#x5149;&#x6807;&#x6240;&#x5728;&#x4F4D;&#x7F6E;</span></span><br><span class="line">f.seek(<span class="number">7</span>)</span><br><span class="line">f.write(<span class="string">&apos;me!&apos;</span>)</span><br><span class="line"><span class="built_in">print</span>(f.tell())</span><br><span class="line">f.close()</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>&#x6CE8;&#x610F;&#xFF1A;&#x8FD9;&#x91CC;&#x5982;&#x679C;&#x662F;&#x4E2D;&#x6587;&#x7684;&#x8BDD;&#xFF0C;seek&#x79FB;&#x52A8;&#x5149;&#x6807;&#x8981;&#x662F;&#x4EE5;3&#x7684;&#x500D;&#x6570;&#x6765;&#x79FB;&#x52A8;&#xFF0C;&#x5426;&#x5219;&#x5C31;&#x4F1A;&#x51FA;&#x73B0;&#x9519;&#x8BEF;&#xFF01;</p>
+</blockquote>
+<p>&#x200B;    <strong>readable()</strong>&#x2013;&#x5224;&#x65AD;&#x6587;&#x4EF6;&#x662F;&#x5426;&#x53EF;&#x8BFB;&#xFF0C;&#x8FD4;&#x56DE;bool&#x7C7B;&#x578B;&#x6570;&#x636E;&#xFF1B;</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># &#x5148;&#x521B;&#x5EFA;&#x4E00;&#x4E2A;&#x591A;&#x884C;&#x6587;&#x4EF6;&#xFF0C;&#x914D;&#x7F6E;&#x5982;&#x4E0B;</span></span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">1</span>,<span class="number">100</span>):</span><br><span class="line">	f = <span class="built_in">open</span>(<span class="string">&apos;log.txt&apos;</span>, <span class="string">&apos;a+&apos;</span>, encoding=<span class="string">&apos;utf-8&apos;</span>)</span><br><span class="line">	f.write(<span class="string">&quot;{}\n&quot;</span>.<span class="built_in">format</span>(i))</span><br><span class="line">f.close()</span><br><span class="line"> </span><br><span class="line">f = <span class="built_in">open</span>(<span class="string">&quot;log.txt&quot;</span>, <span class="string">&quot;r&quot;</span>)</span><br><span class="line"><span class="built_in">print</span>(f.readable())</span><br><span class="line">f.close()</span><br></pre></td></tr></table></figure>
+
+<p>&#x200B;    <strong>readline()</strong>&#x2013;&#x4E00;&#x884C;&#x4E00;&#x884C;&#x7684;&#x8BFB;&#x53D6;&#x6587;&#x4EF6;&#xFF1B;&#x8BFB;&#x53D6;&#x51FA;&#x6765;&#x4EE5;&#x540E;&#xFF0C;&#x53EF;&#x4EE5;&#x5199;&#x5165;for&#x5FAA;&#x73AF;&#xFF0C;&#x4F9D;&#x6B21;&#x8FDB;&#x884C;&#x6587;&#x672C;&#x80FD;&#x5904;&#x7406;&#xFF0C;&#x8FD9;&#x6837;&#x4F1A;&#x8282;&#x7701;&#x5185;&#x5B58;&#x7A7A;&#x95F4;&#xFF0C;&#x63A8;&#x8350;&#x4F7F;&#x7528;&#x8BE5;&#x65B9;&#x6CD5;&#xFF1B;</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">f = <span class="built_in">open</span>(<span class="string">&apos;log.txt&apos;</span>, <span class="string">&apos;r+&apos;</span>, encoding=<span class="string">&apos;utf-8&apos;</span>)</span><br><span class="line">line = f.readline()</span><br><span class="line"><span class="built_in">print</span>(line)</span><br><span class="line">f.close()</span><br></pre></td></tr></table></figure>
+
+<p>&#x200B;        readline(3)  # &#x53EF;&#x4EE5;&#x6307;&#x5B9A;&#x8BFB;&#x53D6;&#x524D;3&#x4E2A;&#x5B57;&#x8282;&#x7684;&#x5185;&#x5BB9;&#xFF1B;</p>
+<p>&#x200B;    <strong>readlines()</strong>&#x2013;&#x4E00;&#x6B21;&#x6027;&#x8BFB;&#x53D6;&#x6240;&#x6709;&#x6587;&#x4EF6;&#xFF1B;&#x4E14;&#x5C06;&#x6BCF;&#x884C;&#x5B9A;&#x4E49;&#x4E3A;&#x4E00;&#x4E2A;&#x5143;&#x7D20;&#xFF0C;&#x4F7F;&#x7528;&#x8FD9;&#x4E9B;&#x5143;&#x7D20;&#x7EC4;&#x6210;&#x4E00;&#x4E2A;&#x5217;&#x5217;&#x8868;&#xFF1B;</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">f = <span class="built_in">open</span>(<span class="string">&apos;log.txt&apos;</span>, <span class="string">&apos;r+&apos;</span>, encoding=<span class="string">&apos;utf-8&apos;</span>)</span><br><span class="line">line = f.readlines()</span><br><span class="line"><span class="built_in">print</span>(line[<span class="number">1</span>])  <span class="comment"># &#x83B7;&#x53D6;&#x5217;&#x8868;&#x7D22;&#x5F15;&#x5BF9;&#x5E94;&#x5217;&#x8868;&#x7684;&#x503C;</span></span><br><span class="line">f.close()</span><br></pre></td></tr></table></figure>
+
+<p>&#x200B;    <strong>truncate()</strong>&#x2013;&#x622A;&#x53D6;&#x51FA;&#x4E00;&#x6BB5;&#x5185;&#x5BB9;&#xFF0C;&#x4E0D;&#x76F4;&#x63A5;&#x6253;&#x5370;&#x51FA;&#x6765;&#xFF0C;&#x76F4;&#x63A5;&#x67E5;&#x770B;&#x6E90;&#x6587;&#x4EF6;&#x5C31;&#x884C;&#xFF1B;&#x540E;&#x9762;&#x6307;&#x5B9A;&#x6240;&#x9700;&#x8981;&#x622A;&#x53D6;&#x6587;&#x4EF6;&#x5185;&#x5BB9;&#x7684;&#x5927;&#x5C0F;&#xFF01;&#x4E00;&#x822C;&#x548C;readline()&#x4E00;&#x8D77;&#x4F7F;&#x7528;&#xFF1B;</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">f = <span class="built_in">open</span>(<span class="string">&apos;log.txt&apos;</span>, <span class="string">&apos;r+&apos;</span>, encoding=<span class="string">&apos;utf-8&apos;</span>)</span><br><span class="line">line = f.truncate(<span class="number">20</span>)  <span class="comment"># &#x4E0D;&#x52A0;&#x53C2;&#x6570;&#x7684;&#x65F6;&#x5019;&#xFF0C;&#x5C31;&#x662F;&#x4ECE;&#x7B2C;&#x4E00;&#x884C;&#x7B2C;&#x4E00;&#x4F4D;&#x5F00;&#x59CB;&#x526A;&#x5207;&#x8D77;</span></span><br><span class="line">f.close()</span><br></pre></td></tr></table></figure>
+
+<p>&#x200B;    <strong>close()</strong>&#x2013;&#x5173;&#x95ED;&#x6587;&#x4EF6;&#xFF1B;&#x518D;&#x4F7F;&#x7528;open&#x65B9;&#x6CD5;&#x4EE5;&#x540E;&#xFF0C;&#x4E00;&#x5B9A;&#x8981;&#x5173;&#x95ED;&#x6587;&#x4EF6;&#xFF0C;&#x5426;&#x5219;&#x5C31;&#x5728;&#x5185;&#x5B58;&#x4E2D;&#x4E00;&#x76F4;&#x5F00;&#x542F;&#x4E86;&#xFF1B;</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">with</span> <span class="built_in">open</span>(<span class="string">&apos;log.txt&apos;</span>, <span class="string">&apos;r+&apos;</span>, encoding=<span class="string">&apos;utf-8&apos;</span>) <span class="keyword">as</span> obj:</span><br><span class="line">	<span class="built_in">print</span>(obj.read)</span><br></pre></td></tr></table></figure>
+
+<p>&#x200B;    &#x5982;&#x4E0A;&#xFF0C;&#x4F7F;&#x7528;**with&#x2026;as&#x2026;**&#x8BED;&#x6CD5;&#xFF0C;&#x53EF;&#x4EE5;&#x907F;&#x514D;&#x5199;close()&#x65B9;&#x6CD5;&#x3002;&#x8FD9;&#x6837;&#x662F;&#x975E;&#x5E38;&#x63A8;&#x8350;&#x7684;&#xFF01;</p>
+<blockquote>
+<p>&#x8865;&#x5145;&#xFF1A;&#x540C;&#x65F6;&#x6253;&#x5F00;&#x591A;&#x4E2A;&#x6587;&#x4EF6;&#x7684;&#x65B9;&#x6CD5;&#x5982;&#x4E0B;</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">with</span> <span class="built_in">open</span>(<span class="string">&apos;log1.txt&apos;</span>, <span class="string">&apos;r+&apos;</span>, encoding=<span class="string">&apos;utf-8&apos;</span>) <span class="keyword">as</span> obj1,\</span><br><span class="line"><span class="built_in">open</span>(<span class="string">&apos;log2.txt&apos;</span>, <span class="string">&apos;r+&apos;</span>, encoding=<span class="string">&apos;utf-8&apos;</span>) <span class="keyword">as</span> obj2:</span><br><span class="line">	<span class="built_in">print</span>(obj1.read())</span><br><span class="line">	<span class="built_in">print</span>(obj2.read())</span><br></pre></td></tr></table></figure>
+</blockquote>
+<h2 id="4-5&#x3001;&#x6587;&#x672C;&#x66FF;&#x6362;&#x7B80;&#x5355;&#x5B9E;&#x4F8B;"><a href="#4-5&#x3001;&#x6587;&#x672C;&#x66FF;&#x6362;&#x7B80;&#x5355;&#x5B9E;&#x4F8B;" class="headerlink" title="4.5&#x3001;&#x6587;&#x672C;&#x66FF;&#x6362;&#x7B80;&#x5355;&#x5B9E;&#x4F8B;"></a><strong>4.5&#x3001;&#x6587;&#x672C;&#x66FF;&#x6362;&#x7B80;&#x5355;&#x5B9E;&#x4F8B;</strong></h2><p>&#x200B;    &#x5728;python&#x7684;&#x6587;&#x672C;&#x5904;&#x7406;&#x4E2D;&#x662F;&#x6CA1;&#x6709;&#x65B9;&#x6CD5;&#x53EF;&#x4EE5;&#x76F4;&#x63A5;&#x4FEE;&#x6539;&#x6587;&#x672C;&#x5185;&#x5BB9;&#x7684;&#xFF1B;&#x6240;&#x4EE5;&#xFF0C;&#x6211;&#x4EEC;&#x901A;&#x8FC7;&#x65B0;&#x5EFA;&#x6587;&#x4EF6;&#x5185;&#x5BB9;&#xFF0C;&#x5E76;&#x628A;&#x4FEE;&#x6539;&#x7684;&#x5185;&#x5BB9;&#x5199;&#x5728;&#x65B0;&#x7684;&#x6587;&#x4EF6;&#x91CC;&#x9762;&#x3002;&#x6700;&#x540E;&#x5C06;&#x539F;&#x6709;&#x6587;&#x4EF6;&#x5220;&#x9664;&#x6389;&#xFF0C;&#x7136;&#x540E;&#x5C06;&#x65B0;&#x7684;&#x6587;&#x4EF6;&#x540D;&#x5B57;&#x6539;&#x56DE;&#x5230;&#x539F;&#x6765;&#x7684;&#x6587;&#x4EF6;&#x540D;&#x5373;&#x53EF;&#xFF1B;&#x4EE3;&#x7801;&#x5982;&#x4E0B;&#xFF1A;</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">with</span> <span class="built_in">open</span>(<span class="string">&apos;test.txt&apos;</span>,encoding=<span class="string">&apos;utf-8&apos;</span>) <span class="keyword">as</span> f1, <span class="built_in">open</span>(<span class="string">&apos;test.back&apos;</span>,mode=<span class="string">&apos;w&apos;</span>,encoding=<span class="string">&apos;utf-8&apos;</span>) <span class="keyword">as</span> f2:</span><br><span class="line">	<span class="keyword">for</span> line <span class="keyword">in</span> f1:</span><br><span class="line">		<span class="keyword">if</span> <span class="string">&apos;test&apos;</span> <span class="keyword">in</span> line:</span><br><span class="line">		line.replace(<span class="string">&apos;test&apos;</span>,<span class="string">&apos;going&apos;</span>)</span><br><span class="line">		f2.write(line)</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> os</span><br><span class="line">os.remove(<span class="string">&apos;test.txt&apos;</span>)</span><br><span class="line">os.rename(<span class="string">&apos;test.back&apos;</span>,<span class="string">&apos;test.txt&apos;</span>)         </span><br></pre></td></tr></table></figure>
+
+<h2 id="4-6&#x3001;CSV&#x6A21;&#x5757;&#x4ECB;&#x7ECD;"><a href="#4-6&#x3001;CSV&#x6A21;&#x5757;&#x4ECB;&#x7ECD;" class="headerlink" title="4.6&#x3001;CSV&#x6A21;&#x5757;&#x4ECB;&#x7ECD;"></a><strong>4.6&#x3001;CSV&#x6A21;&#x5757;&#x4ECB;&#x7ECD;</strong></h2><h3 id="4-6-1&#x3001;CSV&#x6587;&#x4EF6;&#x683C;&#x5F0F;&#x4ECB;&#x7ECD;"><a href="#4-6-1&#x3001;CSV&#x6587;&#x4EF6;&#x683C;&#x5F0F;&#x4ECB;&#x7ECD;" class="headerlink" title="4.6.1&#x3001;CSV&#x6587;&#x4EF6;&#x683C;&#x5F0F;&#x4ECB;&#x7ECD;"></a>4.6.1&#x3001;CSV&#x6587;&#x4EF6;&#x683C;&#x5F0F;&#x4ECB;&#x7ECD;</h3><p>&#x200B;    CSV&#x6587;&#x4EF6;&#x683C;&#x5F0F;&#x662F;&#x901A;&#x7528;&#x7684;&#x7535;&#x5B50;&#x8868;&#x683C;&#x548C;&#x6570;&#x636E;&#x5E93;&#x5BFC;&#x5165;&#x5BFC;&#x51FA;&#x683C;&#x5F0F;&#x3002;&#x662F;&#x4E00;&#x79CD;&#x6BD4;&#x8F83;&#x5E38;&#x7528;&#x7684;&#x6570;&#x636E;&#x5904;&#x7406;&#x683C;&#x5F0F;&#x3002;csv &#x6587;&#x4EF6;&#x683C;&#x5F0F;&#x7684;&#x672C;&#x8D28;&#x662F;&#x4E00;&#x79CD;&#x4EE5;&#x6587;&#x672C;&#x5B58;&#x50A8;&#x7684;&#x8868;&#x683C;&#x6570;&#x636E;&#xFF08;&#x4F7F;&#x7528; Excel &#x5DE5;&#x5177;&#x5373;&#x53EF;&#x8BFB;&#x5199; csv &#x6587;&#x4EF6;&#xFF09;&#x3002;csv &#x6587;&#x4EF6;&#x7684;&#x6BCF;&#x884C;&#x4EE3;&#x8868;&#x4E00;&#x884C;&#x6570;&#x636E;&#xFF0C;&#x6BCF;&#x884C;&#x6570;&#x636E;&#x4E2D;&#x6BCF;&#x4E2A;&#x5355;&#x5143;&#x683C;&#x5185;&#x7684;&#x6570;&#x636E;&#x4EE5;&#x9017;&#x53F7;&#x9694;&#x5F00;&#x3002;Python &#x63D0;&#x4F9B;&#x4E86; csv &#x6A21;&#x5757;&#x6765;&#x8BFB;&#x5199; csv &#x6587;&#x4EF6;&#x3002;&#x5B83;&#x6709;&#x56DB;&#x4E2A;&#x7279;&#x70B9;&#xFF1A;</p>
+<p>&#x200B;        1&#x3001;&#x5B83;&#x662F;&#x4E00;&#x79CD;&#x7EAF;&#x6587;&#x672C;&#x6587;&#x4EF6;</p>
+<p>&#x200B;        2&#x3001;&#x5B83;&#x7531;&#x8BB0;&#x5F55;&#x6784;&#x6210;&#xFF0C;&#x4E00;&#x884C;&#x5219;&#x4EE3;&#x8868;&#x4E00;&#x6761;&#x8BB0;&#x5F55;&#xFF08;&#x6709;&#x70B9;&#x50CF;&#x5173;&#x7CFB;&#x578B;&#x6570;&#x636E;&#x5E93;&#xFF09;</p>
+<p>&#x200B;        3&#x3001;&#x6BCF;&#x6761;&#x8BB0;&#x5F55;&#x88AB;&#x5206;&#x5272;&#x7B26;&#x5206;&#x5272;&#x5F00;&#x6765;&#xFF0C;&#x5206;&#x9694;&#x7B26;&#x53EF;&#x4EE5;&#x662F;&#x9017;&#x53F7;&#x3001;&#x5206;&#x53F7;&#x548C;&#x5236;&#x8868;&#x7B26;&#xFF0C;&#x4F46;&#x662F;&#x9ED8;&#x8BA4;&#x662F;&#x9017;&#x53F7;&#xFF1B;</p>
+<p>&#x200B;        4&#x3001;&#x6BCF;&#x6761;&#x8BB0;&#x5F55;&#x90FD;&#x662F;&#x6709;&#x540C;&#x6837;&#x7684;&#x5B57;&#x6BB5;&#x5E8F;&#x5217;&#xFF1B;</p>
+<h3 id="4-6-2&#x3001;&#x8BFB;&#x53D6;csv&#x6587;&#x4EF6;&#x4E2D;&#x6570;&#x636E;"><a href="#4-6-2&#x3001;&#x8BFB;&#x53D6;csv&#x6587;&#x4EF6;&#x4E2D;&#x6570;&#x636E;" class="headerlink" title="4.6.2&#x3001;&#x8BFB;&#x53D6;csv&#x6587;&#x4EF6;&#x4E2D;&#x6570;&#x636E;"></a>4.6.2&#x3001;&#x8BFB;&#x53D6;csv&#x6587;&#x4EF6;&#x4E2D;&#x6570;&#x636E;</h3><p>&#x200B;    csv&#x6587;&#x4EF6;&#x4E0D;&#x7BA1;&#x662F;&#x8BFB;&#x53D6;&#x8FD8;&#x662F;&#x5199;&#x5165;&#xFF0C;&#x90FD;&#x9700;&#x8981;&#x751F;&#x6210;&#x4E00;&#x4E2A;&#x8BFB;&#x5199;&#x5BF9;&#x8C61;&#x624D;&#x884C;&#xFF0C;&#x8BFB;&#x53D6;&#x7684;&#x8BDD;&#xFF0C;&#x5219;&#x4F1A;&#x9700;&#x8981;&#x751F;&#x6210;&#x4E00;&#x4E2A;&#x8BFB;&#x53D6;&#x5BF9;&#x8C61;&#x3002;&#x518D;&#x5BF9;&#x8FD9;&#x4E2A;&#x8BFB;&#x53D6;&#x5BF9;&#x8C61;&#x8FDB;&#x884C;&#x5BF9;&#x5E94;&#x7684;&#x64CD;&#x4F5C;&#xFF1B;&#x4F8B;&#x5982;&#xFF1A;</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> csv</span><br><span class="line"></span><br><span class="line"><span class="comment"># &#x8FD9;&#x91CC;&#x9700;&#x8981;&#x6709;&#x4E00;&#x4E2A;&#x8868;&#x683C;stock.csv&#xFF0C;&#x6211;&#x8FD9;&#x91CC;&#x5047;&#x88C5;&#x6709;</span></span><br><span class="line"><span class="keyword">with</span> <span class="built_in">open</span>(<span class="string">&quot;stock.csv&quot;</span>,<span class="string">&quot;r&quot;</span>) <span class="keyword">as</span> fp:</span><br><span class="line">    reader = csv.reader(fp)  <span class="comment"># &#x751F;&#x6210;&#x4E00;&#x4E2A;&#x8BFB;&#x53D6;&#x5BF9;&#x8C61;</span></span><br><span class="line">    <span class="comment"># &#x83B7;&#x53D6;&#x5230;&#x7684;reader&#x5BF9;&#x8C61;&#x662F;&#x4E00;&#x4E2A;&#x8FED;&#x4EE3;&#x5668;&#xFF1B;</span></span><br><span class="line">    title = <span class="built_in">next</span>(reader)  <span class="comment"># &#x5982;&#x679C;&#x4E0D;&#x8F93;&#x5165;&#x8FD9;&#x4E00;&#x884C;&#xFF0C;&#x5219;&#x4ECE;&#x8868;&#x5934;&#x5F00;&#x59CB;&#x8BFB;&#x53D6;&#xFF1B;</span></span><br><span class="line">    <span class="comment"># next(reader)&#x5219;&#x662F;&#x8DF3;&#x8FC7;&#x8868;&#x5934;&#x884C;&#x7684;&#x610F;&#x601D;</span></span><br><span class="line">    <span class="keyword">for</span> x <span class="keyword">in</span> reader:</span><br><span class="line">        <span class="built_in">print</span>(x)  <span class="comment"># &#x8FD9;&#x6837;&#x5C31;&#x53EF;&#x4EE5;&#x7B54;&#x5E94;&#x8BFB;&#x53D6;&#x884C;&#x4E86;</span></span><br><span class="line">        </span><br><span class="line">        <span class="comment"># &#x5982;&#x679C;&#x8981;&#x53D6;&#x5BF9;&#x5E94;&#x7684;&#x5217;&#x7684;&#x6570;&#x636E;&#xFF0C;&#x5219;&#x9700;&#x8981;&#x5199;&#x4E0A;&#x6807;&#x53F7;&#xFF0C;&#x4E5F;&#x5C31;&#x662F;&#x7D22;&#x5F15;&#x503C;&#xFF1B;</span></span><br><span class="line">        name = x[<span class="number">3</span>]  <span class="comment"># &#x53D6;&#x7B2C;&#x4E09;&#x5217;</span></span><br><span class="line">        volumn = x[-<span class="number">1</span>]  <span class="comment"># &#x53D6;&#x6700;&#x540E;&#x4E00;&#x5217;</span></span><br><span class="line">        <span class="built_in">print</span>({<span class="string">&quot;name&quot;</span>:name,<span class="string">&quot;volumn&quot;</span>:volumn})</span><br></pre></td></tr></table></figure>
+
+<p>&#x200B;    &#x53E6;&#x5916;&#xFF0C;&#x6211;&#x4EEC;&#x8FD8;&#x6709;&#x53E6;&#x4E00;&#x79CD;&#x8BFB;&#x53D6;&#x6570;&#x636E;&#x7684;&#x65B9;&#x5F0F;&#x2013;DictReader()&#xFF0C;&#x4E5F;&#x5C31;&#x662F;&#x8BB2;&#x6570;&#x636E;&#x8BFB;&#x53D6;&#x6210;&#x4E00;&#x4E2A;&#x5B57;&#x5178;&#x3002;&#x8FD9;&#x79CD;&#x65B9;&#x5F0F;&#x4F7F;&#x7528;&#x7684;&#x66F4;&#x591A;&#xFF1B;</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> csv</span><br><span class="line"></span><br><span class="line"><span class="keyword">with</span> <span class="built_in">open</span>(<span class="string">&quot;stock.csv&quot;</span>,<span class="string">&apos;r&apos;</span>) <span class="keyword">as</span> fp:</span><br><span class="line">    reader = csv.DictReader(fp)</span><br><span class="line">    <span class="keyword">for</span> x <span class="keyword">in</span> reader:</span><br><span class="line">        <span class="built_in">print</span>(x[<span class="string">&apos;turnoverVol&apos;</span>])  <span class="comment"># &#x8FD9;&#x6837;&#x5C31;&#x53EF;&#x4EE5;&#x76F4;&#x63A5;&#x53D6;&#x503C;&#x4E86;</span></span><br><span class="line">        </span><br><span class="line">        <span class="comment"># &#x57FA;&#x4E8E;DictReader()&#x65B9;&#x6CD5;&#x53EF;&#x4EE5;&#x6839;&#x636E;key&#x53D6;&#x6240;&#x5C5E;&#x503C;&#xFF1B;</span></span><br><span class="line">        value = {<span class="string">&quot;name&quot;</span>:x[<span class="string">&quot;secShortName&quot;</span>],<span class="string">&quot;volumn&quot;</span>:x[<span class="string">&quot;turnoverVol&quot;</span>]}</span><br><span class="line">        <span class="built_in">print</span>(value)</span><br></pre></td></tr></table></figure>
+
+<h3 id="4-6-3&#x3001;&#x5199;&#x5165;&#x6570;&#x636E;&#x5230;csv&#x6587;&#x4EF6;"><a href="#4-6-3&#x3001;&#x5199;&#x5165;&#x6570;&#x636E;&#x5230;csv&#x6587;&#x4EF6;" class="headerlink" title="4.6.3&#x3001;&#x5199;&#x5165;&#x6570;&#x636E;&#x5230;csv&#x6587;&#x4EF6;"></a>4.6.3&#x3001;&#x5199;&#x5165;&#x6570;&#x636E;&#x5230;csv&#x6587;&#x4EF6;</h3><p>&#x200B;    &#x5199;&#x5165;csv&#x6587;&#x4EF6;&#x9700;&#x8981;&#x4E00;&#x4E2A;writer&#x5BF9;&#x8C61;&#xFF0C;&#x4E3B;&#x8981;&#x4E5F;&#x662F;&#x4E24;&#x79CD;&#x65B9;&#x6CD5;&#xFF1A;1&#x3001;writerow()&#x8FD9;&#x662F;&#x5199;&#x5165;&#x4E00;&#x884C;&#x6570;&#x636E;&#xFF1B;2&#x3001;writerows()&#x662F;&#x5199;&#x5165;&#x591A;&#x884C;&#x6570;&#x636E;&#xFF1B;</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> csv</span><br><span class="line"></span><br><span class="line"><span class="comment"># &#x5199;&#x5165;&#x6570;&#x636E;&#x9700;&#x8981;&#x5B9A;&#x4E49;&#x8868;&#x5934;&#x6570;&#x636E;</span></span><br><span class="line">headers = [<span class="string">&apos;username&apos;</span>,<span class="string">&apos;age&apos;</span>,<span class="string">&apos;height&apos;</span>]</span><br><span class="line"></span><br><span class="line"><span class="comment"># &#x9700;&#x8981;&#x5199;&#x5165;&#x7684;&#x4FE1;&#x606F;</span></span><br><span class="line">values = [(<span class="string">&apos;&#x5F20;&#x4E09;&apos;</span>,<span class="number">18</span>,<span class="number">180</span>),(<span class="string">&apos;&#x674E;&#x56DB;&apos;</span>,<span class="number">19</span>,<span class="number">190</span>)]</span><br><span class="line"></span><br><span class="line"><span class="comment"># &#x8FD9;&#x91CC;&#x9ED8;&#x8BA4;&#x5199;&#x5165;newline&#x7684;&#x53C2;&#x6570;&#x4E3A;\n&#x6362;&#x884C;&#xFF1B;&#x800C;encoding&#x53EF;&#x4EE5;&#x89E3;&#x51B3;&#x5199;&#x5165;&#x4E3A;&#x4E71;&#x7801;&#x7684;&#x95EE;&#x9898;&#xFF1B;</span></span><br><span class="line"><span class="keyword">with</span> <span class="built_in">open</span>(<span class="string">&quot;classroom.csv&quot;</span>,<span class="string">&apos;w&apos;</span>,encoding=<span class="string">&apos;utf-8&apos;</span>,newline=<span class="string">&quot;&quot;</span>) <span class="keyword">as</span> fp:</span><br><span class="line"> 	writer = csv.writer(fp)</span><br><span class="line">    writer.writerow(headers)  <span class="comment"># &#x5199;&#x5165;&#x8868;&#x5934;&#x4FE1;&#x606F;</span></span><br><span class="line">    writer.writerrows(values)  <span class="comment"># &#x5199;&#x5165;&#x6570;&#x636E;</span></span><br></pre></td></tr></table></figure>
+
+<p>&#x200B;    &#x5982;&#x679C;&#x662F;&#x722C;&#x866B;&#x6570;&#x636E;&#xFF0C;&#x4E00;&#x822C;&#x5C06;&#x6570;&#x636E;&#x5B58;&#x50A8;&#x4E3A;&#x5B57;&#x5178;&#xFF0C;&#x518D;&#x5C06;&#x5B57;&#x5178;&#x4FE1;&#x606F;&#x653E;&#x5165;&#x5217;&#x8868;&#x3002;&#x8FD9;&#x6837;&#x5C31;&#x65B9;&#x4FBF;&#x5199;&#x5165;&#x5230;csv&#x6587;&#x4EF6;&#x4E2D;&#x4E86;&#xFF1B;</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># &#x53E6;&#x5916;&#x4E00;&#x79CD;&#x5199;&#x5165;&#x65B9;&#x5F0F;&#xFF0C;&#x57FA;&#x4E8E;&#x5B57;&#x5178;&#x7684;&#x65B9;&#x5F0F;&#x5199;&#x5165;&#x6570;&#x636E;</span></span><br><span class="line"><span class="keyword">import</span> csv</span><br><span class="line"></span><br><span class="line">headers = [<span class="string">&apos;username&apos;</span>,<span class="string">&apos;age&apos;</span>,<span class="string">&apos;height&apos;</span>]</span><br><span class="line"></span><br><span class="line">values = [</span><br><span class="line">    		{<span class="string">&apos;name&apos;</span>:<span class="string">&apos;wenn&apos;</span>,<span class="string">&apos;age&apos;</span>:<span class="number">20</span>,<span class="string">&apos;classroom&apos;</span>:<span class="string">&apos;222&apos;</span>},</span><br><span class="line">    		{<span class="string">&apos;name&apos;</span>:<span class="string">&apos;abc&apos;</span>,<span class="string">&apos;age&apos;</span>:<span class="number">30</span>,<span class="string">&apos;classwroom&apos;</span>:<span class="string">&apos;333&apos;</span>}</span><br><span class="line">         ]</span><br><span class="line"></span><br><span class="line"><span class="keyword">with</span> <span class="built_in">open</span>(<span class="string">&apos;test.csv&apos;</span>,<span class="string">&apos;w&apos;</span>,encoding=<span class="string">&apos;utf-8&apos;</span>,newline=<span class="string">&quot;&quot;</span>) <span class="keyword">as</span> fp:</span><br><span class="line">    writer = csv.DictWriter(fp,headers)</span><br><span class="line">    writer = csv.writerheader()</span><br><span class="line">    writer.writerow({<span class="string">&apos;name&apos;</span>:<span class="string">&apos;zhangliao&apos;</span>,<span class="string">&apos;age&apos;</span>:<span class="number">18</span>,<span class="string">&apos;classroom&apos;</span>:<span class="string">&apos;111&apos;</span>})</span><br><span class="line">    wirter.writerows(values)</span><br></pre></td></tr></table></figure>
+
+
+
+<p>&#x200B;    </p>
+
+    </div>
+    
+    
+    
+    
+    
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/python-basic-knowledge/" rel="tag"># python basic knowledge</a>
+          </div>
+    
+        
+
+    
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/development/python/python%E5%9F%BA%E7%A1%80_05_%E5%87%BD%E6%95%B0/" rel="prev" title="函数">
+      <i class="fa fa-chevron-left"></i> 函数
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/development/python/python%E5%9F%BA%E7%A1%80_03_%E6%B5%81%E7%A8%8B%E6%8E%A7%E5%88%B6%E8%AF%AD%E5%8F%A5/" rel="next" title="流程控制语句">
+      流程控制语句 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+    <div>
+        
+        
+
+<div>
+    
+        <div style="text-align:center;color: #ccc;font-size:14px;">------ 版权声明：本文属于原创文章------</div>
+    	<div style="text-align:center;color: #FF0000;font-size:14px;">转载请注明：Burnov.github.io原创文章+本文链接，谢谢合作！！</i></div>
+    
+</div>
+
+
+        
+     </div>
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#4%E3%80%81%E6%96%87%E6%9C%AC%E5%A4%84%E7%90%86"><span class="nav-number">1.</span> <span class="nav-text">4、文本处理</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#4-1%E3%80%81%E6%96%87%E6%9C%AC%E5%A4%84%E7%90%86%E7%9A%84%E7%AE%80%E5%8D%95%E4%BB%8B%E7%BB%8D"><span class="nav-number">1.1.</span> <span class="nav-text">4.1、文本处理的简单介绍</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-2%E3%80%81%E6%96%87%E4%BB%B6%E7%9B%AE%E5%BD%95%E4%BB%8B%E7%BB%8D"><span class="nav-number">1.2.</span> <span class="nav-text">4.2、文件目录介绍</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-3%E3%80%81%E6%96%87%E4%BB%B6%E6%9D%83%E9%99%90%E6%93%8D%E4%BD%9C"><span class="nav-number">1.3.</span> <span class="nav-text">4.3、文件权限操作</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-4%E3%80%81%E5%B8%B8%E8%A7%81%E5%8A%9F%E8%83%BD%E6%96%B9%E6%B3%95%E4%BB%8B%E7%BB%8D"><span class="nav-number">1.4.</span> <span class="nav-text">4.4、常见功能方法介绍</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-5%E3%80%81%E6%96%87%E6%9C%AC%E6%9B%BF%E6%8D%A2%E7%AE%80%E5%8D%95%E5%AE%9E%E4%BE%8B"><span class="nav-number">1.5.</span> <span class="nav-text">4.5、文本替换简单实例</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-6%E3%80%81CSV%E6%A8%A1%E5%9D%97%E4%BB%8B%E7%BB%8D"><span class="nav-number">1.6.</span> <span class="nav-text">4.6、CSV模块介绍</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#4-6-1%E3%80%81CSV%E6%96%87%E4%BB%B6%E6%A0%BC%E5%BC%8F%E4%BB%8B%E7%BB%8D"><span class="nav-number">1.6.1.</span> <span class="nav-text">4.6.1、CSV文件格式介绍</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-6-2%E3%80%81%E8%AF%BB%E5%8F%96csv%E6%96%87%E4%BB%B6%E4%B8%AD%E6%95%B0%E6%8D%AE"><span class="nav-number">1.6.2.</span> <span class="nav-text">4.6.2、读取csv文件中数据</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-6-3%E3%80%81%E5%86%99%E5%85%A5%E6%95%B0%E6%8D%AE%E5%88%B0csv%E6%96%87%E4%BB%B6"><span class="nav-number">1.6.3.</span> <span class="nav-text">4.6.3、写入数据到csv文件</span></a></li></ol></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Burnov"
+      src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">Burnov</p>
+  <div class="site-description" itemprop="description">No end for Learning</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">31</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">31</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/Burnov" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;Burnov" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:xials1990@gmail.com" title="E-Mail → mailto:xials1990@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://www.zhihu.com/people/xia-liang-shi-78" title="Skype → https:&#x2F;&#x2F;www.zhihu.com&#x2F;people&#x2F;xia-liang-shi-78" rel="noopener" target="_blank"><i class="fab fa-skype fa-fw"></i></a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class=""></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Burnov</span>
+</div>
+
+<!--
+  <div class="powered-by">Powered by <a href="https://github.com/Burnov" class="theme-link" rel="noopener" target="_blank">Burnov</a> & <a href="https://mist.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Mist</a>
+  </div>
+
+-->
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : false,
+      appId      : 'wIjFqGmEUzY7fpTNVHpKA0eH-gzGzoHsz',
+      appKey     : 'KdXueGM1xFH8pBVSO5SkFRKI',
+      placeholder: "Just go go",
+      avatar     : 'mm',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : false,
+      lang       : '' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : false,
+      serverURLs : ''
+    });
+  }, window.Valine);
+});
+</script>
+
+</body>
+</html>

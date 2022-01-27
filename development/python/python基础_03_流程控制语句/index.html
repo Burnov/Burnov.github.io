@@ -1,0 +1,634 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-minimal.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Mist","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="3&amp;#x3001;&amp;#x6D41;&amp;#x7A0B;&amp;#x63A7;&amp;#x5236;&amp;#x8BED;&amp;#x53E5;3.1&amp;#x3001;&amp;#x987A;&amp;#x5E8F;&amp;#x6267;&amp;#x884C;&amp;#x200B;    &amp;#x4E0D;&amp;#x5149;&amp;#x53EA;&amp;#x6709;python&amp;#x8BED;&amp;#x53E5;&amp;#xFF0C;&amp;#x5176;&amp;#x4ED6;&amp;#x7684;&amp;#">
+<meta property="og:type" content="article">
+<meta property="og:title" content="流程控制语句">
+<meta property="og:url" content="http://example.com/development/python/python%E5%9F%BA%E7%A1%80_03_%E6%B5%81%E7%A8%8B%E6%8E%A7%E5%88%B6%E8%AF%AD%E5%8F%A5/index.html">
+<meta property="og:site_name" content="Burnov^-^Blog">
+<meta property="og:description" content="3&amp;#x3001;&amp;#x6D41;&amp;#x7A0B;&amp;#x63A7;&amp;#x5236;&amp;#x8BED;&amp;#x53E5;3.1&amp;#x3001;&amp;#x987A;&amp;#x5E8F;&amp;#x6267;&amp;#x884C;&amp;#x200B;    &amp;#x4E0D;&amp;#x5149;&amp;#x53EA;&amp;#x6709;python&amp;#x8BED;&amp;#x53E5;&amp;#xFF0C;&amp;#x5176;&amp;#x4ED6;&amp;#x7684;&amp;#">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://example.com/development/python/python%E5%9F%BA%E7%A1%80_03_%E6%B5%81%E7%A8%8B%E6%8E%A7%E5%88%B6%E8%AF%AD%E5%8F%A5/image-20211127171903891.png">
+<meta property="article:published_time" content="2022-01-27T02:28:50.000Z">
+<meta property="article:modified_time" content="2022-01-27T02:29:31.966Z">
+<meta property="article:author" content="Burnov">
+<meta property="article:tag" content="python basic knowledge">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/development/python/python%E5%9F%BA%E7%A1%80_03_%E6%B5%81%E7%A8%8B%E6%8E%A7%E5%88%B6%E8%AF%AD%E5%8F%A5/image-20211127171903891.png">
+
+<link rel="canonical" href="http://example.com/development/python/python%E5%9F%BA%E7%A1%80_03_%E6%B5%81%E7%A8%8B%E6%8E%A7%E5%88%B6%E8%AF%AD%E5%8F%A5/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>流程控制语句 | Burnov^-^Blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="Burnov^-^Blog" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Burnov^-^Blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="Searching..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://example.com/development/python/python%E5%9F%BA%E7%A1%80_03_%E6%B5%81%E7%A8%8B%E6%8E%A7%E5%88%B6%E8%AF%AD%E5%8F%A5/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="Burnov">
+      <meta itemprop="description" content="No end for Learning">
+    </span>
+    
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Burnov^-^Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          流程控制语句
+        </h1>
+    
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+              
+    
+              <time title="Created: 2022-01-27 10:28:50 / Modified: 10:29:31" itemprop="dateCreated datePublished" datetime="2022-01-27T10:28:50+08:00">2022-01-27</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/development/" itemprop="url" rel="index"><span itemprop="name">development</span></a>
+                </span>
+                  , 
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/development/python/" itemprop="url" rel="index"><span itemprop="name">python</span></a>
+                </span>
+            </span>
+    
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Valine: </span>
+    
+    <a title="valine" href="/development/python/python%E5%9F%BA%E7%A1%80_03_%E6%B5%81%E7%A8%8B%E6%8E%A7%E5%88%B6%E8%AF%AD%E5%8F%A5/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/development/python/python%E5%9F%BA%E7%A1%80_03_%E6%B5%81%E7%A8%8B%E6%8E%A7%E5%88%B6%E8%AF%AD%E5%8F%A5/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+    
+        </div>
+      </header>
+    
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+    
+      
+        <h1 id="3&#x3001;&#x6D41;&#x7A0B;&#x63A7;&#x5236;&#x8BED;&#x53E5;"><a href="#3&#x3001;&#x6D41;&#x7A0B;&#x63A7;&#x5236;&#x8BED;&#x53E5;" class="headerlink" title="3&#x3001;&#x6D41;&#x7A0B;&#x63A7;&#x5236;&#x8BED;&#x53E5;"></a>3&#x3001;&#x6D41;&#x7A0B;&#x63A7;&#x5236;&#x8BED;&#x53E5;</h1><h2 id="3-1&#x3001;&#x987A;&#x5E8F;&#x6267;&#x884C;"><a href="#3-1&#x3001;&#x987A;&#x5E8F;&#x6267;&#x884C;" class="headerlink" title="3.1&#x3001;&#x987A;&#x5E8F;&#x6267;&#x884C;"></a><strong>3.1&#x3001;&#x987A;&#x5E8F;&#x6267;&#x884C;</strong></h2><p>&#x200B;    &#x4E0D;&#x5149;&#x53EA;&#x6709;python&#x8BED;&#x53E5;&#xFF0C;&#x5176;&#x4ED6;&#x7684;&#x7F16;&#x7A0B;&#x8BED;&#x8A00;&#x4E5F;&#x662F;&#x4E00;&#x6837;&#xFF1B;&#x5982;&#x679C;&#x5BF9;&#x8BED;&#x53E5;&#x4E0D;&#x8FDB;&#x884C;&#x4EFB;&#x4F55;&#x63A7;&#x5236;&#x7684;&#x60C5;&#x51B5;&#x4E0B;&#x662F;&#x9ED8;&#x8BA4;&#x4F9D;&#x6B21;&#x4ECE;&#x4E0A;&#x5411;&#x4E0B;&#x6267;&#x884C;&#x7684;&#xFF01;&#x4F46;&#x662F;&#xFF0C;&#x8FD9;&#x4E2A;&#x601D;&#x60F3;&#x4E5F;&#x4EC5;&#x4EC5;&#x53EA;&#x662F;&#x8BF4;&#x660E;&#x4E3A;<strong>&#x9762;&#x5411;&#x8FC7;&#x7A0B;&#x7684;&#x7F16;&#x7A0B;&#x601D;&#x60F3;</strong>&#xFF1B;&#x5728;&#x540E;&#x9762;&#x63A5;&#x89E6;<strong>&#x9762;&#x5411;&#x51FD;&#x6570;&#x7F16;&#x7A0B;</strong>&#x3001;&#x548C;<strong>&#x9762;&#x5411;&#x5BF9;&#x8C61;&#x7F16;&#x7A0B;</strong>&#x5C31;&#x4E0D;&#x662F;&#x5982;&#x6B64;&#x4E86;&#xFF01;&#x8FD9;&#x70B9;&#x4E00;&#x5B9A;&#x8981;&#x6E05;&#x695A;</p>
+<h2 id="3-2&#x3001;&#x5206;&#x652F;&#x8BED;&#x53E5;&#x2013;if&#x5224;&#x65AD;&#x8BED;&#x53E5;"><a href="#3-2&#x3001;&#x5206;&#x652F;&#x8BED;&#x53E5;&#x2013;if&#x5224;&#x65AD;&#x8BED;&#x53E5;" class="headerlink" title="3.2&#x3001;&#x5206;&#x652F;&#x8BED;&#x53E5;&#x2013;if&#x5224;&#x65AD;&#x8BED;&#x53E5;"></a><strong>3.2&#x3001;&#x5206;&#x652F;&#x8BED;&#x53E5;&#x2013;if&#x5224;&#x65AD;&#x8BED;&#x53E5;</strong></h2><p>&#x200B;    if&#x8BED;&#x53E5;&#x5206;&#x4E3A;&#x5355;&#x5206;&#x652F;&#x8BED;&#x53E5;&#x3001;&#x53CC;&#x5206;&#x652F;&#x8BED;&#x53E5;&#x548C;&#x591A;&#x5206;&#x652F;&#x8BED;&#x53E5;&#xFF1B;&#x53C8;&#xFF0C;&#x5BF9;&#x4E8E;&#x4E0D;&#x540C;&#x7684;&#x5206;&#x652F;&#x8BED;&#x53E5;&#x9700;&#x8981;&#x8FDB;&#x884C;&#x6761;&#x4EF6;&#x5224;&#x65AD;&#xFF1B;</p>
+<h3 id="3-2-1&#x3001;&#x6761;&#x4EF6;&#x5224;&#x65AD;"><a href="#3-2-1&#x3001;&#x6761;&#x4EF6;&#x5224;&#x65AD;" class="headerlink" title="3.2.1&#x3001;&#x6761;&#x4EF6;&#x5224;&#x65AD;"></a><strong>3.2.1&#x3001;&#x6761;&#x4EF6;&#x5224;&#x65AD;</strong></h3><p>&#x200B;    &#x6761;&#x4EF6;&#x5224;&#x65AD;&#x662F;&#x8FDB;&#x5165;&#x5206;&#x652F;&#x8BED;&#x53E5;&#x7684;&#x4F9D;&#x636E;&#xFF0C;&#x4E00;&#x822C;&#xFF0C;&#x6761;&#x4EF6;&#x4E3A;true&#x5219;&#x8FD0;&#x884C;&#x4E0B;&#x9762;&#x6307;&#x5B9A;&#x7684;&#x8BED;&#x53E5;&#x5426;&#x5219;&#x8FD0;&#x884C;else&#x4E2D;&#x6307;&#x5B9A;&#x5176;&#x4ED6;&#x8BED;&#x53E5;&#xFF1B;&#x8FD9;&#x91CC;&#x5C31;&#x8981;&#x77E5;&#x9053;&#x4F55;&#x79CD;&#x7684;&#x8BED;&#x53E5;&#x83DC;&#x6237;&#x5224;&#x65AD;&#x4E3A;true&#xFF1B;</p>
+<blockquote>
+<p>&#x6CE8;&#x610F;&#xFF1A;&#x8FD9;&#x91CC;&#x9700;&#x8981;&#x56DE;&#x987E;bool&#x6570;&#x636E;&#x7C7B;&#x578B;</p>
+</blockquote>
+<p>&#x200B;    1&#x3001;&#x9996;&#x5148;&#x5B57;&#x7B26;&#x4E32;&#x5C31;&#x9ED8;&#x8BA4;&#x5224;&#x65AD;&#x4E3A;ture&#xFF1B;</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> <span class="string">&apos;str&apos;</span>:  <span class="comment"># &#x8FD9;&#x79CD;&#x8BED;&#x53E5;&#x53EF;&#x4EE5;&#x5224;&#x65AD;&#x8F93;&#x5165;&#x5B57;&#x7B26;&#x4E32;&#x662F;&#x5426;&#x4E3A;&#x7A7A;</span></span><br><span class="line">	<span class="built_in">print</span>(<span class="string">&quot;&#x5224;&#x65AD;&#x8BED;&#x53E5;&quot;</span>)</span><br></pre></td></tr></table></figure>
+
+<p>&#x200B;    2&#x3001;&#x5224;&#x65AD;&#x8BED;&#x53E5;&#x7684;&#x4F7F;&#x7528;&#xFF1B;</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> <span class="string">&apos;a&apos;</span> == <span class="string">&apos;a&apos;</span>:  <span class="comment"># == &gt;= &lt;= &gt; &lt; != &#x7B49;&#x5224;&#x65AD;&#x7B26;&#x53F7;&#x8FDB;&#x884C;&#x5224;&#x65AD;&#xFF0C;&#x4EA6;&#x53EF;&#x8FDB;&#x884C;&#x6570;&#x5B57;&#x5224;&#x65AD;</span></span><br><span class="line">	<span class="built_in">print</span>(<span class="string">&quot;&#x5224;&#x65AD;&#x8BED;&#x53E5;&quot;</span>)</span><br><span class="line"><span class="keyword">if</span> <span class="number">4</span> &gt; <span class="number">3</span>:</span><br><span class="line">	<span class="built_in">print</span>(<span class="string">&quot;&#x5224;&#x65AD;&#x8BED;&#x53E5;&quot;</span>)     </span><br></pre></td></tr></table></figure>
+
+<p>&#x200B;    3&#x3001;&#x591A;&#x4E2A;&#x6761;&#x4EF6;&#x5224;&#x65AD;&#x53EF;&#x4EE5;&#x901A;&#x8FC7;&#x903B;&#x8F91;&#x8FD0;&#x7B97;&#x7B26;&#x5173;&#x8054;</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> <span class="string">&apos;a&apos;</span> == <span class="string">&apos;a&apos;</span> <span class="keyword">and</span> <span class="number">4</span> &gt; <span class="number">3</span>:</span><br><span class="line">	<span class="built_in">print</span>(<span class="string">&quot;&#x5224;&#x65AD;&#x8BED;&#x53E5;&quot;</span>)</span><br></pre></td></tr></table></figure>
+
+<p>&#x200B;    <strong>&#x6761;&#x4EF6;&#x5224;&#x65AD;&#x4E5F;&#x53EF;&#x4EE5;&#x5199;&#x5728;&#x4E00;&#x884C;&#x4E2D;&#xFF0C;&#x8FD9;&#x4E2A;&#x65B9;&#x5F0F;&#x5C31;&#x7C7B;&#x4F3C;&#x4E8E;C&#x8BED;&#x8A00;&#x4E2D;&#x7684;&#x4E09;&#x76EE;&#x8FD0;&#x7B97;&#x7B26;</strong>&#xFF0C;&#x5982;&#x4E0B;&#xFF1A;</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">a = <span class="number">1</span> <span class="keyword">if</span> &#x6761;&#x4EF6; <span class="keyword">else</span> <span class="number">2</span>  <span class="comment"># &#x6761;&#x4EF6;&#x6210;&#x7ACB;&#xFF0C;&#x5219;a = 1&#x3002;&#x5426;&#x5219;&#x6761;&#x4EF6;&#x5931;&#x8D25;&#x5219;&#x5C06;2&#x8D4B;&#x503C;&#x7ED9;a&#x3002;</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="3-2-2&#x3001;if&#x8BED;&#x53E5;&#x8BED;&#x6CD5;&#x7C7B;&#x578B;"><a href="#3-2-2&#x3001;if&#x8BED;&#x53E5;&#x8BED;&#x6CD5;&#x7C7B;&#x578B;" class="headerlink" title="3.2.2&#x3001;if&#x8BED;&#x53E5;&#x8BED;&#x6CD5;&#x7C7B;&#x578B;"></a><strong>3.2.2&#x3001;if&#x8BED;&#x53E5;&#x8BED;&#x6CD5;&#x7C7B;&#x578B;</strong></h3><p>1&#x3001;&#x5355;&#x5206;&#x652F;</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> <span class="string">&apos;&#x6761;&#x4EF6;&#x5224;&#x65AD;&#x8BED;&#x53E5;&apos;</span>:</span><br><span class="line">	<span class="string">&apos;&#x6267;&#x884C;&#x8BED;&#x53E5;&apos;</span></span><br></pre></td></tr></table></figure>
+
+<p>2&#x3001;&#x53CC;&#x5206;&#x652F;</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> <span class="string">&apos;&#x6761;&#x4EF6;&#x5224;&#x65AD;&#x8BED;&#x53E5;&apos;</span>:</span><br><span class="line">	<span class="string">&apos;&#x6267;&#x884C;&#x8BED;&#x53E5;1&apos;</span></span><br><span class="line"><span class="keyword">else</span>:</span><br><span class="line">	<span class="string">&apos;&#x6267;&#x884C;&#x8BED;&#x53E5;2&apos;</span>   </span><br></pre></td></tr></table></figure>
+
+<p>3&#x3001;&#x591A;&#x5206;&#x652F;</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> <span class="string">&apos;&#x6761;&#x4EF6;&#x5224;&#x65AD;&#x8BED;&#x53E5;1&apos;</span>:</span><br><span class="line">	<span class="string">&apos;&#x6267;&#x884C;&#x8BED;&#x53E5;1&apos;</span></span><br><span class="line"><span class="keyword">elif</span> <span class="string">&apos;&#x6761;&#x4EF6;&#x5224;&#x65AD;&#x8BED;&#x53E5;2&apos;</span>:</span><br><span class="line">	<span class="string">&apos;&#x6267;&#x884C;&#x8BED;&#x53E5;2&apos;</span></span><br><span class="line">...</span><br><span class="line"><span class="keyword">else</span>:</span><br><span class="line">	<span class="string">&apos;&#x6267;&#x884C;&#x8BED;&#x53E5;n&apos;</span>   </span><br></pre></td></tr></table></figure>
+
+<p>&#x200B;    &#x5728;&#x591A;&#x5206;&#x652F;&#x8BED;&#x53E5;&#x4E2D;elif&#x8BED;&#x53E5;&#x53EF;&#x4EE5;&#x6709;&#x591A;&#x4E2A;&#xFF1B;</p>
+<h3 id="3-2-3&#x3001;if&#x8BED;&#x53E5;&#x5D4C;&#x5957;"><a href="#3-2-3&#x3001;if&#x8BED;&#x53E5;&#x5D4C;&#x5957;" class="headerlink" title="3.2.3&#x3001;if&#x8BED;&#x53E5;&#x5D4C;&#x5957;"></a><strong>3.2.3&#x3001;if&#x8BED;&#x53E5;&#x5D4C;&#x5957;</strong></h3><p>&#x200B;    if&#x5D4C;&#x5957;&#x8BED;&#x53E5;&#x793A;&#x4F8B;&#x5982;&#x4E0B;&#xFF1A;</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">name = <span class="built_in">input</span>(<span class="string">&quot;please input your name:&quot;</span>)</span><br><span class="line">age = <span class="built_in">input</span>(<span class="string">&quot;please input your age:&quot;</span>)</span><br><span class="line"><span class="keyword">if</span> name == <span class="string">&apos;Linsa&apos;</span>:</span><br><span class="line">	<span class="keyword">if</span> age == <span class="string">&apos;18&apos;</span>:</span><br><span class="line">		<span class="built_in">print</span>(<span class="number">666</span>)</span><br><span class="line">	<span class="keyword">else</span>:</span><br><span class="line">		<span class="built_in">print</span>(<span class="number">333</span>)</span><br><span class="line"><span class="keyword">else</span>:</span><br><span class="line">	<span class="built_in">print</span>(<span class="string">&apos;input error&#xFF01;&apos;</span>)       </span><br></pre></td></tr></table></figure>
+
+<h2 id="3-3&#x3001;&#x5FAA;&#x73AF;&#x8BED;&#x53E5;&#x2013;while&#x8BED;&#x53E5;"><a href="#3-3&#x3001;&#x5FAA;&#x73AF;&#x8BED;&#x53E5;&#x2013;while&#x8BED;&#x53E5;" class="headerlink" title="3.3&#x3001;&#x5FAA;&#x73AF;&#x8BED;&#x53E5;&#x2013;while&#x8BED;&#x53E5;"></a><strong>3.3&#x3001;&#x5FAA;&#x73AF;&#x8BED;&#x53E5;&#x2013;while&#x8BED;&#x53E5;</strong></h2><h3 id="3-3-1&#x3001;while&#x5FAA;&#x73AF;&#x7684;&#x57FA;&#x672C;&#x8BED;&#x6CD5;"><a href="#3-3-1&#x3001;while&#x5FAA;&#x73AF;&#x7684;&#x57FA;&#x672C;&#x8BED;&#x6CD5;" class="headerlink" title="3.3.1&#x3001;while&#x5FAA;&#x73AF;&#x7684;&#x57FA;&#x672C;&#x8BED;&#x6CD5;"></a><strong>3.3.1&#x3001;while&#x5FAA;&#x73AF;&#x7684;&#x57FA;&#x672C;&#x8BED;&#x6CD5;</strong></h3><p>&#x200B;    while&#x8BED;&#x53E5;&#x7528;&#x6765;&#x5B9E;&#x73B0;&#x5FAA;&#x73AF;&#xFF0C;&#x683C;&#x5F0F;&#x5982;&#x4E0B;&#xFF1A;</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">while</span> <span class="string">&quot;&#x5FAA;&#x73AF;&#x6761;&#x4EF6;&quot;</span>&#xFF1A;</span><br><span class="line">	<span class="string">&quot;&#x5FAA;&#x73AF;&#x4F53;&quot;</span></span><br></pre></td></tr></table></figure>
+
+<p>&#x200B;    &#x5176;&#x4E2D;&#x5FAA;&#x73AF;&#x6761;&#x4EF6;&#x4E3A;&#x771F;&#x5219;&#x8FDB;&#x5165;&#x5FAA;&#x73AF;&#x4F53;&#xFF0C;&#x6240;&#x4EE5;&#xFF0C;&#x6211;&#x4EEC;&#x4E00;&#x822C;&#x5199;&#x201D;Ture&#x201D;&#x6216;&#x8005;&#x4F7F;&#x7528;&#x201D;1&#x201D;&#x6765;&#x8868;&#x793A;&#x6761;&#x4EF6;&#x6210;&#x7ACB;&#xFF1B;</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> time</span><br><span class="line"><span class="keyword">while</span> <span class="number">1</span>:  <span class="comment"># while True&#x4E5F;&#x53EF;&#x4EE5;</span></span><br><span class="line">	time.sleep(<span class="number">1</span>)  <span class="comment"># &#x4EE3;&#x7801;&#x8FD0;&#x884C;&#x95F4;&#x9694;&#x4E3A;1s</span></span><br><span class="line">	<span class="built_in">print</span>(<span class="string">&quot;hello world!&quot;</span>)</span><br></pre></td></tr></table></figure>
+
+<h3 id="3-3-2&#x3001;while&#x5FAA;&#x73AF;&#x7684;&#x7EC8;&#x6B62;"><a href="#3-3-2&#x3001;while&#x5FAA;&#x73AF;&#x7684;&#x7EC8;&#x6B62;" class="headerlink" title="3.3.2&#x3001;while&#x5FAA;&#x73AF;&#x7684;&#x7EC8;&#x6B62;"></a><strong>3.3.2&#x3001;while&#x5FAA;&#x73AF;&#x7684;&#x7EC8;&#x6B62;</strong></h3><p>1&#x3001;&#x4F7F;&#x7528;FLAG&#x6807;&#x8BB0;&#x4F4D;&#x6765;&#x7EC8;&#x6B62;&#x5FAA;&#x73AF;</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">count = <span class="number">0</span>  <span class="comment"># count&#x7528;&#x6765;&#x8BA1;&#x6570;&#xFF01;</span></span><br><span class="line">FLAG = <span class="literal">True</span></span><br><span class="line"><span class="keyword">while</span> FLAG:</span><br><span class="line">	<span class="built_in">print</span>(count)</span><br><span class="line">	count += <span class="number">1</span></span><br><span class="line">	<span class="keyword">if</span> count &gt; <span class="number">100</span>:  <span class="comment"># &#x5BF9;count&#x8FDB;&#x884C;&#x5224;&#x65AD;</span></span><br><span class="line">		FLAG = <span class="literal">False</span>  <span class="comment"># &#x4FEE;&#x6539;&#x5FAA;&#x73AF;&#x6761;&#x4EF6;</span></span><br></pre></td></tr></table></figure>
+
+<p>&#x200B;    &#x793A;&#x4F8B;&#xFF1A;&#x6C42;1&#x5230;100&#x7684;&#x548C;</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">count = <span class="number">1</span></span><br><span class="line"><span class="built_in">sum</span> = <span class="number">0</span></span><br><span class="line"><span class="keyword">while</span> count &lt;= <span class="number">100</span>:</span><br><span class="line">	<span class="built_in">sum</span> = <span class="built_in">sum</span> + count</span><br><span class="line">	count += <span class="number">1</span></span><br><span class="line"><span class="built_in">print</span>(<span class="built_in">sum</span>)   </span><br></pre></td></tr></table></figure>
+
+<p>2&#x3001;&#x901A;&#x8FC7;&#x5173;&#x952E;&#x5B57;&#x7EC8;&#x6B62;&#x5FAA;&#x73AF;&#xFF08;break&#x3001;continue&#xFF09;</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">while</span> <span class="literal">True</span>:</span><br><span class="line">	<span class="built_in">print</span>(<span class="string">&apos;222&apos;</span>)</span><br><span class="line">	<span class="keyword">break</span></span><br><span class="line">	<span class="built_in">print</span>(<span class="string">&apos;444&apos;</span>)  <span class="comment"># &#x8FD9;&#x91CC;&#x5C31;&#x65E0;&#x6CD5;&#x6267;&#x884C;&#x4E86;</span></span><br><span class="line"><span class="built_in">print</span>(<span class="string">&apos;666&apos;</span>)  <span class="comment"># &#x9000;&#x51FA;&#x5FAA;&#x73AF;&#x540E;&#x518D;&#x987A;&#x5E8F;&#x5411;&#x4E0B;&#x6267;&#x884C;   </span></span><br></pre></td></tr></table></figure>
+
+<p>&#x200B;    &#x793A;&#x4F8B;&#xFF1A;&#x6253;&#x5370;1&#x5230;100</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">count = <span class="number">1</span></span><br><span class="line"><span class="keyword">while</span> <span class="literal">True</span>:</span><br><span class="line">	<span class="built_in">print</span>(count)</span><br><span class="line">	count += <span class="number">1</span></span><br><span class="line">	<span class="keyword">if</span> count &gt;= <span class="number">100</span>:  <span class="comment"># &#x5927;&#x4E8E;&#x7B49;&#x4E8E;100&#x540E;&#x5C31;break&#x9000;&#x51FA;&#x5FAA;&#x73AF;</span></span><br><span class="line">		<span class="keyword">break</span></span><br></pre></td></tr></table></figure>
+
+<p>&#x200B;    &#x56E0;&#x6B64;&#xFF0C;break&#x662F;&#x76F4;&#x63A5;&#x9000;&#x51FA;&#x6574;&#x4E2A;&#x5FAA;&#x73AF;&#xFF0C;&#x4E14;&#x5728;&#x5728;&#x5FAA;&#x73AF;&#x4F53;&#x4E2D;&#x5904;&#x4E8E;break&#x540E;&#x9762;&#x7684;&#x4EE3;&#x7801;&#x5747;&#x4E0D;&#x4F1A;&#x518D;&#x6267;&#x884C;&#x4E86;&#xFF1B;&#x800C;continue&#x8BED;&#x53E5;&#x5219;&#x662F;&#x9000;&#x51FA;&#x5F53;&#x524D;&#x5FAA;&#x73AF;&#xFF1B;&#x4E0D;&#x4F1A;&#x7EC8;&#x6B62;&#x6574;&#x4E2A;&#x5FAA;&#x73AF;&#xFF1B;</p>
+<p>&#x200B;    &#x793A;&#x4F8B;&#xFF1A;&#x8DF3;&#x8FC7;5&#x5230;95&#x4E4B;&#x95F4;&#x7684;&#x6570;&#x503C;</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">count = <span class="number">0</span></span><br><span class="line"><span class="keyword">while</span> count &lt;= <span class="number">100</span>:</span><br><span class="line">	count += <span class="number">1</span></span><br><span class="line">	<span class="keyword">if</span> count &gt; <span class="number">5</span> <span class="keyword">and</span> count &lt; <span class="number">95</span>:</span><br><span class="line">		<span class="keyword">continue</span></span><br><span class="line">		<span class="built_in">print</span>(<span class="string">&apos;loop\t&apos;</span>,count)   </span><br><span class="line">	<span class="built_in">print</span>(<span class="string">&apos;-----out of while loop-----&apos;</span>)   </span><br></pre></td></tr></table></figure>
+
+<h3 id="3-3-3&#x3001;while-else&#x8BED;&#x53E5;"><a href="#3-3-3&#x3001;while-else&#x8BED;&#x53E5;" class="headerlink" title="3.3.3&#x3001;while else&#x8BED;&#x53E5;"></a><strong>3.3.3&#x3001;while else&#x8BED;&#x53E5;</strong></h3><p>&#x200B;    &#x8FD9;&#x662F;&#x4E00;&#x4E2A;&#x56FA;&#x5B9A;&#x642D;&#x914D;&#xFF0C;&#x5F53;while&#x5FAA;&#x73AF;&#x88AB;break&#x6253;&#x65AD;&#xFF0C;else&#x8BED;&#x53E5;&#x5C31;&#x4E0D;&#x4F1A;&#x8FD0;&#x884C;&#x4E86;&#xFF0C;&#x800C;&#x5F53;while&#x8BED;&#x53E5;&#x6CA1;&#x6709;&#x88AB;break&#x6253;&#x65AD;else&#x8BED;&#x53E5;&#x5C31;&#x4F1A;&#x7EE7;&#x7EED;&#x6267;&#x884C;&#xFF1B;&#x793A;&#x4F8B;&#x5982;&#x4E0B;&#xFF1A;</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">count = <span class="number">0</span></span><br><span class="line"><span class="keyword">while</span> count &lt;= <span class="number">5</span>:</span><br><span class="line">	count += <span class="number">1</span></span><br><span class="line">	<span class="keyword">if</span> count == <span class="number">3</span>:<span class="keyword">break</span></span><br><span class="line">	<span class="built_in">print</span>(<span class="string">&apos;loop\t&apos;</span>,count)</span><br><span class="line"><span class="keyword">else</span>:</span><br><span class="line">	<span class="built_in">print</span>(<span class="string">&apos;the cycle completes normally.&apos;</span>) </span><br><span class="line"><span class="built_in">print</span>(<span class="string">&apos;-----out of while loop-----&apos;</span>)   </span><br></pre></td></tr></table></figure>
+
+<p>&#x200B;    else&#x8BED;&#x53E5;&#x53EF;&#x4EE5;&#x7528;&#x6765;&#x5224;&#x65AD;&#xFF0C;while&#x8BED;&#x53E5;&#x662F;&#x5426;&#x6709;&#x88AB;&#x6253;&#x65AD;&#xFF1A;</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">count = <span class="number">0</span></span><br><span class="line"><span class="keyword">while</span> count &lt;=<span class="number">5</span>:   </span><br><span class="line">	<span class="built_in">print</span>(<span class="string">&apos;loop&apos;</span>,count)</span><br><span class="line">	count +=<span class="number">1</span></span><br><span class="line"><span class="keyword">else</span>:</span><br><span class="line">	<span class="built_in">print</span>(<span class="string">&apos;&#x7A0B;&#x5E8F;&#x6B63;&#x5E38;&#x6267;&#x884C;&#x5B8C;&#x6BD5;&#xFF0C;&#x4E2D;&#x95F4;&#x6CA1;&#x6709;&#x88AB;&#x6253;&#x65AD;!&apos;</span>) </span><br></pre></td></tr></table></figure>
+
+<h2 id="3-4&#x3001;&#x5FAA;&#x73AF;&#x8BED;&#x53E5;&#x2013;for&#x8BED;&#x53E5;"><a href="#3-4&#x3001;&#x5FAA;&#x73AF;&#x8BED;&#x53E5;&#x2013;for&#x8BED;&#x53E5;" class="headerlink" title="3.4&#x3001;&#x5FAA;&#x73AF;&#x8BED;&#x53E5;&#x2013;for&#x8BED;&#x53E5;"></a><strong>3.4&#x3001;&#x5FAA;&#x73AF;&#x8BED;&#x53E5;&#x2013;for&#x8BED;&#x53E5;</strong></h2><h3 id="3-4-1&#x3001;Range&#x65B9;&#x6CD5;&#x4ECB;&#x7ECD;"><a href="#3-4-1&#x3001;Range&#x65B9;&#x6CD5;&#x4ECB;&#x7ECD;" class="headerlink" title="3.4.1&#x3001;Range&#x65B9;&#x6CD5;&#x4ECB;&#x7ECD;"></a><strong>3.4.1&#x3001;Range&#x65B9;&#x6CD5;&#x4ECB;&#x7ECD;</strong></h3><p>&#x200B;    range&#x53EA;&#x662F;&#x4E00;&#x4E2A;&#x6309;&#x7167;&#x6570;&#x5B57;&#x6392;&#x5217;&#x7684;&#x5217;&#x8868;&#xFF1B;</p>
+<blockquote>
+<p>&#x6CE8;&#x610F;&#xFF1A;&#x56E0;&#x4E3A;range&#x5176;&#x5B9E;&#x5E76;&#x4E0D;&#x662F;&#x4E00;&#x6B21;&#x6027;&#x653E;&#x5165;&#x5185;&#x5B58;&#x4E2D;&#x7684;&#xFF0C;&#x8FD9;&#x4E2A;&#x6211;&#x4EEC;&#x4E4B;&#x540E;&#x518D;&#x4ECB;&#x7ECD;&#x8FED;&#x4EE3;&#x5668;&#x7684;&#x65F6;&#x5019;&#x4F1A;&#x8BE6;&#x7EC6;&#x4ECB;&#x7ECD;&#xFF01;&#x8FD9;&#x4E00;&#x70B9;&#x975E;&#x5E38;&#x91CD;&#x8981;&#xFF0C;&#x5982;&#x679C;&#x662F;&#x4E00;&#x6B21;&#x6027;&#x751F;&#x6210;&#x7684;&#x5217;&#x8868;&#x5C06;&#x4F1A;&#x5168;&#x90E8;&#x5B58;&#x653E;&#x5728;&#x5185;&#x5B58;&#x4E2D;&#xFF0C;&#x8FD9;&#x6837;&#x4F1A;&#x4E25;&#x91CD;&#x5F71;&#x54CD;&#x4EE3;&#x7801;&#x6027;&#x80FD;</p>
+</blockquote>
+<p>&#x200B;    &#x4F7F;&#x7528;&#x5982;&#x4E0B;&#xFF1A;</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">0</span>,<span class="number">10</span>):<span class="built_in">print</span>(i)</span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">10</span>):<span class="built_in">print</span>(i)  <span class="comment"># &#x9ED8;&#x8BA4;&#x5C31;&#x662F;&#x4ECE;0&#x5F00;&#x59CB;&#xFF0C;&#x4E0D;&#x5305;&#x542B;&#x540E;&#x9762;10</span></span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">0</span>,<span class="number">10</span>,<span class="number">2</span>):<span class="built_in">print</span>(i)  <span class="comment"># &#x6307;&#x5B9A;&#x6B65;&#x957F;&#x4E3A;2&#xFF0C;&#x548C;&#x5207;&#x7247;&#x662F;&#x4E00;&#x6837;&#x7684;</span></span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">10</span>,<span class="number">0</span>,-<span class="number">1</span>):<span class="built_in">print</span>(i)  <span class="comment"># &#x5012;&#x5E8F;&#xFF0C;&#x8FD9;&#x70B9;&#x548C;&#x5207;&#x7247;&#x4E5F;&#x662F;&#x4E00;&#x6837;&#x7684;</span></span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>&#x9762;&#x8BD5;&#x9898;&#xFF1A;for i in rang(0,10,-1):print(i)  # &#x8F93;&#x51FA;&#x7ED3;&#x679C;&#x662F;&#x4EC0;&#x4E48;</p>
+<p> &#x7B54;&#x6848;&#xFF1A;&#x4EC0;&#x4E48;&#x90FD;&#x4E0D;&#x4F1A;&#x8F93;&#x51FA;</p>
+</blockquote>
+<p>&#x200B;    <strong>&#x91CD;&#x70B9;&#xFF1A;&#x5B57;&#x5178;&#x63A8;&#x5BFC;&#x5F0F;&#xFF01;</strong></p>
+<p>&#x200B;    &#x793A;&#x4F8B;1 &#x2013; &#x968F;&#x673A;&#x6570;&#x7684;&#x5B57;&#x5178;&#x7684;&#x751F;&#x6210;</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> random</span><br><span class="line">random_dict = {i:random.randint(<span class="number">10</span>,<span class="number">99</span>) <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">1</span>,<span class="number">5</span>)}</span><br><span class="line"><span class="built_in">print</span>(random_dict)</span><br></pre></td></tr></table></figure>
+
+<p>&#x200B;    &#x793A;&#x4F8B;2 &#x2013; &#x66FF;&#x6362;&#x5B57;&#x5178;&#x4E2D;&#x7684;&#x952E;&#x548C;&#x503C;&#x4E4B;&#x95F4;&#x7684;&#x4F4D;&#x7F6E;</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">dic1 = {<span class="string">&apos;a&apos;</span>:<span class="string">&apos;Ammy&apos;</span>, <span class="string">&apos;t&apos;</span>:<span class="string">&apos;Tom&apos;</span>}</span><br><span class="line">dic2 = {k:v <span class="keyword">for</span> v,k <span class="keyword">in</span> dic1.items()}</span><br><span class="line"><span class="built_in">print</span>(dic2)</span><br></pre></td></tr></table></figure>
+
+<p>&#x200B;    &#x793A;&#x4F8B;3 &#x2013; &#x5C06;cookie&#x4E2D;&#x7684;&#x6570;&#x636E;&#x8F6C;&#x6362;&#x4E3A;&#x5B57;&#x5178;&#x683C;&#x5F0F;&#xFF0C;cookie&#x6570;&#x636E;&#x5982;&#x4E0B;&#xFF1A;</p>
+<p><img src="/development/python/python%E5%9F%BA%E7%A1%80_03_%E6%B5%81%E7%A8%8B%E6%8E%A7%E5%88%B6%E8%AF%AD%E5%8F%A5/image-20211127171903891.png" alt="image-20211127171903891"></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># &#x7C98;&#x8D34;&#x51FA;&#x6765;&#x5982;&#x4E0B;&#xFF1A;</span></span><br><span class="line">cookies = <span class="string">&quot;BAIDUID=A672AFFB0D9719562B8A231D4F108166:FG=1; BIDUPSID=A672AFFB0D971956F62BE17337E7CA13; PSTM=1612959555;BD_UPN=13314752;BDUSS=pOcmJQQXUyaHM2Yk1yUXZBSHV3ck53cmtZcUN5Z3drTW5ubDQ1aVlGMXl2b2RnRVFBQUFBJCQAAAAAAAAAAAEAAAArM44YeGlhbGlhbmdzaGkAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAHIxYGByMWBgen; MCITY=-%3A; BDORZ=FFFB88E999055A3F8A630C64834BD6D0; __yjs_duid=1_ec1c59c76aff18b8419586a3d7e828d21618739334591; COOKIE_SESSION=44655_0_8_8_3_9_0_1_8_4_8_0_83525_0_0_0_1619522306_0_1619566952%7C9%2313724_139_1619342101%7C9; BDRCVFR[Fc9oatPmwxn]=srT4swvGNE6uzdhUL68mv3; delPer=0; BD_CK_SAM=1; PSINO=1; H_PS_PSSID=33985_33970_31253_33849_33855_33607_33811; H_PS_645EC=3305FL%2FRsP%2BtirRD1NL13JEpIZzHHxtW6954ftpg6Eak9LKrlyETxiG2VRyX4eQyAuFB; BA_HECTOR=250020012g8500245k1g8h8be0r; BDSVRTM=178&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># &#x53EF;&#x4EE5;&#x770B;&#x51FA;cookie&#x7684;&#x683C;&#x5F0F;&#x4E3A;&#x201C;&#xFF1B;&#x201D;&#x5206;&#x5272;&#x7B49;&#x53F7;&#x6570;&#x636E;&#xFF0C;&#x6240;&#x4EE5;&#x7B49;&#x53F7;&#x4E24;&#x8FB9;&#x5C31;&#x662F;&#x7528;&#x6765;&#x6307;&#x5B9A;&#x4E3A;&#x5B57;&#x5178;&#x7684;&#x952E;&#x503C;</span></span><br><span class="line">cookie = {i.split(<span class="string">&quot;=&quot;</span>)[<span class="number">0</span>]:i.split(<span class="string">&quot;=&quot;</span>)[<span class="number">1</span>] <span class="keyword">for</span> i <span class="keyword">in</span> cookies.split(<span class="string">&quot;;&quot;</span>)}</span><br><span class="line"><span class="built_in">print</span>(cookie)</span><br></pre></td></tr></table></figure>
+
+<h3 id="3-4-2&#x3001;Join&#x65B9;&#x6CD5;&#x4ECB;&#x7ECD;"><a href="#3-4-2&#x3001;Join&#x65B9;&#x6CD5;&#x4ECB;&#x7ECD;" class="headerlink" title="3.4.2&#x3001;Join&#x65B9;&#x6CD5;&#x4ECB;&#x7ECD;"></a><strong>3.4.2&#x3001;Join&#x65B9;&#x6CD5;&#x4ECB;&#x7ECD;</strong></h3><p>&#x200B;    &#x8FD9;&#x4E2A;&#x662F;&#x5C06;&#x53EF;&#x8FED;&#x4EE3;&#x5BF9;&#x8C61;&#x4E4B;&#x95F4;&#x7684;&#x6570;&#x636E;&#x52A0;&#x4E0A;&#x4E00;&#x4E2A;&#x6307;&#x5B9A;&#x5206;&#x9694;&#x7B26;&#xFF1B;</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">s = <span class="string">&quot;test&quot;</span></span><br><span class="line">s1 = <span class="string">&quot;_&quot;</span>.join(s)</span><br><span class="line"><span class="built_in">print</span>(s1)  <span class="comment"># &#x8FD9;&#x6837;&#x6253;&#x5370;&#x7684;&#x7ED3;&#x679C;&#x5C31;&#x662F;&#x201C;t_e_s_t&#x201D;</span></span><br></pre></td></tr></table></figure>
+
+<p>&#x200B;    &#x4F8B;&#x5982;&#xFF0C;&#x6211;&#x4EEC;&#x53EF;&#x4EE5;&#x7ED9;<strong>&#x5217;&#x8868;&#x6570;&#x636E;&#x8F6C;&#x6362;&#x4E3A;&#x5B57;&#x7B26;&#x4E32;</strong>&#xFF1B;</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">li = [<span class="string">&apos;I&apos;</span>,<span class="string">&apos;am&apos;</span>,<span class="string">&apos;a&apos;</span>,<span class="string">&apos;teacher&apos;</span>]</span><br><span class="line">s = <span class="string">&apos; &apos;</span>.join(li)  <span class="comment"># &#x4EE5;&#x7A7A;&#x767D;&#x7B26;&#x4F5C;&#x4E3A;&#x5206;&#x9694;&#x7B26;</span></span><br><span class="line"><span class="built_in">print</span>(s)</span><br></pre></td></tr></table></figure>
+
+<p>&#x200B;    &#x800C;<strong>&#x5B57;&#x7B26;&#x4E32;&#x8F6C;&#x6362;&#x4E3A;&#x5217;&#x8868;</strong>&#x5C31;&#x53EF;&#x4EE5;&#x4F7F;&#x7528;split()&#x65B9;&#x6CD5;</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">s = <span class="string">&apos;I am a teacher&apos;</span></span><br><span class="line">li = s.split()  <span class="comment"># &#x9ED8;&#x8BA4;&#x4E0D;&#x586B;&#x5C31;&#x662F;&#x4EE5;&#x7A7A;&#x767D;&#x7B26;&#x4E3A;&#x5206;&#x9694;&#x7B26;</span></span><br><span class="line"><span class="built_in">print</span>(li)</span><br></pre></td></tr></table></figure>
+
+<h3 id="3-4-3&#x3001;for&#x8BED;&#x53E5;&#x5FAA;&#x73AF;"><a href="#3-4-3&#x3001;for&#x8BED;&#x53E5;&#x5FAA;&#x73AF;" class="headerlink" title="3.4.3&#x3001;for&#x8BED;&#x53E5;&#x5FAA;&#x73AF;"></a><strong>3.4.3&#x3001;for&#x8BED;&#x53E5;&#x5FAA;&#x73AF;</strong></h3><p>&#x200B;    &#x76F8;&#x5BF9;&#x4E8E;while&#x800C;&#x8A00;&#xFF0C;&#x53EA;&#x8981;&#x5224;&#x65AD;&#x6761;&#x4EF6;&#x4E0D;&#x6539;&#x53D8;&#xFF0C;&#x5219;&#x4E00;&#x76F4;&#x4F1A;&#x5FAA;&#x73AF;&#xFF0C;&#x800C;&#x5BF9;&#x4E8E;for&#x8BED;&#x53E5;&#x800C;&#x8A00;&#x4E00;&#x70B9;&#x8981;&#x6307;&#x5B9A;&#x8FED;&#x4EE3;&#x5BF9;&#x8C61;&#x624D;&#x884C;&#xFF01;&#x6240;&#x4EE5;&#xFF0C;&#x8FD9;&#x91CC;&#x5728;for&#x8BED;&#x53E5;&#x6307;&#x5B9A;&#x8FED;&#x4EE3;&#x5BF9;&#x8C61;&#x7684;&#x65F6;&#x5019;&#x5C31;&#x4E00;&#x5B9A;&#x8981;&#x6CE8;&#x610F;&#xFF0C;&#x6709;&#x4E9B;&#x6570;&#x636E;&#x5BF9;&#x8C61;&#x662F;&#x4E0D;&#x53EF;&#x8FED;&#x4EE3;&#x7684;&#xFF0C;&#x8FD9;&#x4E2A;&#x6211;&#x4EEC;&#x4E4B;&#x540E;&#x4F1A;&#x518D;&#x8FED;&#x4EE3;&#x5668;&#x7684;&#x4ECB;&#x7ECD;&#x4E2D;&#x8BE6;&#x7EC6;&#x8BF4;&#x660E;&#x3002;</p>
+<p>&#x200B;    &#x57FA;&#x672C;&#x8BED;&#x6CD5;&#x5982;&#x4E0B;&#xFF1A;</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> <span class="string">&quot;&#x53EF;&#x8FED;&#x4EE3;&#x5BF9;&#x8C61;&quot;</span>:</span><br><span class="line">	<span class="string">&quot;&#x5FAA;&#x73AF;&#x4F53;&quot;</span></span><br></pre></td></tr></table></figure>
+
+<p>&#x200B;    &#x5BF9;&#x4E8E;in&#x7684;&#x8BED;&#x6CD5;&#x6709;&#x4E24;&#x79CD;&#x60C5;&#x51B5;&#xFF1A;</p>
+<p>&#x200B;        1&#x3001;&#x4E5F;&#x5C31;&#x662F;&#x8FD9;&#x5217;for&#x8BED;&#x53E5;&#x5FAA;&#x73AF;&#x4E2D;&#x6240;&#x7528;&#x5230;&#x7684;&#xFF0C;&#x5C06;&#x53EF;&#x8FED;&#x4EE3;&#x5BF9;&#x8C61;&#x4F9D;&#x6B21;&#x8D4B;&#x503C;&#x7ED9;i&#xFF1B;</p>
+<p>&#x200B;        2&#x3001;&#x8FDB;&#x884C;&#x5305;&#x542B;&#x6027;&#x7684;&#x5224;&#x65AD;&#xFF0C;&#x4F8B;&#x5982;&#xFF1A;</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">s = <span class="string">&apos;123456767&apos;</span></span><br><span class="line"><span class="keyword">if</span> <span class="string">&apos;123&apos;</span> <span class="keyword">in</span> s:</span><br><span class="line">	<span class="built_in">print</span>(<span class="string">&apos;Include&apos;</span>)</span><br></pre></td></tr></table></figure>
+
+<p>&#x200B;    &#x793A;&#x4F8B;&#xFF1A;&#x8BF7;&#x7F16;&#x5199;for&#x8BED;&#x53E5;&#x7684;99&#x4E58;&#x6CD5;&#x8868;&#xFF1A;</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">1</span>, <span class="number">10</span>):</span><br><span class="line">    <span class="keyword">for</span> j <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">1</span>, i+<span class="number">1</span>):</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&apos;{}x{}={}\t&apos;</span>.<span class="built_in">format</span>(j, i, i*j), end=<span class="string">&apos;&apos;</span>)</span><br><span class="line">    <span class="built_in">print</span>()</span><br></pre></td></tr></table></figure>
+
+
+
+
+    </div>
+    
+    
+    
+    
+    
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/python-basic-knowledge/" rel="tag"># python basic knowledge</a>
+          </div>
+    
+        
+
+    
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/development/python/python%E5%9F%BA%E7%A1%80_04_%E6%96%87%E6%9C%AC%E5%A4%84%E7%90%86/" rel="prev" title="文本处理">
+      <i class="fa fa-chevron-left"></i> 文本处理
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/development/python/python%E5%9F%BA%E7%A1%80_02_python%E7%9A%84%E5%9F%BA%E7%A1%80%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B/" rel="next" title="变量">
+      变量 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+    <div>
+        
+        
+
+<div>
+    
+        <div style="text-align:center;color: #ccc;font-size:14px;">------ 版权声明：本文属于原创文章------</div>
+    	<div style="text-align:center;color: #FF0000;font-size:14px;">转载请注明：Burnov.github.io原创文章+本文链接，谢谢合作！！</i></div>
+    
+</div>
+
+
+        
+     </div>
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#3%E3%80%81%E6%B5%81%E7%A8%8B%E6%8E%A7%E5%88%B6%E8%AF%AD%E5%8F%A5"><span class="nav-number">1.</span> <span class="nav-text">3、流程控制语句</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#3-1%E3%80%81%E9%A1%BA%E5%BA%8F%E6%89%A7%E8%A1%8C"><span class="nav-number">1.1.</span> <span class="nav-text">3.1、顺序执行</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-2%E3%80%81%E5%88%86%E6%94%AF%E8%AF%AD%E5%8F%A5%E2%80%93if%E5%88%A4%E6%96%AD%E8%AF%AD%E5%8F%A5"><span class="nav-number">1.2.</span> <span class="nav-text">3.2、分支语句–if判断语句</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#3-2-1%E3%80%81%E6%9D%A1%E4%BB%B6%E5%88%A4%E6%96%AD"><span class="nav-number">1.2.1.</span> <span class="nav-text">3.2.1、条件判断</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-2-2%E3%80%81if%E8%AF%AD%E5%8F%A5%E8%AF%AD%E6%B3%95%E7%B1%BB%E5%9E%8B"><span class="nav-number">1.2.2.</span> <span class="nav-text">3.2.2、if语句语法类型</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-2-3%E3%80%81if%E8%AF%AD%E5%8F%A5%E5%B5%8C%E5%A5%97"><span class="nav-number">1.2.3.</span> <span class="nav-text">3.2.3、if语句嵌套</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-3%E3%80%81%E5%BE%AA%E7%8E%AF%E8%AF%AD%E5%8F%A5%E2%80%93while%E8%AF%AD%E5%8F%A5"><span class="nav-number">1.3.</span> <span class="nav-text">3.3、循环语句–while语句</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#3-3-1%E3%80%81while%E5%BE%AA%E7%8E%AF%E7%9A%84%E5%9F%BA%E6%9C%AC%E8%AF%AD%E6%B3%95"><span class="nav-number">1.3.1.</span> <span class="nav-text">3.3.1、while循环的基本语法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-3-2%E3%80%81while%E5%BE%AA%E7%8E%AF%E7%9A%84%E7%BB%88%E6%AD%A2"><span class="nav-number">1.3.2.</span> <span class="nav-text">3.3.2、while循环的终止</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-3-3%E3%80%81while-else%E8%AF%AD%E5%8F%A5"><span class="nav-number">1.3.3.</span> <span class="nav-text">3.3.3、while else语句</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-4%E3%80%81%E5%BE%AA%E7%8E%AF%E8%AF%AD%E5%8F%A5%E2%80%93for%E8%AF%AD%E5%8F%A5"><span class="nav-number">1.4.</span> <span class="nav-text">3.4、循环语句–for语句</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#3-4-1%E3%80%81Range%E6%96%B9%E6%B3%95%E4%BB%8B%E7%BB%8D"><span class="nav-number">1.4.1.</span> <span class="nav-text">3.4.1、Range方法介绍</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-4-2%E3%80%81Join%E6%96%B9%E6%B3%95%E4%BB%8B%E7%BB%8D"><span class="nav-number">1.4.2.</span> <span class="nav-text">3.4.2、Join方法介绍</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-4-3%E3%80%81for%E8%AF%AD%E5%8F%A5%E5%BE%AA%E7%8E%AF"><span class="nav-number">1.4.3.</span> <span class="nav-text">3.4.3、for语句循环</span></a></li></ol></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Burnov"
+      src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">Burnov</p>
+  <div class="site-description" itemprop="description">No end for Learning</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">31</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">31</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/Burnov" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;Burnov" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:xials1990@gmail.com" title="E-Mail → mailto:xials1990@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://www.zhihu.com/people/xia-liang-shi-78" title="Skype → https:&#x2F;&#x2F;www.zhihu.com&#x2F;people&#x2F;xia-liang-shi-78" rel="noopener" target="_blank"><i class="fab fa-skype fa-fw"></i></a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class=""></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Burnov</span>
+</div>
+
+<!--
+  <div class="powered-by">Powered by <a href="https://github.com/Burnov" class="theme-link" rel="noopener" target="_blank">Burnov</a> & <a href="https://mist.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Mist</a>
+  </div>
+
+-->
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : false,
+      appId      : 'wIjFqGmEUzY7fpTNVHpKA0eH-gzGzoHsz',
+      appKey     : 'KdXueGM1xFH8pBVSO5SkFRKI',
+      placeholder: "Just go go",
+      avatar     : 'mm',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : false,
+      lang       : '' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : false,
+      serverURLs : ''
+    });
+  }, window.Valine);
+});
+</script>
+
+</body>
+</html>

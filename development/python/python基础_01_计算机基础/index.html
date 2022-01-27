@@ -1,0 +1,644 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-minimal.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Mist","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="1&amp;#x3001;&amp;#x8BA1;&amp;#x7B97;&amp;#x673A;&amp;#x57FA;&amp;#x7840;1.1&amp;#x3001;&amp;#x786C;&amp;#x4EF6;&amp;#x8BBE;&amp;#x5907;&amp;#x4ECB;&amp;#x7ECD;CPU    &amp;#x4E2D;&amp;#x592E;&amp;#x5904;&amp;#x7406;&amp;#x5668; &amp;#x2013; &amp;#x4EBA;&amp;#x7684;&amp;#x5927;&amp;#x8111; &amp;#">
+<meta property="og:type" content="article">
+<meta property="og:title" content="计算机基础">
+<meta property="og:url" content="http://example.com/development/python/python%E5%9F%BA%E7%A1%80_01_%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/index.html">
+<meta property="og:site_name" content="Burnov^-^Blog">
+<meta property="og:description" content="1&amp;#x3001;&amp;#x8BA1;&amp;#x7B97;&amp;#x673A;&amp;#x57FA;&amp;#x7840;1.1&amp;#x3001;&amp;#x786C;&amp;#x4EF6;&amp;#x8BBE;&amp;#x5907;&amp;#x4ECB;&amp;#x7ECD;CPU    &amp;#x4E2D;&amp;#x592E;&amp;#x5904;&amp;#x7406;&amp;#x5668; &amp;#x2013; &amp;#x4EBA;&amp;#x7684;&amp;#x5927;&amp;#x8111; &amp;#">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://example.com/development/python/python%E5%9F%BA%E7%A1%80_01_%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/image-20211127153543599.png">
+<meta property="og:image" content="http://example.com/development/python/python%E5%9F%BA%E7%A1%80_01_%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/image-20211127153608011.png">
+<meta property="og:image" content="http://example.com/development/python/python%E5%9F%BA%E7%A1%80_01_%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/image-20211127153711359.png">
+<meta property="og:image" content="http://example.com/development/python/python%E5%9F%BA%E7%A1%80_01_%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/image-20211127153736459.png">
+<meta property="og:image" content="http://example.com/development/python/python%E5%9F%BA%E7%A1%80_01_%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/image-20211127154755110.png">
+<meta property="og:image" content="http://example.com/development/python/python%E5%9F%BA%E7%A1%80_01_%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/image-20211127154900465.png">
+<meta property="og:image" content="http://example.com/development/python/python%E5%9F%BA%E7%A1%80_01_%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/image-20211127154939987.png">
+<meta property="og:image" content="http://example.com/development/python/python%E5%9F%BA%E7%A1%80_01_%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/image-20211127155000250.png">
+<meta property="og:image" content="http://example.com/development/python/python%E5%9F%BA%E7%A1%80_01_%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/image-20211127155037870.png">
+<meta property="og:image" content="http://example.com/development/python/python%E5%9F%BA%E7%A1%80_01_%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/image-20211127155116198.png">
+<meta property="og:image" content="http://example.com/development/python/python%E5%9F%BA%E7%A1%80_01_%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/image-20211127155235581.png">
+<meta property="og:image" content="http://example.com/development/python/python%E5%9F%BA%E7%A1%80_01_%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/image-20211127155412906.png">
+<meta property="article:published_time" content="2022-01-27T02:28:50.000Z">
+<meta property="article:modified_time" content="2022-01-27T02:28:44.406Z">
+<meta property="article:author" content="Burnov">
+<meta property="article:tag" content="python basic knowledge">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/development/python/python%E5%9F%BA%E7%A1%80_01_%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/image-20211127153543599.png">
+
+<link rel="canonical" href="http://example.com/development/python/python%E5%9F%BA%E7%A1%80_01_%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>计算机基础 | Burnov^-^Blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="Burnov^-^Blog" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Burnov^-^Blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="Searching..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://example.com/development/python/python%E5%9F%BA%E7%A1%80_01_%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="Burnov">
+      <meta itemprop="description" content="No end for Learning">
+    </span>
+    
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Burnov^-^Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          计算机基础
+        </h1>
+    
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+              
+    
+              <time title="Created: 2022-01-27 10:28:50 / Modified: 10:28:44" itemprop="dateCreated datePublished" datetime="2022-01-27T10:28:50+08:00">2022-01-27</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/development/" itemprop="url" rel="index"><span itemprop="name">development</span></a>
+                </span>
+                  , 
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/development/python/" itemprop="url" rel="index"><span itemprop="name">python</span></a>
+                </span>
+            </span>
+    
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Valine: </span>
+    
+    <a title="valine" href="/development/python/python%E5%9F%BA%E7%A1%80_01_%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/development/python/python%E5%9F%BA%E7%A1%80_01_%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+    
+        </div>
+      </header>
+    
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+    
+      
+        <h1 id="1&#x3001;&#x8BA1;&#x7B97;&#x673A;&#x57FA;&#x7840;"><a href="#1&#x3001;&#x8BA1;&#x7B97;&#x673A;&#x57FA;&#x7840;" class="headerlink" title="1&#x3001;&#x8BA1;&#x7B97;&#x673A;&#x57FA;&#x7840;"></a><strong>1&#x3001;&#x8BA1;&#x7B97;&#x673A;&#x57FA;&#x7840;</strong></h1><h2 id="1-1&#x3001;&#x786C;&#x4EF6;&#x8BBE;&#x5907;&#x4ECB;&#x7ECD;"><a href="#1-1&#x3001;&#x786C;&#x4EF6;&#x8BBE;&#x5907;&#x4ECB;&#x7ECD;" class="headerlink" title="1.1&#x3001;&#x786C;&#x4EF6;&#x8BBE;&#x5907;&#x4ECB;&#x7ECD;"></a><strong>1.1&#x3001;&#x786C;&#x4EF6;&#x8BBE;&#x5907;&#x4ECB;&#x7ECD;</strong></h2><p><strong>CPU</strong>    &#x4E2D;&#x592E;&#x5904;&#x7406;&#x5668; &#x2013; &#x4EBA;&#x7684;&#x5927;&#x8111;</p>
+<p><strong>&#x5185;&#x5B58;</strong>    &#x8FDB;&#x884C;&#x6570;&#x636E;&#x7684;&#x4E34;&#x65F6;&#x5B58;&#x50A8;</p>
+<p><strong>IO</strong>    &#x786C;&#x76D8;&#xFF1A;&#x8FDB;&#x884C;&#x6570;&#x636E;&#x7684;&#x6301;&#x4E45;&#x5316;&#x5B58;&#x50A8;</p>
+<p><strong>&#x7F51;&#x7EDC;&#x9002;&#x914D;&#x5668;</strong>    &#x7F51;&#x5361;&#xFF1A;&#x8FDB;&#x884C;&#x6570;&#x636E;&#x7684;&#x4F20;&#x8F93;</p>
+<p>&#x200B;    &#x786C;&#x4EF6;&#x4E0E;&#x8F6F;&#x4EF6;&#x7A0B;&#x5E8F;&#x4E4B;&#x95F4;&#x7684;&#x5173;&#x7CFB;&#xFF0C;&#x5982;&#x4E0B;&#x56FE;&#x6240;&#x793A;&#xFF1A;</p>
+<p><img src="/development/python/python%E5%9F%BA%E7%A1%80_01_%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/image-20211127153543599.png" alt="image-20211127153543599"></p>
+<p>&#x200B;    &#x5728;&#x6253;&#x5F00;QQ&#x7684;&#x4E00;&#x77AC;&#x95F4;&#x5176;&#x8FC7;&#x7A0B;&#x662F;&#x4EC0;&#x4E48;&#x6837;&#x5B50;&#x7684;&#xFF1F;&#x786C;&#x76D8;&#x7684;&#x6570;&#x636E;&#x4F1A;&#x52A0;&#x8F7D;&#x5230;&#x5185;&#x5B58;&#x4E2D;&#xFF0C;&#x800C;CPU&#x4ECE;&#x5185;&#x5B58;&#x4E2D;&#x8BFB;&#x53D6;&#x5230;QQ&#x6570;&#x636E;&#x8FDB;&#x884C;&#x8FD0;&#x884C;&#xFF0C;&#x8FD9;&#x65F6;&#x5019;&#xFF0C;QQ&#x5C31;&#x5F62;&#x6210;&#x4E86;&#x4E00;&#x4E2A;&#x5355;&#x72EC;&#x7684;&#x8FDB;&#x7A0B;&#x518D;&#x7535;&#x8111;&#x4E2D;&#x8FD0;&#x884C;&#xFF1B;</p>
+<h2 id="1-2&#x3001;&#x7F16;&#x7A0B;&#x8BED;&#x8A00;&#x7684;&#x57FA;&#x7840;&#x4ECB;&#x7ECD;"><a href="#1-2&#x3001;&#x7F16;&#x7A0B;&#x8BED;&#x8A00;&#x7684;&#x57FA;&#x7840;&#x4ECB;&#x7ECD;" class="headerlink" title="1.2&#x3001;&#x7F16;&#x7A0B;&#x8BED;&#x8A00;&#x7684;&#x57FA;&#x7840;&#x4ECB;&#x7ECD;"></a><strong>1.2&#x3001;&#x7F16;&#x7A0B;&#x8BED;&#x8A00;&#x7684;&#x57FA;&#x7840;&#x4ECB;&#x7ECD;</strong></h2><p>&#x200B;    &#x7F16;&#x7A0B;&#x8BED;&#x8A00;&#x7684;&#x7B80;&#x5355;&#x4ECB;&#x7ECD;&#xFF1A;</p>
+<p><img src="/development/python/python%E5%9F%BA%E7%A1%80_01_%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/image-20211127153608011.png" alt="image-20211127153608011"></p>
+<p>&#x200B;    &#x7F16;&#x7A0B;&#x8BED;&#x8A00;&#x6211;&#x4EEC;&#x4E00;&#x822C;&#x5206;&#x4E3A; &#x7F16;&#x8BD1;&#x578B; &#x548C; &#x89E3;&#x91CA;&#x578B; &#x4E24;&#x79CD;&#xFF1B;</p>
+<p>&#x200B;        &#x7F16;&#x8BD1;&#x578B;&#xFF1A;&#x4E00;&#x6B21;&#x6027;&#x5C06;&#x6240;&#x6709;&#x7A0B;&#x5E8F;&#x7F16;&#x8BD1;&#x6210;&#x4E3A;&#x4E8C;&#x8FDB;&#x5236;&#x6587;&#x4EF6;&#xFF0C;&#x7136;&#x540E;&#x518D;&#x5728;&#x7535;&#x8111;&#x4E0A;&#x8FD0;&#x884C;&#xFF08;&#x5C31;&#x7C7B;&#x4F3C;&#x4E8E;&#x7FFB;&#x8BD1;&#x4E00;&#x672C;&#x4E66;&#xFF0C;&#x5148;&#x5168;&#x90E8;&#x90FD;&#x7FFB;&#x8BD1;&#x5B8C;&#x6210;&#x4EE5;&#x540E;&#xFF0C;&#x7136;&#x540E;&#x518D;&#x4E00;&#x8D77;&#x53BB;&#x8BFB;&#x8FD9;&#x672C;&#x4E66;&#xFF09;&#xFF1B;</p>
+<p>&#x200B;            &#x7F3A;&#x70B9;&#xFF1A;&#x51FA;&#x73B0;bug&#x540E;&#x8FDB;&#x884C;&#x4FEE;&#x6539;&#xFF0C;&#x4FEE;&#x6539;&#x5B8C;&#x6210;&#x4EE5;&#x540E;&#x8981;&#x91CD;&#x65B0;&#x8FDB;&#x884C;&#x7F16;&#x8BD1;&#xFF0C;&#x5F00;&#x53D1;&#x6548;&#x7387;&#x6BD4;&#x8F83;&#x4F4E;&#x3002;&#x540C;&#x65F6;&#xFF0C;&#x7F16;&#x8BD1;&#x578B;&#x7684;&#x8BED;&#x8A00;&#x662F;&#x4E0D;&#x80FD;&#x5938;&#x5E73;&#x53F0;&#x7684;&#xFF08;Linux&#x4E0B;&#x5F00;&#x53D1;&#x7684;&#x7A0B;&#x5E8F;&#x662F;&#x4E0D;&#x80FD;&#x5728;Windows&#x4E0A;&#x8FD0;&#x884C;&#x7684;&#xFF09;</p>
+<p>&#x200B;            &#x4F18;&#x70B9;&#xFF1A;&#x4F46;&#x662F;&#x7F16;&#x8BD1;&#x578B;&#x8BED;&#x8A00;&#x6267;&#x884C;&#x901F;&#x5EA6;&#x5FEB;&#xFF01;C&#x8BED;&#x8A00;&#x6BD4;Python&#x7684;&#x8FD0;&#x884C;&#x901F;&#x5EA6;&#x8981;&#x5FEB;&#x4E0A;10&#x500D;&#x5DE6;&#x53F3;&#xFF1B;</p>
+<p>&#x200B;        &#x89E3;&#x91CA;&#x578B;&#xFF1A;&#x5F53;&#x7A0B;&#x5E8F;&#x6267;&#x884C;&#x65F6;&#xFF0C;&#x4E00;&#x53E5;&#x8BDD;&#x4E00;&#x53E5;&#x8BDD;&#x6765;&#x8FDB;&#x884C;&#x89E3;&#x91CA;&#xFF0C;&#x518D;&#x4E00;&#x53E5;&#x8BDD;&#x4E00;&#x53E5;&#x8BDD;&#x6765;&#x6267;&#x884C;&#xFF1B;</p>
+<p>&#x200B;            &#x7F3A;&#x70B9;&#xFF1A;&#x8FD0;&#x884C;&#x901F;&#x5EA6;&#x6162;&#xFF0C;</p>
+<p>&#x200B;            &#x4F18;&#x70B9;&#xFF1A;&#x5F00;&#x53D1;&#x6548;&#x7387;&#x9AD8;&#xFF0C;&#x540C;&#x65F6;&#x53EF;&#x4EE5;&#x8DE8;&#x5E73;&#x53F0;&#xFF1B;</p>
+<h2 id="1-3&#x3001;python&#x5386;&#x53F2;&#x4ECB;&#x7ECD;"><a href="#1-3&#x3001;python&#x5386;&#x53F2;&#x4ECB;&#x7ECD;" class="headerlink" title="1.3&#x3001;python&#x5386;&#x53F2;&#x4ECB;&#x7ECD;"></a><strong>1.3&#x3001;python&#x5386;&#x53F2;&#x4ECB;&#x7ECD;</strong></h2><p>&#x200B;    <strong>Python&#x7684;&#x8D77;&#x6E90;</strong></p>
+<p><img src="/development/python/python%E5%9F%BA%E7%A1%80_01_%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/image-20211127153711359.png" alt="image-20211127153711359"></p>
+<p>&#x200B;    1989&#x5E74;&#xFF0C;&#x4E3A;&#x4E86;&#x6253;&#x53D1;&#x5723;&#x8BDE;&#x8282;&#x5047;&#x671F;&#xFF0C;Guido&#x5F00;&#x59CB;&#x5199;Python&#x8BED;&#x8A00;&#x7684;&#x7F16;&#x8BD1;/&#x89E3;&#x91CA;&#x5668;&#x3002;Python&#x6765;&#x81EA;Guido&#x6240;&#x631A;&#x7231;&#x7684;&#x7535;&#x89C6;&#x5267;Monty Python&#x2019;s Flying Circus (BBC1960-1970&#x5E74;&#x4EE3;&#x64AD;&#x653E;&#x7684;&#x5BA4;&#x5185;&#x60C5;&#x666F;&#x5E7D;&#x9ED8;&#x5267;&#xFF0C;&#x4EE5;&#x5F53;&#x65F6;&#x7684;&#x82F1;&#x56FD;&#x751F;&#x6D3B;&#x4E3A;&#x7D20;&#x6750;)&#x3002;&#x4ED6;&#x5E0C;&#x671B;&#x8FD9;&#x4E2A;&#x65B0;&#x7684;&#x53EB;&#x505A;Python&#x7684;&#x8BED;&#x8A00;&#xFF0C;&#x80FD;&#x5B9E;&#x73B0;&#x4ED6;&#x7684;&#x7406;&#x5FF5;(&#x4E00;&#x79CD;C&#x548C;shell&#x4E4B;&#x95F4;&#xFF0C;&#x529F;&#x80FD;&#x5168;&#x9762;&#xFF0C;&#x6613;&#x5B66;&#x6613;&#x7528;&#xFF0C;&#x53EF;&#x62D3;&#x5C55;&#x7684;&#x8BED;&#x8A00;)&#x3002;Guido&#x4F5C;&#x4E3A;&#x4E00;&#x4E2A;&#x8BED;&#x8A00;&#x8BBE;&#x8BA1;&#x7231;&#x597D;&#x8005;&#xFF0C;&#x5DF2;&#x7ECF;&#x6709;&#x8FC7;&#x8BBE;&#x8BA1;&#x8BED;&#x8A00;&#x7684;(&#x4E0D;&#x5F88;&#x6210;&#x529F;)&#x7684;&#x5C1D;&#x8BD5;&#x3002;&#x8FD9;&#x4E00;&#x6B21;&#xFF0C;&#x4E5F;&#x4E0D;&#x8FC7;&#x662F;&#x4E00;&#x6B21;&#x7EAF;&#x7CB9;&#x7684;hacking&#x884C;&#x4E3A;&#x3002;</p>
+<p>&#x200B;    <strong>Python&#x7684;&#x8BDE;&#x751F;</strong></p>
+<p>&#x200B;    1991&#x5E74;&#xFF0C;&#x7B2C;&#x4E00;&#x4E2A;Python&#x7F16;&#x8BD1;&#x5668;(&#x540C;&#x65F6;&#x4E5F;&#x662F;&#x89E3;&#x91CA;&#x5668;)&#x8BDE;&#x751F;&#x3002;&#x5B83;&#x662F;&#x7528;C&#x8BED;&#x8A00;&#x5B9E;&#x73B0;&#x7684;&#xFF0C;&#x5E76;&#x80FD;&#x591F;&#x8C03;&#x7528;C&#x5E93;(.so&#x6587;&#x4EF6;)&#x3002;&#x4ECE;&#x4E00;&#x51FA;&#x751F;&#xFF0C;Python&#x5DF2;&#x7ECF;&#x5177;&#x6709;&#x4E86;&#xFF1A;&#x7C7B;(class)&#xFF0C;&#x51FD;&#x6570;(function)&#xFF0C;&#x5F02;&#x5E38;&#x5904;&#x7406;(exception)&#xFF0C;&#x5305;&#x62EC;&#x8868;(list)&#x548C;&#x8BCD;&#x5178;(dictionary)&#x5728;&#x5185;&#x7684;&#x6838;&#x5FC3;&#x6570;&#x636E;&#x7C7B;&#x578B;&#xFF0C;&#x4EE5;&#x53CA;&#x6A21;&#x5757;(module)&#x4E3A;&#x57FA;&#x7840;&#x7684;&#x62D3;&#x5C55;&#x7CFB;&#x7EDF;&#x3002;</p>
+<p><img src="/development/python/python%E5%9F%BA%E7%A1%80_01_%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/image-20211127153736459.png" alt="image-20211127153736459"></p>
+<p>&#x200B;    <strong>Python&#x5C06;&#x8BB8;&#x591A;&#x673A;&#x5668;&#x5C42;&#x9762;&#x4E0A;&#x7684;&#x7EC6;&#x8282;&#x9690;&#x85CF;&#xFF0C;&#x4EA4;&#x7ED9;&#x7F16;&#x8BD1;&#x5668;&#x5904;&#x7406;&#xFF0C;&#x5E76;&#x51F8;&#x663E;&#x51FA;&#x903B;&#x8F91;&#x5C42;&#x9762;&#x7684;&#x7F16;&#x7A0B;&#x601D;&#x8003;&#x3002;Python&#x7A0B;&#x5E8F;&#x5458;&#x53EF;&#x4EE5;&#x82B1;&#x66F4;&#x591A;&#x7684;&#x65F6;&#x95F4;&#x7528;&#x4E8E;&#x601D;&#x8003;&#x7A0B;&#x5E8F;&#x7684;&#x903B;&#x8F91;&#xFF0C;&#x800C;&#x4E0D;&#x662F;&#x5177;&#x4F53;&#x7684;&#x5B9E;&#x73B0;&#x7EC6;&#x8282; (Guido&#x6709;&#x4E00;&#x4EF6;T&#x6064;&#xFF0C;&#x5199;&#x7740;&#xFF1A;&#x4EBA;&#x751F;&#x82E6;&#x77ED;&#xFF0C;&#x6211;&#x7528;Python)&#x3002;&#x8FD9;&#x4E00;&#x7279;&#x5F81;&#x5438;&#x5F15;&#x4E86;&#x5E7F;&#x5927;&#x7684;&#x7A0B;&#x5E8F;&#x5458;&#x3002;Python&#x5F00;&#x59CB;&#x6D41;&#x884C;&#x3002;</strong></p>
+<p>&#x200B;    <strong>1990&#x5E74;&#x4EE3;&#x8FD8;&#x662F;&#x4E2A;&#x4EBA;&#x7535;&#x8111;&#x7684;&#x65F6;&#x4EE3;&#xFF0C;windows&#x548C;Intel&#x631F;PC&#x4EE5;&#x4EE4;&#x5929;&#x4E0B;&#xFF0C;&#x76DB;&#x6781;&#x4E00;&#x65F6;&#x3002;&#x5C3D;&#x7BA1;Internet&#x4E3A;&#x4E3B;&#x4F53;&#x7684;&#x4FE1;&#x606F;&#x9769;&#x547D;&#x5C1A;&#x672A;&#x5230;&#x6765;&#xFF0C;&#x4F46;&#x8BB8;&#x591A;&#x7A0B;&#x5E8F;&#x5458;&#x4EE5;&#x53CA;&#x8D44;&#x6DF1;&#x8BA1;&#x7B97;&#x673A;&#x7528;&#x6237;&#x5DF2;&#x7ECF;&#x5728;&#x9891;&#x7E41;&#x4F7F;&#x7528;Internet&#x8FDB;&#x884C;&#x4EA4;&#x6D41; (&#x5305;&#x62EC;email&#x548C;newsgroup)&#x3002;Internet&#x8BA9;&#x4FE1;&#x606F;&#x4EA4;&#x6D41;&#x6210;&#x672C;&#x5927;&#x5927;&#x4E0B;&#x964D;&#x3002;&#x4E00;&#x79CD;&#x65B0;&#x7684;&#x8F6F;&#x4EF6;&#x5F00;&#x53D1;&#x6A21;&#x5F0F;&#x5F00;&#x59CB;&#x6D41;&#x884C;&#xFF1A;&#x5F00;&#x6E90; (open source)&#x3002;&#x7A0B;&#x5E8F;&#x5458;&#x5229;&#x7528;&#x4E1A;&#x4F59;&#x65F6;&#x95F4;&#x8FDB;&#x884C;&#x8F6F;&#x4EF6;&#x5F00;&#x53D1;&#xFF0C;&#x5E76;&#x5F00;&#x653E;&#x6E90;&#x4EE3;&#x7801;&#x3002;1991&#x5E74;&#xFF0C;Linus&#x5728;comp.os.minix&#x65B0;&#x95FB;&#x7EC4;&#x4E0A;&#x53D1;&#x5E03;&#x4E86;Linux&#x5185;&#x6838;&#x6E90;&#x4EE3;&#x7801;&#xFF0C;&#x5438;&#x5F15;&#x5927;&#x6279;hacker&#x7684;&#x52A0;&#x5165;&#x3002;Linux&#x548C;GNU&#x76F8;&#x4E92;&#x5408;&#x4F5C;&#xFF0C;&#x6700;&#x7EC8;&#x6784;&#x6210;&#x4E86;&#x4E00;&#x4E2A;&#x5145;&#x6EE1;&#x6D3B;&#x529B;&#x7684;&#x5F00;&#x6E90;&#x5E73;&#x53F0;&#x3002;</strong></p>
+<p>&#x200B;    &#x5230;&#x4ECA;&#x5929;&#xFF0C;Python&#x7684;&#x6846;&#x67B6;&#x5DF2;&#x7ECF;&#x786E;&#x7ACB;&#x3002;Python&#x8BED;&#x8A00;&#x4EE5;&#x5BF9;&#x8C61;&#x4E3A;&#x6838;&#x5FC3;&#x7EC4;&#x7EC7;&#x4EE3;&#x7801;(Everything is object)&#xFF0C;&#x652F;&#x6301;&#x591A;&#x79CD;&#x7F16;&#x7A0B;&#x8303;&#x5F0F;(multi-paradigm)&#xFF0C;&#x91C7;&#x7528;&#x52A8;&#x6001;&#x7C7B;&#x578B;(dynamic typing)&#xFF0C;&#x81EA;&#x52A8;&#x8FDB;&#x884C;&#x5185;&#x5B58;&#x56DE;&#x6536;(garbage collection)&#x3002;Python&#x652F;&#x6301;&#x89E3;&#x91CA;&#x8FD0;&#x884C;(interpret)&#xFF0C;&#x5E76;&#x80FD;&#x8C03;&#x7528;C&#x5E93;&#x8FDB;&#x884C;&#x62D3;&#x5C55;&#x3002;Python&#x6709;&#x5F3A;&#x5927;&#x7684;&#x6807;&#x51C6;&#x5E93; (battery included)&#x3002;&#x7531;&#x4E8E;&#x6807;&#x51C6;&#x5E93;&#x7684;&#x4F53;&#x7CFB;&#x5DF2;&#x7ECF;&#x7A33;&#x5B9A;&#xFF0C;&#x6240;&#x4EE5;Python&#x7684;&#x751F;&#x6001;&#x7CFB;&#x7EDF;&#x5F00;&#x59CB;&#x62D3;&#x5C55;&#x5230;&#x7B2C;&#x4E09;&#x65B9;&#x5305;&#x3002;&#x8FD9;&#x4E9B;&#x5305;&#xFF0C;&#x5982;Django, web.py, wxpython, numpy, matplotlib,PIL&#xFF0C;&#x5C06;Python&#x5347;&#x7EA7;&#x6210;&#x4E86;&#x7269;&#x79CD;&#x4E30;&#x5BCC;&#x7684;&#x70ED;&#x5E26;&#x96E8;&#x6797;&#x3002;</p>
+<p>&#x200B;    <strong>Python&#x7684;&#x7248;&#x672C;</strong></p>
+<p>Python2.4 -&gt; web&#x6846;&#x67B6;Django&#x8BDE;&#x751F;</p>
+<p>Python2.7 -&gt; &#x517C;&#x5BB9;&#x6027;&#x7248;&#x672C;</p>
+<p>Python3.0 -&gt; &#x548C;2.7&#x662F;&#x540C;&#x4E00;&#x5E74;&#x53D1;&#x884C;&#x7684;&#xFF0C;&#x5F88;&#x591A;&#x4EBA;&#x7ED9;&#x6E90;&#x7801;&#x4F5C;&#x8D21;&#x732E;&#xFF0C;&#x4F46;&#x662F;&#x6CA1;&#x6709;&#x89C4;&#x8303;&#xFF01;&#x5219;&#x5BFC;&#x81F4;&#x4E86;Python&#x51FA;&#x73B0;&#x5F88;&#x591A;&#x91CD;&#x590D;&#x4EE3;&#x7801;&#xFF01;&#x6240;&#x4EE5;&#x53D1;&#x884C;3.0&#x7248;&#x672C;&#x91CD;&#x5199;Python&#x7A0B;&#x5E8F;&#x3002;&#x4E14;Python2&#x548C;Python3&#x662F;&#x4E92;&#x4E0D;&#x517C;&#x5BB9;&#x7684;&#xFF01;&#x518D;2020&#x5E74;&#x7684;&#x65F6;&#x5019;Python2&#x5DF2;&#x7ECF;&#x505C;&#x6B62;&#x7EF4;&#x62A4;&#xFF0C;&#x66F4;&#x591A;&#x7684;&#x4F7F;&#x7528;Python3.0&#x7248;&#x672C;</p>
+<h2 id="1-4&#x3001;python&#x7684;&#x7F16;&#x8BD1;&#x5668;&#x79CD;&#x7C7B;"><a href="#1-4&#x3001;python&#x7684;&#x7F16;&#x8BD1;&#x5668;&#x79CD;&#x7C7B;" class="headerlink" title="1.4&#x3001;python&#x7684;&#x7F16;&#x8BD1;&#x5668;&#x79CD;&#x7C7B;"></a><strong>1.4&#x3001;python&#x7684;&#x7F16;&#x8BD1;&#x5668;&#x79CD;&#x7C7B;</strong></h2><p>&#x200B;     &#x7B80;&#x5355;&#x5730;&#x8BF4;&#xFF0C;Python&#x662F;&#x4E00;&#x95E8;&#x7F16;&#x7A0B;&#x8BED;&#x8A00;&#xFF0C;&#x4EFB;&#x4F55;&#x4E00;&#x79CD;&#x7F16;&#x7A0B;&#x8BED;&#x8A00;&#x90FD;&#x9700;&#x8981;&#x7528;&#x53E6;&#x4E00;&#x79CD;&#x8BED;&#x8A00;&#x6765;&#x5B9E;&#x73B0;&#x5B83;&#xFF0C;&#x6BD4;&#x5982;C&#x8BED;&#x8A00;&#x5C31;&#x662F;&#x7528;&#x673A;&#x5668;&#x8BED;&#x8A00;&#x6765;&#x5B9E;&#x73B0;&#x7684;&#x3002;&#x6240;&#x4EE5;&#xFF0C;Python&#x6839;&#x636E;&#x5B9E;&#x73B0;&#x65B9;&#x5F0F;&#x4E0D;&#x540C;&#x5206;&#x4E3A;&#x4E86;CPyhton&#x3001;Pypy&#x3001;Jython&#x7B49;&#x3002;</p>
+<p>&#x200B;    <strong>CPython</strong><br>&#x200B;    CPython&#x662F;&#x7528;C&#x8BED;&#x8A00;&#x5B9E;&#x73B0;Pyhon&#xFF0C;&#x662F;&#x76EE;&#x524D;&#x5E94;&#x7528;&#x6700;&#x5E7F;&#x6CDB;&#x7684;&#x89E3;&#x91CA;&#x5668;&#x3002;Python&#x6700;&#x65B0;&#x7684;&#x8BED;&#x8A00;&#x7279;&#x6027;&#x90FD;&#x662F;&#x5728;&#x8FD9;&#x4E2A;&#x4E0A;&#x9762;&#x5148;&#x5B9E;&#x73B0;&#xFF0C;Linux&#xFF0C;OS X&#x7B49;&#x81EA;&#x5E26;&#x7684;&#x4E5F;&#x662F;&#x8FD9;&#x4E2A;&#x7248;&#x672C;&#xFF0C;&#x5305;&#x62EC;Anaconda&#x91CC;&#x9762;&#x7528;&#x7684;&#x4E5F;&#x662F;CPython&#x3002;CPython&#x662F;&#x5B98;&#x65B9;&#x7248;&#x672C;&#x52A0;&#x4E0A;&#x5BF9;&#x4E8E;C/Python API&#x7684;&#x5168;&#x9762;&#x652F;&#x6301;&#xFF0C;&#x57FA;&#x672C;&#x5305;&#x542B;&#x4E86;&#x6240;&#x6709;&#x7B2C;&#x4E09;&#x65B9;&#x5E93;&#x652F;&#x6301;&#xFF0C;&#x4F8B;&#x5982;Numpy&#xFF0C;Scipy&#x7B49;&#x3002;&#x4F46;CPython&#x6709;&#x51E0;&#x4E2A;&#x7F3A;&#x9677;&#xFF0C;&#x4E00;&#x662F;&#x5168;&#x5C40;&#x9501;&#x4F7F;Python&#x5728;&#x591A;&#x7EBF;&#x7A0B;&#x6548;&#x80FD;&#x4E0A;&#x8868;&#x73B0;&#x4E0D;&#x4F73;&#xFF0C;&#x4E8C;&#x662F;CPython&#x65E0;&#x6CD5;&#x652F;&#x6301;JIT&#xFF08;&#x5373;&#x65F6;&#x7F16;&#x8BD1;&#xFF09;&#xFF0C;&#x5BFC;&#x81F4;&#x5176;&#x6267;&#x884C;&#x901F;&#x5EA6;&#x4E0D;&#x53CA;Java&#x548C;Javascipt&#x7B49;&#x8BED;&#x8A00;&#x3002;&#x4E8E;&#x662F;&#x51FA;&#x73B0;&#x4E86;Pypy&#x3002;</p>
+<p>&#x200B;    <strong>Pypy</strong><br>&#x200B;    Pypy&#x662F;&#x7528;Python&#x81EA;&#x8EAB;&#x5B9E;&#x73B0;&#x7684;&#x89E3;&#x91CA;&#x5668;&#x3002;&#x9488;&#x5BF9;CPython&#x7684;&#x7F3A;&#x70B9;&#x8FDB;&#x884C;&#x4E86;&#x5404;&#x65B9;&#x9762;&#x7684;&#x6539;&#x826F;&#xFF0C;&#x6027;&#x80FD;&#x5F97;&#x5230;&#x5F88;&#x5927;&#x7684;&#x63D0;&#x5347;&#x3002;&#x6700;&#x91CD;&#x8981;&#x7684;&#x4E00;&#x70B9;&#x5C31;&#x662F;Pypy&#x96C6;&#x6210;&#x4E86;JIT&#x3002;&#x4F46;&#x662F;&#xFF0C;Pypy&#x65E0;&#x6CD5;&#x652F;&#x6301;&#x5B98;&#x65B9;&#x7684;C/Python API&#xFF0C;&#x5BFC;&#x81F4;&#x65E0;&#x6CD5;&#x4F7F;&#x7528;&#x4F8B;&#x5982;Numpy&#xFF0C;Scipy&#x7B49;&#x91CD;&#x8981;&#x7684;&#x7B2C;&#x4E09;&#x65B9;&#x5E93;&#x3002;&#x8FD9;&#x4E5F;&#x662F;&#x73B0;&#x5728;Pypy&#x6CA1;&#x6709;&#x88AB;&#x5E7F;&#x6CDB;&#x4F7F;&#x7528;&#x7684;&#x539F;&#x56E0;&#x5427;&#x3002;</p>
+<p>&#x200B;    <strong>Jython</strong><br>&#x200B;    Jython&#x662F;&#x5C06;Python code&#x5728;JVM&#x4E0A;&#x9762;&#x8DD1;&#x548C;&#x8C03;&#x7528;java code&#x7684;&#x89E3;&#x91CA;&#x5668;&#x3002;</p>
+<p>&#x200B;    &#x4EE5;&#x4E0A;&#x53EA;&#x662F;&#x7B80;&#x5355;&#x4ECB;&#x7ECD;&#x4E86;Python&#xFF0C;CPython&#xFF0C;Pypy&#xFF0C;Jython&#x7684;&#x5173;&#x7CFB;&#xFF0C;&#x7B97;&#x662F;&#x629B;&#x7816;&#x5F15;&#x7389;&#x4E86;&#x3002;</p>
+<h2 id="1-5&#x3001;python&#x8BED;&#x8A00;&#x7684;&#x4F18;&#x7F3A;&#x70B9;"><a href="#1-5&#x3001;python&#x8BED;&#x8A00;&#x7684;&#x4F18;&#x7F3A;&#x70B9;" class="headerlink" title="1.5&#x3001;python&#x8BED;&#x8A00;&#x7684;&#x4F18;&#x7F3A;&#x70B9;"></a><strong>1.5&#x3001;python&#x8BED;&#x8A00;&#x7684;&#x4F18;&#x7F3A;&#x70B9;</strong></h2><h3 id="1-5-1&#x3001;&#x4F18;&#x70B9;"><a href="#1-5-1&#x3001;&#x4F18;&#x70B9;" class="headerlink" title="1.5.1&#x3001;&#x4F18;&#x70B9;"></a>1.5.1&#x3001;&#x4F18;&#x70B9;</h3><p>&#x200B;    1&#x3001;Python&#x7684;&#x5B9A;&#x4F4D;&#x662F;&#x201C;&#x4F18;&#x96C5;&#x201D;&#x3001;&#x201C;&#x660E;&#x786E;&#x201D;&#x3001;&#x201C;&#x7B80;&#x5355;&#x201D;&#xFF0C;&#x6240;&#x4EE5;Python&#x7A0B;&#x5E8F;&#x770B;&#x4E0A;&#x53BB;&#x603B;&#x662F;&#x7B80;&#x5355;&#x6613;&#x61C2;&#xFF0C;&#x521D;&#x5B66;&#x8005;&#x5B66;Python&#xFF0C;&#x4E0D;&#x4F46;&#x5165;&#x95E8;&#x5BB9;&#x6613;&#xFF0C;&#x800C;&#x4E14;&#x5C06;&#x6765;&#x6DF1;&#x5165;&#x4E0B;&#x53BB;&#xFF0C;&#x53EF;&#x4EE5;&#x7F16;&#x5199;&#x90A3;&#x4E9B;&#x975E;&#x5E38;&#x975E;&#x5E38;&#x590D;&#x6742;&#x7684;&#x7A0B;&#x5E8F;&#x3002;<br>&#x200B;    2&#x3001;&#x5F00;&#x53D1;&#x6548;&#x7387;&#x975E;&#x5E38;&#x9AD8;&#xFF0C;Python&#x6709;&#x975E;&#x5E38;&#x5F3A;&#x5927;&#x7684;&#x7B2C;&#x4E09;&#x65B9;&#x5E93;&#xFF0C;&#x57FA;&#x672C;&#x4E0A;&#x4F60;&#x60F3;&#x901A;&#x8FC7;&#x8BA1;&#x7B97;&#x673A;&#x5B9E;&#x73B0;&#x4EFB;&#x4F55;&#x529F;&#x80FD;&#xFF0C;Python&#x5B98;&#x65B9;&#x5E93;&#x91CC;&#x90FD;&#x6709;&#x76F8;&#x5E94;&#x7684;&#x6A21;&#x5757;&#x8FDB;&#x884C;&#x652F;&#x6301;&#xFF0C;&#x76F4;&#x63A5;&#x4E0B;&#x8F7D;&#x8C03;&#x7528;&#x540E;&#xFF0C;&#x5728;&#x57FA;&#x7840;&#x5E93;&#x7684;&#x57FA;&#x7840;&#x4E0A;&#x518D;&#x8FDB;&#x884C;&#x5F00;&#x53D1;&#xFF0C;&#x5927;&#x5927;&#x964D;&#x4F4E;&#x5F00;&#x53D1;&#x5468;&#x671F;&#xFF0C;&#x907F;&#x514D;&#x91CD;&#x590D;&#x9020;&#x8F6E;&#x5B50;&#x3002;<br>&#x200B;    3&#x3001;&#x9AD8;&#x7EA7;&#x8BED;&#x8A00;&#x2014;&#x2014;&#x2014;&#x2014;&#x5F53;&#x4F60;&#x7528;Python&#x8BED;&#x8A00;&#x7F16;&#x5199;&#x7A0B;&#x5E8F;&#x7684;&#x65F6;&#x5019;&#xFF0C;&#x4F60;&#x65E0;&#x9700;&#x8003;&#x8651;&#x8BF8;&#x5982;&#x5982;&#x4F55;&#x7BA1;&#x7406;&#x4F60;&#x7684;&#x7A0B;&#x5E8F;&#x4F7F;&#x7528;&#x7684;&#x5185;&#x5B58;&#x4E00;&#x7C7B;&#x7684;&#x5E95;&#x5C42;&#x7EC6;&#x8282;<br>&#x200B;    4&#x3001;&#x53EF;&#x79FB;&#x690D;&#x6027;&#x2014;&#x2014;&#x2014;&#x2014;&#x7531;&#x4E8E;&#x5B83;&#x7684;&#x5F00;&#x6E90;&#x672C;&#x8D28;&#xFF0C;Python&#x5DF2;&#x7ECF;&#x88AB;&#x79FB;&#x690D;&#x5728;&#x8BB8;&#x591A;&#x5E73;&#x53F0;&#x4E0A;&#xFF08;&#x7ECF;&#x8FC7;&#x6539;&#x52A8;&#x4F7F;&#x5B83;&#x80FD;&#x591F;&#x5DE5; &#x4F5C;&#x5728;&#x4E0D;&#x540C;&#x5E73;&#x53F0;&#x4E0A;&#xFF09;&#x3002;&#x5982;&#x679C;&#x4F60;&#x5C0F;&#x5FC3;&#x5730;&#x907F;&#x514D;&#x4F7F;&#x7528;&#x4F9D;&#x8D56;&#x4E8E;&#x7CFB;&#x7EDF;&#x7684;&#x7279;&#x6027;&#xFF0C;&#x90A3;&#x4E48;&#x4F60;&#x7684;&#x6240;&#x6709;Python&#x7A0B;&#x5E8F;&#x65E0;&#x9700;&#x4FEE;&#x6539;&#x5C31;&#x51E0;&#x4E4E;&#x53EF;&#x4EE5;&#x5728;&#x5E02;&#x573A;&#x4E0A;&#x6240;&#x6709;&#x7684;&#x7CFB;&#x7EDF;&#x5E73;&#x53F0;&#x4E0A;&#x8FD0;&#x884C;<br>&#x200B;    5&#x3001;&#x53EF;&#x6269;&#x5C55;&#x6027;&#x2014;&#x2014;&#x2014;&#x2014;&#x5982;&#x679C;&#x4F60;&#x9700;&#x8981;&#x4F60;&#x7684;&#x4E00;&#x6BB5;&#x5173;&#x952E;&#x4EE3;&#x7801;&#x8FD0;&#x884C;&#x5F97;&#x66F4;&#x5FEB;&#x6216;&#x8005;&#x5E0C;&#x671B;&#x67D0;&#x4E9B;&#x7B97;&#x6CD5;&#x4E0D;&#x516C;&#x5F00;&#xFF0C;&#x4F60;&#x53EF;&#x4EE5;&#x628A;&#x4F60;&#x7684;&#x90E8;&#x5206;&#x7A0B;&#x5E8F;&#x7528;C&#x6216;C++&#x7F16;&#x5199;&#xFF0C;&#x7136;&#x540E;&#x5728;&#x4F60;&#x7684;Python&#x7A0B;&#x5E8F;&#x4E2D;&#x4F7F;&#x7528;&#x5B83;&#x4EEC;&#x3002;<br>&#x200B;    6&#x3001;&#x53EF;&#x5D4C;&#x5165;&#x6027;&#x2014;&#x2014;&#x2014;&#x2014;&#x4F60;&#x53EF;&#x4EE5;&#x628A;Python&#x5D4C;&#x5165;&#x4F60;&#x7684;C/C++&#x7A0B;&#x5E8F;&#xFF0C;&#x4ECE;&#x800C;&#x5411;&#x4F60;&#x7684;&#x7A0B;&#x5E8F;&#x7528;&#x6237;&#x63D0;&#x4F9B;&#x811A;&#x672C;&#x529F;&#x80FD;&#x3002;</p>
+<h3 id="1-5-2&#x3001;&#x7F3A;&#x70B9;"><a href="#1-5-2&#x3001;&#x7F3A;&#x70B9;" class="headerlink" title="1.5.2&#x3001;&#x7F3A;&#x70B9;"></a>1.5.2&#x3001;&#x7F3A;&#x70B9;</h3><p>&#x200B;    <strong>1&#x3001;&#x901F;&#x5EA6;&#x6162;</strong>&#xFF0C;Python &#x7684;&#x8FD0;&#x884C;&#x901F;&#x5EA6;&#x76F8;&#x6BD4;C&#x8BED;&#x8A00;&#x786E;&#x5B9E;&#x6162;&#x5F88;&#x591A;&#xFF0C;&#x8DDF;JAVA&#x76F8;&#x6BD4;&#x4E5F;&#x8981;&#x6162;&#x4E00;&#x4E9B;&#xFF0C;&#x56E0;&#x6B64;&#x8FD9;&#x4E5F;&#x662F;&#x5F88;&#x591A;&#x6240;&#x8C13;&#x7684;&#x5927;&#x725B;&#x4E0D;&#x5C51;&#x4E8E;&#x4F7F;&#x7528;Python&#x7684;&#x4E3B;&#x8981;&#x539F;&#x56E0;&#xFF0C;&#x4F46;&#x5176;&#x5B9E;&#x8FD9;&#x91CC;&#x6240;&#x6307;&#x7684;&#x8FD0;&#x884C;&#x901F;&#x5EA6;&#x6162;&#x5728;&#x5927;&#x591A;&#x6570;&#x60C5;&#x51B5;&#x4E0B;&#x7528;&#x6237;&#x662F;&#x65E0;&#x6CD5;&#x76F4;&#x63A5;&#x611F;&#x77E5;&#x5230;&#x7684;&#xFF0C;&#x5FC5;&#x987B;&#x501F;&#x52A9;&#x6D4B;&#x8BD5;&#x5DE5;&#x5177;&#x624D;&#x80FD;&#x4F53;&#x73B0;&#x51FA;&#x6765;&#xFF0C;&#x6BD4;&#x5982;&#x4F60;&#x7528;C&#x8FD0;&#x4E00;&#x4E2A;&#x7A0B;&#x5E8F;&#x82B1;&#x4E86;0.1s,&#x7528;Python&#x662F;0.01s,&#x8FD9;&#x6837;C&#x8BED;&#x8A00;&#x76F4;&#x63A5;&#x6BD4;Python&#x5FEB;&#x4E86;10s,&#x7B97;&#x662F;&#x975E;&#x5E38;&#x5938;&#x5F20;&#x4E86;&#xFF0C;&#x4F46;&#x662F;&#x4F60;&#x662F;&#x65E0;&#x6CD5;&#x76F4;&#x63A5;&#x901A;&#x8FC7;&#x8089;&#x773C;&#x611F;&#x77E5;&#x7684;&#xFF0C;&#x56E0;&#x4E3A;&#x4E00;&#x4E2A;&#x6B63;&#x5E38;&#x4EBA;&#x6240;&#x80FD;&#x611F;&#x77E5;&#x7684;&#x65F6;&#x95F4;&#x6700;&#x5C0F;&#x5355;&#x4F4D;&#x662F;0.15-0.4s&#x5DE6;&#x53F3;&#xFF0C;&#x54C8;&#x54C8;&#x3002;&#x5176;&#x5B9E;&#x5728;&#x5927;&#x591A;&#x6570;&#x60C5;&#x51B5;&#x4E0B;Python&#x5DF2;&#x7ECF;&#x5B8C;&#x5168;&#x53EF;&#x4EE5;&#x6EE1;&#x8DB3;&#x4F60;&#x5BF9;&#x7A0B;&#x5E8F;&#x901F;&#x5EA6;&#x7684;&#x8981;&#x6C42;&#xFF0C;&#x9664;&#x975E;&#x4F60;&#x8981;&#x5199;&#x5BF9;&#x901F;&#x5EA6;&#x8981;&#x6C42;&#x6781;&#x9AD8;&#x7684;&#x641C;&#x7D22;&#x5F15;&#x64CE;&#x7B49;&#xFF0C;&#x8FD9;&#x79CD;&#x60C5;&#x51B5;&#x4E0B;&#xFF0C;&#x5F53;&#x7136;&#x8FD8;&#x662F;&#x5EFA;&#x8BAE;&#x4F60;&#x7528;C&#x53BB;&#x5B9E;&#x73B0;&#x7684;&#x3002;<br>&#x200B;    <strong>2&#x3001;&#x4EE3;&#x7801;&#x4E0D;&#x80FD;&#x52A0;&#x5BC6;</strong>&#xFF0C;&#x56E0;&#x4E3A;PYTHON&#x662F;&#x89E3;&#x91CA;&#x6027;&#x8BED;&#x8A00;&#xFF0C;&#x5B83;&#x7684;&#x6E90;&#x7801;&#x90FD;&#x662F;&#x4EE5;&#x540D;&#x6587;&#x5F62;&#x5F0F;&#x5B58;&#x653E;&#x7684;&#xFF0C;&#x4E0D;&#x8FC7;&#x6211;&#x4E0D;&#x8BA4;&#x4E3A;&#x8FD9;&#x7B97;&#x662F;&#x4E00;&#x4E2A;&#x7F3A;&#x70B9;&#xFF0C;&#x5982;&#x679C;&#x4F60;&#x7684;&#x9879;&#x76EE;&#x8981;&#x6C42;&#x6E90;&#x4EE3;&#x7801;&#x5FC5;&#x987B;&#x662F;&#x52A0;&#x5BC6;&#x7684;&#xFF0C;&#x90A3;&#x4F60;&#x4E00;&#x5F00;&#x59CB;&#x5C31;&#x4E0D;&#x5E94;&#x8BE5;&#x7528;Python&#x6765;&#x53BB;&#x5B9E;&#x73B0;&#x3002;<br>&#x200B;    <strong>3&#x3001;&#x7EBF;&#x7A0B;&#x4E0D;&#x80FD;&#x5229;&#x7528;&#x591A;CPU&#x95EE;&#x9898;</strong>&#xFF0C;&#x8FD9;&#x662F;Python&#x88AB;&#x4EBA;&#x8BDF;&#x75C5;&#x6700;&#x591A;&#x7684;&#x4E00;&#x4E2A;&#x7F3A;&#x70B9;&#xFF0C;GIL&#x5373;&#x5168;&#x5C40;&#x89E3;&#x91CA;&#x5668;&#x9501;&#xFF08;Global Interpreter Lock&#xFF09;&#xFF0C;&#x662F;&#x8BA1;&#x7B97;&#x673A;&#x7A0B;&#x5E8F;&#x8BBE;&#x8BA1;&#x8BED;&#x8A00;&#x89E3;&#x91CA;&#x5668;&#x7528;&#x4E8E;&#x540C;&#x6B65;&#x7EBF;&#x7A0B;&#x7684;&#x5DE5;&#x5177;&#xFF0C;&#x4F7F;&#x5F97;&#x4EFB;&#x4F55;&#x65F6;&#x523B;&#x4EC5;&#x6709;&#x4E00;&#x4E2A;&#x7EBF;&#x7A0B;&#x5728;&#x6267;&#x884C;&#xFF0C;Python&#x7684;&#x7EBF;&#x7A0B;&#x662F;&#x64CD;&#x4F5C;&#x7CFB;&#x7EDF;&#x7684;&#x539F;&#x751F;&#x7EBF;&#x7A0B;&#x3002;&#x5728;Linux&#x4E0A;&#x4E3A;pthread&#xFF0C;&#x5728;Windows&#x4E0A;&#x4E3A;Win thread&#xFF0C;&#x5B8C;&#x5168;&#x7531;&#x64CD;&#x4F5C;&#x7CFB;&#x7EDF;&#x8C03;&#x5EA6;&#x7EBF;&#x7A0B;&#x7684;&#x6267;&#x884C;&#x3002;&#x4E00;&#x4E2A;python&#x89E3;&#x91CA;&#x5668;&#x8FDB;&#x7A0B;&#x5185;&#x6709;&#x4E00;&#x6761;&#x4E3B;&#x7EBF;&#x7A0B;&#xFF0C;&#x4EE5;&#x53CA;&#x591A;&#x6761;&#x7528;&#x6237;&#x7A0B;&#x5E8F;&#x7684;&#x6267;&#x884C;&#x7EBF;&#x7A0B;&#x3002;&#x5373;&#x4F7F;&#x5728;&#x591A;&#x6838;CPU&#x5E73;&#x53F0;&#x4E0A;&#xFF0C;&#x7531;&#x4E8E;GIL&#x7684;&#x5B58;&#x5728;&#xFF0C;&#x6240;&#x4EE5;&#x7981;&#x6B62;&#x591A;&#x7EBF;&#x7A0B;&#x7684;&#x5E76;&#x884C;&#x6267;&#x884C;&#x3002;&#x5173;&#x4E8E;&#x8FD9;&#x4E2A;&#x95EE;&#x9898;&#x7684;&#x6298;&#x8877;&#x89E3;&#x51B3;&#x65B9;&#x6CD5;&#xFF0C;&#x6211;&#x4EEC;&#x5728;&#x4EE5;&#x540E;&#x7EBF;&#x7A0B;&#x548C;&#x8FDB;&#x7A0B;&#x7AE0;&#x8282;&#x91CC;&#x518D;&#x8FDB;&#x884C;&#x8BE6;&#x7EC6;&#x63A2;&#x8BA8;&#x3002;</p>
+<h2 id="1-6&#x3001;python&#x73AF;&#x5883;&#x7684;&#x5B89;&#x88C5;"><a href="#1-6&#x3001;python&#x73AF;&#x5883;&#x7684;&#x5B89;&#x88C5;" class="headerlink" title="1.6&#x3001;python&#x73AF;&#x5883;&#x7684;&#x5B89;&#x88C5;"></a><strong>1.6&#x3001;python&#x73AF;&#x5883;&#x7684;&#x5B89;&#x88C5;</strong></h2><h3 id="1-6-1&#x3001;python&#x89E3;&#x91CA;&#x5668;&#x7684;&#x4E0B;&#x8F7D;&#x4E0E;&#x5B89;&#x88C5;"><a href="#1-6-1&#x3001;python&#x89E3;&#x91CA;&#x5668;&#x7684;&#x4E0B;&#x8F7D;&#x4E0E;&#x5B89;&#x88C5;" class="headerlink" title="1.6.1&#x3001;python&#x89E3;&#x91CA;&#x5668;&#x7684;&#x4E0B;&#x8F7D;&#x4E0E;&#x5B89;&#x88C5;"></a><strong>1.6.1&#x3001;python&#x89E3;&#x91CA;&#x5668;&#x7684;&#x4E0B;&#x8F7D;&#x4E0E;&#x5B89;&#x88C5;</strong></h3><p>&#x200B;    python&#x7684;&#x89E3;&#x91CA;&#x5668;&#x4E0B;&#x8F7D;&#x9700;&#x8981;&#x5230;&#x5B98;&#x7F51;&#x4E0A;&#x53BB;&#x4E0B;&#x8F7D;&#xFF0C;&#x6700;&#x597D;&#x9700;&#x8981;&#x6307;&#x5B9A;&#x4E0B;&#x8F7D;&#x7684;&#x64CD;&#x4F5C;&#x7CFB;&#x7EDF;&#x5E73;&#x53F0;&#x7248;&#x672C;&#x7684;python&#x89E3;&#x91CA;&#x5668;&#x3002;</p>
+<blockquote>
+<p>&#x6CE8;&#x610F;&#xFF1A;&#x8BE5;&#x89E3;&#x91CA;&#x5668;&#x518D;&#x5B89;&#x88C5;&#x7684;&#x8FC7;&#x7A0B;&#x4E2D;&#xFF0C;&#x4E00;&#x5B9A;&#x8981;<strong>&#x52FE;&#x9009;&#x8BA9;&#x4ED6;&#x81EA;&#x5DF1;&#x6DFB;&#x52A0;&#x73AF;&#x5883;&#x53D8;&#x91CF;</strong>&#xFF1B;</p>
+</blockquote>
+<p>&#x200B;    &#x5982;&#x679C;&#x662F;&#x6709;&#x66F4;&#x597D;&#x7684;Python&#x7684;&#x4EA4;&#x4E92;&#x4F53;&#x9A8C;&#xFF0C;&#x53EF;&#x4EE5;&#x5B89;&#x88C5;ipython&#x7A0B;&#x5E8F;&#xFF1B;</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ pip install ipython  <span class="comment"># &#x9ED8;&#x8BA4;&#x4F7F;&#x7528;&#x56FD;&#x5916;&#x7684;&#x6E90;&#xFF0C;&#x6240;&#x4EE5;&#x901F;&#x5EA6;&#x6BD4;&#x8F83;&#x6162;</span></span><br></pre></td></tr></table></figure>
+
+<p>&#x200B;    <a target="_blank" rel="noopener" href="https://www.cnblogs.com/caicai2019/p/14311803.html">https://www.cnblogs.com/caicai2019/p/14311803.html</a> # &#x4FEE;&#x6539;&#x6E90;&#x6587;&#x4EF6;</p>
+<p>&#x200B;    &#x5982;&#x4E0B;&#x56FE;&#xFF1A;&#x5219;&#x663E;&#x793A;&#x5B89;&#x88C5;&#x5B8C;&#x6210;</p>
+<p><img src="/development/python/python%E5%9F%BA%E7%A1%80_01_%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/image-20211127154755110.png" alt="image-20211127154755110"></p>
+<p>&#x200B;    &#x6216;&#x8005;&#x662F;jupyter&#x8F6F;&#x4EF6;&#x7A0B;&#x5E8F;&#x4E5F;&#x53EF;&#x4EE5;</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ pip install jupyter</span><br><span class="line">$ jupyter notebook</span><br></pre></td></tr></table></figure>
+
+<h3 id="1-6-2&#x3001;python&#x96C6;&#x6210;&#x5F00;&#x53D1;&#x73AF;&#x5883;&#x7684;&#x5B89;&#x88C5;&#x4E0E;&#x7B80;&#x5355;&#x4F7F;&#x7528;"><a href="#1-6-2&#x3001;python&#x96C6;&#x6210;&#x5F00;&#x53D1;&#x73AF;&#x5883;&#x7684;&#x5B89;&#x88C5;&#x4E0E;&#x7B80;&#x5355;&#x4F7F;&#x7528;" class="headerlink" title="1.6.2&#x3001;python&#x96C6;&#x6210;&#x5F00;&#x53D1;&#x73AF;&#x5883;&#x7684;&#x5B89;&#x88C5;&#x4E0E;&#x7B80;&#x5355;&#x4F7F;&#x7528;"></a><strong>1.6.2&#x3001;python&#x96C6;&#x6210;&#x5F00;&#x53D1;&#x73AF;&#x5883;&#x7684;&#x5B89;&#x88C5;&#x4E0E;&#x7B80;&#x5355;&#x4F7F;&#x7528;</strong></h3><p>&#x200B;    pychram&#x7684;&#x4E0B;&#x8F7D;&#xFF0C;&#x53EF;&#x4EE5;&#x5230;&#x5B98;&#x7F51;&#x5730;&#x5740;&#x8FDB;&#x884C;pycharm&#x7684;&#x4E0B;&#x8F7D;&#xFF0C;&#x6211;&#x4EEC;&#x8FD9;&#x91CC;&#x5EFA;&#x8BAE;&#x4F7F;&#x7528;&#x793E;&#x533A;&#x7248;&#x672C;&#xFF0C;&#x518D;&#x4E4B;&#x540E;&#x7684;&#x5F00;&#x53D1;&#x4E2D;&#xFF0C;&#x5982;&#x679C;&#x5E94;&#x7528;&#x5230;python&#x7684;&#x9AD8;&#x7EA7;&#x529F;&#x80FD;&#xFF0C;&#x9700;&#x8981;&#x8F6C;&#x6362;&#x4E3A;&#x4E13;&#x4E1A;&#x7248;&#x672C;&#x3002;&#x5730;&#x5740;&#x5982;&#x4E0B;&#xFF1A;<a target="_blank" rel="noopener" href="https://www.jetbrains.com/pycharm/download/#section=windows">https://www.jetbrains.com/pycharm/download/#section=windows</a></p>
+<p>&#x200B;    <strong>Pycharm&#x7684;&#x5B89;&#x88C5;</strong>&#xFF1A;</p>
+<p>&#x200B;    installation options&#x4E2D;&#x7684;&#x5185;&#x5BB9;&#x5168;&#x90E8;&#x52FE;&#x4E0A;&#xFF1B;</p>
+<p><img src="/development/python/python%E5%9F%BA%E7%A1%80_01_%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/image-20211127154900465.png" alt="image-20211127154900465"></p>
+<p>&#x200B;    &#x5176;&#x4ED6;&#x7684;&#x914D;&#x7F6E;&#x9009;&#x62E9;&#x9ED8;&#x8BA4;&#x914D;&#x7F6E;&#x5373;&#x53EF;&#xFF0C;&#x5BF9;&#x4E8E;&#x5B89;&#x88C5;&#x8DEF;&#x5F84;&#x66F4;&#x5177;&#x81EA;&#x5DF1;&#x7684;&#x60C5;&#x51B5;&#x9009;&#x62E9;&#x4E0D;&#x540C;&#x7684;&#x8DEF;&#x5F84;&#x5C31;&#x53EF;&#x4EE5;&#x4E86;&#xFF1B;</p>
+<p>&#x200B;    <strong>&#x5E38;&#x89C1;&#x7684;&#x57FA;&#x672C;&#x64CD;&#x4F5C;</strong>&#xFF1A;</p>
+<p>&#x200B;        a&#x3001;&#x521B;&#x5EFA;&#x9879;&#x76EE;&#x4E0E;&#x6587;&#x4EF6;&#x5939;</p>
+<p>&#x200B;            &#x6307;&#x5B9A;&#x65B0;&#x5EFA;&#x7684;&#x9879;&#x76EE;&#x540D;&#x79F0;</p>
+<p><img src="/development/python/python%E5%9F%BA%E7%A1%80_01_%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/image-20211127154939987.png" alt="image-20211127154939987"></p>
+<p>&#x200B;        b&#x3001;&#x8BBE;&#x7F6E;&#x5B57;&#x4F53;&#x7684;&#x5927;&#x5C0F;</p>
+<p>&#x200B;            &#x518D;&#x8BBE;&#x7F6E;&#x4E2D;&#xFF0C;&#x8BBE;&#x7F6E;&#x5B57;&#x4F53;&#x53EF;&#x4EE5;&#x4EFB;&#x610F;&#x8C03;&#x8282;&#x5927;&#x5C0F;</p>
+<p><img src="/development/python/python%E5%9F%BA%E7%A1%80_01_%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/image-20211127155000250.png" alt="image-20211127155000250"></p>
+<p>&#x200B;            setting -&gt; General -&gt; Mouse Control -&gt; Change font size with Ctrl+Mouse Wheel&#xFF08;&#x52FE;&#x9009;&#xFF09;</p>
+<p>&#x200B;        c&#x3001;&#x7F16;&#x5199;&#x7A0B;&#x5E8F;&#x5E76;&#x8FD0;&#x884C;</p>
+<p>&#x200B;            &#x518D;&#x7F16;&#x8F91;&#x5BF9;&#x8BDD;&#x6846;&#x4E2D;&#x5199;&#x5165;&#x7A0B;&#x5E8F;</p>
+<blockquote>
+<p>&#x6CE8;&#x610F;:&#x518D;pytharm&#x4E2D;&#xFF0C;&#x7EA2;&#x8272;&#x7684;&#x6CE2;&#x6D6A;&#x7EBF;&#x4EE3;&#x8868;&#x7A0B;&#x5E8F;&#x9519;&#x8BEF;&#xFF0C;&#x800C;&#x7070;&#x8272;&#x7684;&#x6CE2;&#x6D6A;&#x7EBF;&#x4EE3;&#x8868;&#x4E0D;&#x7B26;&#x5408;&#x4EE3;&#x7801;&#x89C4;&#x8303;</p>
+</blockquote>
+<p><img src="/development/python/python%E5%9F%BA%E7%A1%80_01_%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/image-20211127155037870.png" alt="image-20211127155037870"></p>
+<p>&#x200B;            &#x53F3;&#x952E; -&gt; Run&#x201C;hello world&#x201D; &#x5C31;&#x53EF;&#x4EE5;&#x8FD0;&#x884C;&#x7A0B;&#x5E8F;&#xFF1B;&#x518D;&#x4E0B;&#x9762;&#x5C31;&#x4F1A;&#x663E;&#x793A;&#x5BF9;&#x5E94;&#x7A0B;&#x5E8F;&#x7684;&#x8FD4;&#x56DE;&#x5185;&#x5BB9;&#xFF0C;&#x5982;&#x4E0B;&#x56FE;&#xFF1A;</p>
+<p><img src="/development/python/python%E5%9F%BA%E7%A1%80_01_%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/image-20211127155116198.png" alt="image-20211127155116198"></p>
+<p>&#x200B;            &#x8FD9;&#x91CC;&#x8981;&#x6CE8;&#x610F;&#x7684;&#x662F;&#xFF0C;&#x5B9E;&#x9645;&#x4E0A;&#xFF0C;&#x8BE5;&#x6267;&#x884C;&#x8FC7;&#x7A0B;&#x8FD8;&#x662F;&#x901A;&#x8FC7;&#x8C03;&#x7528;python&#x7A0B;&#x5E8F;&#x6765;&#x6267;&#x884C;&#x5BF9;&#x5E94;&#x6587;&#x4EF6;&#x6765;&#x5B8C;&#x6210;&#x7684;&#x3002;&#x53EA;&#x662F;&#x8FD9;&#x4E2A;&#x8FC7;&#x7A0B;&#x4E0D;&#x518D;&#x7531;&#x7A0B;&#x5E8F;&#x5458;&#x6765;&#x5B8C;&#x6210;&#xFF0C;&#x800C;&#x662F;&#x7531;IDE&#x7684;&#x5F00;&#x53D1;&#x73AF;&#x5883;&#x6765;&#x5E2E;&#x52A9;&#x6211;&#x4EEC;&#x6765;&#x5B8C;&#x6210;&#xFF1B;</p>
+<p>&#x200B;        d&#x3001;debug&#x8C03;&#x8BD5;&#x7A0B;&#x5E8F;&#x9519;&#x8BEF;</p>
+<p>&#x200B;            &#x5728;&#x7A0B;&#x5E8F;&#x884C;&#x7684;&#x5DE6;&#x8FB9;&#xFF0C;&#x4F7F;&#x7528;&#x5DE6;&#x952E;&#x70B9;&#x51FB;&#x7A7A;&#x767D;&#x5904;&#xFF0C;&#x6807;&#x8BC6;&#x65AD;&#x70B9;&#xFF0C;&#x5982;&#x4E0B;&#x56FE;&#x6240;&#x793A;&#xFF1A;</p>
+<p>&#x200B;                                                                                <img src="/development/python/python%E5%9F%BA%E7%A1%80_01_%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/image-20211127155235581.png" alt="image-20211127155235581"></p>
+<p>&#x200B;            &#x6267;&#x884C;&#x65F6;&#xFF0C;&#x9009;&#x4E2D;debug&#x8C03;&#x8BD5;&#x8FD0;&#x884C;&#x7A0B;&#x5E8F;&#xFF1B;&#x6B64;&#x65F6;&#xFF0C;&#x7A0B;&#x5E8F;&#x4F1A;&#x505C;&#x5728;&#x65AD;&#x70B9;&#x5904;&#xFF0C;&#x70B9;&#x51FB;&#x4E0B;&#x4E00;&#x6B65;&#xFF0C;&#x624D;&#x7EE7;&#x7EED;&#x5411;&#x4E0B;&#x6267;&#x884C;&#xFF1B;</p>
+<p><img src="/development/python/python%E5%9F%BA%E7%A1%80_01_%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/image-20211127155412906.png" alt="image-20211127155412906"></p>
+<p>&#x200B;        e&#x3001;&#x9664;&#x6B64;&#x4EE5;&#x5916;&#xFF0C;&#x518D;pytharm&#x4E2D;&#x8FD8;&#x6709;&#x4E00;&#x4E9B;&#x5E38;&#x89C1;&#x7684;&#x5FEB;&#x6377;&#x952E;&#xFF1A;</p>
+<table>
+<thead>
+<tr>
+<th>&#x5E38;&#x89C1;&#x5FEB;&#x6377;&#x952E;</th>
+<th>&#x542B;&#x4E49;</th>
+<th>&#x5E38;&#x89C1;&#x5FEB;&#x6377;&#x952E;</th>
+<th>&#x542B;&#x4E49;</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>ctrl + &#x201C;/&#x201C;</td>
+<td>&#xFF08;&#x6CE8;&#x91CA;/&#x89E3;&#x9664;&#x6CE8;&#x91CA;&#xFF09;&#x9009;&#x4E2D;&#x884C;</td>
+<td>ctrl + z</td>
+<td>&#x56DE;&#x9000;&#x4E0A;&#x4E00;&#x6B21;&#x7684;&#x64CD;&#x4F5C;</td>
+</tr>
+<tr>
+<td>ctrl + d</td>
+<td>&#x590D;&#x5236;&#x5149;&#x6807;&#x6240;&#x518D;&#x884C;</td>
+<td>shift + &#x201C;tab&#x201D;</td>
+<td>&#x9009;&#x4E2D;&#x884C;&#x56DE;&#x9000;&#x4E00;&#x4E2A;tab&#x952E;</td>
+</tr>
+</tbody></table>
+<h3 id="1-6-3&#x3001;Linux&#x73AF;&#x5883;&#x4E0B;&#x7684;python&#x5B89;&#x88C5;"><a href="#1-6-3&#x3001;Linux&#x73AF;&#x5883;&#x4E0B;&#x7684;python&#x5B89;&#x88C5;" class="headerlink" title="1.6.3&#x3001;Linux&#x73AF;&#x5883;&#x4E0B;&#x7684;python&#x5B89;&#x88C5;"></a>1.6.3&#x3001;Linux&#x73AF;&#x5883;&#x4E0B;&#x7684;python&#x5B89;&#x88C5;</h3><p>&#x200B;    &#x5728;Linux&#x7684;&#x81EA;&#x52A8;&#x5316;&#x8FD0;&#x7EF4;&#x8BFE;&#x7A0B;&#x4E2D;&#xFF0C;&#x6211;&#x4EEC;&#x9700;&#x8981;&#x914D;&#x7F6E;Linux&#x73AF;&#x5883;&#x4E0B;&#x7684;python&#x7A0B;&#x5E8F;&#xFF0C;&#x8FD9;&#x91CC;&#x5C31;&#x4E0D;&#x518D;&#x8BE6;&#x7EC6;&#x8BF4;&#x660E;&#xFF1B;</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> burnov&#x535A;&#x5BA2;&#x56ED;</span></span><br><span class="line">https://www.cnblogs.com/BurnovBlog/p/11095253.html </span><br></pre></td></tr></table></figure>
+
+
+
+
+
+
+    </div>
+    
+    
+    
+    
+    
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/python-basic-knowledge/" rel="tag"># python basic knowledge</a>
+          </div>
+    
+        
+
+    
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/development/python/python%E5%9F%BA%E7%A1%80_02_python%E7%9A%84%E5%9F%BA%E7%A1%80%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B/" rel="prev" title="变量">
+      <i class="fa fa-chevron-left"></i> 变量
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+    <div>
+        
+        
+
+<div>
+    
+        <div style="text-align:center;color: #ccc;font-size:14px;">------ 版权声明：本文属于原创文章------</div>
+    	<div style="text-align:center;color: #FF0000;font-size:14px;">转载请注明：Burnov.github.io原创文章+本文链接，谢谢合作！！</i></div>
+    
+</div>
+
+
+        
+     </div>
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#1%E3%80%81%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80"><span class="nav-number">1.</span> <span class="nav-text">1、计算机基础</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-1%E3%80%81%E7%A1%AC%E4%BB%B6%E8%AE%BE%E5%A4%87%E4%BB%8B%E7%BB%8D"><span class="nav-number">1.1.</span> <span class="nav-text">1.1、硬件设备介绍</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-2%E3%80%81%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80%E7%9A%84%E5%9F%BA%E7%A1%80%E4%BB%8B%E7%BB%8D"><span class="nav-number">1.2.</span> <span class="nav-text">1.2、编程语言的基础介绍</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-3%E3%80%81python%E5%8E%86%E5%8F%B2%E4%BB%8B%E7%BB%8D"><span class="nav-number">1.3.</span> <span class="nav-text">1.3、python历史介绍</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-4%E3%80%81python%E7%9A%84%E7%BC%96%E8%AF%91%E5%99%A8%E7%A7%8D%E7%B1%BB"><span class="nav-number">1.4.</span> <span class="nav-text">1.4、python的编译器种类</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-5%E3%80%81python%E8%AF%AD%E8%A8%80%E7%9A%84%E4%BC%98%E7%BC%BA%E7%82%B9"><span class="nav-number">1.5.</span> <span class="nav-text">1.5、python语言的优缺点</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-5-1%E3%80%81%E4%BC%98%E7%82%B9"><span class="nav-number">1.5.1.</span> <span class="nav-text">1.5.1、优点</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-5-2%E3%80%81%E7%BC%BA%E7%82%B9"><span class="nav-number">1.5.2.</span> <span class="nav-text">1.5.2、缺点</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-6%E3%80%81python%E7%8E%AF%E5%A2%83%E7%9A%84%E5%AE%89%E8%A3%85"><span class="nav-number">1.6.</span> <span class="nav-text">1.6、python环境的安装</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-6-1%E3%80%81python%E8%A7%A3%E9%87%8A%E5%99%A8%E7%9A%84%E4%B8%8B%E8%BD%BD%E4%B8%8E%E5%AE%89%E8%A3%85"><span class="nav-number">1.6.1.</span> <span class="nav-text">1.6.1、python解释器的下载与安装</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-6-2%E3%80%81python%E9%9B%86%E6%88%90%E5%BC%80%E5%8F%91%E7%8E%AF%E5%A2%83%E7%9A%84%E5%AE%89%E8%A3%85%E4%B8%8E%E7%AE%80%E5%8D%95%E4%BD%BF%E7%94%A8"><span class="nav-number">1.6.2.</span> <span class="nav-text">1.6.2、python集成开发环境的安装与简单使用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-6-3%E3%80%81Linux%E7%8E%AF%E5%A2%83%E4%B8%8B%E7%9A%84python%E5%AE%89%E8%A3%85"><span class="nav-number">1.6.3.</span> <span class="nav-text">1.6.3、Linux环境下的python安装</span></a></li></ol></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Burnov"
+      src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">Burnov</p>
+  <div class="site-description" itemprop="description">No end for Learning</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">31</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">31</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/Burnov" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;Burnov" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:xials1990@gmail.com" title="E-Mail → mailto:xials1990@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://www.zhihu.com/people/xia-liang-shi-78" title="Skype → https:&#x2F;&#x2F;www.zhihu.com&#x2F;people&#x2F;xia-liang-shi-78" rel="noopener" target="_blank"><i class="fab fa-skype fa-fw"></i></a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class=""></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Burnov</span>
+</div>
+
+<!--
+  <div class="powered-by">Powered by <a href="https://github.com/Burnov" class="theme-link" rel="noopener" target="_blank">Burnov</a> & <a href="https://mist.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Mist</a>
+  </div>
+
+-->
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : false,
+      appId      : 'wIjFqGmEUzY7fpTNVHpKA0eH-gzGzoHsz',
+      appKey     : 'KdXueGM1xFH8pBVSO5SkFRKI',
+      placeholder: "Just go go",
+      avatar     : 'mm',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : false,
+      lang       : '' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : false,
+      serverURLs : ''
+    });
+  }, window.Valine);
+});
+</script>
+
+</body>
+</html>

@@ -1,0 +1,992 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-minimal.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Mist","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="6&amp;#x3001;&amp;#x5E38;&amp;#x89C1;&amp;#x6A21;&amp;#x5757;&amp;#x4ECB;&amp;#x7ECD;6.1&amp;#x3001;&amp;#x6A21;&amp;#x5757;&amp;#x4E0E;&amp;#x5305;6.1.1&amp;#x3001;&amp;#x4EC0;&amp;#x4E48;&amp;#x662F;&amp;#x6A21;&amp;#x5757;&amp;#x200B;    &amp;#x5E38;&amp;#x89C1;&amp;#x7684;&amp;#x573A;&amp;#x">
+<meta property="og:type" content="article">
+<meta property="og:title" content="常见模块介绍">
+<meta property="og:url" content="http://example.com/development/python/python%E5%9F%BA%E7%A1%80_06_%E5%B8%B8%E8%A7%81%E6%A8%A1%E5%9D%97%E4%BB%8B%E7%BB%8D/index.html">
+<meta property="og:site_name" content="Burnov^-^Blog">
+<meta property="og:description" content="6&amp;#x3001;&amp;#x5E38;&amp;#x89C1;&amp;#x6A21;&amp;#x5757;&amp;#x4ECB;&amp;#x7ECD;6.1&amp;#x3001;&amp;#x6A21;&amp;#x5757;&amp;#x4E0E;&amp;#x5305;6.1.1&amp;#x3001;&amp;#x4EC0;&amp;#x4E48;&amp;#x662F;&amp;#x6A21;&amp;#x5757;&amp;#x200B;    &amp;#x5E38;&amp;#x89C1;&amp;#x7684;&amp;#x573A;&amp;#x">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://example.com/development/python/python%E5%9F%BA%E7%A1%80_06_%E5%B8%B8%E8%A7%81%E6%A8%A1%E5%9D%97%E4%BB%8B%E7%BB%8D/image-20211128095341172.png">
+<meta property="og:image" content="http://example.com/development/python/python%E5%9F%BA%E7%A1%80_06_%E5%B8%B8%E8%A7%81%E6%A8%A1%E5%9D%97%E4%BB%8B%E7%BB%8D/image-20211128100852491.png">
+<meta property="og:image" content="http://example.com/development/python/python%E5%9F%BA%E7%A1%80_06_%E5%B8%B8%E8%A7%81%E6%A8%A1%E5%9D%97%E4%BB%8B%E7%BB%8D/image-20211128100946314.png">
+<meta property="og:image" content="file:///C:/Users/ADMINI~1/AppData/Local/Temp/ksohtml/wps2913.tmp.jpg">
+<meta property="og:image" content="http://example.com/development/python/python%E5%9F%BA%E7%A1%80_06_%E5%B8%B8%E8%A7%81%E6%A8%A1%E5%9D%97%E4%BB%8B%E7%BB%8D/image-20211128103340712.png">
+<meta property="og:image" content="http://example.com/development/python/python%E5%9F%BA%E7%A1%80_06_%E5%B8%B8%E8%A7%81%E6%A8%A1%E5%9D%97%E4%BB%8B%E7%BB%8D/image-20211128103615483.png">
+<meta property="og:image" content="http://example.com/development/python/python%E5%9F%BA%E7%A1%80_06_%E5%B8%B8%E8%A7%81%E6%A8%A1%E5%9D%97%E4%BB%8B%E7%BB%8D/image-20211128103842106.png">
+<meta property="og:image" content="http://example.com/development/python/python%E5%9F%BA%E7%A1%80_06_%E5%B8%B8%E8%A7%81%E6%A8%A1%E5%9D%97%E4%BB%8B%E7%BB%8D/image-20211128103922356.png">
+<meta property="og:image" content="http://example.com/development/python/python%E5%9F%BA%E7%A1%80_06_%E5%B8%B8%E8%A7%81%E6%A8%A1%E5%9D%97%E4%BB%8B%E7%BB%8D/image-20211128143932393.png">
+<meta property="og:image" content="http://example.com/development/python/python%E5%9F%BA%E7%A1%80_06_%E5%B8%B8%E8%A7%81%E6%A8%A1%E5%9D%97%E4%BB%8B%E7%BB%8D/image-20211128104001966.png">
+<meta property="article:published_time" content="2022-01-27T02:28:50.000Z">
+<meta property="article:modified_time" content="2022-01-27T02:30:29.734Z">
+<meta property="article:author" content="Burnov">
+<meta property="article:tag" content="python basic knowledge">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/development/python/python%E5%9F%BA%E7%A1%80_06_%E5%B8%B8%E8%A7%81%E6%A8%A1%E5%9D%97%E4%BB%8B%E7%BB%8D/image-20211128095341172.png">
+
+<link rel="canonical" href="http://example.com/development/python/python%E5%9F%BA%E7%A1%80_06_%E5%B8%B8%E8%A7%81%E6%A8%A1%E5%9D%97%E4%BB%8B%E7%BB%8D/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>常见模块介绍 | Burnov^-^Blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="Burnov^-^Blog" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Burnov^-^Blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="Searching..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://example.com/development/python/python%E5%9F%BA%E7%A1%80_06_%E5%B8%B8%E8%A7%81%E6%A8%A1%E5%9D%97%E4%BB%8B%E7%BB%8D/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="Burnov">
+      <meta itemprop="description" content="No end for Learning">
+    </span>
+    
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Burnov^-^Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          常见模块介绍
+        </h1>
+    
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+              
+    
+              <time title="Created: 2022-01-27 10:28:50 / Modified: 10:30:29" itemprop="dateCreated datePublished" datetime="2022-01-27T10:28:50+08:00">2022-01-27</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/development/" itemprop="url" rel="index"><span itemprop="name">development</span></a>
+                </span>
+                  , 
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/development/python/" itemprop="url" rel="index"><span itemprop="name">python</span></a>
+                </span>
+            </span>
+    
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Valine: </span>
+    
+    <a title="valine" href="/development/python/python%E5%9F%BA%E7%A1%80_06_%E5%B8%B8%E8%A7%81%E6%A8%A1%E5%9D%97%E4%BB%8B%E7%BB%8D/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/development/python/python%E5%9F%BA%E7%A1%80_06_%E5%B8%B8%E8%A7%81%E6%A8%A1%E5%9D%97%E4%BB%8B%E7%BB%8D/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+    
+        </div>
+      </header>
+    
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+    
+      
+        <h1 id="6&#x3001;&#x5E38;&#x89C1;&#x6A21;&#x5757;&#x4ECB;&#x7ECD;"><a href="#6&#x3001;&#x5E38;&#x89C1;&#x6A21;&#x5757;&#x4ECB;&#x7ECD;" class="headerlink" title="6&#x3001;&#x5E38;&#x89C1;&#x6A21;&#x5757;&#x4ECB;&#x7ECD;"></a>6&#x3001;&#x5E38;&#x89C1;&#x6A21;&#x5757;&#x4ECB;&#x7ECD;</h1><h2 id="6-1&#x3001;&#x6A21;&#x5757;&#x4E0E;&#x5305;"><a href="#6-1&#x3001;&#x6A21;&#x5757;&#x4E0E;&#x5305;" class="headerlink" title="6.1&#x3001;&#x6A21;&#x5757;&#x4E0E;&#x5305;"></a><strong>6.1&#x3001;&#x6A21;&#x5757;&#x4E0E;&#x5305;</strong></h2><h3 id="6-1-1&#x3001;&#x4EC0;&#x4E48;&#x662F;&#x6A21;&#x5757;"><a href="#6-1-1&#x3001;&#x4EC0;&#x4E48;&#x662F;&#x6A21;&#x5757;" class="headerlink" title="6.1.1&#x3001;&#x4EC0;&#x4E48;&#x662F;&#x6A21;&#x5757;"></a><strong>6.1.1&#x3001;&#x4EC0;&#x4E48;&#x662F;&#x6A21;&#x5757;</strong></h3><p>&#x200B;    &#x5E38;&#x89C1;&#x7684;&#x573A;&#x666F;&#xFF1A;&#x4E00;&#x4E2A;&#x6A21;&#x5757;&#x5C31;&#x662F;&#x4E00;&#x4E2A;&#x5305;&#x542B;&#x4E86;python&#x5B9A;&#x4E49;&#x548C;&#x58F0;&#x660E;&#x7684;&#x6587;&#x4EF6;&#xFF0C;&#x6587;&#x4EF6;&#x540D;&#x5C31;&#x662F;&#x6A21;&#x5757;&#x540D;&#x5B57;&#x52A0;&#x4E0A;.py&#x7684;&#x540E;&#x7F00;&#x3002;&#x4F46;&#x5176;&#x5B9E;import&#x52A0;&#x8F7D;&#x7684;&#x6A21;&#x5757;&#x5206;&#x4E3A;&#x56DB;&#x4E2A;&#x901A;&#x7528;&#x7C7B;&#x522B;&#xFF1A;&#x3000;</p>
+<p>&#x200B;        1&#x3001;&#x4F7F;&#x7528;python&#x7F16;&#x5199;&#x7684;&#x4EE3;&#x7801;&#xFF08;.py&#x6587;&#x4EF6;&#xFF09;</p>
+<p>&#x200B;        2&#x3001;&#x5DF2;&#x88AB;&#x7F16;&#x8BD1;&#x4E3A;&#x5171;&#x4EAB;&#x5E93;&#x6216;DLL&#x7684;C&#x6216;C++&#x6269;&#x5C55;</p>
+<p>&#x200B;        3&#x3001;&#x5305;&#x597D;&#x4E00;&#x7EC4;&#x6A21;&#x5757;&#x7684;&#x5305;</p>
+<p>&#x200B;        4&#x3001;&#x4F7F;&#x7528;C&#x7F16;&#x5199;&#x5E76;&#x94FE;&#x63A5;&#x5230;python&#x89E3;&#x91CA;&#x5668;&#x7684;&#x5185;&#x7F6E;&#x6A21;&#x5757;</p>
+<h3 id="6-1-2&#x3001;&#x4E3A;&#x4EC0;&#x4E48;&#x8981;&#x4F7F;&#x7528;&#x6A21;&#x5757;&#x5462;&#xFF1F;"><a href="#6-1-2&#x3001;&#x4E3A;&#x4EC0;&#x4E48;&#x8981;&#x4F7F;&#x7528;&#x6A21;&#x5757;&#x5462;&#xFF1F;" class="headerlink" title="6.1.2&#x3001;&#x4E3A;&#x4EC0;&#x4E48;&#x8981;&#x4F7F;&#x7528;&#x6A21;&#x5757;&#x5462;&#xFF1F;"></a><strong>6.1.2&#x3001;&#x4E3A;&#x4EC0;&#x4E48;&#x8981;&#x4F7F;&#x7528;&#x6A21;&#x5757;&#x5462;&#xFF1F;</strong></h3><p>&#x200B;    &#x5982;&#x679C;&#x4F60;&#x9000;&#x51FA;python&#x89E3;&#x91CA;&#x5668;&#x7136;&#x540E;&#x91CD;&#x65B0;&#x8FDB;&#x5165;&#xFF0C;&#x90A3;&#x4E48;&#x4F60;&#x4E4B;&#x524D;&#x5B9A;&#x4E49;&#x7684;&#x51FD;&#x6570;&#x6216;&#x8005;&#x53D8;&#x91CF;&#x90FD;&#x5C06;&#x4E22;&#x5931;&#xFF0C;&#x56E0;&#x6B64;&#x6211;&#x4EEC;&#x901A;&#x5E38;&#x5C06;&#x7A0B;&#x5E8F;&#x5199;&#x5230;&#x6587;&#x4EF6;&#x4E2D;&#x4EE5;&#x4FBF;&#x6C38;&#x4E45;&#x4FDD;&#x5B58;&#x4E0B;&#x6765;&#xFF0C;&#x9700;&#x8981;&#x65F6;&#x5C31;&#x901A;&#x8FC7;python test.py&#x65B9;&#x5F0F;&#x53BB;&#x6267;&#x884C;&#xFF0C;&#x6B64;&#x65F6;test.py&#x88AB;&#x79F0;&#x4E3A;&#x811A;&#x672C;script&#x3002;</p>
+<p>&#x200B;    &#x968F;&#x7740;&#x7A0B;&#x5E8F;&#x7684;&#x53D1;&#x5C55;&#xFF0C;&#x529F;&#x80FD;&#x8D8A;&#x6765;&#x8D8A;&#x591A;&#xFF0C;&#x4E3A;&#x4E86;&#x65B9;&#x4FBF;&#x7BA1;&#x7406;&#xFF0C;&#x6211;&#x4EEC;&#x901A;&#x5E38;&#x5C06;&#x7A0B;&#x5E8F;&#x5206;&#x6210;&#x4E00;&#x4E2A;&#x4E2A;&#x7684;&#x6587;&#x4EF6;&#xFF0C;&#x8FD9;&#x6837;&#x505A;&#x7A0B;&#x5E8F;&#x7684;&#x7ED3;&#x6784;&#x66F4;&#x6E05;&#x6670;&#xFF0C;&#x65B9;&#x4FBF;&#x7BA1;&#x7406;&#x3002;&#x8FD9;&#x65F6;&#x6211;&#x4EEC;&#x4E0D;&#x4EC5;&#x4EC5;&#x53EF;&#x4EE5;&#x628A;&#x8FD9;&#x4E9B;&#x6587;&#x4EF6;&#x5F53;&#x505A;&#x811A;&#x672C;&#x53BB;&#x6267;&#x884C;&#xFF0C;&#x8FD8;&#x53EF;&#x4EE5;&#x628A;&#x4ED6;&#x4EEC;&#x5F53;&#x505A;&#x6A21;&#x5757;&#x6765;&#x5BFC;&#x5165;&#x5230;&#x5176;&#x4ED6;&#x7684;&#x6A21;&#x5757;&#x4E2D;&#xFF0C;&#x5B9E;&#x73B0;&#x4E86;&#x529F;&#x80FD;&#x7684;<strong>&#x91CD;&#x590D;&#x5229;&#x7528;</strong>&#x3002;</p>
+<h3 id="6-1-3&#x3001;&#x6A21;&#x5757;&#x7684;&#x5BFC;&#x5165;"><a href="#6-1-3&#x3001;&#x6A21;&#x5757;&#x7684;&#x5BFC;&#x5165;" class="headerlink" title="6.1.3&#x3001;&#x6A21;&#x5757;&#x7684;&#x5BFC;&#x5165;"></a><strong>6.1.3&#x3001;&#x6A21;&#x5757;&#x7684;&#x5BFC;&#x5165;</strong></h3><p>&#x200B;    &#x6839;&#x636E;&#x4E0A;&#x9762;&#x7684;&#x63CF;&#x8FF0;&#xFF0C;&#x5176;&#x5B9E;&#x4E00;&#x4E2A;&#x6587;&#x4EF6;&#x5C31;&#x662F;&#x4E00;&#x4E2A;&#x6A21;&#x5757;&#xFF0C;&#x6709;&#x65F6;&#x5019;&#x5982;&#x679C;&#x6240;&#x6709;&#x7684;&#x4EE3;&#x7801;&#x90FD;&#x5199;&#x5728;&#x4E00;&#x4E2A;&#x6587;&#x4EF6;&#x4E2D;&#xFF0C;&#x5219;&#x4E0D;&#x592A;&#x597D;&#x7EF4;&#x62A4;&#xFF0C;&#x5C31;&#x4F1A;&#x60F3;&#x5230;&#x5C06;&#x4E0D;&#x540C;&#x529F;&#x80FD;&#x4EE3;&#x7801;&#x5199;&#x5728;&#x4E0D;&#x540C;&#x7684;&#x6587;&#x4EF6;&#x4E2D;&#xFF0C;&#x7136;&#x540E;&#x5728;&#x5E94;&#x7528;&#x7684;&#x65F6;&#x5019;&#x5C31;&#x5BFC;&#x5165;&#x5230;&#x5BF9;&#x5E94;&#x6587;&#x4EF6;&#x4E2D;&#x6765;&#x5C31;&#x6BD4;&#x8F83;&#x65B9;&#x4FBF;&#x4E00;&#x4E9B;&#xFF1B;&#x4F8B;&#x5982;&#xFF1A;</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># &#x6587;&#x4EF6;demo&#x4E2D;&#x7684;&#x5185;&#x5BB9;</span></span><br><span class="line"><span class="built_in">print</span>(<span class="string">&apos;in demo.py&apos;</span>)</span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">read</span>():</span></span><br><span class="line">  <span class="built_in">print</span>(<span class="string">&apos;in read!&apos;</span>)</span><br></pre></td></tr></table></figure>
+
+<p>&#x200B;    &#x5728;&#x6587;&#x4EF6;B&#x4E2D;&#x5BFC;&#x5165;&#x4E0A;&#x9762;&#x7684;demo&#x6587;&#x4EF6;</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># &#x6587;&#x4EF6;B</span></span><br><span class="line"><span class="keyword">import</span> demo</span><br><span class="line">demo.read()  <span class="comment"># &#x8C03;&#x7528;&#x5176;&#x4ED6;&#x6587;&#x4EF6;&#x51FD;&#x6570;&#x7684;&#x65B9;&#x6CD5;</span></span><br><span class="line"><span class="comment"># &#x6267;&#x884C;&#x6587;&#x4EF6;&#x540E;&#x5F97;&#x5230;&#x7ED3;&#x679C;</span></span><br></pre></td></tr></table></figure>
+
+<p>&#x200B;    &#x7531;&#x4F8B;&#x5B50;&#x53EF;&#x4EE5;&#x77E5;&#x9053;&#xFF0C;import&#x9ED8;&#x8BA4;&#x5BFC;&#x5165;&#x7684;&#x76EE;&#x5F55;&#x5C31;&#x662F;&#x4E0E;&#x6587;&#x4EF6;B&#x6240;&#x5728;&#x7684;&#x540C;&#x4E00;&#x76EE;&#x5F55;&#xFF1B;&#x4F46;&#x662F;&#x5DE5;&#x4F5C;&#x4E2D;&#x6211;&#x4EEC;&#x5F88;&#x5C11;&#x80FD;&#x591F;&#x5C06;&#x6240;&#x6709;&#x7684;&#x6587;&#x4EF6;&#x5747;&#x653E;&#x5728;&#x540C;&#x4E00;&#x4E2A;&#x76EE;&#x5F55;&#x4E2D;&#x3002;</p>
+<blockquote>
+<p>&#x6CE8;&#x610F;&#xFF1A;&#x5728;&#x521B;&#x5EFA;&#x6587;&#x4EF6;&#x7684;&#x65F6;&#x5019;&#xFF0C;&#x53D6;&#x540D;&#x4E0D;&#x8981;&#x548C;&#x6A21;&#x5757;&#x53D6;&#x4E00;&#x6837;&#x7684;&#x540D;&#x5B57;</p>
+</blockquote>
+<p>&#x200B;    &#x4F46;&#x662F;&#xFF0C;&#x5982;&#x679C;&#x4E0D;&#x5728;&#x540C;&#x4E00;&#x4E2A;&#x76EE;&#x5F55;&#x4E0B;&#x9762;&#x7684;&#x8BDD;&#x9ED8;&#x8BA4;&#x60C5;&#x51B5;&#x4E0B;&#x6211;&#x4EEC;&#x9700;&#x8981;&#x53BB;&#x627E;sys.path&#x8DEF;&#x5F84;&#x624D;&#x884C;&#xFF1B;</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> sys</span><br><span class="line"><span class="built_in">print</span>(sys.path)  </span><br></pre></td></tr></table></figure>
+
+<p>&#x200B;    &#x8BE5;&#x8DEF;&#x5F84;&#x4E0B;&#x6307;&#x5B9A;&#x7684;&#x5C31;&#x662F;&#x6211;&#x4EEC;&#x9ED8;&#x8BA4;&#x8DEF;&#x5F84;&#xFF0C;&#x4E14;&#xFF0C;&#x4E2D;&#x95F4;&#x5F88;&#x591A;&#x5176;&#x5B9E;&#x662F;&#x201C;&#x5305;&#x201D;&#x800C;&#x4E0D;&#x662F;&#x6A21;&#x5757;&#xFF0C;&#x8FD9;&#x4E2A;&#x6211;&#x4EEC;&#x4E4B;&#x540E;&#x518D;&#x8BF4;&#xFF1B;</p>
+<blockquote>
+<p>&#x6CE8;&#x610F;&#xFF1A;&#x5982;&#x679C;import&#x540C;&#x4E00;&#x4E2A;&#x6587;&#x4EF6;&#x591A;&#x6B21;&#xFF0C;&#x662F;&#x6CA1;&#x6709;&#x6548;&#x679C;&#x7684;&#x3002;&#x548C;&#x5BFC;&#x5165;&#x4E00;&#x6B21;&#x6CA1;&#x6709;&#x4EC0;&#x4E48;&#x533A;&#x522B;&#x7684;&#xFF01;&#x56E0;&#x4E3A;&#x8FD9;&#x4E2A;&#x6A21;&#x5757;&#x5DF2;&#x7ECF;&#x5B58;&#x5728;&#xFF0C;&#x6240;&#x4EE5;&#x6CA1;&#x6709;&#x5FC5;&#x8981;&#x518D;&#x91CD;&#x590D;&#x5BFC;&#x5165;&#x4E86;&#xFF1B;</p>
+</blockquote>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> sys</span><br><span class="line"><span class="built_in">print</span>(sys.modules.key())</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&apos;demo&apos;</span> <span class="keyword">in</span> sys.modules.key()) </span><br></pre></td></tr></table></figure>
+
+<p>&#x200B;    &#x6240;&#x4EE5;&#xFF0C;import&#x7684;&#x8FD0;&#x884C;&#x8FC7;&#x7A0B;&#x5982;&#x4E0B;&#xFF1A;<strong>1&#x3001;&#x627E;&#x5230;&#x5BF9;&#x5E94;&#x7684;&#x6A21;&#x5757; 2&#x3001;&#x521B;&#x5EFA;&#x540D;&#x79F0;&#x7A7A;&#x95F4; 3&#x3001;&#x628A;&#x6587;&#x4EF6;&#x4E2D;&#x7684;&#x540D;&#x5B57;&#x653E;&#x5165;&#x5230;&#x540D;&#x79F0;&#x7A7A;&#x95F4;&#x4E2D;&#xFF1B;</strong>&#x8FD9;&#x91CC;&#x8981;&#x6CE8;&#x610F;&#x7684;&#x662F;&#x6A21;&#x5757;&#x6240;&#x8FD0;&#x884C;&#x7684;&#x540D;&#x79F0;&#x7A7A;&#x95F4;&#x662F;&#x4E0E;&#x6E90;&#x4EE3;&#x7801;&#x6240;&#x5728;&#x540D;&#x79F0;&#x7A7A;&#x95F4;&#x662F;&#x4E24;&#x4E2A;&#x4E0D;&#x540C;&#x7684;&#x540D;&#x79F0;&#x7A7A;&#x95F4;&#xFF0C;&#x53EA;&#x662F;&#x4EE3;&#x7801;&#x6240;&#x5728;&#x540D;&#x79F0;&#x7A7A;&#x95F4;&#x53EF;&#x4EE5;&#x8C03;&#x7528;import&#x4E2D;&#x7684;&#x540D;&#x5B57;&#x800C;&#x5DF2;&#xFF1B;</p>
+<p>&#x200B;    import&#x7684;&#x5177;&#x4F53;&#x8FC7;&#x7A0B;&#x5982;&#x4E0B;&#x56FE;&#xFF1A;</p>
+<p><img src="/development/python/python%E5%9F%BA%E7%A1%80_06_%E5%B8%B8%E8%A7%81%E6%A8%A1%E5%9D%97%E4%BB%8B%E7%BB%8D/image-20211128095341172.png" alt="image-20211128095341172"></p>
+<p>&#x200B;    <strong>&#x6A21;&#x5757;&#x7684;&#x5BFC;&#x5165;&#x65B9;&#x5F0F;</strong></p>
+<p>&#x200B;        &#x76F4;&#x63A5;&#x4F7F;&#x7528;import&#x5BFC;&#x5165;&#xFF1A;</p>
+<table>
+<thead>
+<tr>
+<th><strong>&#x5BFC;&#x5165;&#x65B9;&#x5F0F;</strong></th>
+<th><strong>&#x8C03;&#x7528;&#x65B9;&#x5F0F;</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>import &#x6A21;&#x5757;&#x540D;</td>
+<td>&#x6A21;&#x5757;&#x540D;.&#x53D8;&#x91CF;&#x540D;</td>
+</tr>
+<tr>
+<td>import &#x6A21;&#x5757;&#x540D; as &#x6A21;&#x5757;&#x522B;&#x540D;</td>
+<td>&#x6A21;&#x5757;&#x522B;&#x540D;.&#x53D8;&#x91CF;&#x540D;</td>
+</tr>
+<tr>
+<td>import &#x6A21;&#x5757;1 &#x6A21;&#x5757;2 &#x2026;</td>
+<td>&#x6A21;&#x5757;1.&#x53D8;&#x91CF;&#x540D; &#x6A21;&#x5757;2.&#x53D8;&#x91CF;&#x540D;</td>
+</tr>
+</tbody></table>
+<p>&#x200B;        &#x901A;&#x8FC7;from import&#x6765;&#x76F4;&#x63A5;&#x8C03;&#x7528;&#x53D8;&#x91CF;&#xFF0C;&#x4E0D;&#x7528;&#x52A0;&#x6A21;&#x5757;&#x540D;&#xFF1B;&#x6240;&#x4EE5;&#xFF0C;&#x5982;&#x679C;&#x591A;&#x4E2A;&#x6A21;&#x5757;&#x4E2D;&#x8BBE;&#x7F6E;&#x4E86;&#x76F8;&#x540C;&#x7684;&#x53D8;&#x91CF;&#x540D;&#xFF0C;&#x5C31;&#x4F1A;&#x53D1;&#x751F;&#x53D8;&#x91CF;&#x540D;&#x51B2;&#x7A81;&#x7684;&#x62A5;&#x9519;&#xFF0C;&#x8FD9;&#x4E00;&#x70B9;&#x8981;&#x6CE8;&#x610F;&#xFF1B;</p>
+<table>
+<thead>
+<tr>
+<th><strong>&#x5BFC;&#x5165;&#x65B9;&#x5F0F;</strong></th>
+<th><strong>&#x8C03;&#x7528;&#x65B9;&#x5F0F;</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>from &#x6A21;&#x5757;&#x540D; import &#x53D8;&#x91CF;&#x540D;</td>
+<td>&#x53D8;&#x91CF;&#x540D;</td>
+</tr>
+<tr>
+<td>from &#x6A21;&#x5757;&#x540D; import &#x53D8;&#x91CF;&#x540D; as &#x53D8;&#x91CF;&#x522B;&#x540D;</td>
+<td>&#x53D8;&#x91CF;&#x522B;&#x540D;</td>
+</tr>
+<tr>
+<td>from &#x6A21;&#x5757;&#x540D; import &#x53D8;&#x91CF;&#x540D;1 &#x53D8;&#x91CF;&#x540D;2</td>
+<td>&#x8C03;&#x7528;&#x6A21;&#x5757;&#x4E2D;&#x591A;&#x4E2A;&#x53D8;&#x91CF;</td>
+</tr>
+<tr>
+<td>from &#x6A21;&#x5757;&#x540D; import *</td>
+<td>&#x8C03;&#x7528;&#x6A21;&#x5757;&#x4E2D;&#x6240;&#x6709;&#x53D8;&#x91CF;&#xFF0C;&#x548C;__all__&#x6709;&#x5173;</td>
+</tr>
+</tbody></table>
+<p>&#x200B;        &#x6700;&#x540E;&#x8981;&#x6CE8;&#x610F;&#x7684;&#x662F;&#x201C;from &#x6A21;&#x5757;&#x540D; import *&#x201D;&#x4E2D;&#x7684;&#x6240;&#x6709;&#x53D8;&#x91CF;&#x53EF;&#x4EE5;&#x901A;&#x8FC7; &#x53CC;&#x4E0B;&#x53D8;&#x91CF;&#x201C;__all__&#x201D;&#x6765;&#x4E00;&#x8D77;&#x8C03;&#x7528;&#xFF1B;</p>
+<p>&#x200B;    <strong>&#x5176;&#x4ED6;</strong></p>
+<p>&#x200B;        &#x53E6;&#x5916;&#x8FD8;&#x6709;&#x4E00;&#x4E2A;&#x77E5;&#x8BC6;&#x70B9;&#xFF1A;&#x5982;&#x679C;&#x88AB;&#x5BFC;&#x5165;&#x6587;&#x4EF6;&#x91CC;&#x9762;&#x6709;&#x4E00;&#x4E9B;&#x5185;&#x5BB9;&#x53EA;&#x60F3;&#x518D;&#x88AB;&#x5BFC;&#x5165;&#x6587;&#x4EF6;&#x8FD0;&#x884C;&#x7684;&#x65F6;&#x5019;&#x624D;&#x6267;&#x884C;&#xFF0C;&#x800C;&#x5728;&#x5BFC;&#x5165;&#x6587;&#x4EF6;&#x4E2D;&#x4E0D;&#x6267;&#x884C;&#xFF0C;&#x5C31;&#x9700;&#x8981;&#x7528;&#x5230;&#x5185;&#x7F6E;&#x53D8;&#x91CF;__name__&#x3002;&#x5982;&#x4E0B;&#xFF1A;</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> __name__ = <span class="string">&apos;__main__&apos;</span>:</span><br><span class="line">  ret = login()</span><br><span class="line">  <span class="built_in">print</span>(ret)</span><br></pre></td></tr></table></figure>
+
+<p>&#x200B;        &#x8FD9;&#x6837;&#xFF0C;&#x5728;&#x81EA;&#x5DF1;&#x9875;&#x9762;&#x8FD0;&#x884C;&#x7684;&#x65F6;&#x5019;__name__&#x5C31;&#x662F;__main__&#xFF0C;&#x800C;&#x5BFC;&#x5165;&#x6587;&#x4EF6;&#x6765;&#x8FD0;&#x884C;&#x7684;&#x65F6;&#x5019;&#xFF0C;__name__&#x5C31;&#x662F;&#x6A21;&#x5757;&#x540D;&#x4E86;&#xFF1B;&#x540C;&#x65F6;&#xFF0C;&#x6211;&#x4EEC;&#x4E5F;&#x53EF;&#x4EE5;&#x901A;&#x8FC7; <strong><strong>name</strong> ==&#x201C;&#x6A21;&#x5757;&#x540D;&#x201D;</strong> &#x7684;&#x8BED;&#x53E5;&#x6765;&#x6267;&#x884C;&#x4E0D;&#x540C;&#x7684;&#x4E3B;&#x903B;&#x8F91;&#xFF0C;&#x4ECE;&#x800C;&#x8FBE;&#x5230;&#x63A7;&#x5236;&#x4E0D;&#x540C;&#x573A;&#x666F;&#x6267;&#x884C;&#x4E0D;&#x540C;&#x7A0B;&#x5E8F;&#x7684;&#x76EE;&#x5F55;&#xFF01;</p>
+<h3 id="6-1-4&#x3001;&#x5305;"><a href="#6-1-4&#x3001;&#x5305;" class="headerlink" title="6.1.4&#x3001;&#x5305;"></a><strong>6.1.4&#x3001;&#x5305;</strong></h3><p>&#x200B;    &#x5305;&#x5C31;&#x662F;&#x4E00;&#x5927;&#x5806;&#x6A21;&#x5757;&#x7684;&#x96C6;&#x5408;&#xFF0C;&#x201C;&#x4E00;&#x4E2A;&#x6587;&#x4EF6;&#x5939;&#x201D;&#x91CC;&#x9762;&#x5305;&#x542B;&#x4E86;&#x5404;&#x79CD;&#x6A21;&#x5757;&#xFF1B;&#x800C;&#x6A21;&#x5757;&#x4E2D;&#x53C8;&#x5305;&#x542B;&#x5404;&#x79CD;&#x65B9;&#x6CD5;&#xFF1B;&#x8FD9;&#x5C31;&#x662F;&#x4E00;&#x4E2A;&#x5305;&#x542B;&#x5173;&#x7CFB;&#xFF1B;&#x6240;&#x4EE5;&#xFF0C;<strong>&#x5305;&#x4F7F;&#x7528;&#x6765;&#x7EC4;&#x7EC7;Python&#x6A21;&#x5757;&#x540D;&#x79F0;&#x7A7A;&#x95F4;&#x7684;&#x65B9;&#x5F0F;&#xFF01;</strong></p>
+<p>&#x200B;    python&#x7684;&#x5B89;&#x88C5;&#x76EE;&#x5F55;&#x4E2D;&#xFF0C;lib&#x548C;libs&#x662F;&#x5305;&#x5B89;&#x88C5;&#x7684;&#x76EE;&#x5F55;&#xFF0C;&#x6240;&#x4EE5;&#x6211;&#x4EEC;&#x4F1A;&#x628A;&#x540C;&#x4E00;&#x7C7B;&#x7684;&#x65B9;&#x6CD5;&#x653E;&#x5728;&#x540C;&#x4E00;&#x4E2A;&#x6587;&#x4EF6;&#x5939;&#x4E2D;&#xFF0C;&#x800C;&#x8FD9;&#x4E2A;&#x6587;&#x4EF6;&#x5939;&#x5C31;&#x662F;&#x5305;&#x4E86;&#xFF1B;</p>
+<p>&#x200B;    &#x5728;pycharm&#x4E2D;&#x65B0;&#x5EFA;&#x5305;&#x5982;&#x4E0B;&#xFF1A;</p>
+<p><img src="/development/python/python%E5%9F%BA%E7%A1%80_06_%E5%B8%B8%E8%A7%81%E6%A8%A1%E5%9D%97%E4%BB%8B%E7%BB%8D/image-20211128100852491.png" alt="image-20211128100852491"></p>
+<p>&#x200B;    &#x65B0;&#x5EFA;&#x5305;&#x4EE5;&#x540E;&#xFF0C;&#x4F1A;&#x9ED8;&#x8BA4;&#x5E26;__init__.py&#x6587;&#x4EF6;&#x3002;&#x56E0;&#x4E3A;import py&#x6587;&#x4EF6;&#x7684;&#x65F6;&#x5019;&#xFF0C;&#x5176;&#x4EA7;&#x751F;&#x7684;&#x540D;&#x5B57;&#x6765;&#x6E90;&#x4E8E;&#x6587;&#x4EF6;&#x672C;&#x8EAB;&#xFF0C;&#x540C;&#x65F6;import &#x5305;&#x7684;&#x65F6;&#x5019;&#xFF0C;&#x5176;&#x76F8;&#x5173;&#x540D;&#x5B57;&#x4E5F;&#x662F;&#x6765;&#x6E90;&#x4E8E;&#x6587;&#x4EF6;&#xFF0C;&#x8FD9;&#x4E2A;&#x6587;&#x4EF6;&#x5C31;&#x662F;__init__.py&#x6587;&#x4EF6;&#xFF08;&#x8FD9;&#x4E2A;&#x6587;&#x4EF6;&#x53EF;&#x4EE5;&#x8BA9;&#x7A0B;&#x5E8F;&#x5C06;&#x8FD9;&#x4E2A;&#x5305;&#x76EE;&#x5F55;&#x7ED3;&#x6784;&#x8BC6;&#x522B;&#x4E3A;&#x4E00;&#x4E2A;Python&#x7A0B;&#x5E8F;&#x5305;&#x7ED3;&#x6784;&#xFF09;&#xFF0C;&#x6240;&#x4EE5;&#xFF0C;&#x5BFC;&#x5165;&#x5305;&#x7684;&#x672C;&#x8D28;&#x5C31;&#x662F;&#x5BFC;&#x5165;&#x8BE5;&#x6587;&#x4EF6;&#x3002;&#x4E14;&#xFF0C;&#x5728;&#x5BFC;&#x5165;&#x6307;&#x5B9A;&#x5305;&#x6587;&#x4EF6;&#x7684;&#x65F6;&#x5019;&#xFF0C;&#x5C31;&#x4F1A;&#x53BB;&#x6267;&#x884C;__init__.py&#x6587;&#x4EF6;&#x4E2D;&#x4EE3;&#x7801;&#x3002;</p>
+<p>&#x200B;    &#x5728;python3&#x4E2D;&#x5373;&#x4F7F;&#x6CA1;&#x6709;__init__.py&#x6587;&#x4EF6;&#xFF0C;&#x4E5F;&#x662F;&#x4E0D;&#x4F1A;&#x62A5;&#x9519;&#x7684;&#xFF0C;&#x800C;&#x5728;Python2&#x4E2D;&#x5FC5;&#x987B;&#x8981;&#x6709;&#x8BE5;&#x6587;&#x4EF6;&#xFF0C;&#x5426;&#x5219;import &#x5305;&#x5C31;&#x4F1A;&#x62A5;&#x9519;&#xFF1B;&#x6240;&#x4EE5;&#xFF0C;&#x672C;&#x8EAB;&#x6211;&#x4EEC;&#x53BB;&#x521B;&#x5EFA;&#x5305;&#xFF0C;&#x5C31;&#x662F;&#x4E3A;&#x4E86;&#x88AB;&#x5BFC;&#x5165;&#x4F7F;&#x7528;&#x7684;&#x3002;&#x4E14;&#x5305;&#x7684;&#x672C;&#x8D28;&#x4E5F;&#x662F;&#x6A21;&#x5757;&#x3002; </p>
+<p>&#x200B;    &#x5B9E;&#x9A8C;&#x73AF;&#x5883;&#xFF1A;&#x6211;&#x4EEC;&#x5148;&#x521B;&#x5EFA;&#x4E00;&#x4E2A;&#x76EE;&#x5F55;&#x7ED3;&#x6784;</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># &#x521B;&#x5EFA;&#x76EE;&#x5F55;&#x7ED3;&#x6784;&#x4EE3;&#x7801;&#xFF1B;</span></span><br><span class="line"><span class="keyword">import</span> os</span><br><span class="line">os.makedirs(<span class="string">&apos;glance/api&apos;</span>)</span><br><span class="line">os.makedirs(<span class="string">&apos;glance/cmd&apos;</span>)</span><br><span class="line">os.makedirs(<span class="string">&apos;glance/db&apos;</span>)</span><br><span class="line"></span><br><span class="line">l = []</span><br><span class="line">l.append(<span class="built_in">open</span>(<span class="string">&apos;glance/__init__.py&apos;</span>,<span class="string">&apos;w&apos;</span>))</span><br><span class="line">l.append(<span class="built_in">open</span>(<span class="string">&apos;glance/api/__init__.py&apos;</span>,<span class="string">&apos;w&apos;</span>))</span><br><span class="line">l.append(<span class="built_in">open</span>(<span class="string">&apos;glance/api/policy.py&apos;</span>,<span class="string">&apos;w&apos;</span>))</span><br><span class="line">l.append(<span class="built_in">open</span>(<span class="string">&apos;glance/api/versions.py&apos;</span>,<span class="string">&apos;w&apos;</span>))</span><br><span class="line">l.append(<span class="built_in">open</span>(<span class="string">&apos;glance/cmd/__init__.py&apos;</span>,<span class="string">&apos;w&apos;</span>))</span><br><span class="line">l.append(<span class="built_in">open</span>(<span class="string">&apos;glance/cmd/manage.py&apos;</span>,<span class="string">&apos;w&apos;</span>))</span><br><span class="line">l.append(<span class="built_in">open</span>(<span class="string">&apos;glance/db/models.py&apos;</span>,<span class="string">&apos;w&apos;</span>))</span><br><span class="line"></span><br><span class="line"><span class="built_in">map</span>(<span class="keyword">lambda</span> f:f.close(),l)</span><br></pre></td></tr></table></figure>
+
+<p>&#x200B;    &#x751F;&#x6210;&#x5982;&#x4E0B;&#x76EE;&#x5F55;&#x7ED3;&#x6784;&#xFF1A;</p>
+<p><img src="/development/python/python%E5%9F%BA%E7%A1%80_06_%E5%B8%B8%E8%A7%81%E6%A8%A1%E5%9D%97%E4%BB%8B%E7%BB%8D/image-20211128100946314.png" alt="image-20211128100946314"></p>
+<p>&#x200B;    &#x7136;&#x540E;&#x8F93;&#x5165;&#x5BF9;&#x5E94;&#x7684;&#x6587;&#x4EF6;&#x5185;&#x5BB9;&#xFF1A;</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># &#x6587;&#x4EF6;&#x5185;&#x5BB9;</span></span><br><span class="line"><span class="comment"># policy.py</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">get</span>():</span></span><br><span class="line">  <span class="built_in">print</span>(<span class="string">&apos;from policy.py&apos;</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># versions.py</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">create_resource</span>(<span class="params">conf</span>):</span></span><br><span class="line">  <span class="built_in">print</span>(<span class="string">&apos;from version.py: &apos;</span>,conf)</span><br><span class="line"></span><br><span class="line"><span class="comment"># manage.py</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">main</span>():</span></span><br><span class="line">  <span class="built_in">print</span>(<span class="string">&apos;from manage.py&apos;</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># models.py</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">register_models</span>(<span class="params">engine</span>):</span></span><br><span class="line">  <span class="built_in">print</span>(<span class="string">&apos;from models.py: &apos;</span>,engine)</span><br></pre></td></tr></table></figure>
+
+<p>&#x200B;    &#x63A5;&#x4E0B;&#x6765;&#x7684;&#x5B9E;&#x9A8C;&#xFF0C;&#x6211;&#x4EEC;&#x9700;&#x8981;&#x5728;glance&#x540C;&#x7EA7;&#x522B;&#x7684;&#x76EE;&#x5F55;&#x4E0B;&#x8FDB;&#x884C;&#x6D4B;&#x8BD5;&#x3002;</p>
+<p>&#x200B;    1&#x3001;&#x5BFC;&#x5165;models&#x6A21;&#x5757;&#x4E2D;&#x7684;&#x53D8;&#x91CF;&#x540D;</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> glance.db.models </span><br><span class="line">glance.db.models.register_models(<span class="string">&apos;mysql&apos;</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># &#x53EF;&#x4EE5;&#x7B80;&#x5355;&#x4F18;&#x5316;&#x4E00;&#x4E0B;</span></span><br><span class="line"><span class="keyword">import</span> glance.db.models <span class="keyword">as</span> models</span><br><span class="line">models.register_models(<span class="string">&apos;mysql&apos;</span>)</span><br></pre></td></tr></table></figure>
+
+<p>&#x200B;    2&#x3001;&#x5BFC;&#x5165;models&#x6A21;&#x5757;&#x4E5F;&#x53EF;&#x4EE5;&#x901A;&#x8FC7;from&#x2026;import&#x2026;&#x8BED;&#x6CD5;&#x6765;&#x5B8C;&#x6210;</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> glance.db <span class="keyword">import</span> models</span><br><span class="line">models.register_models(<span class="string">&apos;mysql&apos;</span>)</span><br></pre></td></tr></table></figure>
+
+<p>&#x200B;    3&#x3001;&#x4E5F;&#x53EF;&#x4EE5;&#x5230;&#x6700;&#x5E95;&#x5C42;&#x6A21;&#x5757;&#x4E2D;&#x76F4;&#x63A5;&#x5BFC;&#x5165;&#x51FD;&#x6570;&#x540D;&#xFF08;&#x7CBE;&#x786E;&#x5230;&#x65B9;&#x6CD5;&#xFF0C;&#x4E0D;&#x5EFA;&#x8BAE;&#x8FD9;&#x6837;&#x4F7F;&#x7528;&#xFF09;</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> glance.db.models <span class="keyword">import</span> register_models</span><br><span class="line">register_models(<span class="string">&apos;mysql&apos;</span>)</span><br></pre></td></tr></table></figure>
+
+<p>&#x200B;    &#x62A5;&#x9519;&#x5199;&#x6CD5;&#xFF1A;</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># &#x9519;&#x8BEF;&#x5199;&#x6CD5;</span></span><br><span class="line"><span class="keyword">import</span> glance</span><br><span class="line">glance.api.policy.get()  <span class="comment"># &#x62A5;&#x9519;</span></span><br></pre></td></tr></table></figure>
+
+<p>&#x200B;    &#x6240;&#x4EE5;&#x6709;&#x4E86;&#x56DB;&#x4E2A;&#x5B9E;&#x9A8C;&#xFF1A;</p>
+<p>&#x200B;    4&#x3001;&#x7F16;&#x8F91;_<em>init</em>_.py&#x6587;&#x4EF6;&#xFF0C;&#x5728;&#x53EA;&#x5BFC;&#x5165;glance&#x5305;&#x7684;&#x60C5;&#x51B5;&#x4E0B;&#x80FD;&#x8C03;&#x7528;&#x91CC;&#x9762;&#x7684;&#x6A21;&#x5757;</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># &#x6211;&#x4EEC;&#x77E5;&#x9053;__init__.py&#x4EE3;&#x7801;&#x5728;&#x5BFC;&#x5165;&#x5305;&#x7684;&#x65F6;&#x5019;&#x5C31;&#x4F1A;&#x8FD0;&#x884C;&#xFF1B;</span></span><br><span class="line"><span class="comment"># &#x6240;&#x4EE5;&#xFF0C;&#x518D;&#x5305;&#x7684;&#x6DF1;&#x5EA6;&#x6BD4;&#x8F83;&#x6DF1;&#x7684;&#x65F6;&#x5019;&#xFF0C;&#x6211;&#x4EEC;&#x9700;&#x8981;&#x501F;&#x52A9;__init__.py&#x6587;&#x4EF6;&#x5230;&#x5BFC;&#x5165;&#x6A21;&#x5757;&#x4E86;&#xFF1B;</span></span><br><span class="line"><span class="comment"># &#x5728;__init__.py&#x6587;&#x4EF6;&#x4E2D;&#x5BFC;&#x5165;&#x66F4;&#x6DF1;&#x5C42;&#x7684;&#x6A21;&#x5757;&#x3002;</span></span><br><span class="line"><span class="comment"># &#x5728;glance&#x7684;init&#x6587;&#x4EF6;&#x4E2D;&#x5BFC;&#x5165;</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">from</span> glance <span class="keyword">import</span> api</span><br><span class="line"><span class="keyword">from</span> glance <span class="keyword">import</span> cmd</span><br><span class="line"><span class="keyword">from</span> glance <span class="keyword">import</span> db</span><br><span class="line"></span><br><span class="line"><span class="comment"># &#x518D;&#x5728;&#x4E0B;&#x7EA7;&#x76EE;&#x5F55;&#x4E2D;&#x5BFC;&#x5165;</span></span><br><span class="line"><span class="keyword">import</span> policy</span><br><span class="line"><span class="keyword">import</span> versions</span><br><span class="line"></span><br><span class="line"><span class="comment"># &#x6392;&#x9519;</span></span><br><span class="line"><span class="keyword">import</span> sys</span><br><span class="line"><span class="built_in">print</span>(sys.path)  <span class="comment"># &#x9ED8;&#x8BA4;&#x627E;&#x7684;&#x8DEF;&#x5F84;&#x662F;glance&#x7684;&#x4E0A;&#x7EA7;&#x76EE;&#x5F55;&#xFF0C;&#x627E;&#x4E0D;&#x5230;&#x5F53;&#x524D;api&#x76EE;&#x5F55;</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># &#x8FD9;&#x6837;&#x5199;&#x770B;&#x4E0A;&#x53BB;&#x5F88;&#x5408;&#x7406;&#xFF0C;&#x4F46;&#x662F;&#x4E5F;&#x9519;&#x4E86;&#xFF0C;&#x56E0;&#x4E3A;&#x4E0B;&#x7EA7;&#x76EE;&#x5F55;&#x518D;sys.path&#x4E2D;&#x627E;&#x4E0D;&#x5230;</span></span><br><span class="line"><span class="comment"># &#x6B63;&#x786E;&#x5199;&#x6CD5;&#xFF1B;</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">from</span> glance.api <span class="keyword">import</span> policy</span><br><span class="line"><span class="keyword">from</span> glance.api <span class="keyword">import</span> versions</span><br><span class="line"></span><br><span class="line"><span class="comment"># &#x6700;&#x540E;&#x76F4;&#x63A5;import glance&#x5C31;&#x80FD;&#x4F7F;&#x7528;&#x5185;&#x90E8;&#x6240;&#x6709;&#x65B9;&#x6CD5;&#x4E86;</span></span><br><span class="line"><span class="keyword">import</span> glance</span><br><span class="line">glance.api.policy.get()  <span class="comment"># &#x6210;&#x529F;</span></span><br></pre></td></tr></table></figure>
+
+<p>&#x200B;    &#x8FD9;&#x79CD;&#x5199;&#x6CD5;&#x592A;&#x8FC7;&#x4E8E;&#x9EBB;&#x70E6;&#x6240;&#x4EE5;&#x6211;&#x4EEC;&#x6709;&#x4E86;&#x7B2C;&#x4E94;&#x79CD;&#x65B9;&#x5F0F;&#xFF0C;&#x4E5F;&#x5C31;&#x662F;&#x501F;&#x52A9;__all__&#x65B9;&#x6CD5;&#x7684;&#x5077;&#x61D2;&#x65B9;&#x5F0F;&#xFF1A;</p>
+<p>&#x200B;    5&#x3001;__all__&#x914D;&#x5408;*&#x6765;&#x5BFC;&#x5165;&#x66F4;&#x4E3A;&#x65B9;&#x4FBF;</p>
+<p>&#x200B;    glance&#x76EE;&#x5F55;&#x7ED3;&#x6784;&#x5982;&#x4E0B;&#xFF0C;&#x5176;&#x4F7F;&#x7528;__all__&#x65B9;&#x6CD5;&#x5BFC;&#x5165;&#xFF1B;</p>
+<p>glance/         </p>
+<p>&#x251C;&#x2500;&#x2500; <strong>init</strong>.py    from .api import *</p>
+<p>|                       from .cmd import *</p>
+<p>|                       from .db import *</p>
+<p>&#x251C;&#x2500;&#x2500; api         </p>
+<p>&#x2502;  &#x251C;&#x2500;&#x2500; __init__.py      _<em>all</em>_ = [&#x2018;policy&#x2019;,&#x2019;versions&#x2019;] </p>
+<p>&#x2502;  &#x251C;&#x2500;&#x2500; policy.py</p>
+<p>&#x2502;  &#x2514;&#x2500;&#x2500; versions.py</p>
+<p>&#x251C;&#x2500;&#x2500; cmd                    _<em>all</em>_ = [&#x2018;manage&#x2019;]   </p>
+<p>&#x2502;  &#x251C;&#x2500;&#x2500; <strong>init</strong>.py</p>
+<p>&#x2502;  &#x2514;&#x2500;&#x2500; manage.py   </p>
+<p>&#x2514;&#x2500;&#x2500; db                     _<em>all</em>_ = [&#x2018;models&#x2019;]        </p>
+<p>&#x251C;&#x2500;&#x2500; _<em>init</em>_.py</p>
+<p>&#x2514;&#x2500;&#x2500; models.py</p>
+<blockquote>
+<p>&#x6CE8;&#x610F;&#xFF1A;import&#x540E;&#x9762;&#x4E0D;&#x80FD;&#x5E26;&#x70B9;&#xFF01;</p>
+</blockquote>
+<p>&#x200B;     <strong>&#x4EF6;&#x5F00;&#x53D1;&#x89C4;&#x8303;&#x76EE;&#x5F55;&#x5982;&#x4E0B;&#xFF1A;</strong></p>
+<p><img src="file:///C:\Users\ADMINI~1\AppData\Local\Temp\ksohtml\wps2913.tmp.jpg" alt="img"> </p>
+<p>&#x200B;    &#x5E38;&#x89C1;&#x7684;&#x8F6F;&#x4EF6;&#x76EE;&#x5F55;&#x6846;&#x67B6;&#x5C31;&#x5982;&#x4E0A;&#x56FE;&#x6240;&#x793A;&#xFF1B;&#x5305;&#x542B;&#x4EE5;&#x4E0A;&#x76EE;&#x5F55;&#xFF0C;&#x5404;&#x4E2A;&#x76EE;&#x5F55;&#x7684;&#x4F5C;&#x7528;&#x662F;&#xFF1A;</p>
+<table>
+<thead>
+<tr>
+<th><strong>&#x76EE;&#x5F55;</strong></th>
+<th><strong>&#x4F5C;&#x7528;</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>bin</td>
+<td>&#x7528;&#x6765;&#x5B58;&#x653E;&#x6267;&#x884C;&#x811A;&#x672C;&#x7A0B;&#x5E8F;&#x3002;&#x4E00;&#x822C;&#x542F;&#x52A8;&#x811A;&#x672C;&#x4F1A;&#x653E;&#x5230;&#x8FD9;&#x91CC;&#x3002;&#x4F1A;&#x53BB;&#x5B9A;&#x4E49;&#x4E00;&#x4E2A;start.py&#x6587;&#x4EF6;&#xFF0C;&#x6765;&#x5199;&#x4E3B;&#x4EE3;&#x7801;&#x903B;&#x8F91;</td>
+</tr>
+<tr>
+<td>conf</td>
+<td>&#x7528;&#x6765;&#x5B58;&#x653E;&#x914D;&#x7F6E;&#x6587;&#x4EF6;&#xFF0C;&#x4E00;&#x822C;&#x4EA4;&#x7ED9;&#x8FD0;&#x7EF4;&#x4EBA;&#x5458;&#x4F7F;&#x7528;&#x3002;&#x544A;&#x8BC9;&#x8FD0;&#x7EF4;&#x4EBA;&#x5458;&#x6211;&#x7684;&#x8FD9;&#x4E2A;&#x8F6F;&#x4EF6;&#x7A0B;&#x5E8F;&#x5E94;&#x8BE5;&#x5982;&#x4F55;&#x4F7F;&#x7528;&#x3002;&#x54EA;&#x4E9B;&#x53C2;&#x6570;&#x53EF;&#x4EE5;&#x8C03;&#x6574;&#xFF0C;&#x8C03;&#x6574;&#x540E;&#x5F97;&#x5230;&#x4EC0;&#x4E48;&#x6837;&#x7684;&#x6548;&#x679C;&#x3002;</td>
+</tr>
+<tr>
+<td>core</td>
+<td>core&#x76EE;&#x5F55;&#x7528;&#x6765;&#x5B58;&#x653E;&#x7A0B;&#x5E8F;&#x4EE3;&#x7801;&#x7684;&#x6838;&#x5FC3;&#x7A0B;&#x5E8F;&#x903B;&#x8F91;&#xFF0C;&#x4E0E;&#x5177;&#x4F53;&#x7684;&#x65B9;&#x6CD5;</td>
+</tr>
+<tr>
+<td>db</td>
+<td>db&#x76EE;&#x5F55;&#x7528;&#x6765;&#x5B58;&#x653E;&#x6570;&#x636E;&#x6587;&#x4EF6;&#x3002;&#x5927;&#x578B;&#x7A0B;&#x5E8F;&#x4E2D;&#xFF0C;&#x8FD9;&#x91CC;&#x4E00;&#x822C;&#x7528;&#x6765;&#x5B58;&#x653E;&#x6570;&#x636E;&#x5E93;&#x6587;&#x4EF6;&#xFF1B;</td>
+</tr>
+<tr>
+<td>lib</td>
+<td>lib&#x76EE;&#x5F55;&#x7528;&#x6765;&#x81EA;&#x5B9A;&#x4E49;&#x6A21;&#x5757;&#x548C;&#x5305;&#x3002;&#x4E5F;&#x5C31;&#x662F;&#x6709;&#x4E9B;API&#x63A5;&#x53E3;&#x662F;&#x81EA;&#x5DF1;&#x5F00;&#x53D1;&#x7684;&#xFF0C;&#x5C31;&#x53EF;&#x4EE5;&#x653E;&#x5728;&#x8FD9;&#x4E2A;&#x5730;&#x65B9;&#xFF0C;&#x65B9;&#x4FBF;&#x8C03;&#x7528;&#x3002;</td>
+</tr>
+<tr>
+<td>log</td>
+<td>&#x7A0B;&#x5E8F;&#x8FD0;&#x884C;&#x7684;&#x65E5;&#x5FD7;&#x6587;&#x4EF6;&#x5C31;&#x8981;&#x5B58;&#x653E;&#x518D;&#x8BE5;&#x76EE;&#x5F55;&#x4E0B;&#x3002;</td>
+</tr>
+</tbody></table>
+<p>&#x200B;    <strong>&#x5E38;&#x89C1;&#x5F02;&#x5E38;&#x5904;&#x7406;</strong></p>
+<p>&#x200B;    try &#x2026; except &#x2026; &#x8BED;&#x53E5;&#xFF0C;&#x8FD9;&#x4E2A;&#x8BED;&#x53E5;&#x5C31;&#x4E0D;&#x518D;&#x8BE6;&#x7EC6;&#x8BF4;&#x660E;&#x4E86;&#xFF1B;</p>
+<h2 id="6-2&#x3001;&#x5E38;&#x7528;&#x6A21;&#x5757;&#x4E00;&#xFF08;&#x5E38;&#x89C1;&#x6A21;&#x5757;&#xFF09;"><a href="#6-2&#x3001;&#x5E38;&#x7528;&#x6A21;&#x5757;&#x4E00;&#xFF08;&#x5E38;&#x89C1;&#x6A21;&#x5757;&#xFF09;" class="headerlink" title="6.2&#x3001;&#x5E38;&#x7528;&#x6A21;&#x5757;&#x4E00;&#xFF08;&#x5E38;&#x89C1;&#x6A21;&#x5757;&#xFF09;"></a><strong>6.2&#x3001;&#x5E38;&#x7528;&#x6A21;&#x5757;&#x4E00;&#xFF08;&#x5E38;&#x89C1;&#x6A21;&#x5757;&#xFF09;</strong></h2><h3 id="6-2-1&#x3001;re&#x6A21;&#x5757;"><a href="#6-2-1&#x3001;re&#x6A21;&#x5757;" class="headerlink" title="6.2.1&#x3001;re&#x6A21;&#x5757;"></a><strong>6.2.1&#x3001;re&#x6A21;&#x5757;</strong></h3><p><strong>&#x6B63;&#x5219;&#x8868;&#x8FBE;&#x5F0F;</strong></p>
+<p>&#x200B;    &#x4F5C;&#x7528;&#xFF1A;&#x5B9E;&#x73B0;&#x5B57;&#x7B26;&#x4E32;&#x5339;&#x914D;&#xFF1B;</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> re</span><br><span class="line">phone_number = <span class="built_in">input</span>(<span class="string">&quot;please input your phone number:&quot;</span>)</span><br><span class="line"><span class="keyword">if</span> re.match(<span class="string">&apos;^(13|14|15|18)[0-9]{9})$&apos;</span>, phone_number):</span><br><span class="line">  <span class="built_in">print</span>(<span class="string">&quot;ok,this is correct phone number.&quot;</span>)</span><br><span class="line"><span class="keyword">else</span>:</span><br><span class="line">  <span class="built_in">print</span>(<span class="string">&quot;False&quot;</span>)   </span><br></pre></td></tr></table></figure>
+
+<p>&#x200B;    &#x5DE5;&#x5177;&#xFF1A;<a target="_blank" rel="noopener" href="http://tool.chinaz.com/regex">http://tool.chinaz.com/regex</a></p>
+<p>&#x200B;    &#x4F7F;&#x7528;&#x6B63;&#x5219;&#x8868;&#x8FBE;&#x5F0F;&#x53EF;&#x4EE5;&#x89E3;&#x51B3;&#x5B57;&#x7B26;&#x4E32;&#x5224;&#x65AD;&#x975E;&#x5E38;&#x9EBB;&#x70E6;&#x7684;&#x5185;&#x5BB9;&#xFF1B;&#x4E14;&#xFF0C;&#x5728;&#x722C;&#x866B;&#x65B9;&#x9762;&#x6B63;&#x5219;&#x8868;&#x8FBE;&#x5F0F;&#x662F;&#x975E;&#x5E38;&#x91CD;&#x8981;&#x7684;&#xFF0C;&#x6B63;&#x5219;&#x6709;&#x81EA;&#x5DF1;&#x7684;&#x8BED;&#x6CD5;&#x683C;&#x5F0F;&#x3002;&#x5B83;&#x7528;&#x6765;&#x5339;&#x914D;&#x5B57;&#x7B26;&#x4E32;&#xFF01;&#x548C;&#x5176;&#x4ED6;&#x6570;&#x636E;&#x7C7B;&#x578B;&#x6CA1;&#x6709;&#x5173;&#x7CFB;&#xFF1B;</p>
+<p>&#x200B;    <strong>1&#x3001;&#x5B57;&#x7B26;&#x7EC4;</strong> &#x2013; []&#x4E0E;^</p>
+<p>&#x200B;    &#x5339;&#x914D;&#x4EFB;&#x610F;&#x4E00;&#x4E2A;&#x201C;[]&#x201D;&#x4E2D;&#x51FA;&#x73B0;&#x7684;&#x4EFB;&#x610F;&#x4E00;&#x4E2A;&#x5B57;&#x7B26;&#xFF1B;&#x4F8B;&#x5982;&#xFF1A;</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">[<span class="number">0</span>-<span class="number">9</span>] </span><br><span class="line">[<span class="number">9</span>-<span class="number">0</span>]  <span class="comment"># &#x9519;&#x8BEF;</span></span><br><span class="line">[a-z]</span><br><span class="line">[A-Z]</span><br><span class="line">[A-Za-z]</span><br><span class="line">[A-Za-z0-<span class="number">9</span>]  <span class="comment"># &#x6240;&#x6709;&#x5B57;&#x7B26;&#x548C;&#x6570;&#x5B57;</span></span><br><span class="line">[A-z]  <span class="comment"># &#x6700;&#x597D;&#x4E0D;&#x8981;&#x8FD9;&#x4E48;&#x5199;&#xFF0C;&#x56E0;&#x4E3A;&#x57FA;&#x4E8E;ascii&#x8868;&#x4E2D;&#xFF0C;&#x4E2D;&#x95F4;&#x8FD8;&#x4F1A;&#x5339;&#x914D;&#x5230;&#x5176;&#x4ED6;&#x7684;&#x5B57;&#x7B26;</span></span><br><span class="line">[^]  <span class="comment"># &#x4E2D;&#x62EC;&#x53F7;&#x4E2D;&#x4F7F;&#x7528; ^ &#x8868;&#x793A;&#x53D6;&#x53CD;&#xFF0C;&#x4E5F;&#x5C31;&#x662F;&#x5339;&#x914D;&#x9664;&#x4E86;&#x8FD9;&#x4E2A;&#x8303;&#x56F4;&#x5916;&#x7684;&#x5176;&#x4ED6;&#x5B57;&#x7B26;&#xFF1B;&#x4F8B;&#x5982;&#xFF1A;</span></span><br><span class="line">[^a-z]  <span class="comment"># &#x9664;&#x4E86;&#x5C0F;&#x5199;&#x5B57;&#x7B26;&#x610F;&#x5916;&#x7684;&#x5176;&#x4ED6;&#x5B57;&#x7B26;&#x5747;&#x5339;&#x914D;</span></span><br></pre></td></tr></table></figure>
+
+<p>&#x200B;    <strong>2&#x3001;&#x5143;&#x5B57;&#x7B26;</strong> &#x2013; &#x5728;&#x6B63;&#x5219;&#x4E2D;&#x6709;&#x7279;&#x6B8A;&#x542B;&#x4E49;&#x7684;&#x7B26;&#x53F7;</p>
+<p>&#x200B;        &#x5339;&#x914D;&#x7B26;&#x53F7;&#xFF1A;</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">.  <span class="comment"># &#x8868;&#x793A;&#x4EFB;&#x610F;&#x5355;&#x4E2A;&#x5B57;&#x7B26;</span></span><br><span class="line">\w  <span class="comment"># &#x5339;&#x914D;&#x5B57;&#x6BCD;&#x3001;&#x6570;&#x5B57;&#x3001;&#x4E0B;&#x5212;&#x7EBF; [A-Za-z0-9_]</span></span><br><span class="line">\W  <span class="comment"># &#x975E;&#x5B57;&#x6BCD;&#x3001;&#x6570;&#x5B57;&#x3001;&#x4E0B;&#x5212;&#x7EBF;</span></span><br><span class="line">\s  <span class="comment"># &#x5339;&#x914D;&#x4EFB;&#x610F;&#x7A7A;&#x767D;&#x7B26; [space \t\v\...]</span></span><br><span class="line">\S  <span class="comment"># &#x5339;&#x914D;&#x4EFB;&#x610F;&#x7684;&#x975E;&#x7A7A;&#x767D;&#x5B57;&#x7B26;</span></span><br><span class="line">\d  <span class="comment"># &#x5339;&#x914D;&#x6570;&#x5B57; [0-9]</span></span><br><span class="line">\D  <span class="comment"># &#x5339;&#x914D;&#x975E;&#x6570;&#x5B57;</span></span><br><span class="line">[\w\W] [\s\S] [\d\D]  <span class="comment"># &#x8FD9;&#x4E09;&#x8005;&#x90FD;&#x53EF;&#x4EE5;&#x8868;&#x793A;&#x6240;&#x6709;&#x5B57;&#x7B26;</span></span><br><span class="line">\n  <span class="comment"># &#x5339;&#x914D;&#x4E00;&#x4E2A;&#x6362;&#x884C;&#x7B26;</span></span><br><span class="line">\t  <span class="comment"># &#x5339;&#x914D;&#x4E00;&#x4E2A;&#x5236;&#x8868;&#x7B26;</span></span><br></pre></td></tr></table></figure>
+
+<p>&#x200B;        &#x4F4D;&#x7F6E;&#x951A;&#x5B9A;&#xFF1A;</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">\b  <span class="comment"># &#x951A;&#x5B9A;&#x8BCD;&#x5C3E;&#x6216;&#x8005;&#x8BCD;&#x9996;</span></span><br><span class="line">^  <span class="comment"># &#x951A;&#x5B9A;&#x884C;&#x9996;</span></span><br><span class="line">$  <span class="comment"># &#x951A;&#x5B9A;&#x884C;&#x5C3E;</span></span><br></pre></td></tr></table></figure>
+
+<p>&#x200B;        &#x5206;&#x7EC4;&#x4E0E;&#x6216;&#xFF1A;</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">|  <span class="comment"># &#x6216;</span></span><br><span class="line">()  <span class="comment"># &#x5206;&#x7EC4;</span></span><br></pre></td></tr></table></figure>
+
+<p>&#x200B;        &#x793A;&#x4F8B;&#x5982;&#x4E0B;&#xFF1A;</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">([abc][<span class="number">123</span>])+  <span class="comment"># a1 a2 a3 b1 b2 b3 c1 c2 c3&#x90FD;&#x53EF;&#x4EE5;&#x5339;&#x914D;&#x6210;&#x529F;</span></span><br><span class="line"><span class="comment"># + &#x8868;&#x793A;&#x53EF;&#x4EE5;&#x91CD;&#x590D;&#x5339;&#x914D;&#x524D;&#x9762;&#x7684;&#x5185;&#x5BB9;</span></span><br></pre></td></tr></table></figure>
+
+<p>&#x200B;    <strong>3&#x3001;&#x91CF;&#x8BCD;</strong> &#x2013; &#x6307;&#x70B9;&#x5339;&#x914D;&#x524D;&#x9762;&#x4E00;&#x4E2A;&#x5B57;&#x7B26;&#x591A;&#x5C11;&#x6B21;</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">*  <span class="comment"># &#x5339;&#x914D;0&#x6B21;&#x5230;&#x4EFB;&#x610F;&#x6B21;&#xFF0C;&#x4F46;&#x662F;&#x4E0D;&#x80FD;&#x5339;&#x914D;&#x5230;\n&#xFF08;&#x6362;&#x884C;&#x7B26;&#xFF09;&#xFF0C;&#x8981;&#x60F3;&#x5339;&#x914D;&#x6362;&#x884C;&#x7B26;&#x9700;&#x8981;&#x8FDB;&#x5165;re&#x7684;DOTALL&#x6A21;&#x5F0F;&#xFF0C;&#x8FD9;&#x79CD;&#x6A21;&#x5F0F;&#x4E5F;&#x53EF;&#x4EE5;&#x4F7F;&#x7528;&quot;.S&quot;&#x7684;&#x65B9;&#x5F0F;&#x8868;&#x793A;&#xFF1B;&#x5B83;&#x9ED8;&#x8BA4;&#x5DE5;&#x4F5C;&#x518D;&#x8D2A;&#x5A6A;&#x6A21;&#x5F0F;&#x4E0B;&#xFF1B;</span></span><br><span class="line">+  <span class="comment"># &#x5339;&#x914D;&#x524D;&#x9762;&#x5B57;&#x7B26;1&#x6B21;&#x5230;&#x4EFB;&#x610F;&#x6B21;&#xFF1B;</span></span><br><span class="line">?  <span class="comment">#  &#x5339;&#x914D;&#x524D;&#x9762;&#x5B57;&#x7B26;0&#x6B21;&#x5230;1&#x6B21;&#xFF1B;&#xFF1F;&#x52A0;&#x5728;&#x91CF;&#x8BCD;&#x540E;&#x9762;&#x8868;&#x793A;&#x975E;&#x8D2A;&#x5A6A;&#x6A21;&#x5F0F;</span></span><br><span class="line">   <span class="comment">## &#x8D2A;&#x5A6A;&#x6A21;&#x5F0F;</span></span><br><span class="line">	&lt;.*&gt;</span><br><span class="line">	&lt;script&gt;...&lt;script&gt; &#xA0;<span class="comment"># &#x5339;&#x914D;&#x7B2C;&#x4E00;&#x4E2A;&quot;&lt;&quot;&#x548C;&#x6700;&#x540E;&#x4E00;&#x4E2A;&quot;&gt;&quot;&#x4E4B;&#x95F4;&#x7684;&#x6240;&#x6709;&#x5185;&#x5BB9;</span></span><br><span class="line">   <span class="comment">## &#x975E;&#x8D2A;&#x5A6A;&#x6A21;&#x5F0F;</span></span><br><span class="line">    &lt;.*&gt;</span><br><span class="line">    &lt;script&gt;...&lt;script&gt; &#xA0;<span class="comment"># &#x5339;&#x914D;&#x7B2C;&#x4E00;&#x4E2A;&lt;script&gt;</span></span><br><span class="line"></span><br><span class="line">{n}  <span class="comment"># &#x5339;&#x914D;&#x524D;&#x9762;&#x7684;&#x5B57;&#x7B26;n&#x6B21;</span></span><br><span class="line">{n, m}  <span class="comment"># &#x5339;&#x914D;&#x524D;&#x9762;&#x7684;&#x5B57;&#x7B26;n&#x6B21;&#x5230;m&#x6B21;&#xFF1B;</span></span><br></pre></td></tr></table></figure>
+
+<p>&#x200B;    <strong>4&#x3001;&#x8F6C;&#x79FB;&#x5B57;&#x7B26;</strong> &#x2013; \ &#x6216;&#x5219; r&#x2019;xxx&#x2019;</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">\  <span class="comment"># &#x8868;&#x793A;&#x5BF9;&#x540E;&#x9762;&#x7D27;&#x63A5;&#x7740;&#x7684;&#x5B57;&#x7B26;&#x8FDB;&#x884C;&#x8F6C;&#x4E49;&#xFF08;&#x4F7F;&#x7528;&#x5176;&#x672C;&#x8EAB;&#x610F;&#x601D;&#xFF09;</span></span><br><span class="line"><span class="string">r&apos;&#x5168;&#x90E8;&#x8F6C;&#x79FB;&apos;</span>  <span class="comment"># r&#x5F15;&#x53F7;&#x540E;&#x9762;&#x7684;&#x5185;&#x5BB9;&#x5168;&#x90E8;&#x8F6C;&#x79FB;</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># &#x793A;&#x4F8B;&#x5982;&#x4E0B;&#xFF1A;</span></span><br><span class="line"><span class="string">&quot;C:\\Users\\Administrator\\Downloads&quot;</span>  <span class="comment"># &#x4F7F;&#x7528;\&#x8FDB;&#x884C;&#x76EE;&#x5F55;&#x8F6C;&#x4E49;</span></span><br><span class="line"><span class="string">r&quot;C:\Users\Administrator\Downloads&quot;</span>  <span class="comment"># &#x4E0E;&#x4E0A;&#x9762;&#x610F;&#x601D;&#x76F8;&#x540C;</span></span><br></pre></td></tr></table></figure>
+
+<p>&#x200B;    <strong>5&#x3001;&#x5E38;&#x7528;&#x7684;&#x6B63;&#x5219;&#x8868;&#x8FBE;&#x5F0F;&#x5199;&#x6CD5;</strong></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">*?  <span class="comment"># &#x4EFB;&#x610F;&#x5B57;&#x7B26;&#x51FA;&#x73B0;&#x4EFB;&#x610F;&#x6B21;&#x6570;&#x7684;&#x975E;&#x8D2A;&#x5A6A;&#x6A21;&#x5F0F;</span></span><br><span class="line">+?  <span class="comment"># &#x4EFB;&#x610F;&#x5B57;&#x7B26;&#x51FA;&#x73B0;&#x4E00;&#x6B21;&#x5230;&#x591A;&#x6B21;&#x7684;&#x975E;&#x8D2A;&#x5A6A;&#x6A21;&#x5F0F;</span></span><br><span class="line">??  <span class="comment"># &#x4EFB;&#x610F;&#x5B57;&#x7B26;&#x51FA;&#x73B0;0&#x6B21;&#x5230;1&#x6B21;&#x7684;&#x975E;&#x8D2A;&#x5A6A;&#x6A21;&#x5F0F;</span></span><br><span class="line">{n,}?  <span class="comment"># &#x4EFB;&#x610F;&#x5B57;&#x7B26;&#x51FA;&#x73B0;n&#x6B21;&#x5230;&#x65E0;&#x7A77;&#x6B21;&#x7684;&#x975E;&#x8D2A;&#x5A6A;&#x6A21;&#x5F0F;</span></span><br><span class="line">{n,m}?  <span class="comment"># &#x4EFB;&#x610F;&#x5B57;&#x7B26;&#x51FA;&#x73B0;n&#x6B21;&#x5230;m&#x6B21;&#x7684;&#x975E;&#x8D2A;&#x5A6A;&#x6A21;&#x5F0F;</span></span><br><span class="line">.*?  <span class="comment"># &#x4EFB;&#x610F;&#x5B57;&#x7B26;&#x51FA;&#x73B0;&#x4EFB;&#x610F;&#x6B21;&#x6570;&#x7684;&#x975E;&#x8D2A;&#x5A6A;&#x6A21;&#x5F0F;</span></span><br><span class="line">(.*?)  <span class="comment"># ? &#x8868;&#x793A;&#x4E0D;&#x9002;&#x7528;&#x8D2A;&#x5A6A;&#x5339;&#x914D;&#x6A21;&#x5F0F;&#xFF01; &#x8FD9;&#x79CD;&#x5199;&#x6CD5;&#x53EF;&#x4EE5;&#x5339;&#x914D;&#x67D0;&#x4E2A;&#x9650;&#x5B9A;&#x6761;&#x4EF6;&#x4E2D;&#x7684;&#x6240;&#x6709;&#x5185;&#x5BB9;&#xFF1B;</span></span><br></pre></td></tr></table></figure>
+
+
+
+<p><strong>re&#x6A21;&#x5757;</strong></p>
+<p>&#x200B;    re&#x6A21;&#x5757;&#x662F;python&#x4E2D;&#x4F7F;&#x7528;&#x6B63;&#x5219;&#x8868;&#x8FBE;&#x5F0F;&#x7684;&#x6A21;&#x5757;&#xFF1B;</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> re  <span class="comment"># &#x5BFC;&#x5165; re &#x6A21;&#x5757;&#xFF0C;&#x8FD9;&#x4E2A;&#x662F;&#x5185;&#x7F6E;&#x6A21;&#x5757;&#xFF0C;&#x4E0D;&#x9700;&#x8981;&#x4E0B;&#x8F7D;</span></span><br></pre></td></tr></table></figure>
+
+<p>&#x200B;    &#x5E38;&#x89C1;&#x7684;&#x65B9;&#x6CD5;&#x5982;&#x4E0B;&#x8868;&#xFF1A;</p>
+<table>
+<thead>
+<tr>
+<th>&#x67E5;&#x627E;&#x5339;&#x914D;&#x5185;&#x5BB9;</th>
+<th>&#x67E5;&#x627E;&#x5339;&#x914D;&#x5185;&#x5BB9;&#xFF0C;&#x53EA;&#x627E;&#x5230;&#x4E00;&#x6B21;&#x5373;&#x53EF;</th>
+<th>&#x5339;&#x914D;&#x662F;&#x5426;&#x4EE5;&#x6307;&#x5B9A;&#x5185;&#x5BB9;&#x5F00;&#x5934;</th>
+<th>&#x6307;&#x5B9A;patten&#xFF0C;&#x8FDB;&#x884C;&#x5B57;&#x7B26;&#x4E32;&#x8FDB;&#x884C;&#x5206;&#x5272;</th>
+<th>&#x66FF;&#x6362;patten&#x5339;&#x914D;&#x5230;&#x7684;&#x5185;&#x5BB9;</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>findall()</td>
+<td>search()</td>
+<td>match()</td>
+<td>split()</td>
+<td>sub()</td>
+</tr>
+<tr>
+<td>&#x66FF;&#x6362;patten&#x5339;&#x914D;&#x5230;&#x7684;&#x5185;&#x5BB9;&#x5E76;&#x663E;&#x793A;&#x5339;&#x914D;&#x7684;&#x6B21;&#x6570;</td>
+<td>&#x5B9A;&#x4E49;patten&#x8868;&#x8FBE;&#x5F0F;&#xFF0C;&#x65B9;&#x4FBF;&#x91CD;&#x590D;&#x8C03;&#x7528;</td>
+<td>&#x627E;&#x5230;&#x201C;patten&#x201D;&#x5339;&#x914D;&#x5185;&#x5BB9;&#xFF0C;&#x7136;&#x540E;&#x8FD4;&#x56DE;&#x4E00;&#x4E2A;&#x8FED;&#x4EE3;&#x5BF9;&#x8C61;</td>
+<td>&#x5206;&#x7EC4;&#x5F15;&#x7528;</td>
+<td></td>
+</tr>
+<tr>
+<td>subn()</td>
+<td>compile()</td>
+<td>finditer()</td>
+<td>&#xFF08;&#xFF09;&#x2013; &#x5206;&#x7EC4; {&#x6570;&#x5B57;} &#x2013; &#x5F15;&#x7528;</td>
+<td></td>
+</tr>
+</tbody></table>
+<p>&#x200B;    <strong>findall()</strong>&#x2013;findall(&#x201C;patten&#x201D;,&#x201D;&#x9700;&#x8981;&#x67E5;&#x627E;&#x7684;&#x5185;&#x5BB9;&#x201D;)&#xFF0C;&#x6CE8;&#x610F;patten&#x7684;&#x90E8;&#x5206;&#x53EF;&#x4EE5;&#x6311;&#x9009;&#x51FA;&#x5339;&#x914D;&#x5185;&#x5BB9;&#xFF0C;&#x5339;&#x914D;&#x5230;&#x7684;&#x5185;&#x5BB9;&#x4EE5;<strong>&#x5217;&#x8868;</strong>&#x7684;&#x5F62;&#x5F0F;&#x8F93;&#x51FA;&#x51FA;&#x6765;&#xFF1B;</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># &#x627E;&#x51FA;&#x5339;&#x914D;&#x7684;&#x5185;&#x5BB9;&#xFF0C;&#x4EE5;&#x5217;&#x8868;&#x7684;&#x5F62;&#x5F0F;&#x8FD4;&#x56DE;</span></span><br><span class="line">ret = re.findall(<span class="string">&apos;a&apos;</span>,<span class="string">&apos;eva egon yuan&apos;</span>)</span><br><span class="line"><span class="built_in">print</span>(ret)</span><br></pre></td></tr></table></figure>
+
+<p>&#x200B;    <strong>search()</strong>&#x2013;search(&#x201C;patten&#x201D;,&#x201D;&#x88AB;&#x67E5;&#x627E;&#x7684;&#x5185;&#x5BB9;&#x201D;)&#xFF0C;&#x4ECE;&#x524D;&#x5411;&#x540E;&#x67E5;&#x627E;&#xFF0C;&#x627E;&#x5230;&#x7B2C;&#x4E00;&#x4E2A;&#xFF0C;&#x5C31;&#x8FD4;&#x56DE;&#x3002;&#x4E4B;&#x540E;&#x7684;&#x5185;&#x5BB9;&#x5C31;&#x4E0D;&#x518D;&#x8FDB;&#x884C;&#x5339;&#x914D;&#xFF0C;&#x4E14;&#x5FC5;&#x987B;&#x4F7F;&#x7528;group()&#x65B9;&#x6CD5;&#x624D;&#x80FD;&#x83B7;&#x53D6;&#xFF1B;</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">ret = re.search(<span class="string">&apos;a&apos;</span>,<span class="string">&apos;eva egon yuan&apos;</span>)</span><br><span class="line"><span class="built_in">print</span>(ret)</span><br><span class="line"><span class="built_in">print</span>(ret.group())</span><br></pre></td></tr></table></figure>
+
+<p>&#x200B;        &#x663E;&#x793A;&#x7ED3;&#x679C;&#x5982;&#x4E0B;&#xFF1B;&#x4E0D;&#x9002;&#x7528;group()&#x51FD;&#x6570;&#x7684;&#x65F6;&#x5019;&#xFF0C;&#x8FD4;&#x56DE;&#x7684;&#x662F;&#x4E00;&#x4E2A;object&#x5BF9;&#x8C61;&#xFF1B;</p>
+<p><img src="/development/python/python%E5%9F%BA%E7%A1%80_06_%E5%B8%B8%E8%A7%81%E6%A8%A1%E5%9D%97%E4%BB%8B%E7%BB%8D/image-20211128103340712.png" alt="image-20211128103340712"></p>
+<p>&#x200B;        &#x5982;&#x679C;&#x6CA1;&#x6709;&#x5339;&#x914D;&#x5230;&#x5185;&#x5BB9;&#x7684;&#x8BDD;&#xFF0C;&#x5C31;&#x663E;&#x793A;&#x4E3A;None&#x7A7A;&#x503C;&#xFF0C;&#x6240;&#x4EE5;&#x4F7F;&#x7528;search()&#x8FDB;&#x884C;&#x5B57;&#x7B26;&#x5339;&#x914D;&#x7684;&#x65F6;&#x5019;&#xFF0C;&#x8F93;&#x51FA;&#x7684;&#x5185;&#x5BB9;&#x4E00;&#x822C;&#x9700;&#x8981;&#x8FDB;&#x884C;&#x5224;&#x65AD;&#xFF0C;&#x4EE3;&#x7801;&#x5982;&#x4E0B;&#xFF1A;</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> ret:</span><br><span class="line">  <span class="built_in">print</span>(ret.group())</span><br></pre></td></tr></table></figure>
+
+<p>&#x200B;    <strong>match()</strong>&#x2013;match(&#x201C;patten&#x201D;,&#x201D;&#x88AB;&#x67E5;&#x627E;&#x7684;&#x5185;&#x5BB9;&#x201D;),&#x548C;search()&#x4E00;&#x6837;&#xFF0C;&#x4ECE;&#x524D;&#x5411;&#x540E;&#x627E;&#xFF0C;&#x5982;&#x679C;&#x201D;patten&#x201D;&#x80FD;&#x591F;<strong>&#x4ECE;&#x5934;&#x5F00;&#x59CB;&#x5339;&#x914D;</strong>&#xFF0C;&#x5C31;&#x8FD4;&#x56DE;&#x5339;&#x914D;&#x503C;&#xFF1B;</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">ret = re.match(<span class="string">&apos;eva&apos;</span>, <span class="string">&apos;eva egon yuan&apos;</span>)</span><br><span class="line"><span class="keyword">if</span> ret:</span><br><span class="line">  <span class="built_in">print</span>(ret.group())</span><br></pre></td></tr></table></figure>
+
+<p>&#x200B;    <strong>split()</strong>&#x2013;split(&#x201C;patten&#x201D;,&#x201D;&#x9700;&#x8981;&#x5206;&#x5272;&#x7684;&#x5B57;&#x7B26;&#x4E32;&#x201D;)&#xFF0C;&#x4F7F;&#x7528;patten&#x6765;&#x5339;&#x914D;&#x5206;&#x5272;&#x7B26;&#xFF0C;&#x6240;&#x5339;&#x914D;&#x7684;&#x5185;&#x5BB9;&#x5747;&#x4F1A;&#x88AB;&#x5224;&#x5B9A;&#x4E3A;&#x5206;&#x5272;&#x7B26;&#xFF0C;&#x7136;&#x540E;&#x518D;&#x8BB2;&#x6307;&#x5B9A;&#x5B57;&#x7B26;&#x4E32;&#x5206;&#x5272;&#x4E3A;&#x4E00;&#x4E2A;&#x5217;&#x8868;&#xFF1B;</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">ret = re.split(<span class="string">&apos;[ac]&apos;</span>,<span class="string">&apos;abcd)</span></span><br><span class="line"><span class="string">print(ret)</span></span><br></pre></td></tr></table></figure>
+
+<p>&#x200B;    <strong>sub()</strong>&#x2013;sub(&#x201C;patten&#x201D;,&#x201D;&#x5B57;&#x7B26;&#x4E32;&#x201D;,&#x201D;&#x9700;&#x8981;&#x66FF;&#x6362;&#x7684;&#x5B57;&#x7B26;&#x4E32;&#x201D;)&#xFF0C;&#x4F7F;&#x7528;&#x4E2D;&#x95F4;&#x7684;&#x5B57;&#x7B26;&#x4E32;&#x66FF;&#x6362;&#x6389;&#x524D;&#x9762;patten&#x5339;&#x914D;&#x5230;&#x7684;&#x90E8;&#x5206;&#xFF1B;</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">ret = re.sub(<span class="string">&quot;\d&quot;</span>,<span class="string">&quot;H&quot;</span>,<span class="string">&apos;eva3egon4yuan4&apos;</span>,L)</span><br><span class="line"><span class="built_in">print</span>(ret)</span><br></pre></td></tr></table></figure>
+
+<p>&#x200B;    <strong>subn()</strong>&#x2013;subn(&#x201C;patten&#x201D;,&#x201D;&#x5B57;&#x7B26;&#x4E32;&#x201D;,&#x201D;&#x9700;&#x8981;&#x66FF;&#x6362;&#x7684;&#x5B57;&#x7B26;&#x4E32;&#x201D;)&#xFF0C;&#x548C;sub()&#x5185;&#x5BB9;&#x76F8;&#x540C;&#xFF0C;&#x66FF;&#x6362;&#x5230;patten&#x7684;&#x90E8;&#x5206;&#xFF0C;&#x5E76;&#x544A;&#x77E5;&#x66FF;&#x6362;&#x4E86;&#x591A;&#x5C11;&#x6B21;&#xFF1B;</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">ret = re.subn(<span class="string">&quot;\d&quot;</span>,<span class="string">&quot;H&quot;</span>,<span class="string">&apos;eva3egon4yuan4&apos;</span>,L)</span><br><span class="line"><span class="built_in">print</span>(ret)  <span class="comment"># &#x8FD4;&#x56DE;&#x66FF;&#x6362;&#x7684;&#x6B21;&#x6570;</span></span><br></pre></td></tr></table></figure>
+
+<p>&#x200B;    <strong>compile()</strong>&#x2013;compile(&#x201C;patten&#x201D;),&#x6307;&#x5B9A;&#x4E00;&#x4E2A;patten&#x8868;&#x8FBE;&#x5F0F;&#xFF0C;&#x7136;&#x540E;&#x5728;&#x4E4B;&#x540E;&#x7684;&#x6570;&#x636E;&#x5339;&#x914D;&#x4E2D;&#x53EF;&#x4EE5;&#x53CD;&#x590D;&#x4F7F;&#x7528;&#xFF1B;&#x8FD9;&#x6837;&#x53EF;&#x4EE5;&#x63D0;&#x9AD8;&#x4EE3;&#x7801;&#x5339;&#x914D;&#x6548;&#x7387;&#xFF1B;&#x6709;&#x4E86;&#x8868;&#x8FBE;&#x5F0F;&#x4EE5;&#x540E;&#xFF0C;&#x53EF;&#x4EE5;&#x76F4;&#x63A5;&#x8C03;&#x7528;re&#x6A21;&#x5757;&#x7684;&#x5176;&#x4ED6;&#x65B9;&#x6CD5;&#x5373;&#x53EF;&#xFF1B;</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">obj = re.<span class="built_in">compile</span>(<span class="string">&apos;\d{3}&apos;</span>)</span><br><span class="line">ret = obj.search(<span class="string">&apos;dafadsfdsfa13j&apos;</span>)  <span class="comment"># &#x7528;obj&#x7684;patten&#x8868;&#x8FBE;&#x5F0F;&#xFF0C;&#x53BB;&#x8FDB;&#x884C;&#x5339;&#x914D;</span></span><br><span class="line"><span class="comment"># &#x4E4B;&#x540E;&#x53EA;&#x9700;&#x8981;&#x4FEE;&#x6539;&#x540E;&#x9762;&#x5BF9;&#x5E94;&#x7684;&#x5B57;&#x7B26;&#x4E32;&#xFF0C;&#x5C31;&#x53EF;&#x4EE5;&#x8FDB;&#x884C;&#x91CD;&#x590D;&#x5339;&#x914D;</span></span><br><span class="line"><span class="keyword">if</span> ret:</span><br><span class="line">  <span class="built_in">print</span>(ret.group())</span><br></pre></td></tr></table></figure>
+
+<p>&#x200B;    <strong>finditer()</strong>&#x2013;finditer(&#x201C;patten&#x201D;, string)&#xFF0C;&#x5BF9;&#x4E8E;&#x6240;&#x627E;&#x5230;&#x7684;&#x5185;&#x5BB9;&#x901A;&#x8FC7;&#x8FED;&#x4EE3;&#x5668;&#x8FDB;&#x884C;&#x8FD4;&#x56DE;&#xFF0C;&#x4FDD;&#x8BC1;&#x7CFB;&#x7EDF;&#x5185;&#x5B58;&#x4F7F;&#x7528;&#xFF1B;</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">ret = re.finditer(<span class="string">&quot;t..t&quot;</span>, <span class="string">&quot;test&quot;</span>)</span><br><span class="line"><span class="built_in">print</span>(ret)  <span class="comment"># &#x8FD4;&#x56DE;&#x4E00;&#x4E2A;&#x8FED;&#x4EE3;&#x5BF9;&#x8C61;</span></span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> ret:</span><br><span class="line">  <span class="built_in">print</span>(i)</span><br></pre></td></tr></table></figure>
+
+<p>&#x200B;    <strong>&#x5206;&#x7EC4;&#x5F15;&#x7528;</strong>&#x2013;(),&#x8C03;&#x7528;&#x4F7F;&#x7528;**group()**&#x51FD;&#x6570;&#x6765;&#x5B9E;&#x73B0;&#x3002;&#x5176;&#x4E2D;&#x62EC;&#x53F7;&#x91CC;&#x9762;&#x5185;&#x5BB9;&#x5C31;&#x662F;&#x5206;&#x7EC4;&#x7684;&#x5185;&#x5BB9;&#xFF1B;&#x5176;&#x4E2D;&#xFF0C;search()&#x548C;match()&#x51FD;&#x6570;&#x90FD;&#x53EF;&#x4EE5;&#x8C03;&#x7528;&#x5206;&#x7EC4;&#x5E94;&#x7528;&#x529F;&#x80FD;&#x3002;&#x4F46;&#x662F;findall()&#x5C31;&#x6CA1;&#x6709;&#x8FD9;&#x4E2A;&#x529F;&#x80FD;&#x4E86;&#x3002;</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># &#x5339;&#x914D;&#x8EAB;&#x4EFD;&#x8BC1;&#x53F7;</span></span><br><span class="line">ret = re.search(<span class="string">&quot;^[1-9](\d{14})(\d{2}[0-9X])?$&quot;</span>, <span class="string">&quot;110105199912122277&quot;</span>)</span><br><span class="line"><span class="built_in">print</span>(ret.group())</span><br><span class="line"><span class="built_in">print</span>(ret.group(<span class="number">1</span>))  <span class="comment"># &#x901A;&#x8FC7;group(1)&#x6765;&#x6307;&#x5B9A;&#x7B2C;&#x4E00;&#x4E2A;&#x5206;&#x7EC4;</span></span><br></pre></td></tr></table></figure>
+
+<p>&#x200B;        &#x663E;&#x793A;&#x5185;&#x5BB9;&#x5982;&#x4E0B;&#xFF1A;</p>
+<p><img src="/development/python/python%E5%9F%BA%E7%A1%80_06_%E5%B8%B8%E8%A7%81%E6%A8%A1%E5%9D%97%E4%BB%8B%E7%BB%8D/image-20211128103615483.png" alt="image-20211128103615483"></p>
+<p>&#x200B;        &#x53C8;&#x5982;&#xFF1A;</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">ret = re.findall(<span class="string">&apos;www.(?:baidu|google).com&apos;</span>, <span class="string">&quot;www.baidu.com&quot;</span>)</span><br><span class="line"><span class="comment"># &#x8FD9;&#x91CC;&#x4F7F;&#x7528;&#x201C;?:&#x201D;&#x8868;&#x793A;&#x53D6;&#x6D88;&#x5206;&#x7EC4;&#x4F18;&#x5148;&#xFF0C;&#x8FD4;&#x56DE;&#x6240;&#x6709;&#x5339;&#x914D;&#x5185;&#x5BB9;&#x5373;&#x53EF;&#xFF1B;</span></span><br><span class="line"><span class="built_in">print</span>(ret) </span><br></pre></td></tr></table></figure>
+
+<p>&#x200B;    <strong>&#x7EC3;&#x4E60;&#xFF1A;</strong></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">ret = re.search(<span class="string">&quot;&lt;(?P&lt;tag_name&gt;\w+&lt;/l?P=tag_name&gt;)&quot;</span>,<span class="string">&quot;&lt;h1&gt;hello&lt;/h1&gt;&quot;</span>)</span><br><span class="line">ret = re.search(<span class="string">r&quot;&lt;\d+\.\d+|(\d+)&gt;&quot;</span>,<span class="string">&quot;1-2*(60+(-40.35/5)-(-4*3))&quot;</span>)</span><br></pre></td></tr></table></figure>
+
+<h3 id="6-2-2&#x3001;collections&#x6A21;&#x5757;"><a href="#6-2-2&#x3001;collections&#x6A21;&#x5757;" class="headerlink" title="6.2.2&#x3001;collections&#x6A21;&#x5757;"></a><strong>6.2.2&#x3001;collections&#x6A21;&#x5757;</strong></h3><p>&#x200B;    collections&#x6A21;&#x5757;&#x662F;&#x7528;&#x6765;&#x63D0;&#x4F9B;&#x5176;&#x4ED6;&#x6570;&#x636E;&#x7C7B;&#x578B;&#x7684;&#x3002;&#x5B83;&#x5728;&#x5185;&#x7F6E;&#x6570;&#x636E;&#x7C7B;&#x578B;&#xFF08;dict&#x3001;list&#x3001;set&#x3001;tuple&#xFF09;&#x7684;&#x57FA;&#x7840;&#x4E4B;&#x4E0A;&#xFF0C;&#x53C8;&#x63D0;&#x4F9B;&#x4E86;&#x51E0;&#x4E2A;&#x989D;&#x5916;&#x7684;&#x6570;&#x636E;&#x7C7B;&#x578B;&#xFF1A;</p>
+<table>
+<thead>
+<tr>
+<th>&#x53EF;&#x547D;&#x540D;&#x5143;&#x7EC4;</th>
+<th>&#x961F;&#x5217;&#xFF08;&#x5206;&#x4E3A;&#x5806;&#x548C;&#x6808;&#xFF09;</th>
+<th>&#x53CC;&#x7AEF;&#x961F;&#x5217;</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>namedtuple</td>
+<td>queue</td>
+<td>deque</td>
+</tr>
+<tr>
+<td>&#x6709;&#x5E8F;&#x5B57;&#x5178;</td>
+<td>&#x9ED8;&#x8BA4;&#x5B57;&#x5178;&#x683C;&#x5F0F;</td>
+<td>&#x8BA1;&#x6570;&#x5668;</td>
+</tr>
+<tr>
+<td>orderedDict</td>
+<td>defaultdict</td>
+<td>counter</td>
+</tr>
+</tbody></table>
+<p>&#x200B;    <strong>namedtuple()</strong> &#x2013; &#x6307;&#x5B9A;&#x65B0;&#x7684;&#x7684;&#x6570;&#x636E;&#x7C7B;&#x578B;&#xFF01;</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> collections <span class="keyword">import</span> namedtuple</span><br><span class="line"><span class="comment"># &#x5B9A;&#x4E49;&#x5706;&#x5FC3;&#x7684;&#x5750;&#x6807;</span></span><br><span class="line">point = namedtuple(<span class="string">&apos;point&apos;</span>,[<span class="string">&quot;x&quot;</span>,<span class="string">&quot;y&quot;</span>])</span><br><span class="line">p = point(<span class="number">1</span>,<span class="number">2</span>)</span><br><span class="line"><span class="built_in">print</span>(p.x)</span><br><span class="line"><span class="built_in">print</span>(p.y)</span><br><span class="line"></span><br><span class="line"><span class="comment"># &#x5B9A;&#x4E49;&#x6251;&#x514B;&#x7684;&#x82B1;&#x8272;&#x4E0E;&#x6570;&#x5B57;</span></span><br><span class="line">card = namedtuple(<span class="string">&apos;card&apos;</span>,[<span class="string">&apos;suits&apos;</span>,<span class="string">&apos;number&apos;</span>])</span><br><span class="line">c1 = card(<span class="string">&quot;&#x7EA2;&#x6843;&quot;</span>,<span class="number">2</span>)</span><br><span class="line"><span class="built_in">print</span>(c1.suits)</span><br><span class="line"><span class="built_in">print</span>(c1.number)</span><br></pre></td></tr></table></figure>
+
+<p>&#x200B;    <strong>deque()</strong>&#x2013;&#x53CC;&#x5411;&#x961F;&#x5217;&#xFF0C;&#x7C7B;&#x4F3C;&#x4E8E;list&#xFF0C;&#x5BB9;&#x8BB8;&#x4E24;&#x7AEF;&#x64CD;&#x4F5C;&#x5143;&#x7D20;</p>
+<p>&#x200B;        1&#x3001;append()&#xFF1A;&#x4ECE;&#x961F;&#x5217;&#x53F3;&#x4FA7;&#x6DFB;&#x52A0;&#x5143;&#x7D20;</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> collections</span><br><span class="line">deq=collections.deque(<span class="string">&apos;abcd&apos;</span>)</span><br><span class="line">deque([<span class="string">&apos;a&apos;</span>,<span class="string">&apos;b&apos;</span>,<span class="string">&apos;c&apos;</span>,<span class="string">&apos;d&apos;</span>])</span><br><span class="line">deq.append(<span class="number">11</span>)</span><br></pre></td></tr></table></figure>
+
+<p>&#x200B;        2&#x3001;appendleft()&#xFF1A;&#x4ECE;&#x961F;&#x5217;&#x5DE6;&#x4FA7;&#x6DFB;&#x52A0;&#x5143;&#x7D20;</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> collections</span><br><span class="line">deq=collections.deque(<span class="string">&apos;abcd&apos;</span>)</span><br><span class="line">deque([<span class="string">&apos;a&apos;</span>,<span class="string">&apos;b&apos;</span>,<span class="string">&apos;c&apos;</span>,<span class="string">&apos;d&apos;</span>])</span><br><span class="line">deq.appendleft(<span class="number">12</span>)</span><br></pre></td></tr></table></figure>
+
+<p>&#x200B;        3&#x3001;clear()&#xFF1A;&#x6E05;&#x7A7A;&#x961F;&#x5217;</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> collections</span><br><span class="line">deq=collections.deque(<span class="string">&apos;abcd&apos;</span>)</span><br><span class="line">deque([<span class="string">&apos;a&apos;</span>,<span class="string">&apos;b&apos;</span>,<span class="string">&apos;c&apos;</span>,<span class="string">&apos;d&apos;</span>])</span><br><span class="line">deq.clear()</span><br></pre></td></tr></table></figure>
+
+<p>&#x200B;        4&#x3001;count()&#xFF1A;&#x7EDF;&#x8BA1;&#x961F;&#x5217;&#x4E2D;&#x5143;&#x7D20;&#x4E2A;&#x6570;</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> collections</span><br><span class="line">deq=collections.deque(<span class="string">&apos;abcdaa&apos;</span>)</span><br><span class="line">deque([<span class="string">&apos;a&apos;</span>,<span class="string">&apos;b&apos;</span>,<span class="string">&apos;c&apos;</span>,<span class="string">&apos;d&apos;</span>,<span class="string">&apos;a&apos;</span>,<span class="string">&apos;a&apos;</span>])</span><br><span class="line">deq.count(<span class="string">&apos;a&apos;</span>)</span><br><span class="line"><span class="number">3</span></span><br></pre></td></tr></table></figure>
+
+<p>&#x200B;        5&#x3001;extent()&#x4ECE;&#x961F;&#x5217;&#x53F3;&#x4FA7;&#x6269;&#x5C55;</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> collections</span><br><span class="line">deq=collections.deque(<span class="string">&apos;abcd&apos;</span>)</span><br><span class="line">deque([<span class="string">&apos;a&apos;</span>,<span class="string">&apos;b&apos;</span>,<span class="string">&apos;c&apos;</span>,<span class="string">&apos;d&apos;</span>])</span><br><span class="line">deq.extend(<span class="number">11</span>,<span class="number">22</span>,<span class="number">33</span>)</span><br><span class="line">deque([<span class="string">&apos;a&apos;</span>,<span class="string">&apos;b&apos;</span>,<span class="string">&apos;c&apos;</span>,<span class="string">&apos;d&apos;</span>,<span class="number">11</span>,<span class="number">22</span>,<span class="number">33</span>])</span><br></pre></td></tr></table></figure>
+
+<p>&#x200B;        6&#x3001;extendleft()&#xFF1A;&#x4ECE;&#x961F;&#x5217;&#x5DE6;&#x4FA7;&#x6269;&#x5C55;</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> collections</span><br><span class="line">deq=collections.deque(<span class="string">&apos;abcd&apos;</span>)</span><br><span class="line">deque([<span class="string">&apos;a&apos;</span>,<span class="string">&apos;b&apos;</span>,<span class="string">&apos;c&apos;</span>,<span class="string">&apos;d&apos;</span>])</span><br><span class="line">deq.extendleft({<span class="string">&apos;k1&apos;</span>:<span class="string">&apos;v1&apos;</span>,<span class="string">&apos;k2&apos;</span>:<span class="string">&apos;v2&apos;</span>})   <span class="comment"># &#x6269;&#x5C55;&#x7C7B;&#x578B;&#x4E3A;dict&#xFF0C;&#x53D6;keys</span></span><br><span class="line">deque([<span class="string">&apos;k2&apos;</span>,<span class="string">&apos;k1&apos;</span>,<span class="string">&apos;a&apos;</span>,<span class="string">&apos;b&apos;</span>,<span class="string">&apos;c&apos;</span>,<span class="string">&apos;d&apos;</span>])    <span class="comment"># &#x53D6;dict&#x4E2D;&#x7684;keys&#xFF0C;&#x5E76;&#x4ECE;&#x961F;&#x5217;&#x5DE6;&#x4FA7;&#x4F9D;&#x6B21;&#x63D2;&#x5165;</span></span><br></pre></td></tr></table></figure>
+
+<p>&#x200B;        7&#x3001;index()&#xFF1A;&#x53D6;&#x5143;&#x7D20;&#x7D22;&#x5F15;&#x4F4D;&#x7F6E;</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> collections</span><br><span class="line">deq=collections.deque(<span class="string">&apos;abcdaa&apos;</span>)</span><br><span class="line">deque([<span class="string">&apos;a&apos;</span>,<span class="string">&apos;b&apos;</span>,<span class="string">&apos;c&apos;</span>,<span class="string">&apos;d&apos;</span>,<span class="string">&apos;a&apos;</span>,<span class="string">&apos;a&apos;</span>])</span><br><span class="line">deq.index(<span class="string">&apos;a&apos;</span>)  <span class="comment"># &#x9ED8;&#x8BA4;&#x4ECE;&#x5DE6;&#x4FA7;&#x5F00;&#x59CB;&#x68C0;&#x7D22;</span></span><br><span class="line"><span class="number">0</span></span><br><span class="line">deq.index(<span class="string">&apos;a&apos;</span>,<span class="number">2</span>,<span class="number">5</span>)  <span class="comment"># &#x5728;&#x67E5;&#x627E;&#x8303;&#x56F4;&#x5185;&#x82E5;&#x6709;&#x591A;&#x4E2A;&#x76F8;&#x540C;&#x7684;&#x503C;&#xFF0C;&#x8FD4;&#x56DE;&#x7B2C;&#x4E00;&#x4E2A;&#x503C;&#x7684;&#x7D22;&#x5F15;</span></span><br><span class="line"><span class="number">4</span></span><br></pre></td></tr></table></figure>
+
+<p>&#x200B;        8&#x3001;insert()&#xFF1A;&#x518D;&#x961F;&#x5217;&#x4EFB;&#x610F;&#x4F4D;&#x7F6E;&#x63D2;&#x5165;&#x503C;</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> collections</span><br><span class="line">deq=collections.deque(<span class="string">&apos;abcd&apos;</span>)</span><br><span class="line">deque([<span class="string">&apos;a&apos;</span>,<span class="string">&apos;b&apos;</span>,<span class="string">&apos;c&apos;</span>,<span class="string">&apos;d&apos;</span>])</span><br><span class="line">deq.insert(<span class="number">1</span>,<span class="number">11</span>)</span><br><span class="line">deque([<span class="string">&apos;a&apos;</span>,<span class="number">11</span>,<span class="string">&apos;b&apos;</span>,<span class="string">&apos;c&apos;</span>,<span class="string">&apos;d&apos;</span>])</span><br></pre></td></tr></table></figure>
+
+<p>&#x200B;        9&#x3001;pop()&#xFF1A;&#x4ECE;&#x961F;&#x5217;&#x53F3;&#x4FA7;&#x79FB;&#x9664;&#x503C;</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> collections</span><br><span class="line">deq=collections.deque(<span class="string">&apos;abcdef&apos;</span>)</span><br><span class="line">deque([<span class="string">&apos;a&apos;</span>,<span class="string">&apos;b&apos;</span>,<span class="string">&apos;c&apos;</span>,<span class="string">&apos;d&apos;</span>,<span class="string">&apos;e&apos;</span>,<span class="string">&apos;f&apos;</span>])</span><br><span class="line">deq.pop()</span><br><span class="line"><span class="string">&apos;f&apos;</span></span><br><span class="line">deque([<span class="string">&apos;a&apos;</span>,<span class="string">&apos;b&apos;</span>,<span class="string">&apos;c&apos;</span>,<span class="string">&apos;d&apos;</span>,<span class="string">&apos;e&apos;</span>])</span><br></pre></td></tr></table></figure>
+
+<p>&#x200B;        10&#x3001;popleft()&#xFF1A;&#x4ECE;&#x961F;&#x5217;&#x5DE6;&#x4FA7;&#x79FB;&#x9664;&#x503C;</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> collections</span><br><span class="line">deq=collections.deque(<span class="string">&apos;abcdef&apos;</span>)</span><br><span class="line">deque([<span class="string">&apos;a&apos;</span>,<span class="string">&apos;b&apos;</span>,<span class="string">&apos;c&apos;</span>,<span class="string">&apos;d&apos;</span>,<span class="string">&apos;e&apos;</span>,<span class="string">&apos;f&apos;</span>])</span><br><span class="line">deq.popleft()</span><br><span class="line"><span class="string">&apos;a&apos;</span></span><br><span class="line">deque([<span class="string">&apos;b&apos;</span>,<span class="string">&apos;c&apos;</span>,<span class="string">&apos;d&apos;</span>,<span class="string">&apos;e&apos;</span>,<span class="string">&apos;f&apos;</span>])</span><br></pre></td></tr></table></figure>
+
+<p>&#x200B;        11&#x3001;remove()&#xFF1A;&#x79FB;&#x9664;&#x6307;&#x5B9A;&#x503C;</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> collections</span><br><span class="line">deq=collections.deque(<span class="string">&apos;abcdef&apos;</span>)</span><br><span class="line">deque([<span class="string">&apos;a&apos;</span>,<span class="string">&apos;b&apos;</span>,<span class="string">&apos;c&apos;</span>,<span class="string">&apos;d&apos;</span>,<span class="string">&apos;e&apos;</span>,<span class="string">&apos;f&apos;</span>])</span><br><span class="line">deq.remove(<span class="string">&apos;c&apos;</span>)</span><br><span class="line">deque([<span class="string">&apos;a&apos;</span>,<span class="string">&apos;b&apos;</span>,<span class="string">&apos;d&apos;</span>,<span class="string">&apos;e&apos;</span>,<span class="string">&apos;f&apos;</span>])</span><br></pre></td></tr></table></figure>
+
+<p>&#x200B;        12&#x3001;reverse()&#xFF1A;&#x5C06;&#x961F;&#x5217;&#x4E2D;&#x7684;&#x5143;&#x7D20;&#x8FDB;&#x884C;&#x53CD;&#x8F6C;</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> collections</span><br><span class="line">deq=collections.deque(<span class="string">&apos;abcdef&apos;</span>)</span><br><span class="line">deque([<span class="string">&apos;a&apos;</span>,<span class="string">&apos;b&apos;</span>,<span class="string">&apos;c&apos;</span>,<span class="string">&apos;d&apos;</span>,<span class="string">&apos;e&apos;</span>,<span class="string">&apos;f&apos;</span>])</span><br><span class="line">deq.reverse()</span><br><span class="line">deque([<span class="string">&apos;f&apos;</span>,<span class="string">&apos;e&apos;</span>,<span class="string">&apos;d&apos;</span>,<span class="string">&apos;c&apos;</span>,<span class="string">b&apos;,&apos;</span>a<span class="string">&apos;])</span></span><br></pre></td></tr></table></figure>
+
+<p>&#x200B;        13&#x3001;rotate()&#xFF1A;&#x79FB;&#x52A8;&#x961F;&#x5217;&#x4E2D;&#x7684;&#x5143;&#x7D20;&#xFF0C;&#x82E5;n&lt;0&#xFF0C;&#x5219;&#x5C06;&#x961F;&#x5217;&#x6700;&#x5DE6;&#x4FA7;&#x7684;&#x5143;&#x7D20;&#x4F9D;&#x6B21;&#x79FB;&#x52A8;&#x5230;&#x6700;&#x53F3;&#x4FA7;&#xFF0C;&#x53CD;&#x4E4B;&#xFF0C;n&gt;0&#xFF0C;&#x5C06;&#x961F;&#x5217;&#x6700;&#x53F3;&#x4FA7;&#x5143;&#x7D20;&#x79FB;&#x52A8;&#x5230;&#x6700;&#x5DE6;&#x4FA7;&#xFF1B;</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> collections</span><br><span class="line">deq=collections.deque(<span class="string">&apos;abcdef&apos;</span>)  <span class="comment">#&#x521B;&#x5EFA;&#x961F;&#x5217;</span></span><br><span class="line">deque([<span class="string">&apos;a&apos;</span>,<span class="string">&apos;b&apos;</span>,<span class="string">&apos;c&apos;</span>,<span class="string">&apos;d&apos;</span>,<span class="string">&apos;e&apos;</span>,<span class="string">&apos;f&apos;</span>])</span><br><span class="line">deq.rotate(-<span class="number">2</span>)  <span class="comment"># n&lt;0&#xFF0C;&#x4F9D;&#x6B21;&#x79FB;&#x52A8;&#x6700;&#x5DE6;&#x4FA7;2&#x4E2A;&#x5143;&#x7D20;&#x81F3;&#x961F;&#x5217;&#x6700;&#x53F3;&#x4FA7;</span></span><br><span class="line">deque([<span class="string">&apos;c&apos;</span>,<span class="string">&apos;d&apos;</span>,<span class="string">&apos;e&apos;</span>,<span class="string">&apos;f&apos;</span>,<span class="string">&apos;a&apos;</span>,<span class="string">&apos;b&apos;</span>])</span><br><span class="line">deq.append(<span class="number">11</span>)  <span class="comment"># &#x5728;&#x961F;&#x5217;&#x6700;&#x53F3;&#x4FA7;&#x63D2;&#x5165;&#x5143;&#x7D20;</span></span><br><span class="line">deque([<span class="string">&apos;c&apos;</span>,<span class="string">&apos;d&apos;</span>,<span class="string">&apos;e&apos;</span>,<span class="string">&apos;f&apos;</span>,<span class="string">&apos;a&apos;</span>,<span class="string">&apos;b&apos;</span>,<span class="number">11</span>])</span><br><span class="line">deq.rotate(<span class="number">2</span>)  <span class="comment"># n&gt;0&#xFF0C;&#x4F9D;&#x6B21;&#x79FB;&#x52A8;&#x53F3;&#x4FA7;2&#x4E2A;&#x5143;&#x7D20;&#x81F3;&#x961F;&#x5217;&#x6700;&#x5DE6;&#x4FA7;</span></span><br><span class="line">deque([<span class="string">&apos;b&apos;</span>,<span class="number">11</span>,<span class="string">&apos;c&apos;</span>,<span class="string">&apos;d&apos;</span>,<span class="string">&apos;e&apos;</span>,<span class="string">&apos;f&apos;</span>,<span class="string">&apos;a&apos;</span>])</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>&#x6CE8;&#x610F;&#xFF1A;&#x4E0A;&#x8FF0;&#x65E2;&#x7136;&#x63D0;&#x5230;&#x4E86;&#x53CC;&#x5411;&#x961F;&#x5217;&#xFF0C;&#x90A3;&#x80AF;&#x5B9A;&#x4E5F;&#x5B58;&#x5728;&#x5355;&#x9879;&#x961F;&#x5217;&#xFF0C;&#x53CC;&#x5411;&#x961F;&#x5217;&#x5B58;&#x5728;&#x4E8E;collections&#x6A21;&#x5757;&#x4E2D;&#xFF0C;&#x5141;&#x8BB8;&#x5BF9;&#x5143;&#x7D20;&#x4E24;&#x7AEF;&#x8FDB;&#x884C;&#x64CD;&#x4F5C;&#xFF0C;&#x800C;&#x5355;&#x9879;&#x961F;&#x5217;&#x5B58;&#x5728;&#x4E8E;queue&#x6A21;&#x5757;&#x4E2D;&#xFF0C;&#x9075;&#x5FAA;&#x5148;&#x8FDB;&#x5148;&#x51FA;&#x539F;&#x5219;&#xFF0C;&#x53EA;&#x80FD;&#x4E00;&#x7AEF;&#x8FDB;&#xFF0C;&#x4E00;&#x7AEF;&#x51FA;</p>
+</blockquote>
+<p>&#x200B;    <strong>queue()</strong>&#x2013;</p>
+<p>&#x200B;        1&#x3001;empty()&#xFF1A;&#x5224;&#x65AD;&#x961F;&#x5217;&#x662F;&#x5426;&#x4E3A;&#x7A7A;&#xFF0C;&#x662F;&#x8FD4;&#x56DE;True</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> queue</span><br><span class="line">que=queue.Queue()  <span class="comment"># &#x8868;&#x793A;&#x961F;&#x5217;&#x7684;&#x957F;&#x5EA6;&#xFF0C;&#x5373;&#x5143;&#x7D20;&#x4E2A;&#x6570;&#xFF0C;</span></span><br><span class="line">que.empty()  <span class="comment"># &#x6E05;&#x7A7A;&#x961F;&#x5217;&#xFF0C;&#x5E76;&#x4E14;&#x5224;&#x65AD;&#x961F;&#x5217;&#x662F;&#x5426;&#x4E3A;&#x7A7A;&#xFF0C;&#x662F;&#x8FD4;&#x56DE;True</span></span><br></pre></td></tr></table></figure>
+
+<p>&#x200B;        2&#x3001;full()&#xFF1A;&#x5224;&#x65AD;&#x961F;&#x5217;&#x662F;&#x5426;&#x5DF2;&#x6EE1;&#xFF0C;&#x662F;&#x8FD4;&#x56DE;True</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">que=queue.Queue(<span class="number">2</span>)  <span class="comment"># &#x8868;&#x793A;&#x961F;&#x5217;&#x7684;&#x957F;&#x5EA6;&#xFF0C;&#x5373;&#x5143;&#x7D20;&#x4E2A;&#x6570;&#xFF0C;</span></span><br><span class="line">que.put(<span class="string">&apos;a&apos;</span>)  <span class="comment"># &#x5411;&#x961F;&#x5217;&#x4E2D;&#x6DFB;&#x52A0;&#x5143;&#x7D20;</span></span><br><span class="line">que.full()  <span class="comment"># &#x6B64;&#x65F6;&#x961F;&#x5217;&#x4E2D;&#x6709;1&#x4E2A;&#x5143;&#x7D20;&#xFF0C;&#x5373;&#x957F;&#x5EA6;&#x4E3A;1</span></span><br><span class="line"></span><br><span class="line">que.put(<span class="string">&apos;b&apos;</span>)  <span class="comment"># &#x6B64;&#x65F6;&#x961F;&#x5217;&#x4E2D;&#x6709;2&#x4E2A;&#x5143;&#x7D20;&#xFF0C;&#x5373;&#x957F;&#x5EA6;&#x4E3A;2&#xFF0C;&#x5DF2;&#x6EE1;</span></span><br><span class="line">que.full()</span><br></pre></td></tr></table></figure>
+
+<p>&#x200B;        3&#x3001;put()&#xFF1A;&#x5F80;&#x961F;&#x5217;&#x4E2D;&#x653E;&#x4E00;&#x4E2A;&#x5143;&#x7D20;&#xFF0C;get&#xFF1A;&#x4F9D;&#x636E;&#x5148;&#x8FDB;&#x5148;&#x51FA;&#x539F;&#x5219;&#xFF0C;&#x4F9D;&#x6B21;&#x4ECE;&#x961F;&#x5217;&#x53D6;&#x5143;&#x7D20;</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">que=queue.Queue()  <span class="comment"># &#x521B;&#x5EFA;&#x961F;&#x5217;&#xFF0C;&#x8868;&#x793A;&#x961F;&#x5217;&#x7684;&#x957F;&#x5EA6;&#xFF0C;&#x5373;&#x5143;&#x7D20;&#x4E2A;&#x6570;</span></span><br><span class="line">que.put(<span class="string">&apos;a&apos;</span>)  <span class="comment">#&#x5F80;&#x961F;&#x5217;&#x4E2D;&#x653E;&#x5165;&#x4E00;&#x4E2A;&#x5143;&#x7D20;</span></span><br><span class="line">que.put(<span class="string">&apos;b&apos;</span>)  <span class="comment">#&#x5F80;&#x961F;&#x5217;&#x4E2D;&#x518D;&#x653E;&#x5165;&#x4E00;&#x4E2A;&#x5143;&#x7D20;</span></span><br><span class="line">que.get()</span><br><span class="line"><span class="comment"># &#x6253;&#x5370;&apos;a&apos;  # &#x4F9D;&#x636E;&#x5148;&#x8FDB;&#x5148;&#x51FA;&#x539F;&#x5219;&#xFF0C;&#x5148;&#x53D6;&apos;a&apos;&#xFF0C;&#x82E5;&#x5168;&#x90E8;&#x53D6;&#x51FA;&#xFF0C;&#x518D;&#x6B21;&#x83B7;&#x53D6;&#x5143;&#x7D20;&#xFF0C;&#x4F1A;wait&#x7B49;&#x5F85;&#x751F;&#x4EA7;&#x8005;&#x7EBF;&#x7A0B;&#x6DFB;&#x52A0;&#x6570;&#x636E;</span></span><br></pre></td></tr></table></figure>
+
+<p>&#x200B;        4&#x3001;put_nowait()&#xFF1A;&#x65E0;&#x963B;&#x585E;&#x7684;&#x5411;&#x961F;&#x5217;&#x4E2D;&#x6DFB;&#x52A0;&#x5143;&#x7D20;&#xFF0C;&#x82E5;&#x961F;&#x5217;&#x5DF2;&#x6EE1;&#xFF0C;&#x4E0D;&#x7B49;&#x5F85;&#x76F4;&#x63A5;&#x62A5;&#x9519;&#xFF08;full&#xFF09;</p>
+<p>&#x200B;        5&#x3001;get_nowait()&#xFF1A;&#x65E0;&#x963B;&#x585E;&#x4ECE;&#x961F;&#x5217;&#x4E2D;&#x83B7;&#x53D6;&#x5143;&#x7D20;&#xFF0C;&#x82E5;&#x961F;&#x5217;&#x4E3A;&#x7A7A;&#xFF0C;&#x4E0D;&#x7B49;&#x5F85;&#x76F4;&#x63A5;&#x62A5;&#x9519;&#xFF08;empty&#xFF09;</p>
+<p>&#x200B;        6&#x3001;qsize()&#xFF1A;&#x8868;&#x793A;&#x961F;&#x5217;&#x957F;&#x5EA6;&#xFF0C;&#x5373;&#x5143;&#x7D20;&#x4E2A;&#x6570;</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">que=queue.Queue()  <span class="comment">#&#x521B;&#x5EFA;&#x961F;&#x5217;</span></span><br><span class="line">que.put(<span class="number">11</span>)</span><br><span class="line">que.put(<span class="number">22</span>)  <span class="comment"># &#x5F80;&#x961F;&#x5217;&#x4E2D;&#x6DFB;&#x52A0;&#x5143;&#x7D20;</span></span><br><span class="line">que.qsize()  <span class="comment"># &#x7EDF;&#x8BA1;&#x5143;&#x7D20;&#x4E2A;&#x6570;</span></span><br><span class="line"><span class="number">2</span></span><br></pre></td></tr></table></figure>
+
+<p>&#x200B;        7&#x3001;join()&#xFF1A;&#x963B;&#x585E;&#x8C03;&#x7528;&#x7EBF;&#x7A0B;&#xFF0C;&#x76F4;&#x5230;&#x961F;&#x5217;&#x4E2D;&#x7684;&#x6240;&#x6709;&#x4EFB;&#x52A1;&#x90FD;&#x88AB;&#x5904;&#x7406;&#x5B8C;&#x6210;&#xFF0C;&#x4E0E;task_done&#x914D;&#x5408;&#x4F7F;&#x7528;</p>
+<p>&#x200B;    <strong>ordereddict()</strong>&#x2013;&#x7C7B;&#x8865;&#x5145;&#x65B9;&#x6CD5;&#xFF0C;&#x5B83;&#x6307;&#x5B9A;&#x662F;&#x4E00;&#x4E2A;&#x6709;&#x5E8F;&#x5B57;&#x5178;&#x6570;&#x636E;&#x7C7B;&#x578B;&#xFF1B;&#x7EE7;&#x627F;&#x4E86;dict&#x7684;&#x6240;&#x6709;&#x529F;&#x80FD;&#xFF0C;dict&#x662F;&#x65E0;&#x5E8F;&#x7684;&#xFF0C;orderedDict&#x521A;&#x597D;&#x5BF9;dict&#x4F5C;&#x4E86;&#x8865;&#x5145;&#xFF0C;&#x8BB0;&#x5F55;&#x4E86;&#x952E;&#x503C;&#x5BF9;&#x63D2;&#x5165;&#x7684;&#x987A;&#x5E8F;&#xFF0C;&#x662F;&#x6709;&#x5E8F;&#x5B57;&#x5178;&#x3002;</p>
+<p>&#x200B;        1&#x3001;clear()&#xFF1A;&#x6E05;&#x7A7A;&#x5B57;&#x5178;</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> collections</span><br><span class="line"><span class="comment"># &#x5B9A;&#x4E49;&#x6709;&#x5E8F;&#x5B57;&#x5178;</span></span><br><span class="line">dic = collections.OrderedDict({<span class="string">&apos;name&apos;</span>:<span class="string">&apos;tom&apos;</span>,<span class="string">&apos;age&apos;</span>:<span class="number">18</span>,<span class="string">&apos;sex&apos;</span>:<span class="string">&apos;man&apos;</span>})</span><br><span class="line"></span><br><span class="line"><span class="comment"># &#x6E05;&#x7A7A;&#x5B57;&#x5178;</span></span><br><span class="line">dic.clear()</span><br></pre></td></tr></table></figure>
+
+<p>&#x200B;        2&#x3001;popitem()&#xFF1A;&#x6709;&#x5E8F;&#x5220;&#x9664;&#x3002;&#x7C7B;&#x4F3C;&#x4E8E;&#x6808;&#xFF0C;&#x6309;&#x7167;&#x540E;&#x8FDB;&#x5148;&#x51FA;&#x7684;&#x987A;&#x5E8F;&#x4F9D;&#x6B21;&#x5220;&#x9664;&#xFF1B;</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># &#x4ECE;&#x540E;&#x9762;&#x5F00;&#x59CB;&#x5F39;&#x51FA;&#x5BF9;&#x5E94;&#x6570;&#x636E;</span></span><br><span class="line">dic.popitem()</span><br></pre></td></tr></table></figure>
+
+<p>&#x200B;        3&#x3001;pop()&#xFF1A;&#x5220;&#x9664;&#x6307;&#x5B9A;&#x952E;&#x503C;&#x5BF9;</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># &#x6307;&#x5B9A;key&#x6765;&#x5220;&#x9664;&#x6570;&#x636E;</span></span><br><span class="line">dic.pop(<span class="string">&apos;age&apos;</span>)</span><br></pre></td></tr></table></figure>
+
+<p>&#x200B;        4&#x3001;move_to_end()&#xFF1A;&#x5C06;&#x6307;&#x5B9A;&#x952E;&#x503C;&#x5BF9;&#x79FB;&#x52A8;&#x5230;&#x6700;&#x540E;&#x4F4D;&#x7F6E;&#xFF1B;</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># &#x5BF9;&#x5E94;&#x503C;&#x79FB;&#x52A8;&#x5230;&#x6700;&#x540E;</span></span><br><span class="line">dic.move_to_end(<span class="string">&apos;name&apos;</span>)</span><br></pre></td></tr></table></figure>
+
+<p>&#x200B;        5&#x3001;setdefault()&#xFF1A;&#x8BBE;&#x7F6E;&#x9ED8;&#x8BA4;&#x503C;&#xFF0C;&#x9ED8;&#x8BA4;&#x4E3A;None&#xFF0C;&#x4E5F;&#x53EF;&#x6307;&#x5B9A;&#x503C;</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># &#x6307;&#x5B9A;&#x9ED8;&#x8BA4;value&#x4E3A;None</span></span><br><span class="line">dic.setdefault(<span class="string">&apos;course&apos;</span>)</span><br><span class="line"><span class="built_in">print</span>(dic)</span><br><span class="line">dic.setdefault(<span class="string">&apos;score&apos;</span>,<span class="number">90</span>) <span class="comment"># &#x8F93;&#x5165;&#x4E86;&#x503C;&#x7684;&#x8BDD;&#xFF0C;&#x90A3;&#x5C31;&#x662F;&#x6709;&#x503C;&#xFF0C;&#x5C31;&#x4E0D;&#x4F1A;&#x662F;&#x7A7A;&#x4E86;&#xFF1B;</span></span><br></pre></td></tr></table></figure>
+
+<p>&#x200B;        6&#x3001;update()&#xFF1A;&#x66F4;&#x65B0;&#x5B57;&#x5178;&#xFF0C;&#x6709;&#x5219;&#x66F4;&#x65B0;&#xFF0C;&#x65E0;&#x5219;&#x6DFB;&#x52A0;&#xFF1B;</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># &#x6DFB;&#x52A0;&#x503C;&#xFF0C;&#x7C7B;&#x4F3C;&#x4E8E;&#x666E;&#x901A;&#x5B57;&#x5178;&#x7684;setdefault()&#x7684;&#x65B9;&#x6CD5;</span></span><br><span class="line">dic.update({<span class="string">&apos;course&apos;</span>:<span class="string">&apos;Chinese&apos;</span>})</span><br></pre></td></tr></table></figure>
+
+<p>&#x200B;    <strong>defaultdic()</strong>&#x2013;&#x9ED8;&#x8BA4;&#x5B57;&#x5178;&#x6570;&#x636E;&#x7C7B;&#x578B;&#xFF1B;</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> collections</span><br><span class="line">dic = collections.defaultdict(<span class="built_in">list</span>)</span><br><span class="line">dic[<span class="string">&apos;course&apos;</span>].append(<span class="string">&apos;En&apos;</span>)</span><br><span class="line">dic[<span class="string">&apos;course&apos;</span>].append(<span class="string">&apos;Cn&apos;</span>)</span><br><span class="line"><span class="built_in">print</span>(dic)</span><br><span class="line"><span class="comment"># &#x8FD9;&#x91CC;&#x5C06;En&#x548C;Cn&#x4F5C;&#x4E3A;&#x5217;&#x8868;&#x590D;&#x5236;&#x7ED9;course</span></span><br></pre></td></tr></table></figure>
+
+<p>&#x200B;    <strong>counter()</strong>&#x2013;&#x8BA1;&#x6570;&#x5668;&#xFF1B;</p>
+<p>&#x200B;        1&#x3001;most_common()&#xFF1A;&#x5C06;&#x5143;&#x7D20;&#x51FA;&#x73B0;&#x7684;&#x6B21;&#x6570;&#x6309;&#x7167;&#x4ECE;&#x9AD8;&#x5230;&#x4F4E;&#x8FDB;&#x884C;&#x6392;&#x5E8F;&#xFF0C;&#x5E76;&#x8FD4;&#x56DE;&#x524D;N&#x4E2A;&#x5143;&#x7D20;&#xFF0C;&#x82E5;&#x591A;&#x4E2A;&#x5143;&#x7D20;&#x7EDF;&#x8BA1;&#x6570;&#x76F8;&#x540C;&#xFF0C;&#x6309;&#x7167;&#x5B57;&#x6BCD;&#x987A;&#x5E8F;&#x6392;&#x5217;&#xFF0C;N&#x82E5;&#x672A;&#x6307;&#x5B9A;&#xFF0C;&#x5219;&#x8FD4;&#x56DE;&#x6240;&#x6709;&#x5143;&#x7D20;&#x3002;&#x793A;&#x4F8B;&#x4EE3;&#x7801;&#x5982;&#x4E0B;&#xFF1A;</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Counter()&#x7684;&#x57FA;&#x672C;&#x7528;&#x6CD5;</span></span><br><span class="line"><span class="keyword">import</span> collections</span><br><span class="line">str1 = <span class="string">&quot;aaabbbccc&quot;</span></span><br><span class="line">collections.Counter(str1)</span><br><span class="line"></span><br><span class="line"><span class="comment"># &#x8C03;&#x7528;most_common&#x65B9;&#x6CD5;</span></span><br><span class="line">c1 = collections.Counter(str1)</span><br><span class="line"><span class="built_in">print</span>(c1.most_common(<span class="number">2</span>))  <span class="comment"># &#x8FD4;&#x56DE;&#x524D;2&#x4E2A;&#x5143;&#x7D20;</span></span><br></pre></td></tr></table></figure>
+
+<p>&#x200B;        2&#x3001;elements()&#xFF1A;&#x8FD4;&#x56DE;&#x4E00;&#x4E2A;&#x8FED;&#x4EE3;&#x5668;&#xFF0C;&#x5143;&#x7D20;&#x88AB;&#x91CD;&#x590D;&#x591A;&#x5C11;&#x6B21;&#xFF0C;&#x5728;&#x8FED;&#x4EE3;&#x5668;&#x4E2D;&#x5C31;&#x5305;&#x542B;&#x591A;&#x5C11;&#x4E2A;&#x6B64;&#x5143;&#x7D20;&#xFF0C;&#x6240;&#x6709;&#x5143;&#x7D20;&#x6309;&#x5B57;&#x6BCD;&#x5E8F;&#x6392;&#x5217;&#xFF0C;&#x4E2A;&#x6570;&lt;1&#x7684;&#x4E0D;&#x7F57;&#x5217;&#xFF1B;&#x793A;&#x4F8B;&#x4EE3;&#x7801;&#x5982;&#x4E0B;&#xFF1A;</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">c2 = coolections.Counter(a=<span class="number">2</span>,b=<span class="number">1</span>,c=<span class="number">3</span>,d=-<span class="number">1</span>)</span><br><span class="line"><span class="built_in">list</span>(c2.elements())  <span class="comment"># &#x4EE5;&#x5217;&#x8868;&#x7684;&#x5F62;&#x5F0F;&#x8FD4;&#x56DE;&#x4E0A;&#x9762;&#x6307;&#x5B9A;&#x6570;&#x636E;</span></span><br></pre></td></tr></table></figure>
+
+<p>&#x200B;        3&#x3001;update()&#xFF1A;&#x589E;&#x52A0;&#x5143;&#x7D20;&#x7684;&#x91CD;&#x590D;&#x6B21;&#x6570;</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">c1 &#x7EDF;&#x8BA1;&#x6570;&#x636E;&#x4E3A;&#xFF1A;</span><br><span class="line">Counter({<span class="string">&apos;a&apos;</span>:<span class="number">3</span>,<span class="string">&apos;c&apos;</span>:<span class="number">3</span>,<span class="string">&apos;b&apos;</span>:<span class="number">2</span>,<span class="string">&apos;f&apos;</span>:<span class="number">2</span>,<span class="string">&apos;d&apos;</span>:<span class="number">1</span>})</span><br><span class="line">c1.update(<span class="string">&apos;a&apos;</span>)</span><br><span class="line"><span class="comment"># &#x589E;&#x52A0;&#x5B8C;&#x6210;&#x4EE5;&#x540E;&#xFF0C;&#x663E;&#x793A;&#xFF1A;&apos;a&apos;:4</span></span><br></pre></td></tr></table></figure>
+
+<p>&#x200B;        4&#x3001;subtract()&#xFF1A;&#x51CF;&#x5C11;&#x5143;&#x7D20;&#x91CD;&#x590D;&#x7684;&#x6B21;&#x6570;</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">c1.subtract(<span class="string">&apos;abc&apos;</span>)</span><br><span class="line"><span class="comment"># a&#x3001;b&#x3001;c&#x5BF9;&#x5E94;&#x7684;&#x7EDF;&#x8BA1;&#x6570;&#x636E;&#x5747;&#x51CF;1&#xFF1B;</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="6-2-3&#x3001;time&#x6A21;&#x5757;"><a href="#6-2-3&#x3001;time&#x6A21;&#x5757;" class="headerlink" title="6.2.3&#x3001;time&#x6A21;&#x5757;"></a><strong>6.2.3&#x3001;time&#x6A21;&#x5757;</strong></h3><p>&#x200B;    &#x548C;&#x65F6;&#x95F4;&#x53C2;&#x6570;&#x76F8;&#x5173;&#x7684;&#x529F;&#x80FD;&#x5747;&#x53EF;&#x4EE5;&#x4F7F;&#x7528;time&#x6A21;&#x5757;&#x6765;&#x5B9E;&#x73B0;&#xFF1B;</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> time</span><br><span class="line"></span><br><span class="line">time.sleep()  <span class="comment"># &#x505C;&#x4E0B;&#x6765;&#x7B49;&#x4E00;&#x4F1A;</span></span><br><span class="line">time.time()  <span class="comment"># &#x8FD4;&#x56DE;&#x4EE5;&quot;s&quot;&#x4E3A;&#x5355;&#x4F4D;&#x7684;&#x65F6;&#x95F4;&#xFF0C;&#x4ECE;1970&#x5E74;&#x7B97;&#x8D77;</span></span><br></pre></td></tr></table></figure>
+
+<p>&#x200B;    &#x65F6;&#x95F4;&#x7684;&#x4E09;&#x79CD;&#x8868;&#x793A;&#x65B9;&#x5F0F;&#xFF1A;</p>
+<p>&#x200B;        1&#x3001;&#x65F6;&#x95F4;&#x6233;&#xFF08;timestamp&#xFF09;&#x4ECE;1970&#x5E74;1&#x6708;1&#x65E5;&#x7B97;&#x8D77;&#xFF0C;&#x5230;&#x73B0;&#x5728;&#x6240;&#x8FC7;&#x7684;&#x79D2;&#x6570;&#xFF1B;</p>
+<p>&#x200B;        2&#x3001;&#x683C;&#x5F0F;&#x5316;&#x7684;&#x65F6;&#x95F4;&#x5B57;&#x7B26;&#x4E32;&#xFF1A;1992-12-16&#xFF1B;</p>
+<p>&#x200B;        3&#x3001;&#x5143;&#x7EC4;&#x663E;&#x793A;&#x65B9;&#x5F0F;&#xFF08;struct_time&#xFF09;&#x8FD9;&#x662F;&#x7ED3;&#x6784;&#x5316;&#x65F6;&#x95F4;&#x3002;</p>
+<p><img src="/development/python/python%E5%9F%BA%E7%A1%80_06_%E5%B8%B8%E8%A7%81%E6%A8%A1%E5%9D%97%E4%BB%8B%E7%BB%8D/image-20211128103842106.png" alt="image-20211128103842106"></p>
+ <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># &#x7B2C;&#x4E00;&#x79CD;</span></span><br><span class="line">time.time()</span><br><span class="line"></span><br><span class="line"><span class="comment"># &#x7B2C;&#x4E8C;&#x79CD;</span></span><br><span class="line"><span class="built_in">print</span>(time.strftime(<span class="string">&quot;%Y-%m-%d %H:%M:%S&quot;</span>))  <span class="comment"># &#x5206;&#x522B;&#x8868;&#x793A; &#x5E74; &#x6708; &#x65E5; &#x65F6; &#x5206; &#x79D2;</span></span><br><span class="line">  <span class="comment"># %a -- &#x661F;&#x671F;</span></span><br><span class="line">  <span class="comment"># %j -- &#x5E74;&#x5185;&#x591A;&#x5C11;&#x5929;</span></span><br><span class="line">  <span class="comment"># %X -- &#x672C;&#x5730;&#x76F8;&#x5E94;&#x65F6;&#x95F4;</span></span><br><span class="line"><span class="built_in">print</span> time.strftime(<span class="string">&quot;%Y-%m-%d %X&quot;</span>)</span><br><span class="line"><span class="comment">#2016-10-26 20:50:13</span></span><br><span class="line">    </span><br><span class="line"><span class="comment"># &#x7B2C;&#x4E09;&#x79CD;</span></span><br><span class="line"><span class="built_in">print</span>(time.localtime())</span><br><span class="line">struct_time = time.localtime()</span><br><span class="line"><span class="built_in">print</span>(struct_time)   </span><br></pre></td></tr></table></figure>
+
+<p>&#x200B;    &#x51E0;&#x79CD;&#x65F6;&#x95F4;&#x7684;&#x8F6C;&#x6362;&#x65B9;&#x5F0F;&#xFF1A;</p>
+<p><img src="/development/python/python%E5%9F%BA%E7%A1%80_06_%E5%B8%B8%E8%A7%81%E6%A8%A1%E5%9D%97%E4%BB%8B%E7%BB%8D/image-20211128103922356.png" alt="image-20211128103922356"></p>
+<p><img src="/development/python/python%E5%9F%BA%E7%A1%80_06_%E5%B8%B8%E8%A7%81%E6%A8%A1%E5%9D%97%E4%BB%8B%E7%BB%8D/image-20211128143932393.png" alt="image-20211128143932393"></p>
+<p>&#x200B;    &#x65F6;&#x95F4;&#x683C;&#x5F0F;&#x8F6C;&#x6362;&#x793A;&#x4F8B;&#x5982;&#x4E0B;&#xFF1A;</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> time</span><br><span class="line"></span><br><span class="line"><span class="comment"># &#x751F;&#x6210;timestamp</span></span><br><span class="line">time.time()</span><br><span class="line"><span class="comment"># 1477471508.05</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># struct_time to timestamp</span></span><br><span class="line">time.mktime(time.localtime())</span><br><span class="line"><span class="comment">#&#x751F;&#x6210;struct_time</span></span><br><span class="line"><span class="comment"># timestamp to struct_time &#x672C;&#x5730;&#x65F6;&#x95F4;</span></span><br><span class="line">time.localtime()</span><br><span class="line">time.localtime(time.time())</span><br><span class="line"><span class="comment"># time.struct_time(tm_year=2016, tm_mon=10, tm_mday=26, tm_hour=16, tm_min=45, tm_sec=8, tm_wday=2, tm_yday=300, tm_isdst=0)</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># timestamp to struct_time &#x683C;&#x6797;&#x5A01;&#x6CBB;&#x65F6;&#x95F4;</span></span><br><span class="line">time.gmtime()</span><br><span class="line">time.gmtime(time.time())</span><br><span class="line"><span class="comment"># time.struct_time(tm_year=2016, tm_mon=10, tm_mday=26, tm_hour=8, tm_min=45, tm_sec=8, tm_wday=2, tm_yday=300, tm_isdst=0)</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#format_time to struct_time</span></span><br><span class="line">time.strptime(<span class="string">&apos;2011-05-05 16:37:06&apos;</span>, <span class="string">&apos;%Y-%m-%d %X&apos;</span>)</span><br><span class="line"><span class="comment"># time.struct_time(tm_year=2011, tm_mon=5, tm_mday=5, tm_hour=16, tm_min=37, tm_sec=6, tm_wday=3, tm_yday=125, tm_isdst=-1)</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#&#x751F;&#x6210;format_time</span></span><br><span class="line"><span class="comment">#struct_time to format_time</span></span><br><span class="line">time.strftime(<span class="string">&quot;%Y-%m-%d %X&quot;</span>)</span><br><span class="line">time.strftime(<span class="string">&quot;%Y-%m-%d %X&quot;</span>,time.localtime())</span><br><span class="line"><span class="comment"># 2016-10-26 16:48:41</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#&#x751F;&#x6210;&#x56FA;&#x5B9A;&#x683C;&#x5F0F;&#x7684;&#x65F6;&#x95F4;&#x8868;&#x793A;&#x683C;&#x5F0F;</span></span><br><span class="line">time.asctime(time.localtime())</span><br><span class="line">time.ctime(time.time())</span><br><span class="line"><span class="comment"># Wed Oct 26 16:45:08 2016</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="6-2-4&#x3001;random&#x968F;&#x673A;&#x6A21;&#x5757;"><a href="#6-2-4&#x3001;random&#x968F;&#x673A;&#x6A21;&#x5757;" class="headerlink" title="6.2.4&#x3001;random&#x968F;&#x673A;&#x6A21;&#x5757;"></a><strong>6.2.4&#x3001;random&#x968F;&#x673A;&#x6A21;&#x5757;</strong></h3><p>&#x200B;    &#x5E38;&#x89C1;&#x7684;random&#x6A21;&#x5757;&#x7684;&#x4F7F;&#x7528;&#x65B9;&#x6CD5;&#xFF0C;&#x5982;&#x4E0B;&#xFF1A;</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> random </span><br><span class="line"></span><br><span class="line">random.random()  <span class="comment"># 0&#x5230;1&#x4EFB;&#x53D6;&#x4E00;&#x4E2A;&#x503C;</span></span><br><span class="line"></span><br><span class="line">random.randint(<span class="number">1</span>,<span class="number">5</span>)  <span class="comment"># &#x6307;&#x5B9A;&#x8303;&#x56F4;&#x4E3A;1&#x5230;5&#x968F;&#x673A;&#x53D6;&#x4E00;&#x4E2A;&#x6574;&#x6570;</span></span><br><span class="line"></span><br><span class="line">random.randrange(<span class="number">1</span>,<span class="number">10</span>,<span class="number">2</span>)  <span class="comment"># &#x53D6;1&#x5230;10&#x4E2D;&#x7684;&#x4EFB;&#x610F;&#x4E00;&#x4E2A;&#x5947;&#x6570;&#xFF08;2&#xFF0C;&#x4E5F;&#x5C31;&#x662F;&#x6B65;&#x957F;&#xFF09;</span></span><br><span class="line"></span><br><span class="line">random.choice([<span class="number">1</span>,<span class="string">&quot;23&quot;</span>,[<span class="number">4</span>,<span class="number">5</span>]])  <span class="comment"># &#x4ECE;&#x5217;&#x8868;&#x4E2D;&#x4EFB;&#x610F;&#x8FD4;&#x56DE;&#x4E00;&#x4E2A;&#x503C;</span></span><br><span class="line">lis = [<span class="number">1</span>,<span class="string">&quot;23&quot;</span>,[<span class="number">4</span>,<span class="number">5</span>]]</span><br><span class="line"></span><br><span class="line">random.sample(lis,<span class="number">2</span>)  <span class="comment"># &#x4ECE;&#x5217;&#x8868;&#x4E2D;&#x4EFB;&#x610F;&#x8FD4;&#x56DE;&#x4E24;&#x4E2A;&#x503C;&#xFF0C;&#x540E;&#x9762;2&#x662F;&#x7528;&#x6765;&#x6307;&#x5B9A;&#x968F;&#x673A;&#x53D6;&#x503C;&#x7684;&#x4E2A;&#x6570;</span></span><br><span class="line">item = [<span class="number">1</span>,<span class="number">3.5</span>,<span class="number">7</span>,<span class="number">9</span>]</span><br><span class="line"></span><br><span class="line">random.shuffle(item)  <span class="comment"># &#x6253;&#x4E71;&#x987A;&#x5E8F;</span></span><br><span class="line"><span class="built_in">print</span>(item)  <span class="comment"># &#x6253;&#x5370;&#x987A;&#x5E8F;&#x88AB;&#x6253;&#x4E71;&#x540E;&#x7684;item&#x5217;&#x8868;</span></span><br></pre></td></tr></table></figure>
+
+<p>&#x200B;    &#x7EC3;&#x4E60;&#xFF1A;&#x901A;&#x8FC7;random&#x51FD;&#x6570;&#x968F;&#x673A;&#x751F;&#x6210;&#x9A8C;&#x8BC1;&#x7801;&#xFF1B;</p>
+ <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">cod</span>():</span></span><br><span class="line">    codelist=[]</span><br><span class="line">    <span class="keyword">import</span> random</span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">48</span>,<span class="number">58</span>):<span class="comment">#ascll&#x7801;&#x7684;&#x6570;&#x5B57;&#x8303;&#x56F4;&#xFF0C;&#x4E5F;&#x53EF;&#x4EE5;&#x76F4;&#x63A5;&#x7528;&#x6570;&#x5B57;1-10</span></span><br><span class="line">        codelist.append(<span class="built_in">str</span>(<span class="built_in">chr</span>(i)))<span class="comment">#&#x5982;&#x679C;&#x76F4;&#x63A5;&#x7528;&#x6570;&#x5B57;&#xFF0C;&#x5C31;&#x7528;str&#x76F4;&#x63A5;&#x8F6C;&#x6362;&#x6570;&#x5B57;&#x4E3A;&#x5B57;&#x7B26;&#x4E32;&#x6DFB;&#x52A0;</span></span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">65</span>,<span class="number">91</span>):<span class="comment">#&#x5927;&#x5199;</span></span><br><span class="line">        codelist.append(<span class="built_in">str</span>(<span class="built_in">chr</span>(i)))</span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">97</span>,<span class="number">123</span>):<span class="comment">#&#x5C0F;&#x5199;</span></span><br><span class="line">        codelist.append(<span class="built_in">str</span>(<span class="built_in">chr</span>(i)))</span><br><span class="line">    c=random.sample(codelist,<span class="number">4</span>)<span class="comment">#&#x968F;&#x673A;&#x4ECE;&#x5217;&#x8868;&#x4E2D;&#x53D6;&#x56DB;&#x4E2A;&#x503C;</span></span><br><span class="line">    b=<span class="string">&apos;&apos;</span>.join(c)<span class="comment">#&#x5C06;&#x5217;&#x8868;&#x8F6C;&#x4E3A;&#x5B57;&#x7B26;&#x4E32;</span></span><br><span class="line">    <span class="keyword">return</span> b</span><br><span class="line">a=cod()</span><br><span class="line"><span class="built_in">print</span>(a)</span><br></pre></td></tr></table></figure>
+
+<h3 id="6-2-5&#x3001;os&#x7CFB;&#x7EDF;&#x6A21;&#x5757;"><a href="#6-2-5&#x3001;os&#x7CFB;&#x7EDF;&#x6A21;&#x5757;" class="headerlink" title="6.2.5&#x3001;os&#x7CFB;&#x7EDF;&#x6A21;&#x5757;"></a><strong>6.2.5&#x3001;os&#x7CFB;&#x7EDF;&#x6A21;&#x5757;</strong></h3><p>&#x200B;    &#x5E38;&#x7528;&#x7684;&#x7CFB;&#x7EDF;&#x6A21;&#x5757;&#x65B9;&#x6CD5;&#xFF0C;&#x5982;&#x4E0B;&#xFF1A;</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> os</span><br><span class="line">path = os.getcwd()  <span class="comment"># &#x83B7;&#x53D6;&#x5F53;&#x524D;&#x8DEF;&#x5F84;</span></span><br><span class="line"><span class="built_in">print</span>(path)</span><br><span class="line"></span><br><span class="line">os.chdir(<span class="string">r&quot;dirname&quot;</span>)  <span class="comment"># &#x5207;&#x6362;&#x76EE;&#x5F55;&#xFF0C;&#x9700;&#x8981;&#x52A0;r&quot;&quot;&#x6765;&#x8FDB;&#x884C;&#x8F6C;&#x4E49;</span></span><br><span class="line">os.curdir  <span class="comment"># &#x8868;&#x793A;&#x5F53;&#x524D;&#x8DEF;&#x5F84; .</span></span><br><span class="line">os.pardir  <span class="comment"># &#x8868;&#x793A;&#x4E0A;&#x4E00;&#x7EA7;&#x8DEF;&#x5F84; ..</span></span><br><span class="line">os.listdir(<span class="string">r&quot;dirname&quot;</span>)  <span class="comment"># &#x663E;&#x793A;&#x76EE;&#x5F55;&#x4E2D;&#x7684;&#x6240;&#x6709;&#x5185;&#x5BB9;</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># &#x793A;&#x4F8B; -- os.listdir &#x8FD4;&#x56DE;&#x503C;&#x4E3A;&#x5217;&#x8868;</span></span><br><span class="line"><span class="built_in">print</span>(os.listdir(os.curdir))</span><br><span class="line"><span class="built_in">print</span>(os.listdir(os.pardir))</span><br><span class="line"></span><br><span class="line">os.makedirs(<span class="string">r&quot;dirname&quot;</span>)  <span class="comment"># &#x521B;&#x5EFA;&#x76EE;&#x5F55;</span></span><br><span class="line">os.mkdir(<span class="string">r&quot;dirname&quot;</span>)  <span class="comment"># &#x521B;&#x5EFA;&#x76EE;&#x5F55;&#xFF0C;&#x53EA;&#x80FD;&#x521B;&#x5EFA;&#x5355;&#x7EA7;&#x76EE;&#x5F55;</span></span><br><span class="line">os.removedirs(<span class="string">r&quot;dirname&quot;</span>)  <span class="comment"># &#x5220;&#x9664;&#x76EE;&#x5F55;&#xFF0C;&#x53EF;&#x4EE5;&#x5220;&#x9664;&#x591A;&#x7EA7;&#x76EE;&#x5F55;</span></span><br><span class="line">os.rmdir(<span class="string">r&quot;dirname&quot;</span>)  <span class="comment"># &#x5220;&#x9664;&#x76EE;&#x5F55;&#xFF0C;&#x53EA;&#x80FD;&#x5220;&#x9664;&#x5355;&#x7EA7;&#x76EE;&#x5F55;</span></span><br><span class="line">os.stat(<span class="string">r&quot;filename&quot;</span>)  <span class="comment"># &#x67E5;&#x770B;&#x6587;&#x4EF6;&#x72B6;&#x6001;</span></span><br><span class="line">	<span class="comment"># &#x7C7B;&#x4F3C;&#x4E8E; ls -l &#x547D;&#x4EE4;</span></span><br><span class="line">    </span><br><span class="line">os.sep  <span class="comment"># &#x83B7;&#x53D6;&#x6587;&#x4EF6;&#x5206;&#x5272;&#x7B26;&#xFF1B;&#x518D;&#x8DE8;&#x5E73;&#x53F0;&#x66FF;&#x6362;&#x76EE;&#x5F55;&#x5206;&#x9694;&#x7B26;&#x7684;&#x65F6;&#x5019;&#x4F7F;&#x7528;</span></span><br><span class="line">	<span class="comment"># Windows&#x4F7F;&#x7528;\&#xFF0C;&#x800C;Linux&#x4F7F;&#x7528;/   </span></span><br><span class="line"></span><br><span class="line">os.linesep  <span class="comment"># &#x5B57;&#x7B26;&#x4E32;&#x7ED9;&#x51FA;&#x5F53;&#x524D;&#x5E73;&#x53F0;&#x4F7F;&#x7528;&#x7684;&#x884C;&#x7EC8;&#x6B62;&#x7B26;</span></span><br><span class="line">os.pathsep  <span class="comment"># &#x8DEF;&#x5F84;&#x5206;&#x9694;&#x7B26;</span></span><br><span class="line">os.name  <span class="comment"># &#x67E5;&#x770B;&#x5F53;&#x524D;&#x5E73;&#x53F0;</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># &#x8FD9;&#x4E2A;&#x6307;&#x4EE4;&#x7528;&#x7684;&#x6BD4;&#x8F83;&#x591A;</span></span><br><span class="line">os.system(<span class="string">&quot;&#x7CFB;&#x7EDF;&#x547D;&#x4EE4;&quot;</span>)  <span class="comment"># &#x6307;&#x5B9A;&#x547D;&#x4EE4;&#xFF0C;&#x8FD9;&#x4E2A;&#x975E;&#x5E38;&#x5E38;&#x7528;</span></span><br><span class="line"></span><br><span class="line">ret = os.popen(<span class="string">&quot;dir&quot;</span>)  <span class="comment"># &#x6307;&#x5B9A;&#x4E3A;Python&#x80FD;&#x591F;&#x8BC6;&#x522B;&#x7684;&#x8BED;&#x8A00;</span></span><br><span class="line"><span class="built_in">print</span>(ret)</span><br><span class="line"></span><br><span class="line">os.environ  <span class="comment"># &#x67E5;&#x770B;&#x73AF;&#x5883;&#x53D8;&#x91CF;</span></span><br><span class="line">os.path  <span class="comment"># &#x548C;&#x8DEF;&#x5F84;&#x76F8;&#x5173;&#x7684;&#x64CD;&#x4F5C;</span></span><br><span class="line">os.path.abspath(path)</span><br><span class="line">os.path.split(path)  </span><br><span class="line"><span class="built_in">print</span>(os.path.split(os.getcwd()))</span><br><span class="line">os.path.dirname(path)</span><br><span class="line">os.path.exists(path)</span><br><span class="line">os.path.isabs(path)</span><br><span class="line">os.path.isfile(path)</span><br><span class="line">os.path.isdir(path)</span><br><span class="line"></span><br><span class="line">os.path.join(path)</span><br><span class="line"><span class="built_in">print</span>(os.path.join(<span class="string">&quot;c&#xFF1A;&quot;</span>,<span class="string">&quot;user&quot;</span>,<span class="string">&quot;local&quot;</span>))  <span class="comment"># &#x81EA;&#x52A8;&#x5B9E;&#x73B0;&#x5B57;&#x7B26;&#x4E32;&#x62FC;&#x63A5;</span></span><br><span class="line"></span><br><span class="line">os.path.getsize()  <span class="comment"># &#x83B7;&#x53D6;&#x6587;&#x4EF6;&#x5927;&#x5C0F;</span></span><br><span class="line"><span class="built_in">print</span>(os.path.getsize(os.getcwd()))</span><br><span class="line"><span class="built_in">print</span>(os.path.getsize(os.path.join(os.getcwd(),<span class="string">&apos;xx.py&apos;</span>)))</span><br></pre></td></tr></table></figure>
+
+<p>&#x200B;    &#x8FD9;&#x4E2A;&#x90E8;&#x5206;&#x7684;&#x5185;&#x5BB9;&#x4F1A;&#x5728;python&#x5BF9;Linux&#x81EA;&#x52A8;&#x5316;&#x8FD0;&#x7EF4;&#x7684;&#x8BFE;&#x7A0B;&#x4E2D;&#x8BE6;&#x7EC6;&#x4ECB;&#x7ECD;&#xFF1B;</p>
+<h3 id="6-2-6&#x3001;sys-python&#x89E3;&#x6790;&#x5668;&#x6A21;&#x5757;"><a href="#6-2-6&#x3001;sys-python&#x89E3;&#x6790;&#x5668;&#x6A21;&#x5757;" class="headerlink" title="6.2.6&#x3001;sys python&#x89E3;&#x6790;&#x5668;&#x6A21;&#x5757;"></a><strong>6.2.6&#x3001;sys python&#x89E3;&#x6790;&#x5668;&#x6A21;&#x5757;</strong></h3><p>&#x200B;    sys&#x6A21;&#x5757;&#x5185;&#x90E8;&#x5B58;&#x653E;&#x7684;&#x57FA;&#x672C;&#x4E0A;&#x662F;Python&#x89E3;&#x91CA;&#x5668;&#x76F8;&#x5173;&#x7684;&#x5185;&#x7F6E;&#x73AF;&#x5883;&#x53D8;&#x91CF;&#x540D;&#xFF0C;&#x53CA;&#x76F8;&#x5173;&#x7684;&#x53C2;&#x6570;&#xFF1B;</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> sys</span><br><span class="line"><span class="built_in">print</span>(sys.platform)  <span class="comment"># &#x67E5;&#x770B;&#x7CFB;&#x7EDF;&#x5E73;&#x53F0;</span></span><br><span class="line"><span class="built_in">print</span>(sys.version)  <span class="comment"># &#x67E5;&#x770B;&#x89E3;&#x91CA;&#x5668;&#x7248;&#x672C;</span></span><br><span class="line">sys.exit()  <span class="comment"># &#x4E3B;&#x52A8;&#x9000;&#x51FA;&#x7A0B;&#x5E8F;</span></span><br><span class="line">  <span class="comment"># 0 --&gt; &#x8868;&#x793A;&#x6B63;&#x5E38;&#x9000;&#x51FA;</span></span><br><span class="line">  <span class="comment"># 1 --&gt; &#x9519;&#x8BEF;&#x9000;&#x51FA;</span></span><br><span class="line">  <span class="comment"># &#x8FD9;&#x91CC;&#x7684;0 1&#x7684;&#x8FD4;&#x56DE;&#x503C;&#xFF0C;&#x662F;&#x7528;&#x6765;&#x544A;&#x8BC9;&#x64CD;&#x4F5C;&#x7CFB;&#x7EDF;&#xFF0C;&#x8BE5;&#x7A0B;&#x5E8F;&#x662F;&#x5426;&#x6B63;&#x5E38;&#x8FD0;&#x884C;&#x7ED3;&#x675F;&#x4E86;&#x7684;&#xFF1B;</span></span><br><span class="line"></span><br><span class="line">sys.path  <span class="comment"># &#x8BB0;&#x5F55;&#x4E86;&#x6A21;&#x5757;&#x6587;&#x4EF6;&#x88AB;&#x67E5;&#x627E;&#x7684;&#x8DEF;&#x5F84;&#x987A;&#x5E8F;</span></span><br><span class="line"><span class="built_in">print</span>(sys.path.clear())  <span class="comment"># &#x6E05;&#x7A7A;&#x9ED8;&#x8BA4;&#x8DEF;&#x5F84;&#x5217;&#x8868;</span></span><br><span class="line"><span class="built_in">print</span>(sys.argv)  <span class="comment"># &#x6307;&#x5B9A;&#x9700;&#x8981;&#x4F20;&#x5165;&#x7684;&#x53C2;&#x6570;&#xFF0C;&#x8FD9;&#x4E2A;&#x4F7F;&#x7528;&#x975E;&#x5E38;&#x5E7F;&#x6CDB;</span></span><br><span class="line">	<span class="comment"># &#x6307;&#x5B9A;Python&#x6587;&#x4EF6;&#x6240;&#x63A5;&#x53D7;&#x7684;&#x503C;   </span></span><br></pre></td></tr></table></figure>
+
+<p>&#x200B;    &#x6709;Python&#x7A0B;&#x5E8F;&#x5982;&#x4E0B;&#xFF1A;</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># sys&#x6A21;&#x5757;.py &#x6587;&#x4EF6;&#xFF0C;&#x5185;&#x5BB9;&#x5982;&#x4E0B;</span></span><br><span class="line">ret = sys.argv</span><br><span class="line">name = ret[<span class="number">1</span>]</span><br><span class="line">password = ret[<span class="number">2</span>]</span><br><span class="line"><span class="keyword">if</span> name == <span class="string">&apos;test&apos;</span> <span class="keyword">and</span> password == <span class="string">&apos;123456&apos;</span>:</span><br><span class="line">  <span class="built_in">print</span>(<span class="string">&apos;&#x767B;&#x5F55;&#x6210;&#x529F;&apos;</span>)</span><br><span class="line"><span class="keyword">else</span>:</span><br><span class="line">  <span class="built_in">print</span>(<span class="string">&apos;&#x9519;&#x8BEF;&apos;</span>)</span><br><span class="line">  sys.exit()</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;&#x53EF;&#x4EE5;&#x4F7F;&#x7528;&#x8BA1;&#x7B97;&#x5668;&#x4E86;&quot;</span>)     </span><br></pre></td></tr></table></figure>
+
+<p>&#x8C03;&#x7528;&#x201C;sys&#x6A21;&#x5757;.py&#x201D;&#x6587;&#x4EF6;&#x7684;&#x65F6;&#x5019;&#xFF0C;&#x5982;&#x4E0B;&#xFF1A;</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># &#x518D;cmd&#x7A97;&#x53E3;&#x4E0B;&#x9762;&#x6267;&#x884C;</span></span><br><span class="line">$ python sys&#x6A21;&#x5757;.py test <span class="number">123456</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="6-2-7&#x3001;&#x5E8F;&#x5217;&#x5316;&#x6A21;&#x5757;"><a href="#6-2-7&#x3001;&#x5E8F;&#x5217;&#x5316;&#x6A21;&#x5757;" class="headerlink" title="6.2.7&#x3001;&#x5E8F;&#x5217;&#x5316;&#x6A21;&#x5757;"></a><strong>6.2.7&#x3001;&#x5E8F;&#x5217;&#x5316;&#x6A21;&#x5757;</strong></h3><p>&#x200B;    &#x4EC0;&#x4E48;&#x53EB;&#x505A;&#x5E8F;&#x5217;&#x5316;&#x2013;&#x5C06;&#x539F;&#x672C;&#x7684;&#x5B57;&#x5178;&#x3001;&#x5217;&#x8868;&#x7B49;&#x5185;&#x5BB9;&#x8F6C;&#x6362;&#x6210;&#x4E00;&#x4E2A;&#x5B57;&#x7B26;&#x4E32;&#x7684;&#x8FC7;&#x7A0B;&#x5C31;&#x53EB;&#x505A;<strong>&#x5E8F;&#x5217;&#x5316;</strong>&#x3002;</p>
+<p>&#x200B;    &#x6BD4;&#x5982;&#xFF0C;&#x6211;&#x4EEC;&#x5728;python&#x4EE3;&#x7801;&#x4E2D;&#x8BA1;&#x7B97;&#x7684;&#x4E00;&#x4E2A;&#x6570;&#x636E;&#x9700;&#x8981;&#x7ED9;&#x53E6;&#x5916;&#x4E00;&#x6BB5;&#x7A0B;&#x5E8F;&#x4F7F;&#x7528;&#xFF0C;&#x90A3;&#x6211;&#x4EEC;&#x600E;&#x4E48;&#x7ED9;&#xFF1F;&#x73B0;&#x5728;&#x6211;&#x4EEC;&#x80FD;&#x60F3;&#x5230;&#x7684;&#x65B9;&#x6CD5;&#x5C31;&#x662F;&#x5B58;&#x5728;&#x6587;&#x4EF6;&#x91CC;&#xFF0C;&#x7136;&#x540E;&#x53E6;&#x4E00;&#x4E2A;python&#x7A0B;&#x5E8F;&#x518D;&#x4ECE;&#x6587;&#x4EF6;&#x91CC;&#x8BFB;&#x51FA;&#x6765;&#x3002;&#x4F46;&#x662F;&#x6211;&#x4EEC;&#x90FD;&#x77E5;&#x9053;&#xFF0C;&#x5BF9;&#x4E8E;<strong>&#x6587;&#x4EF6;&#x6765;&#x8BF4;&#x662F;&#x6CA1;&#x6709;&#x5B57;&#x5178;&#x8FD9;&#x4E2A;&#x6982;&#x5FF5;</strong>&#x7684;&#xFF0C;&#x6240;&#x4EE5;&#x6211;&#x4EEC;&#x53EA;&#x80FD;&#x5C06;&#x6570;&#x636E;&#x8F6C;&#x6362;&#x6210;&#x5B57;&#x5178;&#x653E;&#x5230;&#x6587;&#x4EF6;&#x4E2D;&#x3002;</p>
+<p>&#x200B;    &#x4F60;&#x4E00;&#x5B9A;&#x4F1A;&#x95EE;&#xFF0C;&#x5C06;&#x5B57;&#x5178;&#x8F6C;&#x6362;&#x6210;&#x4E00;&#x4E2A;&#x5B57;&#x7B26;&#x4E32;&#x5F88;&#x7B80;&#x5355;&#xFF0C;&#x5C31;&#x662F;str(dic)&#x5C31;&#x53EF;&#x4EE5;&#x529E;&#x5230;&#x4E86;&#xFF0C;&#x4E3A;&#x4EC0;&#x4E48;&#x6211;&#x4EEC;&#x8FD8;&#x8981;&#x5B66;&#x4E60;&#x5E8F;&#x5217;&#x5316;&#x6A21;&#x5757;&#x5462;&#xFF1F;</p>
+<p>&#x200B;    &#x6CA1;&#x9519;&#x5E8F;&#x5217;&#x5316;&#x7684;&#x8FC7;&#x7A0B;&#x5C31;&#x662F;&#x4ECE;dic &#x53D8;&#x6210;str(dic)&#x7684;&#x8FC7;&#x7A0B;&#x3002;&#x73B0;&#x5728;&#x4F60;<strong>&#x53EF;&#x4EE5;&#x901A;&#x8FC7;str(dic)&#xFF0C;&#x5C06;&#x4E00;&#x4E2A;&#x540D;&#x4E3A;dic&#x7684;&#x5B57;&#x5178;&#x8F6C;&#x6362;&#x6210;&#x4E00;&#x4E2A;&#x5B57;&#x7B26;&#x4E32;</strong>&#xFF0C;&#x4F46;&#x662F;&#x4F60;&#x8981;&#x600E;&#x4E48;&#x628A;&#x4E00;&#x4E2A;&#x5B57;&#x7B26;&#x4E32;&#x8F6C;&#x6362;&#x6210;&#x5B57;&#x5178;&#x5462;&#xFF1F;</p>
+<p>&#x200B;    &#x806A;&#x660E;&#x7684;&#x4F60;&#x80AF;&#x5B9A;&#x60F3;&#x5230;&#x4E86;eval()&#xFF0C;&#x5982;&#x679C;&#x6211;&#x4EEC;&#x5C06;&#x4E00;&#x4E2A;&#x5B57;&#x7B26;&#x4E32;&#x7C7B;&#x578B;&#x7684;&#x5B57;&#x5178;str_dic&#x4F20;&#x7ED9;eval&#xFF0C;&#x5C31;&#x4F1A;&#x5F97;&#x5230;&#x4E00;&#x4E2A;&#x8FD4;&#x56DE;&#x7684;&#x5B57;&#x5178;&#x7C7B;&#x578B;&#x4E86;&#x3002;eval()&#x51FD;&#x6570;&#x5341;&#x5206;&#x5F3A;&#x5927;&#xFF0C;&#x4F46;&#x662F;eval&#x662F;&#x505A;&#x4EC0;&#x4E48;&#x7684;&#xFF1F;e&#x5B98;&#x65B9;demo&#x89E3;&#x91CA;&#x4E3A;&#xFF1A;&#x5C06;&#x5B57;&#x7B26;&#x4E32;str&#x5F53;&#x6210;&#x6709;&#x6548;&#x7684;&#x8868;&#x8FBE;&#x5F0F;&#x6765;&#x6C42;&#x503C;&#x5E76;&#x8FD4;&#x56DE;&#x8BA1;&#x7B97;&#x7ED3;&#x679C;&#x3002;&#xFF22;&#xFF35;&#xFF34;&#xFF01;&#x5F3A;&#x5927;&#x7684;&#x51FD;&#x6570;&#x6709;&#x4EE3;&#x4EF7;&#x3002;&#x5176;&#x4E2D;&#xFF0C;<strong>&#x5B89;&#x5168;&#x6027;&#x662F;&#x5176;&#x6700;&#x5927;&#x7684;&#x7F3A;&#x70B9;</strong>&#x3002;&#x60F3;&#x8C61;&#x4E00;&#x4E0B;&#xFF0C;&#x5982;&#x679C;&#x6211;&#x4EEC;&#x4ECE;&#x6587;&#x4EF6;&#x4E2D;&#x8BFB;&#x51FA;&#x7684;&#x4E0D;&#x662F;&#x4E00;&#x4E2A;&#x6570;&#x636E;&#x7ED3;&#x6784;&#xFF0C;&#x800C;&#x662F;&#x4E00;&#x53E5;&#x201D;&#x5220;&#x9664;&#x6587;&#x4EF6;&#x201D;&#x7C7B;&#x4F3C;&#x7684;&#x7834;&#x574F;&#x6027;&#x8BED;&#x53E5;&#xFF0C;&#x90A3;&#x4E48;&#x540E;&#x679C;&#x5B9E;&#x5728;&#x4E0D;&#x582A;&#x8BBE;&#x8BBE;&#x60F3;&#x3002;&#x800C;&#x4F7F;&#x7528;eval&#x5C31;&#x8981;&#x62C5;&#x8FD9;&#x4E2A;&#x98CE;&#x9669;&#x3002;&#x6240;&#x4EE5;&#xFF0C;&#x6211;&#x4EEC;&#x5E76;&#x4E0D;&#x63A8;&#x8350;&#x7528;eval&#x65B9;&#x6CD5;&#x6765;&#x8FDB;&#x884C;&#x53CD;&#x5E8F;&#x5217;&#x5316;&#x64CD;&#x4F5C;(&#x5C06;str&#x8F6C;&#x6362;&#x6210;python&#x4E2D;&#x7684;&#x6570;&#x636E;&#x7ED3;&#x6784;)&#x3002;</p>
+<p>&#x200B;    &#x8FD9;&#x6837;&#x5982;&#x4F55;&#x89E3;&#x51B3;&#x8FD9;&#x4E2A;&#x95EE;&#x9898;&#x5462;&#xFF1F;&#xFF08;&#x5E8F;&#x5217;&#x5316;&#x8981;&#x505A;&#x7684;&#x4E8B;&#xFF0C;&#x662F;&#x5982;&#x4E0B;&#x56FE;&#x4E2D;&#x6240;&#x793A;&#x4E3A;&#x6570;&#x636E;&#x5E8F;&#x5217;&#x5316;&#x539F;&#x7406;&#xFF09;&#xFF0C;&#x6240;&#x4EE5;&#xFF0C;&#x6211;&#x4EEC;&#x8981;&#x4E13;&#x95E8;&#x4F7F;&#x7528;&#x5E8F;&#x5217;&#x5316;&#x6A21;&#x5757;&#x6765;&#x5B9E;&#x73B0;&#x3002;</p>
+<p><img src="/development/python/python%E5%9F%BA%E7%A1%80_06_%E5%B8%B8%E8%A7%81%E6%A8%A1%E5%9D%97%E4%BB%8B%E7%BB%8D/image-20211128104001966.png" alt="image-20211128104001966"></p>
+<p>&#x7531;&#x4E0A;&#x56FE;&#x53EF;&#x77E5;&#xFF0C;&#x6211;&#x4EEC;&#x5C06;Python&#x6570;&#x636E;&#x7ED3;&#x6784;&#x8F6C;&#x6362;&#x4E3A;&#x5B57;&#x7B26;&#x4E32;&#x65B9;&#x4FBF;&#x4F20;&#x8F93;&#x548C;&#x5B58;&#x50A8;&#xFF0C;&#x5C31;&#x53EB;&#x505A;<strong>&#x5E8F;&#x5217;&#x5316;</strong>&#xFF1B;&#x5C06;str&#x8F6C;&#x6362;&#x4E3A;Python&#x6570;&#x636E;&#x7ED3;&#x6784;&#x7684;&#x8FC7;&#x7A0B;&#x53EB;&#x505A;<strong>&#x53CD;&#x5E8F;&#x5217;&#x5316;</strong>&#xFF1B;</p>
+<p>&#x200B;    <strong>JSON&#x6A21;&#x5757;&#xFF1A;</strong></p>
+<p>&#x200B;        JSON&#x88AB;&#x79F0;&#x4E3A;&#x8BED;&#x8A00;&#x754C;&#x7684;&#x201C;&#x82F1;&#x8BED;&#x201D;&#xFF0C;&#x662F;&#x4E00;&#x79CD;&#x901A;&#x7528;&#x7684;&#x5E8F;&#x5217;&#x5316;&#x683C;&#x5F0F;&#xFF0C;&#x662F;&#x4E0D;&#x540C;&#x5F00;&#x53D1;&#x8BED;&#x8A00;&#x8FDB;&#x884C;&#x6570;&#x636E;&#x6C9F;&#x901A;&#x7684;&#x6865;&#x6881;&#xFF08;&#x4E00;&#x79CD;&#x901A;&#x7528;&#x683C;&#x5F0F;&#xFF09;&#xFF1B;</p>
+<p>&#x200B;    <strong>pickle&#x6A21;&#x5757;&#xFF1A;</strong></p>
+<p>&#x200B;        &#x901A;&#x8FC7;pickle&#x6A21;&#x5757;&#xFF0C;&#x6211;&#x4EEC;&#x53EF;&#x4EE5;&#x5C06;Python&#x4E2D;&#x6240;&#x6709;&#x7684;&#x6570;&#x636E;&#x7C7B;&#x578B;&#x90FD;&#x88C5;&#x6362;&#x4E3A;&#x5B57;&#x7B26;&#x4E32;&#x683C;&#x5F0F;&#x3002;&#x4F46;&#x662F;pickle&#x5E8F;&#x5217;&#x5316;&#x7684;&#x5185;&#x5BB9;&#x81EA;&#x6709;Python&#x80FD;&#x591F;&#x7406;&#x89E3;&#xFF0C;&#x4E14;&#x53CD;&#x5E8F;&#x5217;&#x5316;&#x4F9D;&#x8D56;Python&#x4EE3;&#x7801;&#x6765;&#x5B8C;&#x6210;&#xFF1B; </p>
+<p>&#x200B;    <strong>shelve&#x6A21;&#x5757;&#xFF1A;</strong></p>
+<p>&#x200B;        shelve&#x662F;&#x4E00;&#x79CD;&#x5E8F;&#x5217;&#x5316;&#x53E5;&#x67C4;&#xFF0C;&#x4F7F;&#x7528;&#x8BE5;&#x53E5;&#x67C4;&#x76F4;&#x63A5;&#x64CD;&#x4F5C;&#x4F1A;&#x5B58;&#x5728;&#x4E00;&#x4E9B;&#x5C0F;&#x95EE;&#x9898;&#xFF0C;&#x4E0D;&#x63A8;&#x8350;&#x4F7F;&#x7528;&#x3002;</p>
+<h2 id="6-3&#x3001;&#x5E38;&#x89C1;&#x6A21;&#x5757;&#x4E8C;&#xFF08;&#x5173;&#x4E8E;&#x7C7B;-&#x7565;&#xFF09;"><a href="#6-3&#x3001;&#x5E38;&#x89C1;&#x6A21;&#x5757;&#x4E8C;&#xFF08;&#x5173;&#x4E8E;&#x7C7B;-&#x7565;&#xFF09;" class="headerlink" title="6.3&#x3001;&#x5E38;&#x89C1;&#x6A21;&#x5757;&#x4E8C;&#xFF08;&#x5173;&#x4E8E;&#x7C7B;-&#x7565;&#xFF09;"></a><strong>6.3&#x3001;&#x5E38;&#x89C1;&#x6A21;&#x5757;&#x4E8C;&#xFF08;&#x5173;&#x4E8E;&#x7C7B;-&#x7565;&#xFF09;</strong></h2><p>&#x3010;&#x8FD9;&#x4E2A;&#x90E8;&#x5206;&#x518D;&#x9762;&#x5411;&#x5BF9;&#x8C61;&#x4E2D;&#x6765;&#x8FDB;&#x884C;&#x4ECB;&#x7ECD;&#x3011;</p>
+
+    </div>
+    
+    
+    
+    
+    
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/python-basic-knowledge/" rel="tag"># python basic knowledge</a>
+          </div>
+    
+        
+
+    
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/development/python/python%E5%9F%BA%E7%A1%80_07_%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1%E4%BB%8B%E7%BB%8D/" rel="prev" title="面向对象介绍">
+      <i class="fa fa-chevron-left"></i> 面向对象介绍
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/development/python/python%E5%9F%BA%E7%A1%80_05_%E5%87%BD%E6%95%B0/" rel="next" title="函数">
+      函数 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+    <div>
+        
+        
+
+<div>
+    
+        <div style="text-align:center;color: #ccc;font-size:14px;">------ 版权声明：本文属于原创文章------</div>
+    	<div style="text-align:center;color: #FF0000;font-size:14px;">转载请注明：Burnov.github.io原创文章+本文链接，谢谢合作！！</i></div>
+    
+</div>
+
+
+        
+     </div>
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#6%E3%80%81%E5%B8%B8%E8%A7%81%E6%A8%A1%E5%9D%97%E4%BB%8B%E7%BB%8D"><span class="nav-number">1.</span> <span class="nav-text">6、常见模块介绍</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#6-1%E3%80%81%E6%A8%A1%E5%9D%97%E4%B8%8E%E5%8C%85"><span class="nav-number">1.1.</span> <span class="nav-text">6.1、模块与包</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#6-1-1%E3%80%81%E4%BB%80%E4%B9%88%E6%98%AF%E6%A8%A1%E5%9D%97"><span class="nav-number">1.1.1.</span> <span class="nav-text">6.1.1、什么是模块</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6-1-2%E3%80%81%E4%B8%BA%E4%BB%80%E4%B9%88%E8%A6%81%E4%BD%BF%E7%94%A8%E6%A8%A1%E5%9D%97%E5%91%A2%EF%BC%9F"><span class="nav-number">1.1.2.</span> <span class="nav-text">6.1.2、为什么要使用模块呢？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6-1-3%E3%80%81%E6%A8%A1%E5%9D%97%E7%9A%84%E5%AF%BC%E5%85%A5"><span class="nav-number">1.1.3.</span> <span class="nav-text">6.1.3、模块的导入</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6-1-4%E3%80%81%E5%8C%85"><span class="nav-number">1.1.4.</span> <span class="nav-text">6.1.4、包</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#6-2%E3%80%81%E5%B8%B8%E7%94%A8%E6%A8%A1%E5%9D%97%E4%B8%80%EF%BC%88%E5%B8%B8%E8%A7%81%E6%A8%A1%E5%9D%97%EF%BC%89"><span class="nav-number">1.2.</span> <span class="nav-text">6.2、常用模块一（常见模块）</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#6-2-1%E3%80%81re%E6%A8%A1%E5%9D%97"><span class="nav-number">1.2.1.</span> <span class="nav-text">6.2.1、re模块</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6-2-2%E3%80%81collections%E6%A8%A1%E5%9D%97"><span class="nav-number">1.2.2.</span> <span class="nav-text">6.2.2、collections模块</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6-2-3%E3%80%81time%E6%A8%A1%E5%9D%97"><span class="nav-number">1.2.3.</span> <span class="nav-text">6.2.3、time模块</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6-2-4%E3%80%81random%E9%9A%8F%E6%9C%BA%E6%A8%A1%E5%9D%97"><span class="nav-number">1.2.4.</span> <span class="nav-text">6.2.4、random随机模块</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6-2-5%E3%80%81os%E7%B3%BB%E7%BB%9F%E6%A8%A1%E5%9D%97"><span class="nav-number">1.2.5.</span> <span class="nav-text">6.2.5、os系统模块</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6-2-6%E3%80%81sys-python%E8%A7%A3%E6%9E%90%E5%99%A8%E6%A8%A1%E5%9D%97"><span class="nav-number">1.2.6.</span> <span class="nav-text">6.2.6、sys python解析器模块</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6-2-7%E3%80%81%E5%BA%8F%E5%88%97%E5%8C%96%E6%A8%A1%E5%9D%97"><span class="nav-number">1.2.7.</span> <span class="nav-text">6.2.7、序列化模块</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#6-3%E3%80%81%E5%B8%B8%E8%A7%81%E6%A8%A1%E5%9D%97%E4%BA%8C%EF%BC%88%E5%85%B3%E4%BA%8E%E7%B1%BB-%E7%95%A5%EF%BC%89"><span class="nav-number">1.3.</span> <span class="nav-text">6.3、常见模块二（关于类-略）</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Burnov"
+      src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">Burnov</p>
+  <div class="site-description" itemprop="description">No end for Learning</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">31</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">31</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/Burnov" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;Burnov" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:xials1990@gmail.com" title="E-Mail → mailto:xials1990@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://www.zhihu.com/people/xia-liang-shi-78" title="Skype → https:&#x2F;&#x2F;www.zhihu.com&#x2F;people&#x2F;xia-liang-shi-78" rel="noopener" target="_blank"><i class="fab fa-skype fa-fw"></i></a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class=""></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Burnov</span>
+</div>
+
+<!--
+  <div class="powered-by">Powered by <a href="https://github.com/Burnov" class="theme-link" rel="noopener" target="_blank">Burnov</a> & <a href="https://mist.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Mist</a>
+  </div>
+
+-->
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : false,
+      appId      : 'wIjFqGmEUzY7fpTNVHpKA0eH-gzGzoHsz',
+      appKey     : 'KdXueGM1xFH8pBVSO5SkFRKI',
+      placeholder: "Just go go",
+      avatar     : 'mm',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : false,
+      lang       : '' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : false,
+      serverURLs : ''
+    });
+  }, window.Valine);
+});
+</script>
+
+</body>
+</html>

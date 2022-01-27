@@ -6,7 +6,7 @@
   <link href="http://example.com/atom.xml" rel="self"/>
   
   <link href="http://example.com/"/>
-  <updated>2022-01-20T14:19:29.757Z</updated>
+  <updated>2022-01-27T02:28:44.406Z</updated>
   <id>http://example.com/</id>
   
   <author>
@@ -15,6 +15,174 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>计算机基础</title>
+    <link href="http://example.com/development/python/python%E5%9F%BA%E7%A1%80_01_%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/"/>
+    <id>http://example.com/development/python/python%E5%9F%BA%E7%A1%80_01_%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/</id>
+    <published>2022-01-27T02:28:50.000Z</published>
+    <updated>2022-01-27T02:28:44.406Z</updated>
+    
+    
+      
+      
+    <summary type="html">&lt;h1 id=&quot;1&amp;#x3001;&amp;#x8BA1;&amp;#x7B97;&amp;#x673A;&amp;#x57FA;&amp;#x7840;&quot;&gt;&lt;a href=&quot;#1&amp;#x3001;&amp;#x8BA1;&amp;#x7B97;&amp;#x673A;&amp;#x57FA;&amp;#x7840;&quot; class=&quot;headerlink&quot; t</summary>
+      
+    
+    
+    
+    <category term="development" scheme="http://example.com/categories/development/"/>
+    
+    <category term="python" scheme="http://example.com/categories/development/python/"/>
+    
+    
+    <category term="python basic knowledge" scheme="http://example.com/tags/python-basic-knowledge/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>变量</title>
+    <link href="http://example.com/development/python/python%E5%9F%BA%E7%A1%80_02_python%E7%9A%84%E5%9F%BA%E7%A1%80%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B/"/>
+    <id>http://example.com/development/python/python%E5%9F%BA%E7%A1%80_02_python%E7%9A%84%E5%9F%BA%E7%A1%80%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B/</id>
+    <published>2022-01-27T02:28:50.000Z</published>
+    <updated>2022-01-27T02:29:10.578Z</updated>
+    
+    
+      
+      
+    <summary type="html">&lt;h1 id=&quot;2&amp;#x3001;&amp;#x53D8;&amp;#x91CF;&amp;#x4E0E;&amp;#x5E38;&amp;#x91CF;&quot;&gt;&lt;a href=&quot;#2&amp;#x3001;&amp;#x53D8;&amp;#x91CF;&amp;#x4E0E;&amp;#x5E38;&amp;#x91CF;&quot; class=&quot;headerlink&quot; t</summary>
+      
+    
+    
+    
+    <category term="development" scheme="http://example.com/categories/development/"/>
+    
+    <category term="python" scheme="http://example.com/categories/development/python/"/>
+    
+    
+    <category term="python basic knowledge" scheme="http://example.com/tags/python-basic-knowledge/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>流程控制语句</title>
+    <link href="http://example.com/development/python/python%E5%9F%BA%E7%A1%80_03_%E6%B5%81%E7%A8%8B%E6%8E%A7%E5%88%B6%E8%AF%AD%E5%8F%A5/"/>
+    <id>http://example.com/development/python/python%E5%9F%BA%E7%A1%80_03_%E6%B5%81%E7%A8%8B%E6%8E%A7%E5%88%B6%E8%AF%AD%E5%8F%A5/</id>
+    <published>2022-01-27T02:28:50.000Z</published>
+    <updated>2022-01-27T02:29:31.966Z</updated>
+    
+    
+      
+      
+    <summary type="html">&lt;h1 id=&quot;3&amp;#x3001;&amp;#x6D41;&amp;#x7A0B;&amp;#x63A7;&amp;#x5236;&amp;#x8BED;&amp;#x53E5;&quot;&gt;&lt;a href=&quot;#3&amp;#x3001;&amp;#x6D41;&amp;#x7A0B;&amp;#x63A7;&amp;#x5236;&amp;#x8BED;&amp;#x53E5;&quot; clas</summary>
+      
+    
+    
+    
+    <category term="development" scheme="http://example.com/categories/development/"/>
+    
+    <category term="python" scheme="http://example.com/categories/development/python/"/>
+    
+    
+    <category term="python basic knowledge" scheme="http://example.com/tags/python-basic-knowledge/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>文本处理</title>
+    <link href="http://example.com/development/python/python%E5%9F%BA%E7%A1%80_04_%E6%96%87%E6%9C%AC%E5%A4%84%E7%90%86/"/>
+    <id>http://example.com/development/python/python%E5%9F%BA%E7%A1%80_04_%E6%96%87%E6%9C%AC%E5%A4%84%E7%90%86/</id>
+    <published>2022-01-27T02:28:50.000Z</published>
+    <updated>2022-01-27T02:29:49.522Z</updated>
+    
+    
+      
+      
+    <summary type="html">&lt;h1 id=&quot;4&amp;#x3001;&amp;#x6587;&amp;#x672C;&amp;#x5904;&amp;#x7406;&quot;&gt;&lt;a href=&quot;#4&amp;#x3001;&amp;#x6587;&amp;#x672C;&amp;#x5904;&amp;#x7406;&quot; class=&quot;headerlink&quot; title=&quot;4&amp;#x3001;&amp;</summary>
+      
+    
+    
+    
+    <category term="development" scheme="http://example.com/categories/development/"/>
+    
+    <category term="python" scheme="http://example.com/categories/development/python/"/>
+    
+    
+    <category term="python basic knowledge" scheme="http://example.com/tags/python-basic-knowledge/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>函数</title>
+    <link href="http://example.com/development/python/python%E5%9F%BA%E7%A1%80_05_%E5%87%BD%E6%95%B0/"/>
+    <id>http://example.com/development/python/python%E5%9F%BA%E7%A1%80_05_%E5%87%BD%E6%95%B0/</id>
+    <published>2022-01-27T02:28:50.000Z</published>
+    <updated>2022-01-27T02:30:07.757Z</updated>
+    
+    
+      
+      
+    <summary type="html">&lt;h1 id=&quot;5&amp;#x3001;&amp;#x51FD;&amp;#x6570;&quot;&gt;&lt;a href=&quot;#5&amp;#x3001;&amp;#x51FD;&amp;#x6570;&quot; class=&quot;headerlink&quot; title=&quot;5&amp;#x3001;&amp;#x51FD;&amp;#x6570;&quot;&gt;&lt;/a&gt;5&amp;#x3001;&amp;#</summary>
+      
+    
+    
+    
+    <category term="development" scheme="http://example.com/categories/development/"/>
+    
+    <category term="python" scheme="http://example.com/categories/development/python/"/>
+    
+    
+    <category term="python basic knowledge" scheme="http://example.com/tags/python-basic-knowledge/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>常见模块介绍</title>
+    <link href="http://example.com/development/python/python%E5%9F%BA%E7%A1%80_06_%E5%B8%B8%E8%A7%81%E6%A8%A1%E5%9D%97%E4%BB%8B%E7%BB%8D/"/>
+    <id>http://example.com/development/python/python%E5%9F%BA%E7%A1%80_06_%E5%B8%B8%E8%A7%81%E6%A8%A1%E5%9D%97%E4%BB%8B%E7%BB%8D/</id>
+    <published>2022-01-27T02:28:50.000Z</published>
+    <updated>2022-01-27T02:30:29.734Z</updated>
+    
+    
+      
+      
+    <summary type="html">&lt;h1 id=&quot;6&amp;#x3001;&amp;#x5E38;&amp;#x89C1;&amp;#x6A21;&amp;#x5757;&amp;#x4ECB;&amp;#x7ECD;&quot;&gt;&lt;a href=&quot;#6&amp;#x3001;&amp;#x5E38;&amp;#x89C1;&amp;#x6A21;&amp;#x5757;&amp;#x4ECB;&amp;#x7ECD;&quot; clas</summary>
+      
+    
+    
+    
+    <category term="development" scheme="http://example.com/categories/development/"/>
+    
+    <category term="python" scheme="http://example.com/categories/development/python/"/>
+    
+    
+    <category term="python basic knowledge" scheme="http://example.com/tags/python-basic-knowledge/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>面向对象介绍</title>
+    <link href="http://example.com/development/python/python%E5%9F%BA%E7%A1%80_07_%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1%E4%BB%8B%E7%BB%8D/"/>
+    <id>http://example.com/development/python/python%E5%9F%BA%E7%A1%80_07_%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1%E4%BB%8B%E7%BB%8D/</id>
+    <published>2022-01-27T02:28:50.000Z</published>
+    <updated>2022-01-27T02:30:46.238Z</updated>
+    
+    
+      
+      
+    <summary type="html">&lt;h1 id=&quot;7&amp;#x3001;&amp;#x9762;&amp;#x5411;&amp;#x5BF9;&amp;#x8C61;&amp;#x4ECB;&amp;#x7ECD;&quot;&gt;&lt;a href=&quot;#7&amp;#x3001;&amp;#x9762;&amp;#x5411;&amp;#x5BF9;&amp;#x8C61;&amp;#x4ECB;&amp;#x7ECD;&quot; clas</summary>
+      
+    
+    
+    
+    <category term="development" scheme="http://example.com/categories/development/"/>
+    
+    <category term="python" scheme="http://example.com/categories/development/python/"/>
+    
+    
+    <category term="python basic knowledge" scheme="http://example.com/tags/python-basic-knowledge/"/>
+    
+  </entry>
   
   <entry>
     <title>deployment与service资源介绍（pod的创建于网络访问）</title>
@@ -349,180 +517,6 @@
     <category term="docker" scheme="http://example.com/tags/docker/"/>
     
     <category term="network and volume" scheme="http://example.com/tags/network-and-volume/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>dockerfile详解</title>
-    <link href="http://example.com/cloud-native/docker/06_docker%E5%AE%B9%E5%99%A8%E6%8A%80%E6%9C%AF_dockerfile%E7%9A%84%E9%95%9C%E5%83%8F%E6%9E%84%E5%BB%BA%E8%AF%A6%E8%A7%A3/"/>
-    <id>http://example.com/cloud-native/docker/06_docker%E5%AE%B9%E5%99%A8%E6%8A%80%E6%9C%AF_dockerfile%E7%9A%84%E9%95%9C%E5%83%8F%E6%9E%84%E5%BB%BA%E8%AF%A6%E8%A7%A3/</id>
-    <published>2022-01-04T12:16:30.000Z</published>
-    <updated>2022-01-07T15:39:46.567Z</updated>
-    
-    
-    <summary type="html">&lt;h1 id=&quot;dockerfile&amp;#x6784;&amp;#x5EFA;&amp;#x955C;&amp;#x50CF;&amp;#x539F;&amp;#x7406;&amp;#x4ECB;&amp;#x7ECD;&quot;&gt;&lt;a href=&quot;#dockerfile&amp;#x6784;&amp;#x5EFA;&amp;#x955C;&amp;#x50CF;&amp;#x539F;&amp;#x7406;&amp;#x4ECB;&amp;#x7ECD;&quot; class=&quot;headerlink&quot; title=&quot;dockerfile&amp;#x6784;&amp;#x5EFA;&amp;#x955C;&amp;#x50CF;&amp;#x539F;&amp;#x7406;&amp;#x4ECB;&amp;#x7ECD;&quot;&gt;&lt;/a&gt;dockerfile&amp;#x6784;&amp;#x5EFA;&amp;#x955C;&amp;#x50CF;&amp;#x539F;&amp;#x7406;&amp;#x4ECB;&amp;#x7ECD;&lt;/h1&gt;&lt;p&gt;dockerfile&amp;#x7684;&amp;#x8BE6;&amp;#x7EC6;&amp;#x4ECB;&amp;#x7ECD;&amp;#x5730;&amp;#x5740;&lt;/p&gt;
-&lt;figure class=&quot;highlight plaintext&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;https://docs.docker.com/engine/reference/builder/&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
-
-&lt;p&gt;&lt;img src=&quot;/cloud-native/docker/06_docker%E5%AE%B9%E5%99%A8%E6%8A%80%E6%9C%AF_dockerfile%E7%9A%84%E9%95%9C%E5%83%8F%E6%9E%84%E5%BB%BA%E8%AF%A6%E8%A7%A3/image-20220103112146634.png&quot; alt=&quot;docker build&quot;&gt;&lt;/p&gt;</summary>
-    
-    
-    
-    <category term="cloud native" scheme="http://example.com/categories/cloud-native/"/>
-    
-    <category term="docker" scheme="http://example.com/categories/cloud-native/docker/"/>
-    
-    
-    <category term="container" scheme="http://example.com/tags/container/"/>
-    
-    <category term="docker" scheme="http://example.com/tags/docker/"/>
-    
-    <category term="dockerfile" scheme="http://example.com/tags/dockerfile/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>容器的资源限制</title>
-    <link href="http://example.com/cloud-native/docker/07_docker%E5%AE%B9%E5%99%A8%E6%8A%80%E6%9C%AF_%E5%AE%B9%E5%99%A8%E8%B5%84%E6%BA%90%E9%99%90%E5%88%B6/"/>
-    <id>http://example.com/cloud-native/docker/07_docker%E5%AE%B9%E5%99%A8%E6%8A%80%E6%9C%AF_%E5%AE%B9%E5%99%A8%E8%B5%84%E6%BA%90%E9%99%90%E5%88%B6/</id>
-    <published>2022-01-04T12:16:30.000Z</published>
-    <updated>2022-01-07T15:40:01.682Z</updated>
-    
-    
-    <summary type="html">&lt;h1 id=&quot;Cgroup&amp;#x53CA;&amp;#x8D44;&amp;#x6E90;&amp;#x9650;&amp;#x5236;&quot;&gt;&lt;a href=&quot;#Cgroup&amp;#x53CA;&amp;#x8D44;&amp;#x6E90;&amp;#x9650;&amp;#x5236;&quot; class=&quot;headerlink&quot; title=&quot;Cgroup&amp;#x53CA;&amp;#x8D44;&amp;#x6E90;&amp;#x9650;&amp;#x5236;&quot;&gt;&lt;/a&gt;Cgroup&amp;#x53CA;&amp;#x8D44;&amp;#x6E90;&amp;#x9650;&amp;#x5236;&lt;/h1&gt;&lt;p&gt;docker&amp;#x5BF9;&amp;#x8D44;&amp;#x6E90;&amp;#x662F;&amp;#x6CA1;&amp;#x6709;&amp;#x9650;&amp;#x5236;&amp;#x7684;&amp;#x3002;&amp;#x5BB9;&amp;#x6613;&amp;#x51FA;&amp;#x73B0;&amp;#x67D0;&amp;#x4E2A;&amp;#x5BB9;&amp;#x5668;&amp;#x5360;&amp;#x7528;&amp;#x8D44;&amp;#x6E90;&amp;#x8FC7;&amp;#x591A;&amp;#x5BFC;&amp;#x81F4;&amp;#x5176;&amp;#x4ED6;&amp;#x5BB9;&amp;#x5668;&amp;#x6CA1;&amp;#x6709;&amp;#x8D44;&amp;#x6E90;&amp;#x53EF;&amp;#x7528;&amp;#x7684;&amp;#x60C5;&amp;#x51B5;&amp;#x3002;&amp;#x800C;k8s&amp;#x662F;&amp;#x7ED9;&amp;#x5BB9;&amp;#x5668;&amp;#x505A;&amp;#x8D44;&amp;#x6E90;&amp;#x9650;&amp;#x5236;&amp;#x7684;&amp;#xFF0C;&amp;#x4F46;&amp;#x5B9E;&amp;#x8D28;&amp;#x4E0A;&amp;#x5C31;&amp;#x662F;&amp;#x8C03;&amp;#x7528;&amp;#x7684;kernel&amp;#x7684;cgroup&amp;#x6765;&amp;#x5B9E;&amp;#x73B0;&amp;#x8D44;&amp;#x6E90;&amp;#x9650;&amp;#x5236;&amp;#x7684;&amp;#x3002;&lt;/p&gt;
-&lt;p&gt;&lt;img src=&quot;/cloud-native/docker/07_docker%E5%AE%B9%E5%99%A8%E6%8A%80%E6%9C%AF_%E5%AE%B9%E5%99%A8%E8%B5%84%E6%BA%90%E9%99%90%E5%88%B6/image-20220103231307683.png&quot; alt=&quot;cgroup&amp;#x5DE5;&amp;#x4F5C;&amp;#x539F;&amp;#x7406;&quot;&gt;&lt;/p&gt;</summary>
-    
-    
-    
-    <category term="cloud native" scheme="http://example.com/categories/cloud-native/"/>
-    
-    <category term="docker" scheme="http://example.com/categories/cloud-native/docker/"/>
-    
-    
-    <category term="container" scheme="http://example.com/tags/container/"/>
-    
-    <category term="docker" scheme="http://example.com/tags/docker/"/>
-    
-    <category term="resource constraints" scheme="http://example.com/tags/resource-constraints/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>Java基础介绍</title>
-    <link href="http://example.com/development/java/01_java%E5%9F%BA%E7%A1%80_java%E4%BB%8B%E7%BB%8D/"/>
-    <id>http://example.com/development/java/01_java%E5%9F%BA%E7%A1%80_java%E4%BB%8B%E7%BB%8D/</id>
-    <published>2022-01-01T13:10:50.000Z</published>
-    <updated>2022-01-04T12:27:36.290Z</updated>
-    
-    
-    <summary type="html">&lt;h1 id=&quot;java&amp;#x8BED;&amp;#x8A00;&amp;#x4ECB;&amp;#x7ECD;&quot;&gt;&lt;a href=&quot;#java&amp;#x8BED;&amp;#x8A00;&amp;#x4ECB;&amp;#x7ECD;&quot; class=&quot;headerlink&quot; title=&quot;java&amp;#x8BED;&amp;#x8A00;&amp;#x4ECB;&amp;#x7ECD;&quot;&gt;&lt;/a&gt;java&amp;#x8BED;&amp;#x8A00;&amp;#x4ECB;&amp;#x7ECD;&lt;/h1&gt;&lt;p&gt;&amp;#x8BED;&amp;#x8A00;&amp;#xFF1A;&amp;#x4EBA;&amp;#x4E0E;&amp;#x4EBA;&amp;#x4EA4;&amp;#x6D41;&amp;#x6C9F;&amp;#x901A;&amp;#x7684;&amp;#x8868;&amp;#x8FBE;&amp;#x65B9;&amp;#x5F0F;&lt;/p&gt;
-&lt;p&gt;&amp;#x8BA1;&amp;#x7B97;&amp;#x673A;&amp;#x8BED;&amp;#x8A00;&amp;#xFF1A;&amp;#x4EBA;&amp;#x4E0E;&amp;#x8BA1;&amp;#x7B97;&amp;#x673A;&amp;#x4E4B;&amp;#x95F4;&amp;#x8FDB;&amp;#x884C;&amp;#x4FE1;&amp;#x606F;&amp;#x4EA4;&amp;#x6D41;&amp;#x7684;&amp;#x6C9F;&amp;#x901A;&amp;#x7684;&amp;#x4E00;&amp;#x79CD;&amp;#x7279;&amp;#x6B8A;&amp;#x8BED;&amp;#x8A00;&lt;/p&gt;
-&lt;p&gt;java&amp;#x8BED;&amp;#x8A00;&amp;#xFF1A;&amp;#x7531;&amp;#x7F8E;&amp;#x56FD;sun&amp;#xFF08;stanford university network&amp;#xFF09;&amp;#x516C;&amp;#x53F8;&amp;#x518D;1995&amp;#x5E74;&amp;#x63A8;&amp;#x51FA;&amp;#x7684;&amp;#x8BA1;&amp;#x7B97;&amp;#x673A;&amp;#x8BED;&amp;#x8A00;&lt;/p&gt;
-&lt;p&gt;java&amp;#x4E4B;&amp;#x7236;&amp;#xFF1A;&amp;#x8A79;&amp;#x59C6;&amp;#x65AF;&amp;#x9AD8;&amp;#x65AF;&amp;#x6797;&lt;/p&gt;</summary>
-    
-    
-    
-    <category term="development" scheme="http://example.com/categories/development/"/>
-    
-    <category term="java" scheme="http://example.com/categories/development/java/"/>
-    
-    
-    <category term="java basic knowledge" scheme="http://example.com/tags/java-basic-knowledge/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>第一个Java程序</title>
-    <link href="http://example.com/development/java/02_java%E5%9F%BA%E7%A1%80_%E7%AC%AC%E4%B8%80%E4%B8%AAjava%E7%A8%8B%E5%BA%8F/"/>
-    <id>http://example.com/development/java/02_java%E5%9F%BA%E7%A1%80_%E7%AC%AC%E4%B8%80%E4%B8%AAjava%E7%A8%8B%E5%BA%8F/</id>
-    <published>2022-01-01T13:10:50.000Z</published>
-    <updated>2022-01-04T12:28:57.333Z</updated>
-    
-    
-    <summary type="html">&lt;h1 id=&quot;&amp;#x5E38;&amp;#x7528;&amp;#x7684;dos&amp;#x547D;&amp;#x4EE4;&quot;&gt;&lt;a href=&quot;#&amp;#x5E38;&amp;#x7528;&amp;#x7684;dos&amp;#x547D;&amp;#x4EE4;&quot; class=&quot;headerlink&quot; title=&quot;&amp;#x5E38;&amp;#x7528;&amp;#x7684;dos&amp;#x547D;&amp;#x4EE4;&quot;&gt;&lt;/a&gt;&amp;#x5E38;&amp;#x7528;&amp;#x7684;dos&amp;#x547D;&amp;#x4EE4;&lt;/h1&gt;&lt;p&gt;dos&amp;#x547D;&amp;#x4EE4;&amp;#x63D0;&amp;#x793A;&amp;#x7B26;&amp;#xFF1A;&amp;#x6211;&amp;#x4EEC;&amp;#x9700;&amp;#x8981;&amp;#x4F7F;&amp;#x7528;java.exe&amp;#x3001;javac.exe&amp;#x7684;&amp;#x8F6F;&amp;#x4EF6;&amp;#x7A0B;&amp;#x5E8F;&amp;#xFF0C;&amp;#x4ED6;&amp;#x548C;&amp;#x6211;&amp;#x4EEC;&amp;#x666E;&amp;#x901A;&amp;#x7684;&amp;#x8F6F;&amp;#x4EF6;&amp;#x7A0B;&amp;#x5E8F;&amp;#x4E0D;&amp;#x540C;&amp;#xFF0C;&amp;#x4ED6;&amp;#x4EEC;&amp;#x9700;&amp;#x8981;&amp;#x5728;Windows&amp;#x7684;dos&amp;#x754C;&amp;#x9762;&amp;#x4E0B;&amp;#x9762;&amp;#x6267;&amp;#x884C;&amp;#xFF0C;&amp;#x6240;&amp;#x4EE5;&amp;#x6211;&amp;#x4EEC;&amp;#x5148;&amp;#x9700;&amp;#x8981;&amp;#x4ECB;&amp;#x7ECD;&amp;#x4EE5;&amp;#x4E0B;dos&amp;#x754C;&amp;#x9762;&amp;#xFF1B;&lt;/p&gt;
-&lt;p&gt;&amp;#x5F00;&amp;#x542F;dos&amp;#x547D;&amp;#x4EE4;&amp;#x63D0;&amp;#x793A;&amp;#x7B26;&amp;#x754C;&amp;#x9762;&amp;#xFF1A;&lt;/p&gt;
-&lt;p&gt;&amp;#x7B2C;&amp;#x4E00;&amp;#x6B65;&amp;#x3001;win+R&amp;#x952E;&amp;#x542F;&amp;#x52A8;&amp;#x201C;&amp;#x8FD0;&amp;#x884C;&amp;#x201D;&amp;#x5BF9;&amp;#x8BDD;&amp;#x6846;&lt;/p&gt;</summary>
-    
-    
-    
-    <category term="development" scheme="http://example.com/categories/development/"/>
-    
-    <category term="java" scheme="http://example.com/categories/development/java/"/>
-    
-    
-    <category term="java basic knowledge" scheme="http://example.com/tags/java-basic-knowledge/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>Java的基础语法</title>
-    <link href="http://example.com/development/java/03_java%E5%9F%BA%E7%A1%80_%E5%9F%BA%E7%A1%80%E8%AF%AD%E6%B3%95/"/>
-    <id>http://example.com/development/java/03_java%E5%9F%BA%E7%A1%80_%E5%9F%BA%E7%A1%80%E8%AF%AD%E6%B3%95/</id>
-    <published>2022-01-01T13:10:50.000Z</published>
-    <updated>2022-01-04T12:29:21.674Z</updated>
-    
-    
-    <summary type="html">&lt;h1 id=&quot;&amp;#x6CE8;&amp;#x91CA;&quot;&gt;&lt;a href=&quot;#&amp;#x6CE8;&amp;#x91CA;&quot; class=&quot;headerlink&quot; title=&quot;&amp;#x6CE8;&amp;#x91CA;&quot;&gt;&lt;/a&gt;&amp;#x6CE8;&amp;#x91CA;&lt;/h1&gt;&lt;p&gt;&amp;#x5728;&amp;#x6307;&amp;#x5B9A;&amp;#x7684;&amp;#x4F4D;&amp;#x7F6E;&amp;#x8F93;&amp;#x5165;&amp;#x8BF4;&amp;#x660E;&amp;#x4FE1;&amp;#x606F;&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;&amp;#x5355;&amp;#x884C;&amp;#x6CE8;&amp;#x91CA;&amp;#xFF1A;// &amp;#x6CE8;&amp;#x91CA;&amp;#x4FE1;&amp;#x606F;&lt;/li&gt;
-&lt;li&gt;&amp;#x591A;&amp;#x884C;&amp;#x6CE8;&amp;#x91CA;&amp;#xFF1A;/* &amp;#x6CE8;&amp;#x91CA;&amp;#x4FE1;&amp;#x606F; */&lt;/li&gt;
-&lt;li&gt;&amp;#x6587;&amp;#x6863;&amp;#x6CE8;&amp;#x91CA;&amp;#xFF1A;/** &amp;#x6CE8;&amp;#x91CA;&amp;#x4FE1;&amp;#x606F; **/  &lt;/li&gt;
-&lt;/ul&gt;
-&lt;p&gt;&amp;#x76EE;&amp;#x524D;&amp;#x8FD8;&amp;#x7528;&amp;#x4E0D;&amp;#x4E0A;&amp;#x6587;&amp;#x6863;&amp;#x6CE8;&amp;#x91CA;&amp;#x4FE1;&amp;#x606F;&amp;#x7684;&amp;#x5185;&amp;#x5BB9;&amp;#xFF1B;&lt;/p&gt;</summary>
-    
-    
-    
-    <category term="development" scheme="http://example.com/categories/development/"/>
-    
-    <category term="java" scheme="http://example.com/categories/development/java/"/>
-    
-    
-    <category term="java basic knowledge" scheme="http://example.com/tags/java-basic-knowledge/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>docker的安装</title>
-    <link href="http://example.com/cloud-native/docker/02_docker%E5%AE%89%E8%A3%85/"/>
-    <id>http://example.com/cloud-native/docker/02_docker%E5%AE%89%E8%A3%85/</id>
-    <published>2021-12-31T09:01:56.000Z</published>
-    <updated>2022-01-04T12:22:07.489Z</updated>
-    
-    
-    <summary type="html">&lt;h1 id=&quot;docker&amp;#x7684;&amp;#x7F51;&amp;#x7EDC;&amp;#x5B89;&amp;#x88C5;&quot;&gt;&lt;a href=&quot;#docker&amp;#x7684;&amp;#x7F51;&amp;#x7EDC;&amp;#x5B89;&amp;#x88C5;&quot; class=&quot;headerlink&quot; title=&quot;docker&amp;#x7684;&amp;#x7F51;&amp;#x7EDC;&amp;#x5B89;&amp;#x88C5;&quot;&gt;&lt;/a&gt;docker&amp;#x7684;&amp;#x7F51;&amp;#x7EDC;&amp;#x5B89;&amp;#x88C5;&lt;/h1&gt;&lt;h2 id=&quot;&amp;#x7B2C;&amp;#x4E00;&amp;#x6B65;&amp;#x3001;&amp;#x627E;&amp;#x5230;&amp;#x963F;&amp;#x91CC;&amp;#x4E91;&amp;#x7684;Docker-ce&amp;#x4E0B;&amp;#x8F7D;&amp;#x6E90;&quot;&gt;&lt;a href=&quot;#&amp;#x7B2C;&amp;#x4E00;&amp;#x6B65;&amp;#x3001;&amp;#x627E;&amp;#x5230;&amp;#x963F;&amp;#x91CC;&amp;#x4E91;&amp;#x7684;Docker-ce&amp;#x4E0B;&amp;#x8F7D;&amp;#x6E90;&quot; class=&quot;headerlink&quot; title=&quot;&amp;#x7B2C;&amp;#x4E00;&amp;#x6B65;&amp;#x3001;&amp;#x627E;&amp;#x5230;&amp;#x963F;&amp;#x91CC;&amp;#x4E91;&amp;#x7684;Docker-ce&amp;#x4E0B;&amp;#x8F7D;&amp;#x6E90;&quot;&gt;&lt;/a&gt;&amp;#x7B2C;&amp;#x4E00;&amp;#x6B65;&amp;#x3001;&amp;#x627E;&amp;#x5230;&amp;#x963F;&amp;#x91CC;&amp;#x4E91;&amp;#x7684;Docker-ce&amp;#x4E0B;&amp;#x8F7D;&amp;#x6E90;&lt;/h2&gt;&lt;p&gt;&lt;img src=&quot;/cloud-native/docker/02_docker%E5%AE%89%E8%A3%85/image-20211227102829010.png&quot; alt=&quot;image-20211227102829010&quot;&gt;&lt;/p&gt;</summary>
-    
-    
-    
-    <category term="cloud native" scheme="http://example.com/categories/cloud-native/"/>
-    
-    <category term="docker" scheme="http://example.com/categories/cloud-native/docker/"/>
-    
-    
-    <category term="container" scheme="http://example.com/tags/container/"/>
-    
-    <category term="docker" scheme="http://example.com/tags/docker/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>docker的常用命令介绍</title>
-    <link href="http://example.com/cloud-native/docker/03_docker%E7%9A%84%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/"/>
-    <id>http://example.com/cloud-native/docker/03_docker%E7%9A%84%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/</id>
-    <published>2021-12-31T09:01:56.000Z</published>
-    <updated>2022-01-04T12:22:23.609Z</updated>
-    
-    
-    <summary type="html">&lt;h2 id=&quot;&amp;#x955C;&amp;#x50CF;&amp;#x7BA1;&amp;#x7406;&quot;&gt;&lt;a href=&quot;#&amp;#x955C;&amp;#x50CF;&amp;#x7BA1;&amp;#x7406;&quot; class=&quot;headerlink&quot; title=&quot;&amp;#x955C;&amp;#x50CF;&amp;#x7BA1;&amp;#x7406;&quot;&gt;&lt;/a&gt;&amp;#x955C;&amp;#x50CF;&amp;#x7BA1;&amp;#x7406;&lt;/h2&gt;&lt;h3 id=&quot;pull-&amp;#x62C9;&amp;#x53D6;&amp;#x955C;&amp;#x50CF;&quot;&gt;&lt;a href=&quot;#pull-&amp;#x62C9;&amp;#x53D6;&amp;#x955C;&amp;#x50CF;&quot; class=&quot;headerlink&quot; title=&quot;pull-&amp;#x62C9;&amp;#x53D6;&amp;#x955C;&amp;#x50CF;&quot;&gt;&lt;/a&gt;pull-&amp;#x62C9;&amp;#x53D6;&amp;#x955C;&amp;#x50CF;&lt;/h3&gt;&lt;figure class=&quot;highlight shell&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;meta&quot;&gt;#&lt;/span&gt;&lt;span class=&quot;bash&quot;&gt; &amp;#x62C9;&amp;#x53D6;&amp;#x955C;&amp;#x50CF;&amp;#x5230;&amp;#x672C;&amp;#x5730;&amp;#xFF0C;&amp;#x9ED8;&amp;#x8BA4;&amp;#x4E3A;&amp;#x516C;&amp;#x7F51;&amp;#x4ED3;&amp;#x5E93;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;docker pull centos:centos7.9.2009&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;</summary>
-    
-    
-    
-    <category term="cloud native" scheme="http://example.com/categories/cloud-native/"/>
-    
-    <category term="docker" scheme="http://example.com/categories/cloud-native/docker/"/>
-    
-    
-    <category term="container" scheme="http://example.com/tags/container/"/>
-    
-    <category term="docker" scheme="http://example.com/tags/docker/"/>
     
   </entry>
   
